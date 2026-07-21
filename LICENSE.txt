@@ -1,0 +1,24 @@
+ROOTS INC. — TOUS DROITS RÉSERVÉS / ALL RIGHTS RESERVED
+Copyright (c) 2026 Roots Inc. (Michael « Mika » Gnimadi et Roots Inc.)
+
+Ce dépôt et son contenu (code, feuilles de style, structure, textes) sont la
+propriété de Roots Inc. Aucune autorisation d'utilisation, de copie, de
+modification, de fusion, de publication, de distribution ou de sous-licence
+n'est accordée sans accord écrit préalable de Roots Inc.
+
+Ce n'est PAS un logiciel open source. La mise à disposition publique du dépôt
+(nécessaire à l'hébergement GitHub Pages) ne vaut pas licence d'usage.
+
+ÉLÉMENTS TIERS / THIRD-PARTY ELEMENTS
+- Iconographie de marque : © Ame Karaba (voir CREDITS.md). Extraction verbatim
+  de la fresque séminale du Roots ; ne pas redessiner ni réutiliser hors de ce
+  projet sans l'accord de l'artiste et de Roots Inc.
+- Police « Museo / Museo Sans / Museo Slab » (exljbris / Jos Buivenga) :
+  soumise à sa propre licence (acquisition webfont en cours). Ne pas
+  redistribuer les fichiers de polices.
+- « MuseoModerno » (Google Fonts, SIL OFL) et « Roboto » (Apache 2.0) :
+  sous leurs licences respectives.
+- « Cooper Black » : réservée aux logotypes servant le Café, vectorisée.
+- Bibliothèque d'icônes « Lucide » : licence ISC.
+
+Pour toute demande : mika@roots.bj

@@ -1,0 +1,58 @@
+/* ============================================================================
+   ROOTS — POLICES AUTO-HÉBERGÉES · V1.2 (juillet 2026)
+   @font-face pour les .woff2 subset fournis par Mika (dossier ./fonts/).
+   Gamme Museo complétée : Sans (100–700 + italiques), Sans Display (200–950),
+   Slab (100–1000 + italiques), Museo serif (100–900 + italiques).
+   Repli acté : Roboto — Museo Sans→Roboto, Museo→Roboto Serif, Slab→Roboto Slab.
+   MuseoModerno : auto-hébergée en POLICE VARIABLE (.woff, axe wght 100→900,
+   fournie par Mika) — un seul fichier couvre toutes les graisses ; Google Fonts
+   n'est plus requis (fonctionne hors-ligne, PDF inclus). font-display:swap.
+   Licence Museo : en cours d'acquisition (voir DS §2.3) — crédit exljbris requis
+   tant que des graisses gratuites sont servies en webfont.
+   ============================================================================ */
+
+/* MuseoModerno — police variable (wght 100–900), normal + italique */
+@font-face{font-family:'MuseoModerno';src:url('fonts/MuseoModerno-var.woff') format('woff');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'MuseoModerno';src:url('fonts/MuseoModerno-Italic-var.woff') format('woff');font-weight:100 900;font-style:italic;font-display:swap}
+
+
+/* ---- Museo Sans (cheval de trait) ---- */
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans100Italic.woff2') format('woff2');font-weight:100;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans100.woff2') format('woff2');font-weight:100;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans300Italic.woff2') format('woff2');font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans500Italic.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans700Italic.woff2') format('woff2');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Sans';src:url('fonts/subsetMuseoSans700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+
+/* ---- Museo Sans Display (graisses extrêmes) ---- */
+@font-face{font-family:'Museo Sans Display';src:url('fonts/subsetMuseoSansDisplayExtraLight.woff2') format('woff2');font-weight:200;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Sans Display';src:url('fonts/subsetMuseoSansDisplayLight.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Sans Display';src:url('fonts/subsetMuseoSansDisplayBlack.woff2') format('woff2');font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Sans Display';src:url('fonts/subsetMuseoSansDisplayExtraBlack.woff2') format('woff2');font-weight:950;font-style:normal;font-display:swap}
+
+/* ---- Museo Slab (accent éditorial & chiffres) ---- */
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab100Italic.woff2') format('woff2');font-weight:100;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab100.woff2') format('woff2');font-weight:100;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab300Italic.woff2') format('woff2');font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab500Italic.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab500.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab700Italic.woff2') format('woff2');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab900Italic.woff2') format('woff2');font-weight:900;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab900.woff2') format('woff2');font-weight:900;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab1000Italic.woff2') format('woff2');font-weight:1000;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo Slab';src:url('fonts/subsetMuseoSlab1000.woff2') format('woff2');font-weight:1000;font-style:normal;font-display:swap}
+
+/* ---- Museo (serif d'origine, voix de lecture) ---- */
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo100Italic.woff2') format('woff2');font-weight:100;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo100.woff2') format('woff2');font-weight:100;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo300Italic.woff2') format('woff2');font-weight:300;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo300.woff2') format('woff2');font-weight:300;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo500Italic.woff2') format('woff2');font-weight:500;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo700Italic.woff2') format('woff2');font-weight:700;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo700.woff2') format('woff2');font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo900Italic.woff2') format('woff2');font-weight:900;font-style:italic;font-display:swap}
+@font-face{font-family:'Museo';src:url('fonts/subsetMuseo900.woff2') format('woff2');font-weight:900;font-style:normal;font-display:swap}

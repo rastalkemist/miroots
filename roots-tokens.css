@@ -1,0 +1,240 @@
+/* ============================================================================
+   ROOTS — DESIGN TOKENS & COMPOSANTS DE BASE · V1 (juillet 2026)
+   Source unique pour tous les écrans Mi Roots / roots.bj.
+   Référence : Design_System_Roots_V1.md (fait foi en cas de doute).
+   ============================================================================ */
+
+/* ---------- 1. JETONS ---------- */
+
+:root {
+  /* Palette de marque (les cinq seules couleurs de marque) */
+  --roots-vert: #006838;
+  --roots-jaune: #FFC840;
+  --roots-terracotta: #CE5A2C;
+  --roots-rouge: #CD0909;
+  --roots-noir: #1A1A1A;
+
+  /* Couleurs secondaires — OFFICIELLES, ramenées de 6 à 5 (vanille et sable
+     retirés : trop proches, tendance sépia). Noms actés (validés Mika). */
+  --blanc-casse: #FDFBF6;   /* fond dominant clair, éléments flottants */
+  --creme: #F8EDDA;         /* surfaces chaudes, filigranes, accents doux */
+  --terre-brune: #76403D;   /* accent chaud profond, filets, fonds terreux (disponible, non imposé) */
+  --vert-nuit: #0A332E;     /* encre des textes sur clair, surfaces sombres */
+  --vert-foret: #2F4B3C;    /* textes secondaires, éléments discrets */
+
+  /* Alias fonctionnels */
+  --carte-blanc: #FFFFFF;
+  --encre: var(--vert-nuit);
+  --encre-discrete: var(--vert-foret);
+
+  /* Gris de service — chrome d'interface UNIQUEMENT. Hors palette de marque,
+     par principe : ces éléments doivent disparaître, pas porter la marque.
+     Un seul gris de service : l'îlot #E4E1DA. --gris-service en est un alias. */
+  --gris-ilot: #E4E1DA;      /* seul gris de service acté : fonds d'îlots, filets, poignées */
+  --gris-service: var(--gris-ilot); /* alias de --gris-ilot */
+
+  /* HIÉRARCHIE DU VERT (validée Mika) — l'intensité suit l'engagement :
+     1. repos       → --gris-ilot (rien ne se passe)
+     2. sélection   → --vert-selection + bordure --roots-vert (j'ai choisi)
+     3. action      → --roots-vert plein, texte --blanc-casse (j'agis :
+                       boutons, choix structurants type bascule « Quand ? »)
+     UNIVERS DE BASE Mi Roots = blanc pur / blanc cassé / gris / vert.
+     Vanille et crème n'ont PAS leur place dans les panneaux de dialogue.
+
+     PRIX (validé Mika) : jamais en rouge ni teinte chaude alarmante (douleur
+     de payer). Un montant s'écrit en --encre, moins saillant que le nom de
+     l'offre. Confirmé par la recherche en menu engineering. */
+  --vert-selection: rgba(0, 104, 56, .08);
+
+  /* Statuts (§1.3) — mappés sur la marque, aucune couleur nouvelle */
+  --statut-en-attente: var(--roots-jaune);
+  --statut-en-preparation: var(--roots-terracotta);
+  --statut-confirme: var(--roots-vert);   /* confirmee / prete */
+  --statut-annule: var(--roots-rouge);
+  --statut-termine: var(--encre-discrete); /* terminee / livree */
+
+  /* Typographie. Repli officiel ACTÉ (validé Mika, juillet 2026) : Roboto —
+     Museo Sans → Roboto · Museo → Roboto Serif · Museo Slab → Roboto Slab.
+     MuseoModerno reste (déjà libre, Google Fonts). Quand les .woff2 Museo sont
+     auto-hébergés, Museo reprend la main automatiquement ; Roboto reste le filet.
+     Réserve notée : Roboto est plus neutre/froide que Museo — repli fonctionnel,
+     pas identité finale. Registres complets et règles d'usage : DS §2. */
+  --font-corps: 'Museo Sans', 'Roboto', system-ui, sans-serif;
+  --font-lecture: 'Museo', 'Roboto Serif', Georgia, serif;        /* print / longue lecture */
+  --font-chiffres: 'Museo Slab', 'Roboto Slab', 'Rockwell', serif; /* prix, pull quotes, tailles moyennes+ */
+  --font-eclat: 'MuseoModerno', var(--font-corps);      /* h1 énergiques, parcimonie */
+  --font-titres-alt: 'Cooper Hewitt', var(--font-corps);
+  --font-cooper: 'Cooper Black', 'Cooper Std', 'Cooper BT', serif; /* logotypes servant le Café UNIQUEMENT */
+
+  /* ÉCHELLE TYPOGRAPHIQUE (base 16, quarte juste ×1,333 : 16→21→28→38→51→67) — voir
+     Echelle_Typographique_Roots.md. Deux axes : la TAILLE pose la hiérarchie, la
+     GRAISSE donne le ton (fine 100-300 = élégance ; épaisse 700-800 = géométrie/éclat).
+     display → MuseoModerno ExtraBold ; h1 → Museo Sans Thin (fin) ; h2 → Bold ; h3 → Light ;
+     chiffres/prix/code → Museo Slab ; longue lecture → Museo serif. */
+  /* Interface — mobile-first, quarte juste ×1,333 */
+  --t-display: 64px; --t-h1: 38px; --t-h2: 28px; --t-h3: 21px;
+  --t-body: 16px; --t-sm: 14px; --t-label: 12px;
+  --t-prix: 24px; --t-code: 34px;
+  /* Longue lecture — grand écran & print, éditorial nombre d'or ×1,618 (voir Echelle_Typographique_Roots.md §5) */
+  --t-ll-titre: 68px; --t-ll-intertitre: 42px; --t-ll-chapo: 26px; --t-ll-corps: 16px; --t-ll-note: 13px;
+  --t-lecture: 18px;
+  --w-thin: 100; --w-light: 300; --w-regular: 400; --w-medium: 500; --w-bold: 700; --w-xbold: 800;
+  --lh-titre: 1.1; --lh-corps: 1.5; --lh-lecture: 1.62; --lh-chiffre: 1;
+
+  /* Rayons (§5.2) */
+  --rayon-pilule: 999px;
+  --rayon-carte: 26px;
+  --rayon-module: 17px;
+  --rayon-champ: 13px;
+
+  /* Espacement, base 4 */
+  --esp-1: 4px;  --esp-2: 8px;  --esp-3: 12px;
+  --esp-4: 16px; --esp-5: 20px; --esp-6: 24px; --esp-8: 32px;
+
+  /* Ombres (déclinaison A uniquement — B est plate) */
+  --ombre-carte: 0 10px 30px rgba(60, 50, 30, 0.10);
+  --ombre-flottante: 0 10px 30px rgba(10, 25, 14, 0.35);
+}
+
+/* ---------- 2. BASE ---------- */
+
+.roots-base {
+  font-family: var(--font-corps);
+  color: var(--encre);
+  background: var(--creme);
+}
+
+/* ---------- 3. COMPOSANTS — DÉCLINAISON A (ambiante) ---------- */
+
+.btn-principal {
+  background: var(--roots-vert);
+  color: var(--creme);
+  border: none;
+  border-radius: var(--rayon-pilule);
+  padding: var(--esp-4);
+  font-family: var(--font-corps);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+}
+.btn-principal:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.pastille-flottante {
+  background: var(--creme);
+  color: var(--encre);
+  border: none;
+  border-radius: var(--rayon-pilule);
+  padding: 15px 26px;
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+  box-shadow: var(--ombre-flottante);
+}
+
+.carte-a {
+  background: var(--carte-blanc);
+  border-radius: var(--rayon-carte);
+  padding: var(--esp-5);
+  box-shadow: var(--ombre-carte);
+}
+
+.module-a {
+  background: var(--creme);
+  border: 2px solid transparent;
+  border-radius: var(--rayon-module);
+  cursor: pointer;
+}
+.module-a.actif { border-color: var(--roots-vert); background: #EEF4E9; }
+
+.chip {
+  background: var(--creme);
+  border: 2px solid transparent;
+  border-radius: var(--rayon-pilule);
+  padding: 9px 15px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.chip.actif { border-color: var(--roots-terracotta); background: #FDF0EB; }
+
+.champ-saisie {
+  background: var(--creme);
+  border: 1.5px solid transparent;
+  border-radius: var(--rayon-champ);
+  padding: 12px 13px;
+  color: var(--encre);
+  font-family: var(--font-corps);
+  font-size: 14.5px;
+  width: 100%;
+}
+.champ-saisie:focus { outline: none; border-color: var(--roots-vert); background: var(--carte-blanc); }
+
+.etiquette {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--encre-discrete);
+}
+
+.code-confirmation {
+  font-weight: 700;
+  font-size: 33px;
+  letter-spacing: 0.13em;
+  color: var(--roots-terracotta);
+  font-family: var(--font-chiffres); /* Museo Slab : chiffres mis en avant, DS §2.1 */
+}
+
+.prix { font-family: var(--font-chiffres); font-weight: 700; }
+
+/* ---------- 4. COMPOSANTS — DÉCLINAISON B (opérationnelle : plate, contraste
+   fort, AUCUNE animation, AUCUN flou, AUCUNE ombre) ---------- */
+
+.carte-b {
+  background: #FFFFFF;
+  border: 2px solid var(--roots-noir);
+  border-radius: var(--rayon-champ); /* coins plus fermes que A */
+  padding: var(--esp-4);
+}
+
+.btn-b {
+  background: var(--roots-noir);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--rayon-champ);
+  padding: var(--esp-4) var(--esp-6);
+  font-family: var(--font-corps);
+  font-weight: 700;
+  font-size: 16px; /* gros boutons : pouce pressé en cuisine */
+  cursor: pointer;
+}
+
+.puce-statut {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--rayon-pilule);
+  color: #FFFFFF;
+}
+.puce-statut.en-attente     { background: var(--statut-en-attente); color: var(--roots-noir); }
+.puce-statut.en-preparation { background: var(--statut-en-preparation); }
+.puce-statut.confirme       { background: var(--statut-confirme); }
+.puce-statut.annule         { background: var(--statut-annule); }
+.puce-statut.termine        { background: var(--statut-termine); }
+
+/* ---------- 5. RÈGLES D'OR (rappel en commentaire) ----------
+   · Icônes de marque : UNIQUEMENT extraction verbatim de la planche (DS §3) —
+     redimensionner / pivoter / recadrer ; jamais dessiner.
+   · Icônes fonctionnelles : bibliothèque pro (Lucide n°1), jamais mélangées
+     avec la planche (DS §3.4).
+   · Cooper Black : logotypes servant le Café uniquement, jamais en
+     typographie libre ; cohabitation MuseoModerno admise, bonne graisse requise (DS §4.2).
+   · MuseoModerno : h1 énergiques seulement, parcimonie (DS §2.1).
+   · Bilinguisme FR/EN sur tout écran public (DS §5.4).
+   · Museo : licence en cours d'acquisition — tant que les graisses gratuites
+     sont déployées en webfont, lien de crédit exljbris obligatoire ; repli
+     Roboto acté (DS §2.3).
+   ------------------------------------------------------------- */
