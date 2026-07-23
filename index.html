@@ -27,6 +27,7 @@
    · Pas de « Mon Espace » dans le menu fonctionnel (= verbe Road).
    ========================================================================== */
 :root{
+ --marge:5%; --site-w:90%; --col:500px;
  --roots-vert:#006838;--roots-jaune:#FFC840;--roots-terracotta:#CE5A2C;
  --roots-rouge:#CD0909;--roots-noir:#1A1A1A;
  --creme:#F8EDDA;--vert-nuit:#0A332E;--vert-foret:#2F4B3C;
@@ -40,7 +41,8 @@
  --safe-bas:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:var(--font-corps);color:var(--blanc-casse);overflow-x:hidden}
+html{background:var(--vert-nuit)}
+body{margin:0;min-height:100vh;font-family:var(--font-corps);color:var(--blanc-casse);overflow-x:hidden;background:var(--vert-nuit)}
 svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 
 /* ---------- Fond jardin (placeholder vidéo) ---------- */
@@ -65,10 +67,10 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .marque-wrap{display:flex;align-items:center;gap:9px}
 .ankh-home{display:flex;align-items:center;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
 .ankh-home svg{width:34px;height:34px;display:block}
-.marque{display:flex;align-items:center;gap:8px;background:rgba(253,251,246,.92);
- backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 14px;box-shadow:0 3px 12px rgba(5,25,18,.2)}
-.marque .mot{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-vert);
- background:none;border:none;cursor:pointer;padding:0 2px;line-height:1}
+.marque{display:flex;align-items:center;gap:8px}
+.marque .mot{width:44px;height:44px;border-radius:50%;background:rgba(253,251,246,.95);backdrop-filter:blur(6px);
+ box-shadow:0 3px 12px rgba(5,25,18,.2);font-family:var(--font-moderno);font-weight:700;font-size:20px;color:var(--roots-vert);
+ border:none;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .marque .suite{display:flex;align-items:center;gap:8px;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transform:translateX(-8px);
  transition:max-width .4s cubic-bezier(.2,.9,.25,1),opacity .3s ease .04s,transform .4s cubic-bezier(.2,.9,.25,1)}
 .marque.ouvert .suite{max-width:240px;opacity:1;transform:translateX(0);
@@ -83,9 +85,8 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .lang-btn{height:42px;padding:0 4px;border:none;background:none;color:var(--blanc-casse);font-family:var(--font-corps);font-weight:700;font-size:14px;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.4)}
 .chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:22px;color:var(--blanc-casse);
  text-shadow:0 1px 6px rgba(0,0,0,.4);letter-spacing:.01em}
-.chrome-burger{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(253,251,246,.32);
- background:rgba(253,251,246,.15);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blanc-casse)}
-.chrome-burger svg{width:20px;height:20px}
+.chrome-burger{width:42px;height:42px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blanc-casse);filter:drop-shadow(0 1px 4px rgba(0,0,0,.4))}
+.chrome-burger svg{width:27px;height:27px}
 
 /* -- Roots Radio : ligne sous le nav, en haut à droite -- */
 .radio-wrap{position:fixed;top:92px;left:0;right:0;z-index:5;pointer-events:none}
@@ -100,19 +101,29 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .radio-btn svg{width:15px;height:15px}
 
 /* ══════════════ SUPER-NAV (bas) — icônes seules ══════════════ */
-/* Super-nav : section pleine largeur en bas, 3 parts égales, l'active en plein vert */
+/* Super-nav : barre pleine largeur en bas, 3 parts égales. Bordure de thème,
+   verbe actif = cercle vert autour de l'icône (pas de remplissage plein). */
 .chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;
- min-height:58px;height:5.5vh;padding-bottom:var(--safe-bas);
- background:var(--blanc-casse);box-shadow:0 -6px 24px rgba(5,25,18,.18)}
+ min-height:68px;height:7.5vh;padding-bottom:var(--safe-bas);
+ background:var(--blanc-casse);border-top:2px solid var(--roots-vert);box-shadow:0 -6px 24px rgba(5,25,18,.18)}
 .verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;
  color:var(--vert-foret);display:flex;align-items:center;justify-content:center}
-.verbe svg{width:48px;height:48px}
-.verbe.actif{background:var(--roots-vert);color:var(--blanc-casse)}
-.verbe.dormant{opacity:.5}
-.verbe.dormant::after{content:'';position:absolute;top:9px;right:calc(50% - 34px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
+.ico-rond{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ico-rond svg{width:44px;height:44px}
+.verbe.actif .ico-rond{background:var(--roots-vert);color:var(--blanc-casse)}
+.verbe.dormant{opacity:.55}
+.verbe.dormant::after{content:'';position:absolute;top:11px;right:calc(50% - 30px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
+/* Tablette et écrans larges : retour à la pastille centrale */
+@media(min-width:640px){
+ .chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));
+  width:auto;min-height:0;height:auto;padding:6px;border:1.5px solid var(--roots-vert);
+  border-radius:var(--r-pilule);box-shadow:0 12px 34px rgba(5,25,18,.4)}
+ .verbe{flex:0 0 auto;padding:4px 6px}
+ .ico-rond{width:56px;height:56px}
+}
 
 /* -- Bouton (+) focal -- */
-.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + var(--safe-bas));z-index:7;
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;
  width:56px;height:56px;border-radius:50%;background:var(--blanc-casse);border:none;color:var(--roots-vert);
  box-shadow:0 12px 30px rgba(5,25,18,.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .fab svg{width:26px;height:26px}
@@ -209,7 +220,7 @@ main{position:relative;z-index:2;min-height:100vh}
 .mini-btn svg{width:15px;height:15px}
 
 /* -- Toast (dormant) -- */
-.toast{position:fixed;left:50%;bottom:calc(146px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
+.toast{position:fixed;left:50%;bottom:calc(156px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
  background:rgba(10,51,46,.95);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);
  box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -271,9 +282,9 @@ main{position:relative;z-index:2;min-height:100vh}
 
 <!-- Super-nav des 3 verbes (icônes) -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><i data-lucide="sprout">❦</i></button>
-  <button class="verbe dormant" data-verbe="road" aria-label="Road"><i data-lucide="route">↝</i></button>
-  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><i data-lucide="compass">✳</i></button>
+  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><i data-lucide="compass">✳</i></span></button>
+  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><i data-lucide="sprout">❦</i></span></button>
+  <button class="verbe dormant" data-verbe="road" aria-label="Road"><span class="ico-rond"><i data-lucide="route">↝</i></span></button>
 </nav>
 
 <!-- ══════════════ Dialogue (+) : Réserver | Commander ══════════════ -->
