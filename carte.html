@@ -62,10 +62,21 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .chrome-inner>.ankh-home{justify-self:start}
 .chrome-inner>.centre{justify-self:center}
 .chrome-inner>.chrome-droite{justify-self:end}
-/* Pastille dépliée : on efface le reste par fondu pour lui laisser la place */
-.ankh-home,.chrome-titre,.chrome-droite{transition:opacity .34s ease,transform .34s ease}
-.chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-10px)}
-@media(max-width:639px){.chrome-inner.deploie .ankh-home{opacity:0;pointer-events:none;transform:translateX(10px)}}
+/* Pastille dépliée : l'ankh reste toujours en place (gauche) ; le reste
+   (titre, langue, menu) s'efface vers la gauche « sous » la pastille, qui
+   s'aligne à droite le temps du choix, puis tout revient au centre. */
+.chrome-inner{transition:grid-template-columns .5s cubic-bezier(.22,.85,.3,1)}
+.chrome-titre,.chrome-droite{transition:opacity .3s ease,transform .34s ease}
+/* uniquement sur téléphone : place étroite → on efface le reste et la pastille
+   s'aligne à droite. Sur tablette/laptop il y a la place, donc rien ne bouge. */
+@media(max-width:639px){
+ .chrome-inner.deploie{grid-template-columns:1fr auto 0fr}
+ .chrome-inner.deploie .centre{gap:0}
+ .chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-12px);width:0;min-width:0;margin:0;overflow:hidden}
+}
+/* pas de filigrane bleuâtre au tap sur mobile */
+.chrome-haut,.chrome-bas,.chrome-haut *,.chrome-bas *{-webkit-tap-highlight-color:transparent}
+.toggle,.ankh-home,.chrome-burger,.lang-btn,.verbe{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .centre{display:flex;align-items:center;gap:5px}
 .ankh-home{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .ankh-home svg{width:44px;height:44px;display:block}
@@ -75,10 +86,10 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .toggle.ouvert{max-width:300px;transition:max-width .62s cubic-bezier(.22,.85,.3,1)}
 .toggle .mot{width:39px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-moderno);font-weight:700;font-size:19px;color:var(--blanc-casse);line-height:1}
 .toggle .reste{display:flex;align-items:center;gap:8px;padding-right:14px;flex-shrink:0}
-.reste .sub{font-size:11px;color:rgba(248,237,218,.72);font-style:italic}
+.reste .sub{font-size:11px;color:rgba(253,251,246,.72);font-style:italic}
 .switch{width:42px;height:22px;border-radius:var(--r-pilule);background:rgba(253,251,246,.20);border:1px solid rgba(253,251,246,.3);position:relative;cursor:pointer;flex-shrink:0}
 .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--blanc-casse);transition:left .2s ease}
-.reste .nu{font-family:var(--font-moderno);font-weight:700;font-size:16px;color:var(--creme)}
+.reste .nu{font-family:var(--font-moderno);font-weight:700;font-size:16px;color:var(--blanc-casse)}
 .chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-vert);letter-spacing:.01em}
 .chrome-droite{display:flex;align-items:center;gap:8px}
 .lang-btn{height:40px;padding:0 4px;border:none;background:none;color:var(--roots-vert);font-family:var(--font-corps);font-weight:700;font-size:14px;cursor:pointer}
