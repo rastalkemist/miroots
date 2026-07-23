@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mi Roots — Retrouver ma réservation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/css/intlTelInput.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/intlTelInput.min.js" defer></script>
+<script src="roots.js"></script>
+<style>
+/* ==========================================================================
+   ÉCRAN — Retrouver ma réservation · mi.roots.bj/retrouver · v7 (23/07/2026)
+   RELIURE : chrome partagé de l'app (variante fond clair) — ankh (retour accueil),
+   toggle Mi qui s'étire, titre « Roots », menu déroulant haut-droite, super-nav
+   Roam·Roots·Road en bas. Le formulaire « retrouver » + intl-tel sont inchangés.
+   ========================================================================== */
+:root{
+ --marge:5%; --site-w:90%; --col:460px;
+ --roots-vert:#006838;--roots-jaune:#FFC840;--roots-terracotta:#CE5A2C;
+ --roots-rouge:#CD0909;--roots-noir:#1A1A1A;
+ --creme:#F8EDDA;--vert-nuit:#0A332E;--vert-foret:#2F4B3C;
+ --blanc-casse:#FDFBF6;--carte-blanc:#FFFFFF;
+ --gris-ilot:#E4E1DA;--gris-service:#E4E1DA;--vert-selection:rgba(0,104,56,.08);
+ --encre:var(--vert-nuit);--encre-discrete:var(--vert-foret);
+ --font-corps:'Museo Sans','Roboto',system-ui,sans-serif;
+ --font-moderno:'MuseoModerno',var(--font-corps);
+ --font-chiffres:'Museo Slab','Roboto Slab','Rockwell',serif;
+ --r-pilule:999px;--r-carte:26px;--r-module:17px;--r-champ:13px;
+ --safe-bas:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--blanc-casse);color:var(--encre);font-family:var(--font-corps);display:flex;flex-direction:column}
+svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
+
+main{flex:1;width:var(--site-w);max-width:var(--col);margin:0 auto;padding:24px 0 116px 0}
+.hero h1{font-size:26px;font-weight:700;margin:0 0 6px;line-height:1.15}
+.hero p{font-size:13.5px;color:var(--encre-discrete);margin:0 0 22px;line-height:1.5}
+
+.carte{background:var(--carte-blanc);border-radius:var(--r-carte);padding:20px;box-shadow:0 10px 30px rgba(60,50,30,.10)}
+
+.champ{margin-bottom:15px}
+.champ label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--encre-discrete);margin-bottom:7px}
+.saisie{width:100%;height:48px;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);padding:0 14px;color:var(--encre);font-family:var(--font-corps);font-size:15px}
+.saisie:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
+#code{font-family:var(--font-chiffres);font-weight:700;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
+#code::placeholder{letter-spacing:.05em;font-size:15px;font-weight:400;font-family:var(--font-corps)}
+
+.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
+.iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
+#tel{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:15px;padding:0 14px}
+#tel:focus{outline:none}
+.iti__country-container{display:flex;align-items:center;padding:0 4px}
+.iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
+.iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;padding:0 4px}
+
+.encart-securite{display:flex;align-items:center;gap:9px;margin-top:18px;border:1px dashed var(--gris-service);border-radius:var(--r-champ);padding:12px 14px;font-size:12px;color:var(--encre-discrete);line-height:1.5}
+.encart-securite i,.encart-securite svg{width:16px;height:16px;flex-shrink:0;color:var(--roots-vert)}
+
+.btn{width:100%;background:var(--roots-vert);color:var(--blanc-casse);border:none;border-radius:var(--r-pilule);padding:15px;font-family:var(--font-corps);font-weight:700;font-size:15px;cursor:pointer}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.resultat{display:none;margin-top:6px}
+.resultat.visible{display:block}
+.puce-statut{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:5px 13px;border-radius:var(--r-pilule);color:#fff;margin-bottom:14px}
+.puce-statut.confirme{background:var(--roots-vert)}
+.puce-statut.en-attente{background:var(--roots-jaune);color:var(--roots-noir)}
+.puce-statut.en-preparation{background:var(--roots-terracotta)}
+.puce-statut.annule{background:var(--roots-rouge)}
+.puce-statut.termine{background:var(--vert-foret)}
+.res-titre{font-size:20px;font-weight:700;margin:0 0 3px}
+.res-sous{font-size:13.5px;color:var(--encre-discrete);margin:0 0 16px}
+.res-lignes{border-top:1px solid var(--gris-ilot);padding-top:14px;margin-bottom:16px}
+.res-ligne{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:14px}
+.res-ligne .k{color:var(--encre-discrete);display:flex;align-items:center;gap:8px}
+.res-ligne .k svg{width:16px;height:16px}
+.res-ligne .v{font-weight:600}
+.res-ligne .v.prix{font-family:var(--font-chiffres)}
+.bloc-code{background:var(--vert-selection);border:1.5px solid var(--roots-vert);border-radius:var(--r-module);text-align:center;padding:14px}
+.bloc-code .lib{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--vert-foret);margin-bottom:4px}
+.bloc-code .val{font-family:var(--font-chiffres);font-weight:700;font-size:30px;letter-spacing:.14em;color:var(--roots-vert)}
+.res-instr{font-size:12.5px;color:var(--encre-discrete);text-align:center;margin:12px 4px 0;line-height:1.5}
+
+.non-trouve{display:none;margin-top:14px;background:#FBEAE7;border:1.5px solid rgba(205,9,9,.22);border-radius:var(--r-champ);padding:13px 15px;font-size:13px;color:#8f1414;line-height:1.5}
+.non-trouve.visible{display:block}
+
+.lien-reset{display:none;text-align:center;margin-top:16px;font-size:13px}
+.lien-reset.visible{display:block}
+.lien-reset a{color:var(--roots-terracotta);font-weight:700;text-decoration:none;cursor:pointer}
+
+.retour{display:block;text-align:center;margin-top:20px;font-size:12.5px;text-decoration:none}
+.retour a{color:var(--roots-vert);font-weight:600;text-decoration:none;cursor:pointer}
+
+
+/* ══════════════ CHROME PARTAGÉ (variante fond clair) ══════════════ */
+.chrome-haut{position:sticky;top:0;z-index:20;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--gris-service);padding:11px 0}
+.chrome-inner{width:var(--site-w);max-width:var(--col);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.chrome-inner>.ankh-home{justify-self:start}
+.chrome-inner>.centre{justify-self:center}
+.chrome-inner>.chrome-droite{justify-self:end}
+/* Pastille dépliée : on efface le reste par fondu pour lui laisser la place */
+.ankh-home,.chrome-titre,.chrome-droite{transition:opacity .34s ease,transform .34s ease}
+.chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-10px)}
+@media(max-width:639px){.chrome-inner.deploie .ankh-home{opacity:0;pointer-events:none;transform:translateX(10px)}}
+.centre{display:flex;align-items:center;gap:5px}
+.ankh-home{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+.ankh-home svg{width:44px;height:44px;display:block}
+.toggle{position:relative;display:flex;align-items:center;height:42px;max-width:42px;overflow:hidden;cursor:pointer;
+ background:var(--roots-vert);border:1.5px solid var(--roots-vert);border-radius:var(--r-pilule);box-shadow:0 3px 10px rgba(0,104,56,.30);
+ transition:max-width .42s cubic-bezier(.2,.9,.25,1)}
+.toggle.ouvert{max-width:300px;transition:max-width .62s cubic-bezier(.22,.85,.3,1)}
+.toggle .mot{width:39px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-moderno);font-weight:700;font-size:19px;color:var(--blanc-casse);line-height:1}
+.toggle .reste{display:flex;align-items:center;gap:8px;padding-right:14px;flex-shrink:0}
+.reste .sub{font-size:11px;color:rgba(248,237,218,.72);font-style:italic}
+.switch{width:42px;height:22px;border-radius:var(--r-pilule);background:rgba(253,251,246,.20);border:1px solid rgba(253,251,246,.3);position:relative;cursor:pointer;flex-shrink:0}
+.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--blanc-casse);transition:left .2s ease}
+.reste .nu{font-family:var(--font-moderno);font-weight:700;font-size:16px;color:var(--creme)}
+.chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-vert);letter-spacing:.01em}
+.chrome-droite{display:flex;align-items:center;gap:8px}
+.lang-btn{height:40px;padding:0 4px;border:none;background:none;color:var(--roots-vert);font-family:var(--font-corps);font-weight:700;font-size:14px;cursor:pointer}
+.chrome-burger{width:38px;height:42px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--encre)}
+.chrome-burger svg{width:30px;height:30px}
+/* super-nav */
+.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:64px;height:7vh;padding-bottom:var(--safe-bas);
+ background:var(--blanc-casse);border-top:2px solid var(--roots-vert);box-shadow:0 -6px 24px rgba(5,25,18,.14)}
+.verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;color:var(--vert-foret);display:flex;align-items:center;justify-content:center}
+.ico-rond{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ico-rond svg{width:44px;height:44px}
+.verbe.actif .ico-rond{background:var(--roots-vert);color:var(--blanc-casse)}
+.verbe.dormant{opacity:.55}
+.verbe.dormant::after{content:'';position:absolute;top:9px;right:calc(50% - 28px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
+@media(min-width:640px){
+ .chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));width:auto;min-height:0;height:auto;padding:6px;border:1.5px solid var(--roots-vert);border-radius:var(--r-pilule);box-shadow:0 12px 30px rgba(5,25,18,.28)}
+ .verbe{flex:0 0 auto;padding:4px 6px}
+ .ico-rond{width:56px;height:56px}
+}
+/* menu déroulant (haut-droite) */
+.voile{position:fixed;inset:0;z-index:24;background:rgba(5,20,14,.22);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.voile.visible{opacity:1;pointer-events:auto}
+.menu-pop{position:fixed;top:60px;right:5%;z-index:25;width:min(300px,86vw);max-height:calc(100vh - 84px);overflow-y:auto;scrollbar-width:none;
+ background:var(--carte-blanc);color:var(--encre);border-radius:var(--r-carte);padding:6px 12px 12px;box-shadow:0 18px 44px rgba(5,25,18,.28);
+ transform-origin:top right;transform:scale(.9) translateY(-8px);opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
+.menu-pop::-webkit-scrollbar{display:none}
+.menu-pop.visible{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}
+.menu-pop .tete{display:flex;justify-content:flex-end;margin-bottom:2px}
+.menu-pop .fermer{background:none;border:none;color:var(--encre-discrete);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px}
+.lien-section{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--encre);padding:14px 8px;border-bottom:1px solid var(--gris-ilot);font-size:15px;font-weight:600;cursor:pointer}
+.lien-section:last-child{border-bottom:none}
+.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--vert-selection);color:var(--roots-vert);display:flex;align-items:center;justify-content:center}
+.lien-section .ico svg{width:19px;height:19px}
+.lien-section .txt{flex:1}
+.lien-section .txt small{display:block;font-size:11.5px;font-weight:400;color:var(--encre-discrete);margin-top:1px}
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(10,51,46,.95);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
+<path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/>
+<path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/>
+<path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/>
+<path fill-rule="nonzero" fill="rgb(80.392157%, 3.529412%, 3.529412%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/>
+<path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/>
+<path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>
+</svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <span class="chrome-titre" id="titreExp">Roots</span>
+    </div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <h1 data-t="titre">Retrouve ta réservation.</h1>
+    <p data-t="sousTitre">Ton code et ton numéro suffisent. Pas de compte.</p>
+  </div>
+
+  <div class="carte">
+    <div id="vueForm">
+      <div class="champ">
+        <label for="code" data-t="lblCode">Code de confirmation</label>
+        <input type="text" id="code" class="saisie" maxlength="6" placeholder="XXXXXX" inputmode="text" autocomplete="off" spellcheck="false">
+      </div>
+
+      <div class="champ">
+        <label for="tel" data-t="lblTel">Ton numéro de téléphone</label>
+        <input type="tel" id="tel" autocomplete="off">
+      </div>
+
+      <button class="btn" id="btnChercher" disabled data-t="chercher">Retrouver</button>
+
+      <div class="non-trouve" id="nonTrouve" data-t="nonTrouve">Aucune réservation trouvée avec ce code et ce numéro. Vérifie et réessaie.</div>
+
+      <div class="encart-securite">
+        <i data-lucide="shield-check"></i>
+        <span data-t="noteSecu">Pour ta sécurité, on demande le code et le numéro ensemble.</span>
+      </div>
+    </div>
+
+    <div class="resultat" id="resultat">
+      <span class="puce-statut" id="statutPuce"></span>
+      <h2 class="res-titre" id="resTitre"></h2>
+      <p class="res-sous" id="resSous"></p>
+      <div class="res-lignes" id="resLignes"></div>
+      <div class="bloc-code">
+        <div class="lib" data-t="tonCode">Ton code</div>
+        <div class="val" id="resCode"></div>
+      </div>
+      <p class="res-instr" data-t="resInstr">Montre ce code à l'accueil en arrivant.</p>
+      <div class="lien-reset visible" id="lienReset"><a id="reset" data-t="autreRecherche">Chercher une autre réservation</a></div>
+    </div>
+  </div>
+
+  <div class="retour"><a href="index.html"><span data-t="retour">← Retour à l'accueil</span></a></div>
+</main>
+
+<!-- ══════════════ CHROME : super-nav + menu + toast ══════════════ -->
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><i data-lucide="compass">✳</i></span></button>
+  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><i data-lucide="sprout">❦</i></span></button>
+  <button class="verbe dormant" data-verbe="road" aria-label="Road"><span class="ico-rond"><i data-lucide="route">↝</i></span></button>
+</nav>
+<div class="voile" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer"><i data-lucide="x">×</i></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TEXTES={
+ fr:{titre:'Retrouve ta réservation.',sousTitre:'Ton code et ton numéro suffisent. Pas de compte.',
+  lblCode:'Code de confirmation',lblTel:'Ton numéro de téléphone',
+  noteSecu:'Pour ta sécurité, on demande le code et le numéro ensemble.',
+  chercher:'Retrouver',mention:'On ne partage jamais ta réservation avec le code seul.',
+  nonTrouve:'Aucune réservation trouvée avec ce code et ce numéro. Vérifie et réessaie.',
+  tonCode:'Ton code',resInstr:"Montre ce code à l'accueil en arrivant.",
+  autreRecherche:'Chercher une autre réservation',retour:"← Retour à l'accueil",
+  demoTitre:'Prototype — pour tester (Bénin, le 01 est déjà mis) :',
+  demoTexte:'code <b>MR7K2P</b> + numéro <b>94 56 78 90</b> (confirmée) · ou code <b>JD4X9T</b> + <b>97 11 22 33</b> (en attente).',
+  espaces:{jardin:'Jardin connecté',partage:'Bureau partagé',prive:'Bureau privé'},
+  forfaits:{demi:'Demi-journée',jour:'Journée',mois:'Abonnement mensuel'},
+  statuts:{confirme:'Confirmée',['en-attente']:'En attente',['en-preparation']:'En préparation',annule:'Annulée',termine:'Terminée'},
+  lQuand:'Quand',lPersonnes:'Personnes',lMontant:'Montant',
+  auj:"Aujourd'hui",pers:p=>`${p} personne${p>1?'s':''}`},
+ en:{titre:'Find your booking.',sousTitre:'Your code and number are enough. No account.',
+  lblCode:'Confirmation code',lblTel:'Your phone number',
+  noteSecu:'For your security, we ask for the code and number together.',
+  chercher:'Find it',mention:'We never share your booking with the code alone.',
+  nonTrouve:'No booking found with this code and number. Check and try again.',
+  tonCode:'Your code',resInstr:'Show this code at the front desk when you arrive.',
+  autreRecherche:'Search another booking',retour:'← Back to home',
+  demoTitre:'Prototype — to test (Benin, the 01 is already set):',
+  demoTexte:'code <b>MR7K2P</b> + number <b>94 56 78 90</b> (confirmed) · or code <b>JD4X9T</b> + <b>97 11 22 33</b> (pending).',
+  espaces:{jardin:'Connected garden',partage:'Shared desk',prive:'Private office'},
+  forfaits:{demi:'Half-day',jour:'Full day',mois:'Monthly pass'},
+  statuts:{confirme:'Confirmed',['en-attente']:'Pending',['en-preparation']:'In preparation',annule:'Cancelled',termine:'Completed'},
+  lQuand:'When',lPersonnes:'People',lMontant:'Amount',
+  auj:'Today',pers:p=>`${p} ${p>1?'people':'person'}`}
+};
+let langue='fr';
+
+const RESERVATIONS={
+ MR7K2P:{sig:'bj:94567890',espace:'jardin',forfait:'jour',quand:'2026-07-22 09:00',personnes:2,statut:'confirme',prix:2000},
+ JD4X9T:{sig:'bj:97112233',espace:'partage',forfait:'demi',quand:'2026-07-24 14:00',personnes:1,statut:'en-attente',prix:3000}
+};
+
+const telInput=document.getElementById('tel'),codeInput=document.getElementById('code'),
+ btn=document.getElementById('btnChercher');
+let iti=null;
+
+function paysIso(){ try{ return iti ? (iti.getSelectedCountryData().iso2||'') : 'bj'; }catch(e){ return 'bj'; } }
+
+function significatif(){
+ const iso=paysIso();
+ let nat=(telInput.value||'').replace(/\D/g,'');
+ if(iso==='bj'){
+  if(nat.startsWith('00229')) nat=nat.slice(5);
+  else if(nat.startsWith('229')) nat=nat.slice(3);
+  if(nat.length>8 && nat.startsWith('01')) nat=nat.slice(2);
+  nat=nat.slice(-8);
+ }
+ return iso+':'+nat;
+}
+function telAssez(){
+ const iso=paysIso();
+ const nat=(telInput.value||'').replace(/\D/g,'');
+ return iso==='bj' ? nat.replace(/^0?1/,'').length>=8 || nat.length>=8 : nat.length>=6;
+}
+function verifChamps(){ btn.disabled = !(codeInput.value.trim().length===6 && telAssez()); }
+
+/* Champ téléphone : bloc réutilisable roots.js (Roots.initTelRoots).
+   On ajoute juste la revalidation au changement de pays. */
+telInput.addEventListener('countrychange',verifChamps);
+
+codeInput.addEventListener('input',()=>{ codeInput.value=codeInput.value.toUpperCase().replace(/[^A-Z0-9]/g,''); verifChamps(); });
+telInput.addEventListener('input',verifChamps);
+
+function appliquerLangue(){
+ const t=TEXTES[langue];
+ document.querySelectorAll('[data-t]').forEach(el=>{
+  const v=t[el.dataset.t];
+  if(typeof v==='string'){ if(v.indexOf('<b>')>=0) el.innerHTML=v; else el.textContent=v; }
+ });
+ document.documentElement.lang=langue;
+ if(document.getElementById('resultat').classList.contains('visible')) rendre(dernier);
+ chromeUI.dessinerSections();
+}
+const btnLangue=document.getElementById('btnLangue');
+btnLangue.addEventListener('click',()=>{
+ langue = langue==='fr' ? 'en' : 'fr';
+ btnLangue.textContent = langue==='fr' ? 'EN' : 'FR';
+ appliquerLangue();
+ if(window.lucide) lucide.createIcons();
+});
+
+let dernier=null,dernierCode='';
+function rendre(r){
+ const t=TEXTES[langue]; dernier=r;
+ document.getElementById('vueForm').style.display='none';
+ const puce=document.getElementById('statutPuce');
+ puce.className='puce-statut '+r.statut; puce.textContent=t.statuts[r.statut]||r.statut;
+ document.getElementById('resTitre').textContent=`${t.espaces[r.espace]} · ${t.forfaits[r.forfait]}`;
+ document.getElementById('resSous').textContent='';
+ const lignes=[]; let quand=r.quand;
+ const auj=new Date().toISOString().slice(0,10);
+ if(quand && quand.slice(0,10)===auj) quand=`${t.auj} · ${quand.slice(11)}`;
+ lignes.push(`<div class="res-ligne"><span class="k"><i data-lucide="calendar-clock"></i>${t.lQuand}</span><span class="v">${quand}</span></div>`);
+ if(r.espace==='jardin') lignes.push(`<div class="res-ligne"><span class="k"><i data-lucide="users"></i>${t.lPersonnes}</span><span class="v">${t.pers(r.personnes)}</span></div>`);
+ lignes.push(`<div class="res-ligne"><span class="k"><i data-lucide="tag"></i>${t.lMontant}</span><span class="v prix">${r.prix.toLocaleString(langue==='fr'?'fr-FR':'en-US')} FCFA</span></div>`);
+ document.getElementById('resLignes').innerHTML=lignes.join('');
+ document.getElementById('resCode').textContent=dernierCode;
+ document.getElementById('resultat').classList.add('visible');
+ if(window.lucide) lucide.createIcons();
+}
+btn.addEventListener('click',()=>{
+ const code=codeInput.value.trim().toUpperCase();
+ const nt=document.getElementById('nonTrouve');
+ const r=RESERVATIONS[code];
+ if(r && r.sig===significatif()){ nt.classList.remove('visible'); dernierCode=code; rendre(r); }
+ else nt.classList.add('visible');
+});
+document.getElementById('reset').addEventListener('click',()=>{
+ document.getElementById('resultat').classList.remove('visible');
+ document.getElementById('vueForm').style.display='block';
+ codeInput.value=''; telInput.value=''; verifChamps();
+ document.getElementById('nonTrouve').classList.remove('visible');
+});
+
+/* ══════════════ Chrome partagé (roots.js) : toggle, super-nav, menu ══════════════ */
+const CHROME_SECTIONS={
+ fr:[{ico:'calendar-check',t:'Réserver un espace',s:"Depuis l'accueil",href:'index.html'},
+     {ico:'utensils',t:'La carte',s:'Commander au Roots',href:'carte.html'}],
+ en:[{ico:'calendar-check',t:'Book a space',s:'From the home',href:'index.html'},
+     {ico:'utensils',t:'The menu',s:'Order at Roots',href:'carte.html'}]
+};
+const CHROME_T={
+ fr:{toastVerbe:v=>`${v} arrive bientôt.`,toastNu:'Le mode NU (communauté) arrive bientôt.'},
+ en:{toastVerbe:v=>`${v} coming soon.`,toastNu:'NU mode (community) coming soon.'}
+};
+const VERBES={roots:'Roots',road:'Road',roam:'Roam'};
+const chromeUI=Roots.initChrome({
+ getLangue:()=>langue,
+ getSections:l=>CHROME_SECTIONS[l],
+ toastNu:l=>CHROME_T[l].toastNu,
+ toastVerbe:(l,label)=>CHROME_T[l].toastVerbe(label),
+ verbes:VERBES
+});
+
+window.addEventListener('load',()=>{ iti=Roots.initTelRoots(telInput); verifChamps(); if(window.lucide) lucide.createIcons(); });
+window.addEventListener('DOMContentLoaded',()=>{ if(window.lucide) lucide.createIcons(); });
+</script>
+</body>
+</html>

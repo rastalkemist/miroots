@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/css/intlTelInput.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/intlTelInput.min.js" defer></script>
+<script src="roots.js"></script>
 <style>
 /* ==========================================================================
    PORTE D'ENTRÉE — mi.roots.bj (index) · v2 (23/07/2026)
@@ -63,6 +64,10 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .chrome-inner>.ankh-home{justify-self:start}
 .chrome-inner>.centre{justify-self:center}
 .chrome-inner>.chrome-droite{justify-self:end}
+/* Pastille dépliée : on efface le reste par fondu pour lui laisser la place */
+.ankh-home,.chrome-titre,.chrome-droite{transition:opacity .34s ease,transform .34s ease}
+.chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-10px)}
+@media(max-width:639px){.chrome-inner.deploie .ankh-home{opacity:0;pointer-events:none;transform:translateX(10px)}}
 .centre{display:flex;align-items:center;gap:5px}
 /* -- marque + toggle (gauche) -- */
 .marque-wrap{display:flex;align-items:center;gap:9px}
@@ -174,9 +179,9 @@ main{position:relative;z-index:2;min-height:100vh}
 .champ input{width:100%;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);padding:12px 13px;color:var(--encre);font-family:var(--font-corps);font-size:14.5px}
 .champ input:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
 /* -- Téléphone international (intl-tel-input), aligné sur retrouver.html -- */
-.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:46px}
+.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
 .iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
-.iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:14.5px;padding:0 14px}
+.iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:15px;padding:0 14px}
 .iti input[type=tel]:focus{outline:none}
 .iti__country-container{display:flex;align-items:center;padding:0 4px}
 .iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
@@ -328,7 +333,7 @@ main{position:relative;z-index:2;min-height:100vh}
         </div>
       </div>
       <div class="champ groupe"><label for="telResa" data-t="tel">Ton numéro (pour te confirmer)</label>
-        <input type="tel" id="telResa" placeholder="+229 XX XX XX XX" inputmode="tel"></div>
+        <input type="tel" id="telResa" autocomplete="off"></div>
       <div class="recap"><span id="recapTexte" data-t="recapVide">Choisis un espace et un forfait</span>
         <span class="total" id="recapTotal"></span></div>
       <button class="bouton-confirmer" id="btnResa" disabled data-t="reserver">Réserver</button>
@@ -350,7 +355,7 @@ main{position:relative;z-index:2;min-height:100vh}
       <div class="recap" style="margin-top:14px;"><span data-t="cmdTotal">Total commande</span>
         <span class="total" id="cmdTotal">0 FCFA</span></div>
       <div class="champ"><label for="nomCmd" data-t="tonNom">Ton nom (pour t'appeler)</label><input id="nomCmd" placeholder="Prénom"></div>
-      <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label><input type="tel" id="telCmd" placeholder="+229 XX XX XX XX" inputmode="tel"></div>
+      <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label><input type="tel" id="telCmd" autocomplete="off"></div>
       <button class="bouton-confirmer" id="btnCmd" disabled data-t="commander">Commander</button>
       <p class="mention" data-t="cmdMention">Paiement au comptoir ou via Kkiapay. Sans compte.</p>
     </div>
@@ -440,21 +445,14 @@ let langue=(navigator.language||'fr').toLowerCase().startsWith('en')?'en':'fr';
 function fmt(n){return n.toLocaleString(langue==='fr'?'fr-FR':'en-US');}
 function majIcones(){if(window.lucide)lucide.createIcons();}
 
-/* ---------- Toast ---------- */
-let tT=null;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('visible');clearTimeout(tT);tT=setTimeout(()=>el.classList.remove('visible'),2600);}
-
-/* ---------- Toggle Mi/NU (bande ; NU dormant) ---------- */
-const marque=document.getElementById('marque');
-document.getElementById('motMode').addEventListener('click',e=>{e.stopPropagation();marque.classList.toggle('ouvert');});
-document.getElementById('switchMode').addEventListener('click',e=>{e.stopPropagation();toast(TEXTES[langue].toastNu);});
-marque.querySelector('.nu').addEventListener('click',e=>{e.stopPropagation();toast(TEXTES[langue].toastNu);});
-document.addEventListener('click',e=>{if(!marque.contains(e.target))marque.classList.remove('ouvert');});
-
-/* ---------- Super-nav 3 verbes (Road/Roam dormants) ---------- */
-document.getElementById('superNav').addEventListener('click',e=>{
- const b=e.target.closest('.verbe');if(!b)return;
- if(b.dataset.verbe==='roots'){window.scrollTo({top:0,behavior:'smooth'});return;}
- toast(TEXTES[langue].toastVerbe(VERBES[b.dataset.verbe]));});
+/* ---------- Chrome partagé (roots.js) : toggle Mi/NU, super-nav, menu, toast ---------- */
+const chromeUI=Roots.initChrome({
+ getLangue:()=>langue,
+ getSections:l=>TEXTES[l].sections,
+ toastNu:l=>TEXTES[l].toastNu,
+ toastVerbe:(l,label)=>TEXTES[l].toastVerbe(label),
+ verbes:VERBES
+});
 
 /* ---------- Roots Radio ---------- */
 document.getElementById('btnRadio').addEventListener('click',e=>{e.currentTarget.classList.toggle('actif');});
@@ -538,17 +536,7 @@ document.getElementById('btnCmd').addEventListener('click',()=>{
  document.getElementById('confCmd').classList.add('visible');
 });
 
-/* ══════════════ Menu hamburger ══════════════ */
-const voileMenu=document.getElementById('voileMenu'),drawer=document.getElementById('drawer');
-function ouvrirMenu(){drawer.classList.add('visible');voileMenu.classList.add('visible');majIcones();}
-function fermerMenu(){drawer.classList.remove('visible');voileMenu.classList.remove('visible');}
-document.getElementById('btnBurger').addEventListener('click',ouvrirMenu);
-document.getElementById('fermerMenu').addEventListener('click',fermerMenu);
-voileMenu.addEventListener('click',fermerMenu);
-function dessinerSections(){
- document.getElementById('sections').innerHTML=TEXTES[langue].sections.map(s=>`<a class="lien-section" href="${s.href}"><span class="ico"><i data-lucide="${s.ico}">•</i></span><span class="txt">${s.t}<small>${s.s}</small></span><i data-lucide="chevron-right">›</i></a>`).join('');
- majIcones();
-}
+/* Menu hamburger + sections : gérés par Roots.initChrome (voir chromeUI). */
 
 /* ---------- Langue ---------- */
 function appliquerLangue(){
@@ -557,37 +545,21 @@ function appliquerLangue(){
  document.documentElement.lang=langue;
  document.getElementById('btnLangue').textContent=langue==='fr'?'EN':'FR';
  document.getElementById('radioQuoi').innerHTML=t.radio.replace('·','·');
- dessinerEspaces();dessinerCreneaux();majMessage();majRecap();dessinerMenuCompact();majCmd();dessinerSections();majIcones();
+ dessinerEspaces();dessinerCreneaux();majMessage();majRecap();dessinerMenuCompact();majCmd();chromeUI.dessinerSections();majIcones();
 }
 document.getElementById('btnLangue').addEventListener('click',()=>{langue=langue==='fr'?'en':'fr';appliquerLangue();});
 
-/* ---------- Téléphone international (intl-tel-input), comme retrouver.html ---------- */
-function initTel(input){
- if(!input) return;
- if(!window.intlTelInput){ input.placeholder='+229 01 94 56 78 90'; return; }
- const iti=window.intlTelInput(input,{
-  initialCountry:'auto',
-  geoIpLookup:(success,failure)=>{
-   fetch('https://ipapi.co/json/').then(r=>r.json())
-    .then(d=>success((d&&d.country_code)?d.country_code.toLowerCase():'bj'))
-    .catch(()=>success('bj'));
-  },
-  separateDialCode:true,
-  countrySearch:false,
-  countryOrder:['bj','ng','tg','gh','ci','ne','bf','sn','fr','be','us','ca','gb','de'],
-  loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/utils.js')
- });
- const prefill=()=>{ try{ const d=iti.getSelectedCountryData();
-  if(d && d.iso2==='bj' && (input.value||'').replace(/\D/g,'')===''){ input.value='01'; } }catch(e){} };
- prefill();
- input.addEventListener('countrychange',()=>{ input.value=''; prefill(); });
-}
+/* ---------- Téléphone international : bloc réutilisable roots.js (Roots.initTelRoots) ---------- */
 
 /* ---------- Init ---------- */
 dR.value=new Date().toISOString().slice(0,10);dR.min=dR.value;
 appliquerLangue();
 window.addEventListener('DOMContentLoaded',majIcones);
-window.addEventListener('load',()=>{ initTel(document.getElementById('telResa')); initTel(document.getElementById('telCmd')); majIcones(); });
+window.addEventListener('load',()=>{
+ Roots.initTelRoots(document.getElementById('telResa'));
+ Roots.initTelRoots(document.getElementById('telCmd'));
+ majIcones();
+});
 </script>
 </body>
 </html>

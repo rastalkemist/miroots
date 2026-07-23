@@ -7,7 +7,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/css/intlTelInput.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/intlTelInput.min.js" defer></script>
+<script src="roots.js"></script>
 <style>
 /* ==========================================================================
    ÉCRAN — La carte · mi.roots.bj/carte · v1 (23/07/2026)
@@ -36,23 +39,84 @@
  --font-moderno:'MuseoModerno',var(--font-corps);
  --font-chiffres:'Museo Slab','Roboto Slab','Rockwell',serif;
  --r-pilule:999px;--r-carte:26px;--r-module:17px;--r-champ:13px;
- --logo-decalage:43px;
+ --safe-bas:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:var(--blanc-casse);color:var(--encre);font-family:var(--font-corps);padding-bottom:110px;position:relative}
+body{margin:0;min-height:100vh;background:var(--blanc-casse);color:var(--encre);font-family:var(--font-corps);padding-bottom:calc(124px + var(--safe-bas));position:relative}
 svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 
-/* ---------- Nav partagée (identique retrouver.html) ---------- */
-.entete{position:sticky;top:0;z-index:20;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--gris-service)}
-.nav-inner{width:var(--site-w);max-width:var(--col);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:11px 0}
-.logo{display:flex;align-items:center;gap:9px;text-decoration:none;margin-left:max(calc(-1 * var(--logo-decalage)), calc(-50vw + 50% + 15px));}
-.logo .sym{height:34px;width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.logo .sym svg{height:34px;width:auto;display:block}
-.logo .nom{font-family:var(--font-moderno);font-weight:700;font-size:19px;color:var(--roots-vert);letter-spacing:.01em}
-.nav-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gris-service);background:var(--carte-blanc);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--vert-nuit);font-family:var(--font-corps);font-weight:700;font-size:13px}
-.nav-btn.lang{color:var(--roots-vert)}
-
 .corps{width:var(--site-w);max-width:var(--col);margin:0 auto;padding:16px 0 0}
+
+/* ---------- Champ téléphone international (intl-tel-input) ---------- */
+.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
+.iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
+#telephone{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:15px;padding:0 13px}
+#telephone:focus{outline:none}
+.iti__country-container{display:flex;align-items:center;padding:0 4px}
+.iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
+.iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;padding:0 4px}
+
+/* ══════════════ CHROME PARTAGÉ (variante fond clair) ══════════════ */
+.chrome-haut{position:sticky;top:0;z-index:20;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--gris-service);padding:11px 0}
+.chrome-inner{width:var(--site-w);max-width:var(--col);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.chrome-inner>.ankh-home{justify-self:start}
+.chrome-inner>.centre{justify-self:center}
+.chrome-inner>.chrome-droite{justify-self:end}
+/* Pastille dépliée : on efface le reste par fondu pour lui laisser la place */
+.ankh-home,.chrome-titre,.chrome-droite{transition:opacity .34s ease,transform .34s ease}
+.chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-10px)}
+@media(max-width:639px){.chrome-inner.deploie .ankh-home{opacity:0;pointer-events:none;transform:translateX(10px)}}
+.centre{display:flex;align-items:center;gap:5px}
+.ankh-home{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+.ankh-home svg{width:44px;height:44px;display:block}
+.toggle{position:relative;display:flex;align-items:center;height:42px;max-width:42px;overflow:hidden;cursor:pointer;
+ background:var(--roots-vert);border:1.5px solid var(--roots-vert);border-radius:var(--r-pilule);box-shadow:0 3px 10px rgba(0,104,56,.30);
+ transition:max-width .42s cubic-bezier(.2,.9,.25,1)}
+.toggle.ouvert{max-width:300px;transition:max-width .62s cubic-bezier(.22,.85,.3,1)}
+.toggle .mot{width:39px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-moderno);font-weight:700;font-size:19px;color:var(--blanc-casse);line-height:1}
+.toggle .reste{display:flex;align-items:center;gap:8px;padding-right:14px;flex-shrink:0}
+.reste .sub{font-size:11px;color:rgba(248,237,218,.72);font-style:italic}
+.switch{width:42px;height:22px;border-radius:var(--r-pilule);background:rgba(253,251,246,.20);border:1px solid rgba(253,251,246,.3);position:relative;cursor:pointer;flex-shrink:0}
+.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--blanc-casse);transition:left .2s ease}
+.reste .nu{font-family:var(--font-moderno);font-weight:700;font-size:16px;color:var(--creme)}
+.chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-vert);letter-spacing:.01em}
+.chrome-droite{display:flex;align-items:center;gap:8px}
+.lang-btn{height:40px;padding:0 4px;border:none;background:none;color:var(--roots-vert);font-family:var(--font-corps);font-weight:700;font-size:14px;cursor:pointer}
+.chrome-burger{width:38px;height:42px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--encre)}
+.chrome-burger svg{width:30px;height:30px}
+/* super-nav */
+.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:64px;height:7vh;padding-bottom:var(--safe-bas);
+ background:var(--blanc-casse);border-top:2px solid var(--roots-vert);box-shadow:0 -6px 24px rgba(5,25,18,.14)}
+.verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;color:var(--vert-foret);display:flex;align-items:center;justify-content:center}
+.ico-rond{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ico-rond svg{width:44px;height:44px}
+.verbe.actif .ico-rond{background:var(--roots-vert);color:var(--blanc-casse)}
+.verbe.dormant{opacity:.55}
+.verbe.dormant::after{content:'';position:absolute;top:9px;right:calc(50% - 28px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
+@media(min-width:640px){
+ .chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));width:auto;min-height:0;height:auto;padding:6px;border:1.5px solid var(--roots-vert);border-radius:var(--r-pilule);box-shadow:0 12px 30px rgba(5,25,18,.28)}
+ .verbe{flex:0 0 auto;padding:4px 6px}
+ .ico-rond{width:56px;height:56px}
+}
+/* menu déroulant (haut-droite) */
+.voile-menu{position:fixed;inset:0;z-index:24;background:rgba(5,20,14,.22);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.voile-menu.visible{opacity:1;pointer-events:auto}
+.menu-pop{position:fixed;top:60px;right:5%;z-index:25;width:min(300px,86vw);max-height:calc(100vh - 84px);overflow-y:auto;scrollbar-width:none;
+ background:var(--carte-blanc);color:var(--encre);border-radius:var(--r-carte);padding:6px 12px 12px;box-shadow:0 18px 44px rgba(5,25,18,.28);
+ transform-origin:top right;transform:scale(.9) translateY(-8px);opacity:0;pointer-events:none;transition:transform .26s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
+.menu-pop::-webkit-scrollbar{display:none}
+.menu-pop.visible{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}
+.menu-pop .tete{display:flex;justify-content:flex-end;margin-bottom:2px}
+.menu-pop .fermer{background:none;border:none;color:var(--encre-discrete);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px}
+.lien-section{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--encre);padding:14px 8px;border-bottom:1px solid var(--gris-ilot);font-size:15px;font-weight:600;cursor:pointer}
+.lien-section:last-child{border-bottom:none}
+.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--vert-selection);color:var(--roots-vert);display:flex;align-items:center;justify-content:center}
+.lien-section .ico svg{width:19px;height:19px}
+.lien-section .txt{flex:1}
+.lien-section .txt small{display:block;font-size:11.5px;font-weight:400;color:var(--encre-discrete);margin-top:1px}
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(10,51,46,.95);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* ---------- Hero ---------- */
 .badge-table{display:inline-flex;align-items:center;gap:6px;background:var(--vert-selection);border:1.5px solid var(--roots-vert);color:var(--roots-vert);font-size:12px;font-weight:700;padding:5px 12px;border-radius:var(--r-pilule);margin-bottom:10px}
@@ -63,14 +127,14 @@ h1{font-size:24px;margin:0 0 6px;line-height:1.15}
 .sous-titre{font-size:13px;color:var(--encre-discrete);margin:0 0 14px;line-height:1.5}
 
 /* ---------- Onglets = ancres de saut ---------- */
-.categories{position:sticky;top:55px;z-index:9;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);
+.categories{position:sticky;top:63px;z-index:9;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);
  display:flex;gap:8px;overflow-x:auto;padding:8px 0 10px;margin-bottom:6px;scrollbar-width:none}
 .categories::-webkit-scrollbar{display:none}
 .cat{flex-shrink:0;background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-pilule);
  padding:9px 15px;font-family:var(--font-corps);font-size:13px;font-weight:600;color:var(--encre);cursor:pointer;white-space:nowrap}
 .cat.actif{background:var(--vert-selection);border-color:var(--roots-vert)}
 
-.section-menu{scroll-margin-top:114px}
+.section-menu{scroll-margin-top:124px}
 .section-menu h3{font-size:15px;font-weight:700;margin:20px 0 10px;padding-left:9px;border-left:3px solid var(--roots-vert);background:var(--blanc-casse);box-shadow:0 0 7px 7px var(--blanc-casse);display:table;border-radius:3px}
 .section-menu:first-of-type h3{margin-top:6px}
 
@@ -89,7 +153,7 @@ h1{font-size:24px;margin:0 0 6px;line-height:1.15}
 .stepper span{font-weight:700;font-size:14px;min-width:16px;text-align:center}
 
 /* ---------- Barre panier ---------- */
-.barre-panier{position:fixed;z-index:11;bottom:20px;left:50%;transform:translateX(-50%);
+.barre-panier{position:fixed;z-index:16;bottom:calc(78px + var(--safe-bas));left:50%;transform:translateX(-50%);
  width:min(400px,calc(100% - 32px));background:var(--roots-vert);color:var(--blanc-casse);
  border:none;border-radius:var(--r-pilule);padding:16px 22px;font-family:var(--font-corps);
  font-weight:700;font-size:14.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
@@ -97,10 +161,11 @@ h1{font-size:24px;margin:0 0 6px;line-height:1.15}
 .barre-panier.cachee{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(12px)}
 .barre-panier .badge{background:var(--blanc-casse);color:var(--roots-vert);border-radius:var(--r-pilule);
  padding:2px 10px;font-size:12.5px;margin-right:8px}
+@media(min-width:640px){.barre-panier{bottom:calc(98px + var(--safe-bas))}}
 
-.voile{position:fixed;inset:0;z-index:12;background:rgba(5,20,14,.5);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.voile{position:fixed;inset:0;z-index:40;background:rgba(5,20,14,.5);opacity:0;pointer-events:none;transition:opacity .25s ease}
 .voile.visible{opacity:1;pointer-events:auto}
-.panneau{position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);
+.panneau{position:fixed;z-index:41;left:50%;bottom:0;transform:translate(-50%,112%);
  width:min(450px,100%);max-height:90vh;overflow-y:auto;scrollbar-width:none;background:var(--carte-blanc);
  border-radius:var(--r-carte) var(--r-carte) 0 0;padding:20px 20px 28px;
  box-shadow:0 -12px 40px rgba(5,25,18,.35);transition:transform .34s cubic-bezier(.2,.9,.25,1)}
@@ -142,20 +207,34 @@ h1{font-size:24px;margin:0 0 6px;line-height:1.15}
 </head>
 <body>
 
-<header class="entete"><div class="nav-inner">
-  <a class="logo" href="index.html">
-    <span class="sym"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
 <path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/>
 <path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/>
 <path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/>
 <path fill-rule="nonzero" fill="rgb(80.392157%, 3.529412%, 3.529412%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/>
 <path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/>
 <path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>
-</svg></span>
-    <span class="nom">Mi Roots</span>
-  </a>
-  <button class="nav-btn lang" id="btnLangue" aria-label="Langue">EN</button>
-</div></header>
+</svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <span class="chrome-titre">Roots</span>
+    </div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+    </div>
+  </div>
+</header>
 
 <div class="corps">
   <div id="badgeContexte"></div>
@@ -190,7 +269,7 @@ h1{font-size:24px;margin:0 0 6px;line-height:1.15}
       </div>
       <div class="champ">
         <label for="telephone" data-t="tonTel">Ton numéro</label>
-        <input type="tel" id="telephone" placeholder="+229 XX XX XX XX" inputmode="tel" autocomplete="tel">
+        <input type="tel" id="telephone" autocomplete="off">
       </div>
     </div>
 
@@ -207,6 +286,19 @@ h1{font-size:24px;margin:0 0 6px;line-height:1.15}
     <p class="instructions" id="confInstr"></p>
   </div>
 </div>
+
+<!-- ══════════════ CHROME : super-nav + menu déroulant + toast ══════════════ -->
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><i data-lucide="compass">✳</i></span></button>
+  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><i data-lucide="sprout">❦</i></span></button>
+  <button class="verbe dormant" data-verbe="road" aria-label="Road"><span class="ico-rond"><i data-lucide="route">↝</i></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer"><i data-lucide="x">×</i></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast"></div>
 
 <script src="menu-data.js"></script>
 <script>
@@ -262,6 +354,26 @@ function majIcones(){if(window.lucide)lucide.createIcons();}
 function fmt(n){return n.toLocaleString(langue==='fr'?'fr-FR':'en-US');}
 function trouverArticle(id){for(const c of MENU){const a=c.articles.find(x=>x.id===id);if(a)return a;}return null;}
 
+/* ---------- Chrome partagé (roots.js) : toggle Mi/NU, super-nav, menu, toast ---------- */
+const CHROME_SECTIONS={
+ fr:[{ico:'calendar-check',t:'Réserver un espace',s:"Depuis l'accueil",href:'index.html'},
+     {ico:'search',t:'Retrouver ma réservation',s:'Avec ton code',href:'retrouver.html'}],
+ en:[{ico:'calendar-check',t:'Book a space',s:'From the home',href:'index.html'},
+     {ico:'search',t:'Find my booking',s:'With your code',href:'retrouver.html'}]
+};
+const CHROME_T={
+ fr:{toastVerbe:v=>`${v} arrive bientôt.`,toastNu:'Le mode NU (communauté) arrive bientôt.'},
+ en:{toastVerbe:v=>`${v} coming soon.`,toastNu:'NU mode (community) coming soon.'}
+};
+const VERBES={roots:'Roots',road:'Road',roam:'Roam'};
+const chromeUI=Roots.initChrome({
+ getLangue:()=>langue,
+ getSections:l=>CHROME_SECTIONS[l],
+ toastNu:l=>CHROME_T[l].toastNu,
+ toastVerbe:(l,label)=>CHROME_T[l].toastVerbe(label),
+ verbes:VERBES
+});
+
 /* ---------- Contexte + langue appliqués au DOM ---------- */
 function appliquerContexte(){
  const t=TEXTES[langue];
@@ -282,7 +394,7 @@ function appliquerLangue(){
  const t=TEXTES[langue];
  document.querySelectorAll('[data-t]').forEach(el=>{const v=t[el.dataset.t];if(typeof v==='string')el.textContent=v;});
  document.documentElement.lang=langue;
- appliquerContexte();dessinerCategories();dessinerMenu();majPanier();
+ appliquerContexte();dessinerCategories();dessinerMenu();majPanier();chromeUI.dessinerSections();
 }
 document.getElementById('btnLangue').addEventListener('click',()=>{
  langue=langue==='fr'?'en':'fr';
@@ -429,7 +541,10 @@ document.getElementById('btnCommander').addEventListener('click',()=>{
 /* ---------- Init ---------- */
 appliquerLangue();majPanier();
 window.addEventListener('DOMContentLoaded',majIcones);
-window.addEventListener('load',majIcones);
+window.addEventListener('load',()=>{
+ majIcones();
+ if(modeService==='emporter') Roots.initTelRoots(document.getElementById('telephone'));
+});
 </script>
 </body>
 </html>
