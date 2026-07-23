@@ -5,17 +5,25 @@
      • Roots.initChrome(opts)     → chrome de navigation (toggle Mi/NU, super-nav,
                                      menu déroulant haut-droite, toast)
 
-   À inclure sur chaque page, dans le <head>, AVANT le <script> de page :
-     <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/css/intlTelInput.css">
+   À inclure sur chaque page, APRÈS intlTelInput.min.js et AVANT le <script> de page :
      <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/intlTelInput.min.js" defer></script>
-     <script src="roots.js"></script>
+     <script src="roots.js" defer></script>
+   (les styles .iti et .chrome-* restent dans chaque page — ils ont une variante
+    fond clair / fond jardin selon l'écran.)
 
-   Toutes les fonctions sont rangées sous window.Roots — une seule porte d'entrée.
+   Toutes les fonctions sont rangées sous window.Roots — une seule porte d'entrée,
+   pas de variables globales éparpillées.
    ========================================================================== */
 (function (global) {
   'use strict';
 
-  /* ---- TÉLÉPHONE — champ international (intl-tel-input) ---- */
+  /* ----------------------------------------------------------------------
+     TÉLÉPHONE — champ international, version de référence (issue de retrouver).
+     Pays auto par géoloc (Bénin en repli), indicatif à part, pas de barre de
+     recherche (pays fréquents épinglés), formatage local par pays. Placeholder
+     Bénin explicite « 01 XX XX XX XX » (on ne pré-remplit plus « 01 » pour
+     laisser voir les 8 chiffres attendus).
+     ---------------------------------------------------------------------- */
   function initTelRoots(input) {
     if (!input) return null;
     if (!global.intlTelInput) { input.placeholder = '01 XX XX XX XX'; return null; }
@@ -32,13 +40,28 @@
       customPlaceholder: function (exemple, pays) { return (pays && pays.iso2 === 'bj') ? '01 XX XX XX XX' : exemple; },
       loadUtils: function () { return import('https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/utils.js'); }
     });
+    /* au changement de pays, on repart d'un champ vide (le format change) */
     input.addEventListener('countrychange', function () { input.value = ''; });
     return iti;
   }
 
-  /* ---- CHROME — navigation partagée (toggle, super-nav, menu, toast) ----
-     opts = { getLangue, getSections, toastNu, toastVerbe, verbes, onVerbe }
-     Retourne { toast, dessinerSections, fermerMenu }. */
+  /* ----------------------------------------------------------------------
+     CHROME — navigation partagée. Câble le toggle Mi/NU, le super-nav
+     Roam·Roots·Road, le menu déroulant haut-droite et le toast, à partir des
+     mêmes IDs présents sur chaque page.
+
+     opts = {
+       getLangue   : () => 'fr' | 'en'                       (requis)
+       getSections : (langue) => [ {ico,t,s,href}, ... ]     (pour le menu)
+       toastNu     : (langue) => 'texte'                     (mode NU dormant)
+       toastVerbe  : (langue, labelVerbe) => 'texte'         (Road/Roam dormants)
+       verbes      : { roots:'Roots', road:'Road', roam:'Roam' }   (libellés)
+       onVerbe     : (verbe, bouton) => true|false   (optionnel : gère un verbe
+                     spécifique à la page ; retourner true = déjà géré)
+     }
+     Retourne { toast, dessinerSections, fermerMenu } pour usage par la page
+     (ex. appeler dessinerSections() au changement de langue).
+     ---------------------------------------------------------------------- */
   function initChrome(opts) {
     opts = opts || {};
     var getLangue = opts.getLangue || function () { return 'fr'; };
@@ -61,9 +84,10 @@
       toastTimer = setTimeout(function () { el.classList.remove('visible'); }, 2600);
     }
 
-    /* --- toggle Mi/NU ---
-       À l'ouverture, on synchronise la classe « deploie » sur la barre (le CSS
-       de chaque page gère alors l'effacement / l'alignement, sur téléphone). */
+    /* --- toggle Mi/NU (la pastille s'étire ; NU dormant) ---
+       À l'ouverture, on synchronise la classe « deploie » sur la barre : le CSS
+       de chaque page fait alors fondre le reste (titre, langue, menu — et l'ankh
+       sur petit écran) pour laisser la place à la pastille dépliée. */
     var marque = document.getElementById('marque');
     if (marque) {
       var inner = marque.closest('.chrome-inner');
