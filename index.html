@@ -106,7 +106,7 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .chrome-burger svg{width:32px;height:32px}
 
 /* -- Roots Radio : ligne sous le nav, en haut à droite -- */
-.radio-wrap{position:fixed;top:92px;left:0;right:0;z-index:5;pointer-events:none}
+.radio-wrap{position:fixed;bottom:40vh;left:0;right:0;z-index:5;pointer-events:none}
 .radio-inner{width:var(--site-w);margin:0 auto;display:flex;justify-content:flex-end}
 .radio-ligne{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;max-width:100%;
  background:rgba(10,51,46,.55);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 6px 5px 13px}
@@ -195,11 +195,12 @@ main{position:relative;z-index:2;min-height:100vh}
 /* -- Téléphone international (intl-tel-input), aligné sur retrouver.html -- */
 .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
 .iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
-.iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:15px;padding:0 14px}
+.iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:16px;padding:0 14px}
 .iti input[type=tel]:focus{outline:none}
 .iti__country-container{display:flex;align-items:center;padding:0 4px}
 .iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
-.iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;padding:0 4px}
+.iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;font-size:16px;padding:0 4px}
+.iti__dropdown-content,.iti--container{z-index:10000}
 .message-ferme{background:#FBEAE7;border:1.5px solid rgba(205,9,9,.25);border-radius:var(--r-champ);padding:10px 13px;font-size:12.5px;color:#A01414;margin-bottom:13px;display:none}
 .message-ferme.visible{display:block}
 .recap{background:var(--gris-ilot);border-radius:15px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
@@ -209,6 +210,11 @@ main{position:relative;z-index:2;min-height:100vh}
 .mention{text-align:center;font-size:11.5px;color:var(--encre-discrete);margin-top:10px}
 
 /* -- Menu compact (onglet Commander) -- */
+/* le menu compact défile dans sa propre zone : le total + « Commander »
+   restent visibles sans parcourir toute la carte. */
+#menuCompact{max-height:34vh;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gris-ilot)}
+#menuCompact::-webkit-scrollbar{display:none}
+#menuCompact .cat-compacte:first-child{margin-top:4px}
 .cat-compacte{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--vert-foret);margin:14px 2px 8px;padding-left:8px;border-left:3px solid var(--roots-vert)}
 .art-compact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--gris-ilot)}
 .art-compact .n{font-size:14px;font-weight:600}
