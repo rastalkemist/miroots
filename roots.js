@@ -36,6 +36,12 @@
       },
       separateDialCode: true,
       countrySearch: false,
+      /* la liste des pays est rattachée au <body> : sinon elle est rognée /
+         masquée par les conteneurs qui défilent (feuille du +, carte, etc.).
+         v25 : l'option s'appelle dropdownParent (dropdownContainer = ancien nom,
+         gardé par sécurité — une option inconnue est simplement ignorée). */
+      dropdownParent: document.body,
+      dropdownContainer: document.body,
       countryOrder: ['bj', 'ng', 'tg', 'gh', 'ci', 'ne', 'bf', 'sn', 'fr', 'be', 'us', 'ca', 'gb', 'de'],
       customPlaceholder: function (exemple, pays) { return (pays && pays.iso2 === 'bj') ? '01 XX XX XX XX' : exemple; },
       loadUtils: function () { return import('https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/utils.js'); }
