@@ -10,15 +10,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
 <style>
 /* ==========================================================================
-   PORTE D'ENTRÉE — mi.roots.bj (Jardin) · v1 (23/07/2026)
-   Le CHROME de nav = la grille 2×3 (décision Mika 23/07) :
-     · barre du BAS = super-nav des trois verbes (Roots / Road / Roam)
-     · HAUT-GAUCHE = ankh_roots + toggle Mi ↔ NU (axe mode)
-     · HAUT-CENTRE = nom de l'expérience (MuseoModerno) — « tu es ici »
-     · HAUT-DROITE = menu hamburger → sections de l'expérience courante
-   v1 : Roots VIVANT, Road/Roam DORMANTS ; Mi ACTIF, NU DORMANT.
-   → Ce chrome (styles .chrome-*, .drawer, .toast + son JS) est PARTAGÉ :
-     à recopier tel quel dans carte.html / retrouver.html ensuite.
+   PORTE D'ENTRÉE — mi.roots.bj (index) · v2 (23/07/2026)
+   Feedback Mika intégré :
+   · Logo = ankh_roots + UN mot (Mi/NU) ; clic sur le mot → bande déroulante
+     « Mi (solo) ··· (social) NU » (« ··· » = bascule ; NU dormant en v1).
+   · Hero VIDE : rien que le jardin à l'arrivée.
+   · Super-nav des 3 verbes tout en bas (ICÔNES seules — le nom est en haut).
+   · Bouton (+) focal, blanc, + vert (thème du monde), centré juste au-dessus
+     du super-nav → ouvre le dialogue « même qu'avant » à 2 onglets :
+     « Réserver un espace » (auto) | « Commander » (menu compact).
+   · Roots Radio = ligne (titre du morceau + on/off) en haut à droite, sous le nav.
+   · Titre de l'univers en HAUT À DROITE, juste à gauche du hamburger.
+   · Langue auto (locale) ; l'icône de bascule vit dans le hamburger.
+   · Pas de « Mon Espace » dans le menu fonctionnel (= verbe Road).
    ========================================================================== */
 :root{
  --roots-vert:#006838;--roots-jaune:#FFC840;--roots-terracotta:#CE5A2C;
@@ -37,7 +41,7 @@
 body{margin:0;min-height:100vh;font-family:var(--font-corps);color:var(--blanc-casse);overflow-x:hidden}
 svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 
-/* ---------- Fond jardin (placeholder vidéo, repris de l'accueil v5) ---------- */
+/* ---------- Fond jardin (placeholder vidéo) ---------- */
 .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;
  background:linear-gradient(160deg,#35703f,#006838 45%,#174f28 80%,#0A332E)}
 .video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;
@@ -47,87 +51,148 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
  animation:bercer 12s ease-in-out infinite;transform-origin:bottom center}
 @keyframes bercer{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
 .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;
- background:linear-gradient(180deg,rgba(10,40,25,.42),transparent 32%,transparent 55%,rgba(6,26,16,.62))}
+ background:linear-gradient(180deg,rgba(8,34,20,.5),transparent 26%,transparent 62%,rgba(6,26,16,.5))}
 
-/* ══════════════ CHROME PARTAGÉ — barre du haut ══════════════ */
-.chrome-haut{position:fixed;top:0;left:0;right:0;z-index:6;display:grid;
- grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:12px 14px}
-.chrome-toggle{justify-self:start;display:flex;align-items:center;gap:8px;
- background:rgba(253,251,246,.15);border:1.5px solid rgba(253,251,246,.32);backdrop-filter:blur(6px);
- border-radius:var(--r-pilule);padding:5px 6px 5px 8px}
-.chrome-toggle .ankh{width:24px;height:24px;display:flex;flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
-.chrome-toggle .ankh svg{width:24px;height:24px;display:block}
-.seg{display:flex;background:rgba(6,26,16,.28);border-radius:var(--r-pilule);padding:2px}
-.seg button{border:none;background:none;cursor:pointer;font-family:var(--font-moderno);font-weight:700;
- font-size:13px;line-height:1;padding:5px 9px;border-radius:var(--r-pilule);color:rgba(253,251,246,.6)}
-.seg button.actif{background:var(--roots-jaune);color:var(--roots-noir)}
-.chrome-titre{justify-self:center;font-family:var(--font-moderno);font-weight:700;font-size:22px;
- color:var(--blanc-casse);text-shadow:0 1px 6px rgba(0,0,0,.4);letter-spacing:.01em}
-.chrome-burger{justify-self:end;width:42px;height:42px;border-radius:50%;
- border:1.5px solid rgba(253,251,246,.32);background:rgba(253,251,246,.15);backdrop-filter:blur(6px);
- display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blanc-casse)}
+/* ══════════════ CHROME HAUT ══════════════ */
+.chrome-haut{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;
+ justify-content:space-between;padding:12px 14px;gap:10px}
+/* -- marque + toggle (gauche) -- */
+.marque{display:flex;align-items:center;gap:8px;background:rgba(253,251,246,.14);
+ border:1.5px solid rgba(253,251,246,.3);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 12px 5px 6px}
+.marque .ankh{width:30px;height:30px;display:flex;flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+.marque .ankh svg{width:30px;height:30px;display:block}
+.marque .mot{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-jaune);
+ background:none;border:none;cursor:pointer;padding:0 2px;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.35)}
+.marque .suite{display:flex;align-items:center;gap:8px;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;
+ transition:max-width .34s cubic-bezier(.2,.9,.25,1),opacity .22s ease}
+.marque.ouvert .suite{max-width:230px;opacity:1}
+.suite .sub{font-size:11px;color:rgba(253,251,246,.72);font-family:var(--font-corps);font-style:italic}
+.switch{width:42px;height:22px;border-radius:var(--r-pilule);background:rgba(6,26,16,.42);border:none;
+ position:relative;cursor:pointer;flex-shrink:0}
+.switch .knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--roots-jaune);transition:left .2s ease}
+.suite .nu{font-family:var(--font-moderno);font-weight:700;font-size:17px;color:rgba(253,251,246,.68)}
+/* -- titre + hamburger (droite) -- */
+.chrome-droite{display:flex;align-items:center;gap:10px}
+.chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:22px;color:var(--blanc-casse);
+ text-shadow:0 1px 6px rgba(0,0,0,.4);letter-spacing:.01em}
+.chrome-burger{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(253,251,246,.32);
+ background:rgba(253,251,246,.15);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blanc-casse)}
 .chrome-burger svg{width:20px;height:20px}
 
-/* ══════════════ CHROME PARTAGÉ — super-nav du bas (3 verbes) ══════════════ */
+/* -- Roots Radio : ligne sous le nav, en haut à droite -- */
+.radio-ligne{position:fixed;top:64px;right:14px;z-index:5;display:flex;align-items:center;gap:8px;
+ background:rgba(10,51,46,.55);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 6px 5px 13px;max-width:74vw}
+.radio-ligne .quoi{font-size:11.5px;color:var(--creme);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.radio-ligne .quoi b{font-weight:700}
+.radio-btn{width:28px;height:28px;border-radius:50%;border:none;background:rgba(253,251,246,.2);color:var(--blanc-casse);
+ display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.radio-btn.actif{background:var(--roots-jaune);color:var(--roots-noir)}
+.radio-btn svg{width:15px;height:15px}
+
+/* ══════════════ SUPER-NAV (bas) — icônes seules ══════════════ */
 .chrome-bas{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + var(--safe-bas));z-index:6;
- display:flex;gap:4px;background:rgba(253,251,246,.94);border-radius:var(--r-pilule);
- padding:6px;box-shadow:0 12px 34px rgba(5,25,18,.4)}
-.verbe{display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;
- padding:8px 18px;border-radius:var(--r-pilule);color:var(--vert-foret);font-family:var(--font-moderno);
- font-weight:700;font-size:11.5px;position:relative}
-.verbe svg{width:21px;height:21px}
+ display:flex;gap:6px;background:rgba(253,251,246,.94);border-radius:var(--r-pilule);padding:6px;
+ box-shadow:0 12px 34px rgba(5,25,18,.4)}
+.verbe{width:52px;height:46px;border:none;background:none;cursor:pointer;border-radius:var(--r-pilule);
+ color:var(--vert-foret);display:flex;align-items:center;justify-content:center;position:relative}
+.verbe svg{width:25px;height:25px}
 .verbe.actif{background:var(--roots-vert);color:var(--blanc-casse)}
-.verbe.dormant{opacity:.45}
-.verbe.dormant::after{content:'';position:absolute;top:6px;right:12px;width:5px;height:5px;border-radius:50%;background:var(--roots-jaune)}
+.verbe.dormant{opacity:.42}
+.verbe.dormant::after{content:'';position:absolute;top:8px;right:11px;width:5px;height:5px;border-radius:50%;background:var(--roots-jaune)}
 
-/* ---------- Contenu Jardin ---------- */
-main{position:relative;z-index:3;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
- width:90%;max-width:500px;margin:0 auto;padding:96px 0 132px}
-.hero h1{font-family:var(--font-moderno);font-weight:700;font-size:33px;line-height:1.1;margin:0 0 10px;
- text-shadow:0 2px 12px rgba(0,0,0,.4)}
-.hero p{font-size:14.5px;line-height:1.5;margin:0 0 22px;color:rgba(253,251,246,.92);text-shadow:0 1px 8px rgba(0,0,0,.4);max-width:420px}
-.actions{display:flex;flex-direction:column;gap:11px}
-.btn-primaire{display:flex;align-items:center;justify-content:center;gap:9px;background:var(--blanc-casse);color:var(--vert-nuit);
- text-decoration:none;border-radius:var(--r-pilule);padding:16px;font-family:var(--font-corps);font-weight:700;font-size:15px;
- box-shadow:0 10px 30px rgba(5,25,18,.32)}
-.btn-secondaire{display:flex;align-items:center;justify-content:center;gap:9px;background:rgba(253,251,246,.14);color:var(--blanc-casse);
- text-decoration:none;border:1.5px solid rgba(253,251,246,.4);backdrop-filter:blur(6px);
- border-radius:var(--r-pilule);padding:15px;font-family:var(--font-corps);font-weight:700;font-size:14.5px}
-.btn-primaire svg,.btn-secondaire svg{width:18px;height:18px}
+/* -- Bouton (+) focal -- */
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + var(--safe-bas));z-index:7;
+ width:60px;height:60px;border-radius:50%;background:var(--blanc-casse);border:none;color:var(--roots-vert);
+ box-shadow:0 12px 30px rgba(5,25,18,.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fab svg{width:30px;height:30px}
 
-/* ══════════════ CHROME PARTAGÉ — menu de l'expérience (bottom sheet) ══════════════ */
-.voile{position:fixed;inset:0;z-index:14;background:rgba(5,20,14,.5);opacity:0;pointer-events:none;transition:opacity .25s ease}
+/* ---------- Contenu (jardin seul) ---------- */
+main{position:relative;z-index:2;min-height:100vh}
+
+/* ══════════════ Voile + feuilles (dialogues) ══════════════ */
+.voile{position:fixed;inset:0;z-index:12;background:rgba(5,20,14,.5);opacity:0;pointer-events:none;transition:opacity .25s ease}
 .voile.visible{opacity:1;pointer-events:auto}
-.drawer{position:fixed;z-index:15;left:50%;bottom:0;transform:translate(-50%,112%);
- width:min(450px,100%);max-height:88vh;overflow-y:auto;scrollbar-width:none;background:var(--blanc-casse);color:var(--encre);
- border-radius:var(--r-carte) var(--r-carte) 0 0;padding:18px 18px calc(24px + var(--safe-bas));
+.feuille-bas{position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);
+ width:min(450px,100%);max-height:90vh;overflow-y:auto;scrollbar-width:none;background:var(--blanc-casse);color:var(--encre);
+ border-radius:var(--r-carte) var(--r-carte) 0 0;padding:18px 18px calc(26px + var(--safe-bas));
  box-shadow:0 -12px 40px rgba(5,25,18,.35);transition:transform .34s cubic-bezier(.2,.9,.25,1)}
-.drawer::-webkit-scrollbar{display:none}
-.drawer.visible{transform:translate(-50%,0)}
-@media(min-width:500px){.drawer{bottom:22px;border-radius:var(--r-carte)}}
+.feuille-bas::-webkit-scrollbar{display:none}
+.feuille-bas.visible{transform:translate(-50%,0)}
+@media(min-width:500px){.feuille-bas{bottom:22px;border-radius:var(--r-carte)}}
 .poignee{width:38px;height:4px;background:var(--gris-service);border-radius:4px;margin:0 auto 14px}
-.drawer-tete{display:flex;align-items:center;justify-content:space-between;margin:0 4px 6px}
-.drawer-tete .ou{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete)}
-.drawer-tete .fermer{background:none;border:none;color:var(--encre-discrete);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px}
-.lien-section{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--encre);
- padding:14px 8px;border-bottom:1px solid var(--gris-ilot);font-size:15px;font-weight:600;cursor:pointer}
-.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--vert-selection);color:var(--roots-vert);
- display:flex;align-items:center;justify-content:center}
+.tete{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
+.tete .ou{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete)}
+.fermer{background:none;border:none;color:var(--encre-discrete);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px}
+
+/* -- Onglets du dialogue (+) -- */
+.onglets{display:flex;background:var(--gris-ilot);border-radius:var(--r-pilule);padding:3px;margin-bottom:16px}
+.onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:10px;border-radius:var(--r-pilule);
+ font-family:var(--font-corps);font-size:13.5px;font-weight:700;cursor:pointer}
+.onglets button.actif{background:var(--roots-vert);color:var(--blanc-casse)}
+.contenu{display:none}.contenu.actif{display:block}
+
+/* -- Formulaire réservation (repris de l'accueil v5) -- */
+.groupe{margin-bottom:16px}
+.etiquette{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete);margin-bottom:8px}
+.selecteur-espaces{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.option-espace{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-module);padding:12px 6px 10px;text-align:center;cursor:pointer;font-family:var(--font-corps)}
+.option-espace .ico{display:block;height:34px;margin-bottom:6px}
+.option-espace .ico svg{height:100%;width:auto}
+.option-espace .nom{font-size:12px;font-weight:700;color:var(--encre)}
+.option-espace.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
+.rangee-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-pilule);padding:9px 15px;font-family:var(--font-corps);font-size:13px;color:var(--encre);cursor:pointer;line-height:1.25}
+.chip .sous{display:block;font-size:10.5px;color:var(--encre-discrete);text-align:center;font-family:var(--font-chiffres)}
+.chip.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
+.chip.indispo{opacity:.4;cursor:not-allowed}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gris-service);background:var(--carte-blanc);color:var(--encre);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.stepper span{font-weight:700;font-size:16px;min-width:20px;text-align:center}
+.champ{margin-bottom:13px}
+.champ label{display:block;font-size:11px;color:var(--encre-discrete);margin-bottom:5px;font-weight:600}
+.champ input{width:100%;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);padding:12px 13px;color:var(--encre);font-family:var(--font-corps);font-size:14.5px}
+.champ input:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
+.message-ferme{background:#FBEAE7;border:1.5px solid rgba(205,9,9,.25);border-radius:var(--r-champ);padding:10px 13px;font-size:12.5px;color:#A01414;margin-bottom:13px;display:none}
+.message-ferme.visible{display:block}
+.recap{background:var(--gris-ilot);border-radius:15px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.recap .total{font-weight:700;color:var(--encre);font-size:17px;font-family:var(--font-chiffres)}
+.bouton-confirmer{width:100%;background:var(--roots-vert);color:var(--blanc-casse);border:none;border-radius:var(--r-pilule);padding:16px;font-family:var(--font-corps);font-weight:700;font-size:15px;cursor:pointer}
+.bouton-confirmer:disabled{opacity:.35;cursor:not-allowed}
+.mention{text-align:center;font-size:11.5px;color:var(--encre-discrete);margin-top:10px}
+
+/* -- Menu compact (onglet Commander) -- */
+.cat-compacte{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--vert-foret);margin:14px 2px 8px;padding-left:8px;border-left:3px solid var(--roots-vert)}
+.art-compact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--gris-ilot)}
+.art-compact .n{font-size:14px;font-weight:600}
+.art-compact .p{font-size:12px;color:var(--encre-discrete);font-family:var(--font-chiffres)}
+.art-compact .btn-plus{width:32px;height:32px;border-radius:50%;border:none;background:var(--roots-vert);color:var(--blanc-casse);font-size:16px;cursor:pointer;flex-shrink:0}
+.art-compact .stepper-c{display:flex;align-items:center;gap:9px;background:var(--vert-selection);border:2px solid var(--roots-vert);border-radius:var(--r-pilule);padding:2px;flex-shrink:0}
+.art-compact .stepper-c button{width:27px;height:27px;border-radius:50%;border:none;background:var(--carte-blanc);color:var(--encre);font-size:13px;cursor:pointer}
+.art-compact .stepper-c span{font-weight:700;font-size:13px;min-width:14px;text-align:center}
+.lien-detail{display:block;text-align:center;margin-top:14px;font-size:12.5px;color:var(--roots-terracotta);font-weight:700;text-decoration:none}
+
+/* -- Confirmation partagée -- */
+.confirmation{display:none;text-align:center;padding:14px 6px 6px}
+.confirmation.visible{display:block}
+.confirmation .soleil-ok{height:46px;margin:0 auto 10px;display:flex;justify-content:center}
+.confirmation .soleil-ok svg{height:100%;width:auto}
+.code{font-family:var(--font-chiffres);font-weight:700;font-size:32px;letter-spacing:.13em;color:var(--roots-vert);margin:8px 0}
+.instructions{font-size:13px;color:var(--encre-discrete);line-height:1.55;max-width:300px;margin:0 auto}
+
+/* ══════════════ Menu hamburger (sections) ══════════════ */
+.lien-section{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--encre);padding:14px 8px;border-bottom:1px solid var(--gris-ilot);font-size:15px;font-weight:600;cursor:pointer}
+.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--vert-selection);color:var(--roots-vert);display:flex;align-items:center;justify-content:center}
 .lien-section .ico svg{width:19px;height:19px}
 .lien-section .txt{flex:1}
 .lien-section .txt small{display:block;font-size:11.5px;font-weight:400;color:var(--encre-discrete);margin-top:1px}
-.lien-section.dormant{opacity:.55}
-.lien-section .tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--roots-terracotta)}
-.drawer-pied{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding:0 6px}
-.mini-btn{display:flex;align-items:center;gap:7px;background:var(--gris-ilot);border:none;border-radius:var(--r-pilule);
- padding:9px 14px;font-family:var(--font-corps);font-weight:700;font-size:13px;color:var(--encre);cursor:pointer}
-.mini-btn.actif{background:var(--roots-vert);color:var(--blanc-casse)}
+.drawer-pied{display:flex;align-items:center;justify-content:flex-end;margin-top:16px;padding:0 6px}
+.mini-btn{display:flex;align-items:center;gap:7px;background:var(--gris-ilot);border:none;border-radius:var(--r-pilule);padding:9px 14px;font-family:var(--font-corps);font-weight:700;font-size:13px;color:var(--encre);cursor:pointer}
 .mini-btn svg{width:15px;height:15px}
 
-/* ---------- Toast (états dormants) ---------- */
-.toast{position:fixed;left:50%;bottom:calc(96px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
- background:rgba(10,51,46,.94);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);
- box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease}
+/* -- Toast (dormant) -- */
+.toast{position:fixed;left:50%;bottom:calc(158px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
+ background:rgba(10,51,46,.95);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);
+ box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
@@ -143,7 +208,7 @@ main{position:relative;z-index:3;min-height:100vh;display:flex;flex-direction:co
 
 <!-- ══════════════ CHROME HAUT ══════════════ -->
 <header class="chrome-haut">
-  <div class="chrome-toggle">
+  <div class="marque" id="marque">
     <span class="ankh"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
 <path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/>
 <path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/>
@@ -152,144 +217,340 @@ main{position:relative;z-index:3;min-height:100vh;display:flex;flex-direction:co
 <path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/>
 <path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>
 </svg></span>
-    <div class="seg" id="toggleMode">
-      <button class="actif" data-mode="mi">Mi</button>
-      <button data-mode="nu">NU</button>
+    <button class="mot" id="motMode">Mi</button>
+    <div class="suite">
+      <span class="sub">(solo)</span>
+      <button class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></button>
+      <span class="sub">(social)</span>
+      <span class="nu">NU</span>
     </div>
   </div>
-  <div class="chrome-titre" id="titreExp">Roots</div>
-  <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+  <div class="chrome-droite">
+    <span class="chrome-titre" id="titreExp">Roots</span>
+    <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+  </div>
 </header>
 
-<!-- ══════════════ CONTENU JARDIN ══════════════ -->
-<main>
-  <div class="hero">
-    <h1 data-t="titre">Le jardin,<br>où que tu sois.</h1>
-    <p data-t="sous">Réserve ta place, commande, retrouve ta résa — sans compte. Et emporte le Roots partout avec toi.</p>
-    <div class="actions">
-      <a class="btn-primaire" href="mi-roots-v5.html"><i data-lucide="calendar-check">▸</i><span data-t="reserver">Réserver un espace</span></a>
-      <a class="btn-secondaire" href="carte.html"><i data-lucide="utensils">▸</i><span data-t="carte">Voir la carte</span></a>
-    </div>
-  </div>
-</main>
+<!-- Roots Radio : ligne haut-droite sous le nav -->
+<div class="radio-ligne">
+  <span class="quoi" id="radioQuoi"></span>
+  <button class="radio-btn" id="btnRadio" aria-label="Roots Radio"><i data-lucide="play">▷</i></button>
+</div>
 
-<!-- ══════════════ CHROME BAS — super-nav 3 verbes ══════════════ -->
+<!-- Contenu : le jardin seul -->
+<main></main>
+
+<!-- Bouton (+) focal -->
+<button class="fab" id="fab" aria-label="Réserver ou commander"><i data-lucide="plus">+</i></button>
+
+<!-- Super-nav des 3 verbes (icônes) -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe actif" data-verbe="roots"><i data-lucide="sprout">❦</i><span>Roots</span></button>
-  <button class="verbe dormant" data-verbe="road"><i data-lucide="route">↝</i><span>Road</span></button>
-  <button class="verbe dormant" data-verbe="roam"><i data-lucide="compass">✳</i><span>Roam</span></button>
+  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><i data-lucide="sprout">❦</i></button>
+  <button class="verbe dormant" data-verbe="road" aria-label="Road"><i data-lucide="route">↝</i></button>
+  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><i data-lucide="compass">✳</i></button>
 </nav>
 
-<!-- ══════════════ CHROME — menu de l'expérience ══════════════ -->
-<div class="voile" id="voile"></div>
-<div class="drawer" id="drawer">
+<!-- ══════════════ Dialogue (+) : Réserver | Commander ══════════════ -->
+<div class="voile" id="voileDlg"></div>
+<div class="feuille-bas" id="dialogue">
   <div class="poignee"></div>
-  <div class="drawer-tete">
-    <span class="ou" id="drawerOu">Mi · Roots</span>
-    <button class="fermer" id="btnFermerDrawer" aria-label="Fermer"><i data-lucide="x">×</i></button>
+  <div class="tete">
+    <span class="ou">Mi · Roots</span>
+    <button class="fermer" id="fermerDlg" aria-label="Fermer"><i data-lucide="x">×</i></button>
   </div>
+  <div class="onglets" id="onglets">
+    <button class="actif" data-ong="reserver" data-t="ongReserver">Réserver un espace</button>
+    <button data-ong="commander" data-t="ongCommander">Commander</button>
+  </div>
+
+  <!-- Onglet Réserver -->
+  <div class="contenu actif" id="ct-reserver">
+    <div id="vueResa">
+      <div class="groupe"><span class="etiquette" data-t="etEspace">Espace</span>
+        <div class="selecteur-espaces" id="selecteurEspaces"></div></div>
+      <div class="groupe"><span class="etiquette" data-t="etJour">Quel jour ?</span>
+        <div class="champ" style="margin-bottom:0"><input type="date" id="dateResa"></div></div>
+      <div class="groupe"><span class="etiquette" data-t="etCreneau">Créneau</span>
+        <div class="rangee-chips" id="chipsCreneaux"></div>
+        <div class="message-ferme" id="messageFerme" style="margin-top:11px"></div></div>
+      <div class="groupe" id="groupePersonnes" style="display:none;">
+        <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
+        <div class="stepper">
+          <button type="button" id="moinsPersonnes" aria-label="Moins"><i data-lucide="minus">−</i></button>
+          <span id="valeurPersonnes">1</span>
+          <button type="button" id="plusPersonnes" aria-label="Plus"><i data-lucide="plus">+</i></button>
+        </div>
+      </div>
+      <div class="champ groupe"><label for="telResa" data-t="tel">Ton numéro (pour te confirmer)</label>
+        <input type="tel" id="telResa" placeholder="+229 XX XX XX XX" inputmode="tel"></div>
+      <div class="recap"><span id="recapTexte" data-t="recapVide">Choisis un espace et un forfait</span>
+        <span class="total" id="recapTotal"></span></div>
+      <button class="bouton-confirmer" id="btnResa" disabled data-t="reserver">Réserver</button>
+      <p class="mention" data-t="sansCompte">Aucun compte requis. Ton code de confirmation suffit.</p>
+    </div>
+    <div class="confirmation" id="confResa">
+      <div class="soleil-ok" id="soleil1"></div>
+      <p style="margin:0;font-size:14.5px;font-weight:700;" data-t="cestReserve">C'est réservé. On t'attend.</p>
+      <div class="code" id="codeResa">------</div>
+      <p class="instructions" data-t="instrResa">Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.</p>
+    </div>
+  </div>
+
+  <!-- Onglet Commander (menu compact) -->
+  <div class="contenu" id="ct-commander">
+    <div id="vueCmd">
+      <div id="menuCompact"></div>
+      <a class="lien-detail" href="carte.html" data-t="voirDetail">Voir la carte détaillée →</a>
+      <div class="recap" style="margin-top:14px;"><span data-t="cmdTotal">Total commande</span>
+        <span class="total" id="cmdTotal">0 FCFA</span></div>
+      <div class="champ"><label for="nomCmd" data-t="tonNom">Ton nom (pour t'appeler)</label><input id="nomCmd" placeholder="Prénom"></div>
+      <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label><input type="tel" id="telCmd" placeholder="+229 XX XX XX XX" inputmode="tel"></div>
+      <button class="bouton-confirmer" id="btnCmd" disabled data-t="commander">Commander</button>
+      <p class="mention" data-t="cmdMention">Paiement au comptoir ou via Kkiapay. Sans compte.</p>
+    </div>
+    <div class="confirmation" id="confCmd">
+      <div class="soleil-ok" id="soleil2"></div>
+      <p style="margin:0;font-size:14.5px;font-weight:700;" data-t="cestCommande">C'est commandé. La cuisine s'y met.</p>
+      <div class="code" id="codeCmd">------</div>
+      <p class="instructions" data-t="instrCmd">Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ Menu hamburger ══════════════ -->
+<div class="voile" id="voileMenu"></div>
+<div class="feuille-bas" id="drawer">
+  <div class="poignee"></div>
+  <div class="tete"><span class="ou">Mi · Roots</span>
+    <button class="fermer" id="fermerMenu" aria-label="Fermer"><i data-lucide="x">×</i></button></div>
   <div id="sections"></div>
-  <div class="drawer-pied">
-    <button class="mini-btn" id="btnRadio"><i data-lucide="radio">◉</i><span data-t="radio">Roots Radio</span></button>
-    <button class="mini-btn" id="btnLangue">EN</button>
-  </div>
+  <div class="drawer-pied"><button class="mini-btn" id="btnLangue">EN</button></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const TEXTES={
- fr:{titre:'Le jardin,<br>où que tu sois.',
-  sous:'Réserve ta place, commande, retrouve ta résa — sans compte. Et emporte le Roots partout avec toi.',
-  reserver:'Réserver un espace',carte:'Voir la carte',radio:'Roots Radio',
-  sections:[
-   {ico:'calendar-check',t:'Réserver un espace',s:'Jardin, bureau partagé ou privé',href:'mi-roots-v5.html'},
-   {ico:'utensils',t:'La carte',s:'Commander au Roots ou à emporter',href:'carte.html'},
-   {ico:'ticket',t:'Ma réservation',s:'Retrouver avec ton code',href:'retrouver.html'},
-   {ico:'user-round',t:'Mon Espace',s:'Ton espace Mi Road',dormant:true,tag:'Bientôt'}
-  ],
-  toastVerbe:v=>`${v} arrive bientôt.`,toastNu:'Le mode NU (communauté) arrive bientôt.',
-  toastEspace:'Ton Espace Mi Road arrive bientôt.'},
- en:{titre:'The garden,<br>wherever you are.',
-  sous:'Book your spot, order, find your booking — no account. And take Roots with you everywhere.',
-  reserver:'Book a space',carte:'See the menu',radio:'Roots Radio',
-  sections:[
-   {ico:'calendar-check',t:'Book a space',s:'Garden, shared or private desk',href:'mi-roots-v5.html'},
-   {ico:'utensils',t:'The menu',s:'Order at Roots or takeaway',href:'carte.html'},
-   {ico:'ticket',t:'My booking',s:'Find it with your code',href:'retrouver.html'},
-   {ico:'user-round',t:'My Space',s:'Your Mi Road space',dormant:true,tag:'Soon'}
-  ],
-  toastVerbe:v=>`${v} coming soon.`,toastNu:'NU mode (community) coming soon.',
-  toastEspace:'Your Mi Road space is coming soon.'}
-};
-let langue='fr';
-const VERBES={roots:'Roots',road:'Road',roam:'Roam'};
+/* ══════════════ Données ══════════════ */
+const OFFRE={
+ jardin:{creneaux:[{id:'jour',prix:2000},{id:'mois',prix:15000}]},
+ partage:{creneaux:[{id:'matin',prix:3000},{id:'aprem',prix:3000},{id:'jour',prix:5000}]},
+ prive:{creneaux:[{id:'matin',prix:8000},{id:'aprem',prix:8000},{id:'jour',prix:15000}]}};
+const HORAIRES={0:null,1:[7,19],2:[7,19],3:[7,19],4:[7,19],5:[7,19],6:[7,13]};
+const PLAGES={matin:[7,13],aprem:[13,19],jour:[7,19]};
 
+const MENU=[
+ {id:'chaud',t:{fr:'Boissons chaudes & petit déj',en:'Hot drinks & breakfast'},articles:[
+  {id:'infusion',nom:{fr:'Infusion maison | Thé',en:'House infusion | Tea'},prix:1000},
+  {id:'cafe',nom:{fr:'Café moulu',en:'Ground coffee'},prix:1000},
+  {id:'expresso',nom:{fr:'Expresso',en:'Espresso'},prix:1500},
+  {id:'chocolat',nom:{fr:'Chocolat chaud',en:'Hot chocolate'},prix:1500},
+  {id:'bouillie',nom:{fr:'Bouillie locale',en:'Local porridge'},prix:500},
+  {id:'omelette',nom:{fr:'Omelette',en:'Omelette'},prix:1000},
+  {id:'continental',nom:{fr:'Petit déj continental',en:'Continental breakfast'},prix:3000}]},
+ {id:'cheznous',t:{fr:'De chez nous',en:'From home'},articles:[
+  {id:'ayimolou',nom:{fr:'Ayimolou | Atassi',en:'Ayimolou | Atassi'},prix:2500},
+  {id:'rizyawa',nom:{fr:'Le riz de Yawa',en:"Yawa's rice"},prix:1500},
+  {id:'agou',nom:{fr:"Les délices d'Agou",en:'Agou delights'},prix:1500},
+  {id:'gari',nom:{fr:'Gari gnignan',en:'Gari gnignan'},prix:1500}]},
+ {id:'sandwichs',t:{fr:'Sandwichs',en:'Sandwiches'},articles:[
+  {id:'cotonois',nom:{fr:'Cotonois',en:'Cotonois'},prix:2000},
+  {id:'peuhl',nom:{fr:'Peuhl',en:'Fulani'},prix:2000},
+  {id:'parisien',nom:{fr:'Parisien',en:'Parisian'},prix:2000}]},
+ {id:'salades',t:{fr:'Salades',en:'Salads'},articles:[
+  {id:'ecoliere',nom:{fr:"L'écolière",en:'Classic Avocado'},prix:1500},
+  {id:'sahelienne',nom:{fr:'La Sahélienne',en:'Sahelian'},prix:2500},
+  {id:'fresh',nom:{fr:'La Fresh',en:'La Fresh'},prix:2500}]},
+ {id:'brochettes',t:{fr:'Brochettes',en:'Skewers'},articles:[
+  {id:'br-wangashi',nom:{fr:'Brochette de wangashi',en:'Wangashi skewer'},prix:1000},
+  {id:'br-boeuf',nom:{fr:'Brochette de filet de bœuf',en:'Beef fillet skewer'},prix:1000},
+  {id:'br-soja',nom:{fr:'Brochette de soja',en:'Soy skewer'},prix:500}]},
+ {id:'boissons',t:{fr:'Boissons',en:'Drinks'},articles:[
+  {id:'eau03',nom:{fr:'Eau 0,3 L',en:'Water 0.3 L'},prix:300},
+  {id:'bissap',nom:{fr:'Bissap de Yawa',en:"Yawa's bissap"},prix:500},
+  {id:'ananas',nom:{fr:"Jus d'ananas",en:'Pineapple juice'},prix:1200},
+  {id:'gingembre',nom:{fr:'Jus de gingembre',en:'Ginger juice'},prix:2000},
+  {id:'coca',nom:{fr:'Coca',en:'Coke'},prix:1000},
+  {id:'beninoise',nom:{fr:'Béninoise',en:'Béninoise'},prix:1000}]},
+ {id:'shots',t:{fr:'Shots — les Soto',en:'Shots — the Soto'},articles:[
+  {id:'sweetsoto',nom:{fr:'Sweet Soto',en:'Sweet Soto'},prix:1000},
+  {id:'softsoto',nom:{fr:'Soft Soto',en:'Soft Soto'},prix:1000},
+  {id:'spicysoto',nom:{fr:'Spicy Soto',en:'Spicy Soto'},prix:1000}]}
+];
+
+const ICONES={
+ jardin:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="21.27 7.75 179.31 178.87"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 31.738281 41.210938 C 38.699219 52.425781 45.9375 63.476562 53.015625 74.621094 C 55.007812 77.734375 57.722656 80.527344 60.972656 77.746094 C 62.40625 76.523438 62.316406 71.777344 61.164062 69.570312 C 55.644531 58.988281 49.71875 48.597656 43.523438 38.394531 C 41.214844 34.921875 38.402344 31.8125 35.179688 29.167969 C 34.113281 28.222656 31.609375 28.351562 30.007812 28.820312 C 29.074219 29.097656 28.617188 31.015625 27.910156 32.261719 C 29.222656 35.53125 30.078125 38.632812 31.699219 41.25 Z M 193.601562 149.601562 C 193.9375 148.386719 191.757812 145.464844 190.128906 144.839844 C 175.332031 139.101562 160.464844 133.53125 145.4375 128.421875 C 143.230469 127.664062 138.617188 128.777344 137.691406 130.410156 C 135.40625 134.546875 138.957031 136.734375 142.527344 138.097656 C 153.464844 142.261719 164.402344 146.4375 175.339844 150.484375 C 179.4375 152.007812 183.664062 153.191406 189.085938 154.921875 C 190.585938 153.269531 192.960938 151.6875 193.558594 149.601562 Z M 122.847656 82.339844 C 130.117188 72.625 137.316406 62.839844 144.316406 52.933594 C 146.566406 49.914062 148.324219 46.558594 149.527344 42.988281 C 150.171875 40.882812 148.890625 38.1875 148.460938 35.761719 C 146.554688 36.4375 143.886719 36.546875 142.855469 37.898438 C 133.902344 49.671875 125.152344 61.644531 116.492188 73.699219 C 115.058594 75.6875 113.65625 78.191406 113.507812 80.527344 C 113.410156 82.578125 115.140625 84.714844 116.492188 87.859375 C 119.484375 85.261719 121.503906 84.070312 122.847656 82.339844 M 100.691406 14.660156 C 99.308594 14.390625 96.246094 16.875 95.808594 18.636719 C 91.898438 34.210938 88.339844 49.871094 84.871094 65.542969 C 83.875 69.878906 83.957031 74.621094 89.414062 75.597656 C 95.28125 76.640625 95.949219 71.378906 96.753906 67.402344 C 98.324219 59.617188 99.476562 51.761719 100.730469 43.925781 C 101.984375 36.089844 103.277344 28.234375 104.828125 18.6875 C 103.953125 17.710938 102.558594 15.015625 100.710938 14.660156 Z M 143.835938 105.082031 C 152.070312 102.714844 160.367188 100.496094 168.46875 97.742188 C 175.164062 95.449219 181.71875 92.757812 188.089844 89.679688 C 189.480469 89 189.78125 86.058594 190.585938 84.160156 C 188.867188 83.484375 186.945312 81.921875 185.445312 82.25 C 170.160156 85.652344 154.9375 89.300781 139.703125 93.050781 C 137.433594 93.503906 135.335938 94.574219 133.636719 96.140625 C 132.003906 97.882812 130.117188 100.863281 130.652344 102.683594 C 131.1875 104.503906 134.433594 105.667969 136.003906 106.761719 C 139.382812 106.054688 141.660156 105.707031 143.859375 105.082031 Z M 105.84375 133.203125 C 106.15625 119.558594 95.351562 108.246094 81.707031 107.929688 C 81.621094 107.929688 81.535156 107.925781 81.449219 107.925781 C 66.953125 107.304688 54.695312 118.550781 54.078125 133.050781 C 54.0625 133.359375 54.054688 133.667969 54.054688 133.980469 C 54.21875 147.640625 65.25 158.671875 78.914062 158.839844 C 94.375 158.839844 105.742188 147.988281 105.863281 133.222656 Z M 128.8125 130.886719 C 128.554688 157.964844 106.539062 179.980469 79.925781 179.78125 C 52.082031 179.582031 30.117188 157.964844 30.335938 131.054688 C 30.554688 104.148438 53.585938 81.960938 80.941406 82.179688 C 107.339844 82.136719 128.777344 103.503906 128.820312 129.902344 C 128.820312 130.230469 128.820312 130.558594 128.8125 130.886719 "/></svg>`,
+ partage:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="12.87 -3.23 107.61 122.26"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 100.917969 36.683594 C 100.660156 28.882812 95.359375 24.0625 89.917969 24.25 C 85.601562 24.402344 82.261719 29.25 82.550781 34.890625 C 82.769531 39.050781 89.550781 44.78125 93.851562 43.203125 C 97.078125 41.972656 99.378906 38.183594 100.917969 36.683594 M 75.71875 62.050781 C 74.25 52.621094 71.859375 49.652344 65.28125 49.691406 C 60.089844 49.691406 57.28125 53.691406 57.398438 60.882812 C 57.5 66.882812 61.871094 70.582031 69.398438 69.320312 C 71.828125 68.972656 73.628906 64.59375 75.71875 62.050781 Z M 52.121094 25.792969 C 52.269531 19.351562 48.121094 14.691406 42.019531 14.492188 C 36.898438 14.320312 32.109375 19.632812 32.019531 25.550781 C 31.960938 30.410156 37.929688 35.300781 44.121094 35.472656 C 49.511719 35.621094 52 32.632812 52.121094 25.792969 M 102.621094 89.792969 C 102.511719 83.921875 97 76.851562 92.621094 76.933594 C 87.148438 77.03125 82.621094 83.390625 82.980469 90.550781 C 83.191406 94.972656 88.308594 98.953125 93.871094 98.992188 C 99.429688 99.03125 102.730469 95.472656 102.621094 89.792969 M 54.53125 84.84375 L 53.441406 84.0625 C 53.375 82.804688 53.234375 81.550781 53.019531 80.3125 C 51.738281 74.570312 46.882812 70.324219 41.019531 69.820312 C 35.859375 69.453125 31.859375 71.203125 30.019531 76.28125 C 27.71875 82.550781 31.199219 86.691406 35.648438 90.332031 C 36.542969 91.226562 37.617188 91.925781 38.800781 92.382812 C 41.800781 93.152344 45.800781 95.042969 47.800781 93.84375 C 50.789062 92.03125 52.359375 87.972656 54.53125 84.84375 M 86.941406 54.132812 C 86.558594 58.070312 86.191406 62.011719 85.761719 66.511719 C 87.167969 66.390625 88.511719 66.300781 89.851562 66.160156 C 101.417969 64.972656 110.261719 71.851562 113.339844 84.441406 C 115.949219 95.070312 110.25 106.710938 100.601562 110.441406 C 90.210938 114.5 74.808594 105.792969 71.199219 93.621094 C 70.199219 90.222656 69.871094 86.621094 69.121094 82.472656 L 65.039062 82 C 63.539062 87.402344 62.871094 92.542969 60.738281 97 C 56.199219 106.5 45.539062 109.820312 36 105.390625 C 23.78125 99.710938 17.398438 88.5 18.78125 75.132812 C 19.78125 65.683594 28.28125 58.53125 38.210938 58.890625 C 40.28125 58.972656 42.351562 59.222656 44.667969 59.421875 L 48.179688 46.621094 C 36.878906 47.621094 27.898438 43.671875 22.101562 33.953125 C 18.28125 27.550781 21.261719 21.152344 22.859375 14.953125 C 25.121094 6.210938 38.167969 1.300781 48.859375 4.800781 C 62.378906 9.230469 66.058594 20.300781 59.5 37.640625 L 71.570312 39.09375 C 71.449219 30.832031 71.699219 22.210938 78.710938 16.800781 C 82.03125 14.242188 87.351562 12.980469 91.648438 13.222656 C 104.828125 13.953125 113.359375 23.703125 112.210938 35.460938 C 110.929688 48.160156 101.308594 55.351562 86.941406 54.132812 "/></svg>`,
+ prive:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="2.06 -1.69 174.55 244.73"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 94.402344 7.371094 C 92.171875 9.371094 88.199219 11.113281 87.96875 13.292969 C 86.460938 27.460938 85.570312 41.710938 85.050781 55.953125 C 84.992188 57.652344 88.378906 59.480469 90.160156 61.25 C 91.710938 59.382812 94.339844 57.660156 94.601562 55.632812 C 95.878906 45.851562 96.679688 35.992188 97.308594 26.140625 C 97.671875 20.390625 97.371094 14.601562 97.371094 8.820312 Z M 128.539062 27.890625 C 121.082031 37.511719 113.539062 47.113281 106.671875 57.121094 C 105.007812 59.542969 104.050781 65.070312 105.460938 66.480469 C 108.992188 70.011719 112.1875 65.921875 114.929688 63.5625 C 116.566406 61.925781 118.035156 60.132812 119.320312 58.210938 C 124.980469 50.921875 130.679688 43.660156 136.242188 36.300781 C 138.71875 33.03125 140.910156 29.550781 143.390625 25.933594 C 136.660156 21.441406 132.140625 23.273438 128.539062 27.910156 Z M 39.921875 24.972656 C 42.660156 30.621094 45.960938 35.980469 49.769531 40.972656 C 54.769531 47.480469 60.492188 53.433594 65.769531 59.691406 C 68.179688 62.53125 70.589844 65.691406 74.652344 62.839844 C 78.960938 59.792969 77.152344 56.113281 74.550781 53 C 65.628906 42.335938 56.628906 31.722656 47.550781 21.160156 C 46.371094 19.792969 44.6875 18.863281 41.609375 16.453125 C 40.78125 20.273438 39.070312 23.261719 39.921875 24.972656 M 29.300781 210.441406 C 29.410156 222.601562 30.460938 223.441406 41.480469 221.910156 C 45.652344 221.339844 49.902344 221.433594 54.089844 221 C 85.089844 217.773438 116.089844 214.402344 147.089844 211.3125 C 151.019531 210.910156 152.949219 209.589844 152.96875 205.671875 C 152.96875 203.140625 153.429688 200.523438 152.871094 198.121094 C 152.582031 196.863281 150.53125 195.050781 149.332031 195.121094 C 131 195.75 112.640625 196.230469 94.332031 197.589844 C 75.21875 199 56.1875 201.640625 37.082031 203.042969 C 30.921875 203.460938 27.757812 204.730469 29.300781 210.441406 M 24.589844 84.78125 C 24.589844 89.402344 24.492188 92.050781 24.589844 94.691406 C 25.402344 113.242188 26.402344 131.792969 27.039062 150.351562 C 27.429688 161.742188 27.429688 173.140625 27.320312 184.542969 C 27.257812 190.132812 29.320312 191.660156 34.96875 191.171875 C 71.339844 187.992188 107.730469 184.902344 144.152344 182.402344 C 151.152344 181.921875 152.550781 179.402344 152.359375 173.261719 C 151.558594 147.710938 151.109375 122.152344 150.492188 96.601562 C 150.4375 94.832031 150.03125 93.082031 149.558594 89.691406 L 143.390625 96.980469 C 138.21875 103.089844 133.199219 109.320312 127.839844 115.242188 C 124.839844 118.5625 121.507812 117.972656 118.609375 114.640625 C 114.308594 109.703125 110.039062 104.730469 105.609375 99.882812 C 101.4375 95.300781 97.121094 90.882812 92.390625 85.882812 C 89.980469 89.441406 88.199219 92.023438 86.449219 94.621094 C 81.289062 102.332031 76.179688 110.082031 70.96875 117.761719 C 68.789062 120.980469 65.96875 121.371094 62.800781 119.132812 C 60.902344 117.800781 59.078125 116.367188 57.339844 114.832031 C 47 105.300781 36.582031 95.761719 24.589844 84.78125 M 65.371094 106.332031 C 71.300781 97.441406 76.769531 89.210938 82.28125 81.011719 C 83.808594 78.730469 85.28125 76.421875 87.03125 74.292969 C 91.03125 69.292969 94.75 69.140625 99.089844 73.902344 C 105.910156 81.390625 112.691406 88.902344 119.210938 96.660156 C 123.03125 101.191406 125.421875 100.660156 128.789062 95.960938 C 135.171875 87.070312 141.859375 78.351562 149.070312 70.132812 C 153.660156 64.890625 158.480469 66.492188 160.378906 73.402344 C 161.429688 77.277344 162.097656 81.246094 162.378906 85.25 C 165.007812 121.890625 167.550781 158.53125 164.671875 195.25 C 164.050781 203.25 163.75 211.25 163.492188 219.25 C 163.351562 223.441406 161.160156 224.25 157.371094 224.53125 C 124.949219 226.871094 92.558594 229.453125 60.152344 231.902344 C 51.152344 232.582031 42.039062 233.300781 32.980469 233.613281 C 22.042969 233.972656 20.160156 232.441406 18.851562 221.261719 C 17.371094 208.472656 16.011719 195.632812 15.410156 182.78125 C 13.792969 148.203125 12.601562 113.601562 11.269531 79.011719 C 11.128906 76.902344 11.195312 74.785156 11.46875 72.691406 C 12.46875 66.800781 17.582031 64.261719 22.71875 67.152344 C 24.722656 68.316406 26.574219 69.730469 28.230469 71.351562 C 39.378906 81.980469 50.460938 92.683594 61.582031 103.351562 C 62.492188 104.230469 63.539062 104.902344 65.371094 106.332031 "/></svg>`};
+const SOLEIL=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 191 178"><defs><clipPath id="okc"><path d="M 27 14 L 190.46 14 L 190.46 177 L 27 177 Z"/></clipPath></defs><g clip-path="url(#okc)"><path fill="rgb(0%,40.784314%,21.960784%)" d="M 31.738281 41.210938 C 38.699219 52.425781 45.9375 63.476562 53.015625 74.621094 C 55.007812 77.734375 57.722656 80.527344 60.972656 77.746094 C 62.40625 76.523438 62.316406 71.777344 61.164062 69.570312 C 55.644531 58.988281 49.71875 48.597656 43.523438 38.394531 C 41.214844 34.921875 38.402344 31.8125 35.179688 29.167969 C 34.113281 28.222656 31.609375 28.351562 30.007812 28.820312 C 29.074219 29.097656 28.617188 31.015625 27.910156 32.261719 C 29.222656 35.53125 30.078125 38.632812 31.699219 41.25 Z M 193.601562 149.601562 C 193.9375 148.386719 191.757812 145.464844 190.128906 144.839844 C 175.332031 139.101562 160.464844 133.53125 145.4375 128.421875 C 143.230469 127.664062 138.617188 128.777344 137.691406 130.410156 C 135.40625 134.546875 138.957031 136.734375 142.527344 138.097656 C 153.464844 142.261719 164.402344 146.4375 175.339844 150.484375 C 179.4375 152.007812 183.664062 153.191406 189.085938 154.921875 C 190.585938 153.269531 192.960938 151.6875 193.558594 149.601562 Z M 122.847656 82.339844 C 130.117188 72.625 137.316406 62.839844 144.316406 52.933594 C 146.566406 49.914062 148.324219 46.558594 149.527344 42.988281 C 150.171875 40.882812 148.890625 38.1875 148.460938 35.761719 C 146.554688 36.4375 143.886719 36.546875 142.855469 37.898438 C 133.902344 49.671875 125.152344 61.644531 116.492188 73.699219 C 115.058594 75.6875 113.65625 78.191406 113.507812 80.527344 C 113.410156 82.578125 115.140625 84.714844 116.492188 87.859375 C 119.484375 85.261719 121.503906 84.070312 122.847656 82.339844 M 100.691406 14.660156 C 99.308594 14.390625 96.246094 16.875 95.808594 18.636719 C 91.898438 34.210938 88.339844 49.871094 84.871094 65.542969 C 83.875 69.878906 83.957031 74.621094 89.414062 75.597656 C 95.28125 76.640625 95.949219 71.378906 96.753906 67.402344 C 98.324219 59.617188 99.476562 51.761719 100.730469 43.925781 C 101.984375 36.089844 103.277344 28.234375 104.828125 18.6875 C 103.953125 17.710938 102.558594 15.015625 100.710938 14.660156 Z M 143.835938 105.082031 C 152.070312 102.714844 160.367188 100.496094 168.46875 97.742188 C 175.164062 95.449219 181.71875 92.757812 188.089844 89.679688 C 189.480469 89 189.78125 86.058594 190.585938 84.160156 C 188.867188 83.484375 186.945312 81.921875 185.445312 82.25 C 170.160156 85.652344 154.9375 89.300781 139.703125 93.050781 C 137.433594 93.503906 135.335938 94.574219 133.636719 96.140625 C 132.003906 97.882812 130.117188 100.863281 130.652344 102.683594 C 131.1875 104.503906 134.433594 105.667969 136.003906 106.761719 C 139.382812 106.054688 141.660156 105.707031 143.859375 105.082031 Z M 105.84375 133.203125 C 106.15625 119.558594 95.351562 108.246094 81.707031 107.929688 C 81.621094 107.929688 81.535156 107.925781 81.449219 107.925781 C 66.953125 107.304688 54.695312 118.550781 54.078125 133.050781 C 54.0625 133.359375 54.054688 133.667969 54.054688 133.980469 C 54.21875 147.640625 65.25 158.671875 78.914062 158.839844 C 94.375 158.839844 105.742188 147.988281 105.863281 133.222656 Z M 128.8125 130.886719 C 128.554688 157.964844 106.539062 179.980469 79.925781 179.78125 C 52.082031 179.582031 30.117188 157.964844 30.335938 131.054688 C 30.554688 104.148438 53.585938 81.960938 80.941406 82.179688 C 107.339844 82.136719 128.777344 103.503906 128.820312 129.902344 C 128.820312 130.230469 128.820312 130.558594 128.8125 130.886719 "/></g></svg>`;
+
+const TEXTES={
+ fr:{ongReserver:'Réserver un espace',ongCommander:'Commander',
+  etEspace:'Espace',etJour:'Quel jour ?',etCreneau:'Créneau',etPersonnes:'Combien serez-vous ?',
+  choisirEspace:"Choisis d'abord un espace",indispoJour:'Indispo ce jour',aujourdhui:"Aujourd'hui",
+  tel:'Ton numéro (pour te confirmer)',recapVide:'Choisis un espace et un créneau',reserver:'Réserver',
+  sansCompte:'Aucun compte requis. Ton code de confirmation suffit.',
+  cestReserve:"C'est réservé. On t'attend.",
+  instrResa:'Montre ce code à l\'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.',
+  voirDetail:'Voir la carte détaillée →',cmdTotal:'Total commande',tonNom:"Ton nom (pour t'appeler)",tonTel:'Ton numéro',
+  commander:'Commander',cmdMention:'Paiement au comptoir ou via Kkiapay. Sans compte.',
+  cestCommande:"C'est commandé. La cuisine s'y met.",
+  instrCmd:"Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.",
+  espaces:{jardin:'Jardin connecté',partage:'Bureau partagé',prive:'Bureau privé'},
+  creneaux:{matin:'Matinée',aprem:'Après-midi',jour:'Journée',mois:'Abonnement mensuel'},
+  fermeJour:'Fermé le dimanche — choisis un autre jour.',
+  telInvalide:'Entre un numéro valide.',champsCmd:'Ton prénom et un numéro valide, et c\'est parti !',
+  radio:'En ce moment · Roots Sessions Vol. 4',
+  toastVerbe:v=>`${v} arrive bientôt.`,toastNu:'Le mode NU (communauté) arrive bientôt.',
+  sections:[{ico:'utensils',t:'La carte',s:'Toute la carte, en détail',href:'carte.html'},
+   {ico:'ticket',t:'Ma réservation',s:'Retrouver avec ton code',href:'retrouver.html'}]},
+ en:{ongReserver:'Book a space',ongCommander:'Order',
+  etEspace:'Space',etJour:'Which day?',etCreneau:'Time slot',etPersonnes:'How many of you?',
+  choisirEspace:'Pick a space first',indispoJour:'Not that day',aujourdhui:'Today',
+  tel:'Your number (to confirm)',recapVide:'Pick a space and a slot',reserver:'Book now',
+  sansCompte:'No account needed. Your confirmation code is enough.',
+  cestReserve:'Booked. See you soon.',
+  instrResa:'Show this code at the front desk. Keep it: it lets you retrieve your booking, even without an account.',
+  voirDetail:'See full menu →',cmdTotal:'Order total',tonNom:'Your name (so we can call you)',tonTel:'Your number',
+  commander:'Place order',cmdMention:'Pay at the counter or via Kkiapay. No account.',
+  cestCommande:'Order placed. The kitchen is on it.',
+  instrCmd:'Give this code at the counter. We call your name when ready.',
+  espaces:{jardin:'Connected garden',partage:'Shared desk',prive:'Private office'},
+  creneaux:{matin:'Morning',aprem:'Afternoon',jour:'Full day',mois:'Monthly pass'},
+  fermeJour:'Closed on Sundays — pick another day.',
+  telInvalide:'Enter a valid number.',champsCmd:'Your first name and a valid number, off we go!',
+  radio:'Now playing · Roots Sessions Vol. 4',
+  toastVerbe:v=>`${v} coming soon.`,toastNu:'NU mode (community) coming soon.',
+  sections:[{ico:'utensils',t:'The menu',s:'The full menu, in detail',href:'carte.html'},
+   {ico:'ticket',t:'My booking',s:'Find it with your code',href:'retrouver.html'}]}
+};
+const VERBES={roots:'Roots',road:'Road',roam:'Roam'};
+let langue=(navigator.language||'fr').toLowerCase().startsWith('en')?'en':'fr';
+function fmt(n){return n.toLocaleString(langue==='fr'?'fr-FR':'en-US');}
 function majIcones(){if(window.lucide)lucide.createIcons();}
 
-function dessinerSections(){
- const t=TEXTES[langue];
- document.getElementById('sections').innerHTML=t.sections.map((s,i)=>{
-  const inner=`<span class="ico"><i data-lucide="${s.ico}">•</i></span>
-   <span class="txt">${s.t}<small>${s.s}</small></span>
-   ${s.dormant?`<span class="tag">${s.tag}</span>`:'<i data-lucide="chevron-right">›</i>'}`;
-  return s.dormant
-   ? `<div class="lien-section dormant" data-dormant="espace">${inner}</div>`
-   : `<a class="lien-section" href="${s.href}">${inner}</a>`;
- }).join('');
- document.querySelectorAll('[data-dormant="espace"]').forEach(el=>el.addEventListener('click',()=>{
-  fermerDrawer();toast(TEXTES[langue].toastEspace);}));
- majIcones();
-}
-function appliquerLangue(){
- const t=TEXTES[langue];
- document.querySelectorAll('[data-t]').forEach(el=>{const v=t[el.dataset.t];if(typeof v==='string'){el.innerHTML=v;}});
- document.documentElement.lang=langue;
- document.getElementById('btnLangue').textContent=langue==='fr'?'EN':'FR';
- dessinerSections();majIcones();
-}
-
 /* ---------- Toast ---------- */
-let toastTimer=null;
-function toast(msg){
- const el=document.getElementById('toast');el.textContent=msg;el.classList.add('visible');
- clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('visible'),2600);
-}
+let tT=null;function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('visible');clearTimeout(tT);tT=setTimeout(()=>el.classList.remove('visible'),2600);}
 
-/* ---------- Toggle Mi / NU (NU dormant en v1) ---------- */
-document.getElementById('toggleMode').addEventListener('click',e=>{
- const b=e.target.closest('button');if(!b)return;
- if(b.dataset.mode==='nu'){toast(TEXTES[langue].toastNu);return;} // NU dormant
- // Mi déjà actif — rien à faire pour l'instant.
-});
+/* ---------- Toggle Mi/NU (bande ; NU dormant) ---------- */
+const marque=document.getElementById('marque');
+document.getElementById('motMode').addEventListener('click',e=>{e.stopPropagation();marque.classList.toggle('ouvert');});
+document.getElementById('switchMode').addEventListener('click',e=>{e.stopPropagation();toast(TEXTES[langue].toastNu);});
+marque.querySelector('.nu').addEventListener('click',e=>{e.stopPropagation();toast(TEXTES[langue].toastNu);});
+document.addEventListener('click',e=>{if(!marque.contains(e.target))marque.classList.remove('ouvert');});
 
-/* ---------- Super-nav des 3 verbes (Road/Roam dormants en v1) ---------- */
+/* ---------- Super-nav 3 verbes (Road/Roam dormants) ---------- */
 document.getElementById('superNav').addEventListener('click',e=>{
  const b=e.target.closest('.verbe');if(!b)return;
- const v=b.dataset.verbe;
- if(v==='roots'){window.scrollTo({top:0,behavior:'smooth'});return;} // déjà ici
- toast(TEXTES[langue].toastVerbe(VERBES[v]));
+ if(b.dataset.verbe==='roots'){window.scrollTo({top:0,behavior:'smooth'});return;}
+ toast(TEXTES[langue].toastVerbe(VERBES[b.dataset.verbe]));});
+
+/* ---------- Roots Radio ---------- */
+document.getElementById('btnRadio').addEventListener('click',e=>{e.currentTarget.classList.toggle('actif');});
+
+/* ══════════════ Dialogue (+) ══════════════ */
+const voileDlg=document.getElementById('voileDlg'),dialogue=document.getElementById('dialogue');
+function ouvrirDlg(){dialogue.classList.add('visible');voileDlg.classList.add('visible');majIcones();}
+function fermerDlg(){dialogue.classList.remove('visible');voileDlg.classList.remove('visible');}
+document.getElementById('fab').addEventListener('click',ouvrirDlg);
+document.getElementById('fermerDlg').addEventListener('click',fermerDlg);
+voileDlg.addEventListener('click',fermerDlg);
+document.getElementById('onglets').addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;
+ document.querySelectorAll('#onglets button').forEach(x=>x.classList.toggle('actif',x===b));
+ document.getElementById('ct-reserver').classList.toggle('actif',b.dataset.ong==='reserver');
+ document.getElementById('ct-commander').classList.toggle('actif',b.dataset.ong==='commander');
+ majIcones();});
+
+/* ---------- Réservation (repris de v5) ---------- */
+let etat={espace:null,creneau:null,personnes:1};
+const dR=document.getElementById('dateResa');
+function jourIdx(){return dR.value?new Date(dR.value+'T00:00').getDay():new Date().getDay();}
+function estAujourdhui(){return dR.value===new Date().toISOString().slice(0,10);}
+function creneauDispo(id,day){if(id==='mois')return true;const o=HORAIRES[day];if(!o)return false;const p=PLAGES[id];return p[0]>=o[0]&&p[1]<=o[1];}
+function dessinerEspaces(){
+ const t=TEXTES[langue],c=document.getElementById('selecteurEspaces');
+ c.innerHTML=Object.keys(OFFRE).map(id=>`<button type="button" class="option-espace ${etat.espace===id?'actif':''}" data-id="${id}"><span class="ico">${ICONES[id]}</span><div class="nom">${t.espaces[id]}</div></button>`).join('');
+ c.querySelectorAll('.option-espace').forEach(b=>b.addEventListener('click',()=>{etat.espace=b.dataset.id;etat.creneau=null;dessinerEspaces();dessinerCreneaux();majRecap();}));
+ document.getElementById('groupePersonnes').style.display=etat.espace==='jardin'?'block':'none';
+}
+function dessinerCreneaux(){
+ const t=TEXTES[langue],c=document.getElementById('chipsCreneaux'),day=jourIdx();
+ if(!etat.espace){c.innerHTML=`<span style="color:var(--encre-discrete);font-size:12.5px;">${t.choisirEspace}</span>`;return;}
+ c.innerHTML=OFFRE[etat.espace].creneaux.map(f=>{const d=creneauDispo(f.id,day);
+  return `<button type="button" class="chip ${etat.creneau===f.id?'actif':''} ${d?'':'indispo'}" data-c="${f.id}" ${d?'':'disabled'}>${t.creneaux[f.id]}<span class="sous">${d?fmt(f.prix)+' FCFA':t.indispoJour}</span></button>`;}).join('');
+ c.querySelectorAll('.chip:not(.indispo)').forEach(b=>b.addEventListener('click',()=>{etat.creneau=b.dataset.c;dessinerCreneaux();majRecap();}));
+}
+document.getElementById('moinsPersonnes').addEventListener('click',()=>{etat.personnes=Math.max(1,etat.personnes-1);document.getElementById('valeurPersonnes').textContent=etat.personnes;});
+document.getElementById('plusPersonnes').addEventListener('click',()=>{etat.personnes=Math.min(10,etat.personnes+1);document.getElementById('valeurPersonnes').textContent=etat.personnes;});
+dR.addEventListener('change',()=>{if(etat.creneau&&!creneauDispo(etat.creneau,jourIdx()))etat.creneau=null;majMessage();dessinerCreneaux();majRecap();});
+function majMessage(){const t=TEXTES[langue],msg=document.getElementById('messageFerme');const ferme=HORAIRES[jourIdx()]===null;msg.textContent=ferme?t.fermeJour:'';msg.classList.toggle('visible',ferme);}
+function majRecap(){
+ const t=TEXTES[langue],btn=document.getElementById('btnResa'),tx=document.getElementById('recapTexte'),to=document.getElementById('recapTotal');
+ if(!etat.espace||!etat.creneau){tx.textContent=t.recapVide;to.textContent='';btn.disabled=true;return;}
+ const f=OFFRE[etat.espace].creneaux.find(x=>x.id===etat.creneau);
+ const jour=estAujourdhui()?t.aujourdhui:new Date(dR.value+'T00:00').toLocaleDateString(langue==='fr'?'fr-FR':'en-US',{weekday:'short',day:'numeric',month:'short'});
+ tx.textContent=`${t.espaces[etat.espace]} · ${t.creneaux[etat.creneau]} · ${jour}`;
+ to.textContent=`${fmt(f.prix)} FCFA`;
+ btn.disabled=!creneauDispo(etat.creneau,jourIdx());
+}
+function code6(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('');}
+document.getElementById('btnResa').addEventListener('click',()=>{
+ const t=TEXTES[langue];
+ if((document.getElementById('telResa').value||'').replace(/\D/g,'').length<8){alert(t.telInvalide);return;}
+ if(!etat.creneau||!creneauDispo(etat.creneau,jourIdx()))return;
+ document.getElementById('vueResa').style.display='none';
+ document.getElementById('soleil1').innerHTML=SOLEIL;
+ document.getElementById('codeResa').textContent=code6();
+ document.getElementById('confResa').classList.add('visible');
 });
 
-/* ---------- Menu de l'expérience (hamburger) ---------- */
-const voile=document.getElementById('voile'),drawer=document.getElementById('drawer');
-function ouvrirDrawer(){drawer.classList.add('visible');voile.classList.add('visible');majIcones();}
-function fermerDrawer(){drawer.classList.remove('visible');voile.classList.remove('visible');}
-document.getElementById('btnBurger').addEventListener('click',ouvrirDrawer);
-document.getElementById('btnFermerDrawer').addEventListener('click',fermerDrawer);
-voile.addEventListener('click',fermerDrawer);
-
-/* ---------- Roots Radio (placeholder) ---------- */
-document.getElementById('btnRadio').addEventListener('click',e=>{
- e.currentTarget.classList.toggle('actif');
+/* ---------- Commander (menu compact) ---------- */
+const panierC={};
+function trouver(id){for(const c of MENU){const a=c.articles.find(x=>x.id===id);if(a)return a;}return null;}
+function dessinerMenuCompact(){
+ document.getElementById('menuCompact').innerHTML=MENU.map(cat=>`<div class="cat-compacte">${cat.t[langue]}</div>`+cat.articles.map(a=>{
+  const q=panierC[a.id]||0;
+  return `<div class="art-compact"><div><div class="n">${a.nom[langue]}</div><div class="p">${fmt(a.prix)} FCFA</div></div>${q===0?`<button class="btn-plus" data-plus="${a.id}">+</button>`:`<div class="stepper-c"><button data-moins="${a.id}">−</button><span>${q}</span><button data-plus="${a.id}">+</button></div>`}</div>`;}).join('')).join('');
+ document.querySelectorAll('#menuCompact [data-plus]').forEach(b=>b.addEventListener('click',()=>{panierC[b.dataset.plus]=(panierC[b.dataset.plus]||0)+1;dessinerMenuCompact();majCmd();}));
+ document.querySelectorAll('#menuCompact [data-moins]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.moins;panierC[id]=Math.max(0,(panierC[id]||0)-1);if(!panierC[id])delete panierC[id];dessinerMenuCompact();majCmd();}));
+}
+function totalCmd(){return Object.entries(panierC).reduce((s,[id,q])=>s+trouver(id).prix*q,0);}
+function majCmd(){document.getElementById('cmdTotal').textContent=fmt(totalCmd())+' FCFA';document.getElementById('btnCmd').disabled=totalCmd()===0;}
+document.getElementById('btnCmd').addEventListener('click',()=>{
+ const t=TEXTES[langue];
+ const nom=document.getElementById('nomCmd').value.trim(),tel=(document.getElementById('telCmd').value||'').replace(/\D/g,'');
+ if(nom.length<2||tel.length<8){alert(t.champsCmd);return;}
+ document.getElementById('vueCmd').style.display='none';
+ document.getElementById('soleil2').innerHTML=SOLEIL;
+ document.getElementById('codeCmd').textContent=code6();
+ document.getElementById('confCmd').classList.add('visible');
 });
+
+/* ══════════════ Menu hamburger ══════════════ */
+const voileMenu=document.getElementById('voileMenu'),drawer=document.getElementById('drawer');
+function ouvrirMenu(){drawer.classList.add('visible');voileMenu.classList.add('visible');majIcones();}
+function fermerMenu(){drawer.classList.remove('visible');voileMenu.classList.remove('visible');}
+document.getElementById('btnBurger').addEventListener('click',ouvrirMenu);
+document.getElementById('fermerMenu').addEventListener('click',fermerMenu);
+voileMenu.addEventListener('click',fermerMenu);
+function dessinerSections(){
+ document.getElementById('sections').innerHTML=TEXTES[langue].sections.map(s=>`<a class="lien-section" href="${s.href}"><span class="ico"><i data-lucide="${s.ico}">•</i></span><span class="txt">${s.t}<small>${s.s}</small></span><i data-lucide="chevron-right">›</i></a>`).join('');
+ majIcones();
+}
 
 /* ---------- Langue ---------- */
-document.getElementById('btnLangue').addEventListener('click',()=>{
- langue=langue==='fr'?'en':'fr';appliquerLangue();
-});
+function appliquerLangue(){
+ const t=TEXTES[langue];
+ document.querySelectorAll('[data-t]').forEach(el=>{const v=t[el.dataset.t];if(typeof v==='string')el.textContent=v;});
+ document.documentElement.lang=langue;
+ document.getElementById('btnLangue').textContent=langue==='fr'?'EN':'FR';
+ document.getElementById('radioQuoi').innerHTML=t.radio.replace('·','·');
+ dessinerEspaces();dessinerCreneaux();majMessage();majRecap();dessinerMenuCompact();majCmd();dessinerSections();majIcones();
+}
+document.getElementById('btnLangue').addEventListener('click',()=>{langue=langue==='fr'?'en':'fr';appliquerLangue();});
 
 /* ---------- Init ---------- */
+dR.value=new Date().toISOString().slice(0,10);dR.min=dR.value;
 appliquerLangue();
 window.addEventListener('DOMContentLoaded',majIcones);
 window.addEventListener('load',majIcones);
