@@ -193,14 +193,21 @@ main{position:relative;z-index:2;min-height:100vh}
 .champ input{width:100%;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);padding:12px 13px;color:var(--encre);font-family:var(--font-corps);font-size:14.5px}
 .champ input:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
 /* -- Téléphone international (intl-tel-input), aligné sur retrouver.html -- */
-.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
-.iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
+/* styles du CHAMP uniquement (scopés à .champ) : sinon ils touchent aussi le
+   conteneur de la liste rattaché au <body> qui porte aussi la classe .iti. */
+.champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
+.champ .iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
 .iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:16px;padding:0 14px}
 .iti input[type=tel]:focus{outline:none}
 .iti__country-container{display:flex;align-items:center;padding:0 4px}
 .iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
 .iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;font-size:16px;padding:0 4px}
-.iti__dropdown-content,.iti--container{z-index:10000}
+/* liste des pays (rattachée au <body>) : lisible partout, au-dessus de tout */
+.iti--container,.iti--fullscreen-popup{z-index:10000}
+.iti__dropdown-content{background:#fff;color:#1A1A1A}
+.iti__country-name{color:#1A1A1A}
+.iti__dial-code{color:#6b7b70}
+.iti__country.iti__highlight{background:rgba(0,104,56,.10)}
 .message-ferme{background:#FBEAE7;border:1.5px solid rgba(205,9,9,.25);border-radius:var(--r-champ);padding:10px 13px;font-size:12.5px;color:#A01414;margin-bottom:13px;display:none}
 .message-ferme.visible{display:block}
 .recap{background:var(--gris-ilot);border-radius:15px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}

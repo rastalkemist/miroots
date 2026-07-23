@@ -48,14 +48,21 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .corps{width:var(--site-w);max-width:var(--col);margin:0 auto;padding:16px 0 0}
 
 /* ---------- Champ téléphone international (intl-tel-input) ---------- */
-.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
-.iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
+/* styles du CHAMP uniquement (scopés à .champ) : sinon ils touchent aussi le
+   conteneur de la liste rattaché au <body> qui porte aussi la classe .iti. */
+.champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
+.champ .iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
 #telephone{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:16px;padding:0 13px}
 #telephone:focus{outline:none}
 .iti__country-container{display:flex;align-items:center;padding:0 4px}
 .iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
 .iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;font-size:16px;padding:0 4px}
-.iti__dropdown-content,.iti--container{z-index:10000}
+/* liste des pays (rattachée au <body>) : lisible partout, au-dessus de tout */
+.iti--container,.iti--fullscreen-popup{z-index:10000}
+.iti__dropdown-content{background:#fff;color:#1A1A1A}
+.iti__country-name{color:#1A1A1A}
+.iti__dial-code{color:#6b7b70}
+.iti__country.iti__highlight{background:rgba(0,104,56,.10)}
 
 /* ══════════════ CHROME PARTAGÉ (variante fond clair) ══════════════ */
 .chrome-haut{position:sticky;top:0;z-index:20;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--gris-service);padding:11px 0}

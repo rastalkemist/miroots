@@ -49,14 +49,21 @@ main{flex:1;width:var(--site-w);max-width:var(--col);margin:0 auto;padding:24px 
 #code{font-family:var(--font-chiffres);font-weight:700;font-size:20px;letter-spacing:.16em;text-transform:uppercase}
 #code::placeholder{letter-spacing:.05em;font-size:15px;font-weight:400;font-family:var(--font-corps)}
 
-.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
-.iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
+/* styles du CHAMP uniquement (scopés à .champ) : sinon ils touchent aussi le
+   conteneur de la liste rattaché au <body> qui porte aussi la classe .iti. */
+.champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
+.champ .iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
 #tel{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:16px;padding:0 14px}
 #tel:focus{outline:none}
 .iti__country-container{display:flex;align-items:center;padding:0 4px}
 .iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
 .iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;font-size:16px;padding:0 4px}
-.iti__dropdown-content,.iti--container{z-index:10000}
+/* liste des pays (rattachée au <body>) : lisible partout, au-dessus de tout */
+.iti--container,.iti--fullscreen-popup{z-index:10000}
+.iti__dropdown-content{background:#fff;color:#1A1A1A}
+.iti__country-name{color:#1A1A1A}
+.iti__dial-code{color:#6b7b70}
+.iti__country.iti__highlight{background:rgba(0,104,56,.10)}
 
 .encart-securite{display:flex;align-items:center;gap:9px;margin-top:18px;border:1px dashed var(--gris-service);border-radius:var(--r-champ);padding:12px 14px;font-size:12px;color:var(--encre-discrete);line-height:1.5}
 .encart-securite i,.encart-securite svg{width:16px;height:16px;flex-shrink:0;color:var(--roots-vert)}
