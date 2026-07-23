@@ -72,7 +72,10 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 /* uniquement sur téléphone : place étroite → on efface le reste et la pastille
    s'aligne à droite. Sur tablette/laptop il y a la place, donc rien ne bouge. */
 @media(max-width:639px){
- .chrome-inner.deploie{grid-template-columns:1fr auto 0fr}
+ /* la pastille s'ouvre centrée et glisse à droite ; la colonne de gauche ne
+    descend jamais sous ~66px : elle se fige à cette marge de l'ankh (plus gros
+    ici) et l'étirement continue vers la droite. */
+ .chrome-inner.deploie{grid-template-columns:minmax(66px,1fr) auto minmax(0,1fr)}
  .chrome-inner.deploie .centre{gap:0}
  .chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-12px);width:0;min-width:0;margin:0;overflow:hidden}
 }
