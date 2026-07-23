@@ -7,7 +7,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/css/intlTelInput.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/intlTelInput.min.js" defer></script>
 <style>
 /* ==========================================================================
    PORTE D'ENTRÉE — mi.roots.bj (index) · v2 (23/07/2026)
@@ -54,25 +56,31 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
  background:linear-gradient(180deg,rgba(8,34,20,.5),transparent 26%,transparent 62%,rgba(6,26,16,.5))}
 
 /* ══════════════ CHROME HAUT ══════════════ */
-.chrome-haut{position:fixed;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;
- justify-content:space-between;padding:12px 14px;gap:10px}
+.chrome-haut{position:fixed;top:0;left:0;right:0;z-index:6;padding:12px 0}
+.chrome-inner{width:var(--site-w);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.chrome-inner>.marque-wrap{justify-self:start}
+.chrome-inner>.chrome-titre{justify-self:center}
+.chrome-inner>.chrome-droite{justify-self:end}
 /* -- marque + toggle (gauche) -- */
-.marque{display:flex;align-items:center;gap:8px;background:rgba(253,251,246,.14);
- border:1.5px solid rgba(253,251,246,.3);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 12px 5px 6px}
-.marque .ankh{width:30px;height:30px;display:flex;flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
-.marque .ankh svg{width:30px;height:30px;display:block}
-.marque .mot{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-jaune);
- background:none;border:none;cursor:pointer;padding:0 2px;line-height:1;text-shadow:0 1px 4px rgba(0,0,0,.35)}
-.marque .suite{display:flex;align-items:center;gap:8px;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;
- transition:max-width .34s cubic-bezier(.2,.9,.25,1),opacity .22s ease}
-.marque.ouvert .suite{max-width:230px;opacity:1}
-.suite .sub{font-size:11px;color:rgba(253,251,246,.72);font-family:var(--font-corps);font-style:italic}
-.switch{width:42px;height:22px;border-radius:var(--r-pilule);background:rgba(6,26,16,.42);border:none;
+.marque-wrap{display:flex;align-items:center;gap:9px}
+.ankh-home{display:flex;align-items:center;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
+.ankh-home svg{width:34px;height:34px;display:block}
+.marque{display:flex;align-items:center;gap:8px;background:rgba(253,251,246,.92);
+ backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 14px;box-shadow:0 3px 12px rgba(5,25,18,.2)}
+.marque .mot{font-family:var(--font-moderno);font-weight:700;font-size:21px;color:var(--roots-vert);
+ background:none;border:none;cursor:pointer;padding:0 2px;line-height:1}
+.marque .suite{display:flex;align-items:center;gap:8px;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transform:translateX(-8px);
+ transition:max-width .4s cubic-bezier(.2,.9,.25,1),opacity .3s ease .04s,transform .4s cubic-bezier(.2,.9,.25,1)}
+.marque.ouvert .suite{max-width:240px;opacity:1;transform:translateX(0);
+ transition:max-width .62s cubic-bezier(.22,.85,.3,1),opacity .5s ease .12s,transform .62s cubic-bezier(.22,.85,.3,1)}
+.suite .sub{font-size:11px;color:var(--encre-discrete);font-family:var(--font-corps);font-style:italic}
+.switch{width:42px;height:22px;border-radius:var(--r-pilule);background:var(--gris-ilot);border:1px solid var(--gris-service);
  position:relative;cursor:pointer;flex-shrink:0}
-.switch .knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--roots-jaune);transition:left .2s ease}
-.suite .nu{font-family:var(--font-moderno);font-weight:700;font-size:17px;color:rgba(253,251,246,.68)}
+.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--roots-vert);transition:left .2s ease}
+.suite .nu{font-family:var(--font-moderno);font-weight:700;font-size:17px;color:var(--vert-foret)}
 /* -- titre + hamburger (droite) -- */
-.chrome-droite{display:flex;align-items:center;gap:10px}
+.chrome-droite{display:flex;align-items:center;gap:8px}
+.lang-btn{height:42px;padding:0 4px;border:none;background:none;color:var(--blanc-casse);font-family:var(--font-corps);font-weight:700;font-size:14px;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.4)}
 .chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:22px;color:var(--blanc-casse);
  text-shadow:0 1px 6px rgba(0,0,0,.4);letter-spacing:.01em}
 .chrome-burger{width:42px;height:42px;border-radius:50%;border:1.5px solid rgba(253,251,246,.32);
@@ -80,8 +88,10 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .chrome-burger svg{width:20px;height:20px}
 
 /* -- Roots Radio : ligne sous le nav, en haut à droite -- */
-.radio-ligne{position:fixed;top:64px;right:14px;z-index:5;display:flex;align-items:center;gap:8px;
- background:rgba(10,51,46,.55);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 6px 5px 13px;max-width:74vw}
+.radio-wrap{position:fixed;top:92px;left:0;right:0;z-index:5;pointer-events:none}
+.radio-inner{width:var(--site-w);margin:0 auto;display:flex;justify-content:flex-end}
+.radio-ligne{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;max-width:100%;
+ background:rgba(10,51,46,.55);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 6px 5px 13px}
 .radio-ligne .quoi{font-size:11.5px;color:var(--creme);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .radio-ligne .quoi b{font-weight:700}
 .radio-btn{width:28px;height:28px;border-radius:50%;border:none;background:rgba(253,251,246,.2);color:var(--blanc-casse);
@@ -90,21 +100,22 @@ svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
 .radio-btn svg{width:15px;height:15px}
 
 /* ══════════════ SUPER-NAV (bas) — icônes seules ══════════════ */
-.chrome-bas{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + var(--safe-bas));z-index:6;
- display:flex;gap:6px;background:rgba(253,251,246,.94);border-radius:var(--r-pilule);padding:6px;
- box-shadow:0 12px 34px rgba(5,25,18,.4)}
-.verbe{width:52px;height:46px;border:none;background:none;cursor:pointer;border-radius:var(--r-pilule);
- color:var(--vert-foret);display:flex;align-items:center;justify-content:center;position:relative}
-.verbe svg{width:25px;height:25px}
+/* Super-nav : section pleine largeur en bas, 3 parts égales, l'active en plein vert */
+.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;
+ min-height:58px;height:5.5vh;padding-bottom:var(--safe-bas);
+ background:var(--blanc-casse);box-shadow:0 -6px 24px rgba(5,25,18,.18)}
+.verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;
+ color:var(--vert-foret);display:flex;align-items:center;justify-content:center}
+.verbe svg{width:48px;height:48px}
 .verbe.actif{background:var(--roots-vert);color:var(--blanc-casse)}
-.verbe.dormant{opacity:.42}
-.verbe.dormant::after{content:'';position:absolute;top:8px;right:11px;width:5px;height:5px;border-radius:50%;background:var(--roots-jaune)}
+.verbe.dormant{opacity:.5}
+.verbe.dormant::after{content:'';position:absolute;top:9px;right:calc(50% - 34px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
 
 /* -- Bouton (+) focal -- */
-.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + var(--safe-bas));z-index:7;
- width:60px;height:60px;border-radius:50%;background:var(--blanc-casse);border:none;color:var(--roots-vert);
+.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + var(--safe-bas));z-index:7;
+ width:56px;height:56px;border-radius:50%;background:var(--blanc-casse);border:none;color:var(--roots-vert);
  box-shadow:0 12px 30px rgba(5,25,18,.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.fab svg{width:30px;height:30px}
+.fab svg{width:26px;height:26px}
 
 /* ---------- Contenu (jardin seul) ---------- */
 main{position:relative;z-index:2;min-height:100vh}
@@ -152,6 +163,14 @@ main{position:relative;z-index:2;min-height:100vh}
 .champ label{display:block;font-size:11px;color:var(--encre-discrete);margin-bottom:5px;font-weight:600}
 .champ input{width:100%;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);padding:12px 13px;color:var(--encre);font-family:var(--font-corps);font-size:14.5px}
 .champ input:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
+/* -- Téléphone international (intl-tel-input), aligné sur retrouver.html -- */
+.iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:46px}
+.iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
+.iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:14.5px;padding:0 14px}
+.iti input[type=tel]:focus{outline:none}
+.iti__country-container{display:flex;align-items:center;padding:0 4px}
+.iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
+.iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;padding:0 4px}
 .message-ferme{background:#FBEAE7;border:1.5px solid rgba(205,9,9,.25);border-radius:var(--r-champ);padding:10px 13px;font-size:12.5px;color:#A01414;margin-bottom:13px;display:none}
 .message-ferme.visible{display:block}
 .recap{background:var(--gris-ilot);border-radius:15px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
@@ -190,7 +209,7 @@ main{position:relative;z-index:2;min-height:100vh}
 .mini-btn svg{width:15px;height:15px}
 
 /* -- Toast (dormant) -- */
-.toast{position:fixed;left:50%;bottom:calc(158px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
+.toast{position:fixed;left:50%;bottom:calc(146px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
  background:rgba(10,51,46,.95);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);
  box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -208,15 +227,17 @@ main{position:relative;z-index:2;min-height:100vh}
 
 <!-- ══════════════ CHROME HAUT ══════════════ -->
 <header class="chrome-haut">
-  <div class="marque" id="marque">
-    <span class="ankh"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
+  <div class="chrome-inner">
+  <div class="marque-wrap">
+    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
 <path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/>
 <path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/>
 <path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/>
 <path fill-rule="nonzero" fill="rgb(80.392157%, 3.529412%, 3.529412%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/>
 <path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/>
 <path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>
-</svg></span>
+</svg></a>
+    <div class="marque" id="marque">
     <button class="mot" id="motMode">Mi</button>
     <div class="suite">
       <span class="sub">(solo)</span>
@@ -224,24 +245,29 @@ main{position:relative;z-index:2;min-height:100vh}
       <span class="sub">(social)</span>
       <span class="nu">NU</span>
     </div>
+    </div>
   </div>
-  <div class="chrome-droite">
     <span class="chrome-titre" id="titreExp">Roots</span>
-    <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+    </div>
   </div>
 </header>
 
 <!-- Roots Radio : ligne haut-droite sous le nav -->
-<div class="radio-ligne">
-  <span class="quoi" id="radioQuoi"></span>
-  <button class="radio-btn" id="btnRadio" aria-label="Roots Radio"><i data-lucide="play">▷</i></button>
-</div>
+<div class="radio-wrap"><div class="radio-inner">
+  <div class="radio-ligne">
+    <span class="quoi" id="radioQuoi"></span>
+    <button class="radio-btn" id="btnRadio" aria-label="Roots Radio"><i data-lucide="play">▷</i></button>
+  </div>
+</div></div>
 
 <!-- Contenu : le jardin seul -->
 <main></main>
 
 <!-- Bouton (+) focal -->
-<button class="fab" id="fab" aria-label="Réserver ou commander"><i data-lucide="plus">+</i></button>
+<button class="fab" id="fab" aria-label="Réserver ou commander"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
 
 <!-- Super-nav des 3 verbes (icônes) -->
 <nav class="chrome-bas" id="superNav">
@@ -324,12 +350,16 @@ main{position:relative;z-index:2;min-height:100vh}
   <div class="tete"><span class="ou">Mi · Roots</span>
     <button class="fermer" id="fermerMenu" aria-label="Fermer"><i data-lucide="x">×</i></button></div>
   <div id="sections"></div>
-  <div class="drawer-pied"><button class="mini-btn" id="btnLangue">EN</button></div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<script src="menu-data.js"></script>
 <script>
+/* Filet de sécurité : si menu-data.js n'a pas chargé, on évite le crash global
+   (le menu restera vide jusqu'à ce que le fichier soit en ligne). */
+if(typeof MENU==='undefined'){window.MENU=[];}
+
 /* ══════════════ Données ══════════════ */
 const OFFRE={
  jardin:{creneaux:[{id:'jour',prix:2000},{id:'mois',prix:15000}]},
@@ -338,44 +368,7 @@ const OFFRE={
 const HORAIRES={0:null,1:[7,19],2:[7,19],3:[7,19],4:[7,19],5:[7,19],6:[7,13]};
 const PLAGES={matin:[7,13],aprem:[13,19],jour:[7,19]};
 
-const MENU=[
- {id:'chaud',t:{fr:'Boissons chaudes & petit déj',en:'Hot drinks & breakfast'},articles:[
-  {id:'infusion',nom:{fr:'Infusion maison | Thé',en:'House infusion | Tea'},prix:1000},
-  {id:'cafe',nom:{fr:'Café moulu',en:'Ground coffee'},prix:1000},
-  {id:'expresso',nom:{fr:'Expresso',en:'Espresso'},prix:1500},
-  {id:'chocolat',nom:{fr:'Chocolat chaud',en:'Hot chocolate'},prix:1500},
-  {id:'bouillie',nom:{fr:'Bouillie locale',en:'Local porridge'},prix:500},
-  {id:'omelette',nom:{fr:'Omelette',en:'Omelette'},prix:1000},
-  {id:'continental',nom:{fr:'Petit déj continental',en:'Continental breakfast'},prix:3000}]},
- {id:'cheznous',t:{fr:'De chez nous',en:'From home'},articles:[
-  {id:'ayimolou',nom:{fr:'Ayimolou | Atassi',en:'Ayimolou | Atassi'},prix:2500},
-  {id:'rizyawa',nom:{fr:'Le riz de Yawa',en:"Yawa's rice"},prix:1500},
-  {id:'agou',nom:{fr:"Les délices d'Agou",en:'Agou delights'},prix:1500},
-  {id:'gari',nom:{fr:'Gari gnignan',en:'Gari gnignan'},prix:1500}]},
- {id:'sandwichs',t:{fr:'Sandwichs',en:'Sandwiches'},articles:[
-  {id:'cotonois',nom:{fr:'Cotonois',en:'Cotonois'},prix:2000},
-  {id:'peuhl',nom:{fr:'Peuhl',en:'Fulani'},prix:2000},
-  {id:'parisien',nom:{fr:'Parisien',en:'Parisian'},prix:2000}]},
- {id:'salades',t:{fr:'Salades',en:'Salads'},articles:[
-  {id:'ecoliere',nom:{fr:"L'écolière",en:'Classic Avocado'},prix:1500},
-  {id:'sahelienne',nom:{fr:'La Sahélienne',en:'Sahelian'},prix:2500},
-  {id:'fresh',nom:{fr:'La Fresh',en:'La Fresh'},prix:2500}]},
- {id:'brochettes',t:{fr:'Brochettes',en:'Skewers'},articles:[
-  {id:'br-wangashi',nom:{fr:'Brochette de wangashi',en:'Wangashi skewer'},prix:1000},
-  {id:'br-boeuf',nom:{fr:'Brochette de filet de bœuf',en:'Beef fillet skewer'},prix:1000},
-  {id:'br-soja',nom:{fr:'Brochette de soja',en:'Soy skewer'},prix:500}]},
- {id:'boissons',t:{fr:'Boissons',en:'Drinks'},articles:[
-  {id:'eau03',nom:{fr:'Eau 0,3 L',en:'Water 0.3 L'},prix:300},
-  {id:'bissap',nom:{fr:'Bissap de Yawa',en:"Yawa's bissap"},prix:500},
-  {id:'ananas',nom:{fr:"Jus d'ananas",en:'Pineapple juice'},prix:1200},
-  {id:'gingembre',nom:{fr:'Jus de gingembre',en:'Ginger juice'},prix:2000},
-  {id:'coca',nom:{fr:'Coca',en:'Coke'},prix:1000},
-  {id:'beninoise',nom:{fr:'Béninoise',en:'Béninoise'},prix:1000}]},
- {id:'shots',t:{fr:'Shots — les Soto',en:'Shots — the Soto'},articles:[
-  {id:'sweetsoto',nom:{fr:'Sweet Soto',en:'Sweet Soto'},prix:1000},
-  {id:'softsoto',nom:{fr:'Soft Soto',en:'Soft Soto'},prix:1000},
-  {id:'spicysoto',nom:{fr:'Spicy Soto',en:'Spicy Soto'},prix:1000}]}
-];
+/* MENU : chargé depuis menu-data.js (source unique, partagée avec carte.html) */
 
 const ICONES={
  jardin:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="21.27 7.75 179.31 178.87"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 31.738281 41.210938 C 38.699219 52.425781 45.9375 63.476562 53.015625 74.621094 C 55.007812 77.734375 57.722656 80.527344 60.972656 77.746094 C 62.40625 76.523438 62.316406 71.777344 61.164062 69.570312 C 55.644531 58.988281 49.71875 48.597656 43.523438 38.394531 C 41.214844 34.921875 38.402344 31.8125 35.179688 29.167969 C 34.113281 28.222656 31.609375 28.351562 30.007812 28.820312 C 29.074219 29.097656 28.617188 31.015625 27.910156 32.261719 C 29.222656 35.53125 30.078125 38.632812 31.699219 41.25 Z M 193.601562 149.601562 C 193.9375 148.386719 191.757812 145.464844 190.128906 144.839844 C 175.332031 139.101562 160.464844 133.53125 145.4375 128.421875 C 143.230469 127.664062 138.617188 128.777344 137.691406 130.410156 C 135.40625 134.546875 138.957031 136.734375 142.527344 138.097656 C 153.464844 142.261719 164.402344 146.4375 175.339844 150.484375 C 179.4375 152.007812 183.664062 153.191406 189.085938 154.921875 C 190.585938 153.269531 192.960938 151.6875 193.558594 149.601562 Z M 122.847656 82.339844 C 130.117188 72.625 137.316406 62.839844 144.316406 52.933594 C 146.566406 49.914062 148.324219 46.558594 149.527344 42.988281 C 150.171875 40.882812 148.890625 38.1875 148.460938 35.761719 C 146.554688 36.4375 143.886719 36.546875 142.855469 37.898438 C 133.902344 49.671875 125.152344 61.644531 116.492188 73.699219 C 115.058594 75.6875 113.65625 78.191406 113.507812 80.527344 C 113.410156 82.578125 115.140625 84.714844 116.492188 87.859375 C 119.484375 85.261719 121.503906 84.070312 122.847656 82.339844 M 100.691406 14.660156 C 99.308594 14.390625 96.246094 16.875 95.808594 18.636719 C 91.898438 34.210938 88.339844 49.871094 84.871094 65.542969 C 83.875 69.878906 83.957031 74.621094 89.414062 75.597656 C 95.28125 76.640625 95.949219 71.378906 96.753906 67.402344 C 98.324219 59.617188 99.476562 51.761719 100.730469 43.925781 C 101.984375 36.089844 103.277344 28.234375 104.828125 18.6875 C 103.953125 17.710938 102.558594 15.015625 100.710938 14.660156 Z M 143.835938 105.082031 C 152.070312 102.714844 160.367188 100.496094 168.46875 97.742188 C 175.164062 95.449219 181.71875 92.757812 188.089844 89.679688 C 189.480469 89 189.78125 86.058594 190.585938 84.160156 C 188.867188 83.484375 186.945312 81.921875 185.445312 82.25 C 170.160156 85.652344 154.9375 89.300781 139.703125 93.050781 C 137.433594 93.503906 135.335938 94.574219 133.636719 96.140625 C 132.003906 97.882812 130.117188 100.863281 130.652344 102.683594 C 131.1875 104.503906 134.433594 105.667969 136.003906 106.761719 C 139.382812 106.054688 141.660156 105.707031 143.859375 105.082031 Z M 105.84375 133.203125 C 106.15625 119.558594 95.351562 108.246094 81.707031 107.929688 C 81.621094 107.929688 81.535156 107.925781 81.449219 107.925781 C 66.953125 107.304688 54.695312 118.550781 54.078125 133.050781 C 54.0625 133.359375 54.054688 133.667969 54.054688 133.980469 C 54.21875 147.640625 65.25 158.671875 78.914062 158.839844 C 94.375 158.839844 105.742188 147.988281 105.863281 133.222656 Z M 128.8125 130.886719 C 128.554688 157.964844 106.539062 179.980469 79.925781 179.78125 C 52.082031 179.582031 30.117188 157.964844 30.335938 131.054688 C 30.554688 104.148438 53.585938 81.960938 80.941406 82.179688 C 107.339844 82.136719 128.777344 103.503906 128.820312 129.902344 C 128.820312 130.230469 128.820312 130.558594 128.8125 130.886719 "/></svg>`,
@@ -462,7 +455,7 @@ document.getElementById('onglets').addEventListener('click',e=>{
  majIcones();});
 
 /* ---------- Réservation (repris de v5) ---------- */
-let etat={espace:null,creneau:null,personnes:1};
+let etat={espace:'partage',creneau:null,personnes:1};
 const dR=document.getElementById('dateResa');
 function jourIdx(){return dR.value?new Date(dR.value+'T00:00').getDay():new Date().getDay();}
 function estAujourdhui(){return dR.value===new Date().toISOString().slice(0,10);}
@@ -549,11 +542,33 @@ function appliquerLangue(){
 }
 document.getElementById('btnLangue').addEventListener('click',()=>{langue=langue==='fr'?'en':'fr';appliquerLangue();});
 
+/* ---------- Téléphone international (intl-tel-input), comme retrouver.html ---------- */
+function initTel(input){
+ if(!input) return;
+ if(!window.intlTelInput){ input.placeholder='+229 01 94 56 78 90'; return; }
+ const iti=window.intlTelInput(input,{
+  initialCountry:'auto',
+  geoIpLookup:(success,failure)=>{
+   fetch('https://ipapi.co/json/').then(r=>r.json())
+    .then(d=>success((d&&d.country_code)?d.country_code.toLowerCase():'bj'))
+    .catch(()=>success('bj'));
+  },
+  separateDialCode:true,
+  countrySearch:false,
+  countryOrder:['bj','ng','tg','gh','ci','ne','bf','sn','fr','be','us','ca','gb','de'],
+  loadUtils:()=>import('https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/utils.js')
+ });
+ const prefill=()=>{ try{ const d=iti.getSelectedCountryData();
+  if(d && d.iso2==='bj' && (input.value||'').replace(/\D/g,'')===''){ input.value='01'; } }catch(e){} };
+ prefill();
+ input.addEventListener('countrychange',()=>{ input.value=''; prefill(); });
+}
+
 /* ---------- Init ---------- */
 dR.value=new Date().toISOString().slice(0,10);dR.min=dR.value;
 appliquerLangue();
 window.addEventListener('DOMContentLoaded',majIcones);
-window.addEventListener('load',majIcones);
+window.addEventListener('load',()=>{ initTel(document.getElementById('telResa')); initTel(document.getElementById('telCmd')); majIcones(); });
 </script>
 </body>
 </html>
