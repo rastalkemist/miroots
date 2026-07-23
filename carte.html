@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi Roots — La carte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="roots-fonts.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
+<style>
+/* ==========================================================================
+   ÉCRAN — La carte · mi.roots.bj/carte · v1 (23/07/2026)
+   Évolution de l'Écran 2 « Encas & Rafraîchissements » → carte complète V12,
+   construite comme MODULE réutilisable (roots.bj le recomposera — DRY, cf.
+   Note_Architecture_SousDomaines_Roots).
+   - Nav PARTAGÉE identique à retrouver.html : corps aligné sur le « M »,
+     symbole en outdent dans la marge (--logo-decalage, repli max()).
+   - COUCHE CONTEXTUELLE (décision Mika 23/07) :
+        ?table=N  → mode « SUR PLACE » : commande taguée à la table N, service
+                     à la table, pas de nom/tel requis.
+        (sinon)    → mode « À EMPORTER » : nom + numéro, code de retrait.
+     (Livraison = v1.1, hors périmètre ici.)
+   - Paiement Kkiapay (stub prod : widget → Edge Function Supabase). Sans compte.
+   - Données de menu = source provisoire ; à externaliser vers Supabase.
+   ========================================================================== */
+:root{
+ --marge:5%; --site-w:90%; --col:500px;
+ --roots-vert:#006838;--roots-jaune:#FFC840;--roots-terracotta:#CE5A2C;
+ --roots-rouge:#CD0909;--roots-noir:#1A1A1A;
+ --creme:#F8EDDA;--vert-nuit:#0A332E;--vert-foret:#2F4B3C;
+ --blanc-casse:#FDFBF6;--carte-blanc:#FFFFFF;
+ --gris-ilot:#E4E1DA;--gris-service:#E4E1DA;--vert-selection:rgba(0,104,56,.08);
+ --encre:var(--vert-nuit);--encre-discrete:var(--vert-foret);
+ --font-corps:'Museo Sans','Roboto',system-ui,sans-serif;
+ --font-moderno:'MuseoModerno',var(--font-corps);
+ --font-chiffres:'Museo Slab','Roboto Slab','Rockwell',serif;
+ --r-pilule:999px;--r-carte:26px;--r-module:17px;--r-champ:13px;
+ --logo-decalage:43px;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--blanc-casse);color:var(--encre);font-family:var(--font-corps);padding-bottom:110px;position:relative}
+svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
+
+/* ---------- Nav partagée (identique retrouver.html) ---------- */
+.entete{position:sticky;top:0;z-index:20;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--gris-service)}
+.nav-inner{width:var(--site-w);max-width:var(--col);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:11px 0}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none;margin-left:max(calc(-1 * var(--logo-decalage)), calc(-50vw + 50% + 15px));}
+.logo .sym{height:34px;width:34px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo .sym svg{height:34px;width:auto;display:block}
+.logo .nom{font-family:var(--font-moderno);font-weight:700;font-size:19px;color:var(--roots-vert);letter-spacing:.01em}
+.nav-btn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--gris-service);background:var(--carte-blanc);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--vert-nuit);font-family:var(--font-corps);font-weight:700;font-size:13px}
+.nav-btn.lang{color:var(--roots-vert)}
+
+.corps{width:var(--site-w);max-width:var(--col);margin:0 auto;padding:16px 0 0}
+
+/* ---------- Hero ---------- */
+.badge-table{display:inline-flex;align-items:center;gap:6px;background:var(--vert-selection);border:1.5px solid var(--roots-vert);color:var(--roots-vert);font-size:12px;font-weight:700;padding:5px 12px;border-radius:var(--r-pilule);margin-bottom:10px}
+.badge-table svg{width:14px;height:14px}
+.badge-emporter{display:inline-flex;align-items:center;gap:6px;background:var(--gris-ilot);color:var(--encre-discrete);font-size:12px;font-weight:700;padding:5px 12px;border-radius:var(--r-pilule);margin-bottom:10px}
+.badge-emporter svg{width:14px;height:14px}
+h1{font-size:24px;margin:0 0 6px;line-height:1.15}
+.sous-titre{font-size:13px;color:var(--encre-discrete);margin:0 0 14px;line-height:1.5}
+
+/* ---------- Onglets = ancres de saut ---------- */
+.categories{position:sticky;top:55px;z-index:9;background:rgba(253,251,246,.96);backdrop-filter:blur(8px);
+ display:flex;gap:8px;overflow-x:auto;padding:8px 0 10px;margin-bottom:6px;scrollbar-width:none}
+.categories::-webkit-scrollbar{display:none}
+.cat{flex-shrink:0;background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-pilule);
+ padding:9px 15px;font-family:var(--font-corps);font-size:13px;font-weight:600;color:var(--encre);cursor:pointer;white-space:nowrap}
+.cat.actif{background:var(--vert-selection);border-color:var(--roots-vert)}
+
+.section-menu{scroll-margin-top:114px}
+.section-menu h3{font-size:15px;font-weight:700;margin:20px 0 10px;padding-left:9px;border-left:3px solid var(--roots-vert);background:var(--blanc-casse);box-shadow:0 0 7px 7px var(--blanc-casse);display:table;border-radius:3px}
+.section-menu:first-of-type h3{margin-top:6px}
+
+.article{background:var(--carte-blanc);border-radius:var(--r-module);padding:14px 15px;margin-bottom:10px;
+ display:flex;justify-content:space-between;gap:12px;align-items:center;box-shadow:0 2px 10px rgba(10,51,46,.05)}
+.article .infos{flex:1}
+.article .nom{font-size:14.5px;font-weight:700}
+.article .desc{font-size:12.5px;color:var(--roots-terracotta);margin-top:3px;line-height:1.4;font-family:'Museo','Roboto Serif',Georgia,serif;font-weight:300}
+.article .prix{font-size:13px;font-weight:600;color:var(--encre);margin-top:5px;font-family:var(--font-chiffres)}
+.btn-plus{width:38px;height:38px;border-radius:50%;border:none;background:var(--roots-vert);
+ color:var(--blanc-casse);font-size:18px;cursor:pointer;line-height:1;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.stepper{display:flex;align-items:center;gap:10px;background:var(--vert-selection);
+ border:2px solid var(--roots-vert);border-radius:var(--r-pilule);padding:3px;flex-shrink:0}
+.stepper button{width:30px;height:30px;border-radius:50%;border:none;background:var(--carte-blanc);
+ color:var(--encre);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.stepper span{font-weight:700;font-size:14px;min-width:16px;text-align:center}
+
+/* ---------- Barre panier ---------- */
+.barre-panier{position:fixed;z-index:11;bottom:20px;left:50%;transform:translateX(-50%);
+ width:min(400px,calc(100% - 32px));background:var(--roots-vert);color:var(--blanc-casse);
+ border:none;border-radius:var(--r-pilule);padding:16px 22px;font-family:var(--font-corps);
+ font-weight:700;font-size:14.5px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+ box-shadow:0 10px 30px rgba(10,51,46,.35);transition:opacity .25s ease,transform .25s ease}
+.barre-panier.cachee{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(12px)}
+.barre-panier .badge{background:var(--blanc-casse);color:var(--roots-vert);border-radius:var(--r-pilule);
+ padding:2px 10px;font-size:12.5px;margin-right:8px}
+
+.voile{position:fixed;inset:0;z-index:12;background:rgba(5,20,14,.5);opacity:0;pointer-events:none;transition:opacity .25s ease}
+.voile.visible{opacity:1;pointer-events:auto}
+.panneau{position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);
+ width:min(450px,100%);max-height:90vh;overflow-y:auto;scrollbar-width:none;background:var(--carte-blanc);
+ border-radius:var(--r-carte) var(--r-carte) 0 0;padding:20px 20px 28px;
+ box-shadow:0 -12px 40px rgba(5,25,18,.35);transition:transform .34s cubic-bezier(.2,.9,.25,1)}
+.panneau::-webkit-scrollbar{display:none}
+.panneau.visible{transform:translate(-50%,0)}
+@media(min-width:500px){.panneau{bottom:22px;border-radius:var(--r-carte)}}
+.poignee{width:38px;height:4px;background:var(--gris-service);border-radius:4px;margin:0 auto 14px}
+.entete-panneau{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.entete-panneau h2{font-size:20px;margin:0 0 3px}
+.entete-panneau p{font-size:12.5px;color:var(--encre-discrete);margin:0}
+.fermer{background:none;border:none;color:var(--encre-discrete);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px}
+.ligne-panier{display:flex;justify-content:space-between;align-items:center;gap:10px;
+ padding:10px 0;border-bottom:1px solid var(--gris-ilot);font-size:13.5px}
+.ligne-panier .qte{color:var(--encre-discrete);font-size:12px}
+.ligne-panier .montant{font-weight:600;color:var(--encre);white-space:nowrap;font-family:var(--font-chiffres)}
+.total-ligne{display:flex;justify-content:space-between;padding:13px 0 16px;font-size:15px;font-weight:700}
+.total-ligne .montant{color:var(--encre);font-size:18px;font-family:var(--font-chiffres)}
+.champ{margin-bottom:13px}
+.champ label{display:block;font-size:11px;color:var(--encre-discrete);margin-bottom:5px;font-weight:600}
+.champ input{width:100%;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);
+ padding:12px 13px;color:var(--encre);font-family:var(--font-corps);font-size:14.5px}
+.champ input:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
+.etiquette-paiement{display:block;font-size:11px;color:var(--encre-discrete);font-weight:600;margin-bottom:5px}
+.paiements{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
+.paiements .chip-p{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-pilule);
+ padding:9px 14px;font-family:var(--font-corps);font-size:12.5px;font-weight:600;color:var(--encre);cursor:pointer}
+.paiements .chip-p.actif{background:var(--vert-selection);border-color:var(--roots-vert)}
+.bouton-confirmer{width:100%;background:var(--roots-vert);color:var(--blanc-casse);border:none;
+ border-radius:var(--r-pilule);padding:16px;font-family:var(--font-corps);font-weight:700;font-size:15px;cursor:pointer}
+.mention{text-align:center;font-size:11.5px;color:var(--encre-discrete);margin-top:10px}
+
+.ecran-confirmation{display:none;text-align:center;padding:18px 6px 6px}
+.ecran-confirmation.visible{display:block}
+.ecran-confirmation .soleil-ok{height:46px;margin:0 auto 10px;display:flex;justify-content:center}
+.ecran-confirmation .soleil-ok svg{height:100%;width:auto}
+.code{font-family:var(--font-chiffres);font-weight:700;font-size:33px;letter-spacing:.13em;color:var(--roots-vert);margin:8px 0}
+.instructions{font-size:13px;color:var(--encre-discrete);line-height:1.55;max-width:300px;margin:0 auto}
+</style>
+</head>
+<body>
+
+<header class="entete"><div class="nav-inner">
+  <a class="logo" href="index.html">
+    <span class="sym"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
+<path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/>
+<path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/>
+<path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/>
+<path fill-rule="nonzero" fill="rgb(80.392157%, 3.529412%, 3.529412%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/>
+<path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/>
+<path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>
+</svg></span>
+    <span class="nom">Mi Roots</span>
+  </a>
+  <button class="nav-btn lang" id="btnLangue" aria-label="Langue">EN</button>
+</div></header>
+
+<div class="corps">
+  <div id="badgeContexte"></div>
+  <h1 data-t="titre">La carte</h1>
+  <p class="sous-titre" id="sousTitre"></p>
+
+  <div class="categories" id="categories"></div>
+  <div id="listeMenu"></div>
+</div>
+
+<button class="barre-panier cachee" id="barrePanier">
+  <span><span class="badge" id="badgeQte">0</span><span data-t="voirCommande">Voir ma commande</span></span>
+  <span id="barreTotal">0 FCFA</span>
+</button>
+
+<div class="voile" id="voile"></div>
+
+<div class="panneau" id="panneau">
+  <div class="poignee"></div>
+  <div id="vueCommande">
+    <div class="entete-panneau">
+      <div><h2 data-t="maCommande">Ma commande</h2><p id="sousPanneau"></p></div>
+      <button class="fermer" id="btnFermer" aria-label="Fermer"><i data-lucide="x">×</i></button>
+    </div>
+    <div id="lignesPanier"></div>
+    <div class="total-ligne"><span data-t="total">Total</span><span class="montant" id="panneauTotal">0 FCFA</span></div>
+
+    <div id="champsEmporter">
+      <div class="champ">
+        <label for="nom" data-t="tonNom">Ton nom (pour t'appeler)</label>
+        <input id="nom" placeholder="Prénom" autocomplete="given-name">
+      </div>
+      <div class="champ">
+        <label for="telephone" data-t="tonTel">Ton numéro</label>
+        <input type="tel" id="telephone" placeholder="+229 XX XX XX XX" inputmode="tel" autocomplete="tel">
+      </div>
+    </div>
+
+    <span class="etiquette-paiement" data-t="etPaiement">Paiement</span>
+    <div class="paiements" id="paiements"></div>
+    <button class="bouton-confirmer" id="btnCommander">Commander</button>
+    <p class="mention" data-t="mentionPaiement">Paiement sécurisé via Kkiapay.</p>
+  </div>
+
+  <div class="ecran-confirmation" id="ecranConfirmation">
+    <div class="soleil-ok"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 191 178"> <defs> <clipPath id="ok-clip"> <path clip-rule="nonzero" d="M 27 14 L 190.464844 14 L 190.464844 177.003906 L 27 177.003906 Z M 27 14 "/> </clipPath> </defs> <g clip-path="url(#ok-clip)"> <path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 31.738281 41.210938 C 38.699219 52.425781 45.9375 63.476562 53.015625 74.621094 C 55.007812 77.734375 57.722656 80.527344 60.972656 77.746094 C 62.40625 76.523438 62.316406 71.777344 61.164062 69.570312 C 55.644531 58.988281 49.71875 48.597656 43.523438 38.394531 C 41.214844 34.921875 38.402344 31.8125 35.179688 29.167969 C 34.113281 28.222656 31.609375 28.351562 30.007812 28.820312 C 29.074219 29.097656 28.617188 31.015625 27.910156 32.261719 C 29.222656 35.53125 30.078125 38.632812 31.699219 41.25 Z M 193.601562 149.601562 C 193.9375 148.386719 191.757812 145.464844 190.128906 144.839844 C 175.332031 139.101562 160.464844 133.53125 145.4375 128.421875 C 143.230469 127.664062 138.617188 128.777344 137.691406 130.410156 C 135.40625 134.546875 138.957031 136.734375 142.527344 138.097656 C 153.464844 142.261719 164.402344 146.4375 175.339844 150.484375 C 179.4375 152.007812 183.664062 153.191406 189.085938 154.921875 C 190.585938 153.269531 192.960938 151.6875 193.558594 149.601562 Z M 122.847656 82.339844 C 130.117188 72.625 137.316406 62.839844 144.316406 52.933594 C 146.566406 49.914062 148.324219 46.558594 149.527344 42.988281 C 150.171875 40.882812 148.890625 38.1875 148.460938 35.761719 C 146.554688 36.4375 143.886719 36.546875 142.855469 37.898438 C 133.902344 49.671875 125.152344 61.644531 116.492188 73.699219 C 115.058594 75.6875 113.65625 78.191406 113.507812 80.527344 C 113.410156 82.578125 115.140625 84.714844 116.492188 87.859375 C 119.484375 85.261719 121.503906 84.070312 122.847656 82.339844 M 100.691406 14.660156 C 99.308594 14.390625 96.246094 16.875 95.808594 18.636719 C 91.898438 34.210938 88.339844 49.871094 84.871094 65.542969 C 83.875 69.878906 83.957031 74.621094 89.414062 75.597656 C 95.28125 76.640625 95.949219 71.378906 96.753906 67.402344 C 98.324219 59.617188 99.476562 51.761719 100.730469 43.925781 C 101.984375 36.089844 103.277344 28.234375 104.828125 18.6875 C 103.953125 17.710938 102.558594 15.015625 100.710938 14.660156 Z M 143.835938 105.082031 C 152.070312 102.714844 160.367188 100.496094 168.46875 97.742188 C 175.164062 95.449219 181.71875 92.757812 188.089844 89.679688 C 189.480469 89 189.78125 86.058594 190.585938 84.160156 C 188.867188 83.484375 186.945312 81.921875 185.445312 82.25 C 170.160156 85.652344 154.9375 89.300781 139.703125 93.050781 C 137.433594 93.503906 135.335938 94.574219 133.636719 96.140625 C 132.003906 97.882812 130.117188 100.863281 130.652344 102.683594 C 131.1875 104.503906 134.433594 105.667969 136.003906 106.761719 C 139.382812 106.054688 141.660156 105.707031 143.859375 105.082031 Z M 105.84375 133.203125 C 106.15625 119.558594 95.351562 108.246094 81.707031 107.929688 C 81.621094 107.929688 81.535156 107.925781 81.449219 107.925781 C 66.953125 107.304688 54.695312 118.550781 54.078125 133.050781 C 54.0625 133.359375 54.054688 133.667969 54.054688 133.980469 C 54.21875 147.640625 65.25 158.671875 78.914062 158.839844 C 94.375 158.839844 105.742188 147.988281 105.863281 133.222656 Z M 128.8125 130.886719 C 128.554688 157.964844 106.539062 179.980469 79.925781 179.78125 C 52.082031 179.582031 30.117188 157.964844 30.335938 131.054688 C 30.554688 104.148438 53.585938 81.960938 80.941406 82.179688 C 107.339844 82.136719 128.777344 103.503906 128.820312 129.902344 C 128.820312 130.230469 128.820312 130.558594 128.8125 130.886719 "/> </g> </svg></div>
+    <p style="margin:0;font-size:14.5px;font-weight:700;" id="confTitre"></p>
+    <div class="code" id="codeAffiche">------</div>
+    <p class="instructions" id="confInstr"></p>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════════
+   MENU — carte V12 complète. ZONE ÉDITABLE (rédacteurs / traducteurs).
+   { id:'...', nom:{fr,en}, desc:{fr,en} (optionnel), prix:0 }
+   Termes du terroir (ayimolou, wangashi, maca, soto…) : gardés tels quels.
+   NB : source provisoire → sera externalisée vers Supabase.
+   ══════════════════════════════════════════════════════════════════════════ */
+const MENU=[
+ {id:'chaud',t:{fr:'Boissons chaudes & petit déj',en:'Hot drinks & breakfast'},articles:[
+  {id:'infusion',nom:{fr:'Infusion maison | Thé',en:'House infusion | Tea'},prix:1000},
+  {id:'cafe',nom:{fr:'Café moulu',en:'Ground coffee'},prix:1000},
+  {id:'expresso',nom:{fr:'Expresso',en:'Espresso'},prix:1500},
+  {id:'chocolat',nom:{fr:'Chocolat chaud',en:'Hot chocolate'},prix:1500},
+  {id:'bouillie',nom:{fr:'Bouillie locale',en:'Local porridge'},prix:500},
+  {id:'tapioca',nom:{fr:'Tapioca | Riz | Quaker au lait',en:'Tapioca | Rice | Quaker with milk'},prix:1000},
+  {id:'omelette',nom:{fr:'Omelette | au plat | brouillés',en:'Omelette | fried | scrambled eggs'},prix:1000},
+  {id:'continental',nom:{fr:'Petit déj continental',en:'Continental breakfast'},
+   desc:{fr:'Boisson chaude, pain, œufs, beurre/confiture, fruits coupés/jus',en:'Hot drink, bread, eggs, butter/jam, cut fruits/juice'},prix:3000}]},
+ {id:'cheznous',t:{fr:'De chez nous',en:'From home'},articles:[
+  {id:'ayimolou',nom:{fr:'Ayimolou | Atassi',en:'Ayimolou | Atassi'},
+   desc:{fr:'Riz aux haricots, friture de tomate, maca, gari, plantain frit, poisson frit, œuf, wangashi',
+         en:'Rice and beans, tomato sauce, spaghetti, gari, fried plantain, fried fish, egg, wangashi'},prix:2500},
+  {id:'rizyawa',nom:{fr:'Le riz de Yawa',en:"Yawa's rice"},
+   desc:{fr:'Riz, piment vert, sardine',en:'Rice, green chili, sardine'},prix:1500},
+  {id:'agou',nom:{fr:"Les délices d'Agou",en:'Agou delights'},
+   desc:{fr:'Igname bouillie, œufs brouillés…',en:'Boiled yam, scrambled eggs…'},prix:1500},
+  {id:'gari',nom:{fr:'Gari gnignan',en:'Gari gnignan'},
+   desc:{fr:'Semoule de manioc, omelette, piment vert, oignons et tomates',
+         en:'Cassava semolina, omelette, green chili, onions and tomatoes'},prix:1500}]},
+ {id:'sandwichs',t:{fr:'Sandwichs',en:'Sandwiches'},articles:[
+  {id:'cotonois',nom:{fr:'Cotonois',en:'Cotonois'},
+   desc:{fr:'Crudités, viande hachée',en:'Raw veggies, minced meat'},prix:2000},
+  {id:'peuhl',nom:{fr:'Peuhl',en:'Fulani'},
+   desc:{fr:'Crudités, fromage wangashi',en:'Raw veggies, wangashi cheese'},prix:2000},
+  {id:'parisien',nom:{fr:'Parisien',en:'Parisian'},
+   desc:{fr:'Beurre, jambon, emmental',en:'Butter, ham, Emmental'},prix:2000}]},
+ {id:'salades',t:{fr:'Salades',en:'Salads'},articles:[
+  {id:'ecoliere',nom:{fr:"L'écolière",en:'Classic Avocado'},
+   desc:{fr:'Avocat, tomates, oignons, sardine/œuf dur',en:'Avocado, tomatoes, onions, sardine/boiled egg'},prix:1500},
+  {id:'sahelienne',nom:{fr:'La Sahélienne',en:'Sahelian'},
+   desc:{fr:'Laitue, carottes, tomates, maïs doux, cornichons, wangashi',
+         en:'Lettuce, carrots, tomatoes, sweet corn, pickles, wangashi'},prix:2500},
+  {id:'fresh',nom:{fr:'La Fresh',en:'La Fresh'},
+   desc:{fr:'Riz/pasta, concombre, carottes, mangue/melon, tomates, poulet',
+         en:'Rice/pasta, cucumber, carrots, mango/melon, tomatoes, chicken'},prix:2500}]},
+ {id:'brochettes',t:{fr:'Brochettes',en:'Skewers'},articles:[
+  {id:'br-wangashi',nom:{fr:'Brochette de wangashi',en:'Wangashi skewer'},desc:{fr:'La tige',en:'Per stick'},prix:1000},
+  {id:'br-boeuf',nom:{fr:'Brochette de filet de bœuf',en:'Beef fillet skewer'},desc:{fr:'La tige',en:'Per stick'},prix:1000},
+  {id:'br-soja',nom:{fr:'Brochette de soja',en:'Soy skewer'},desc:{fr:'La tige',en:'Per stick'},prix:500}]},
+ {id:'accompagnements',t:{fr:'Accompagnements',en:'Sides'},articles:[
+  {id:'ac-riz',nom:{fr:'Riz',en:'Rice'},prix:1000},
+  {id:'ac-legumes',nom:{fr:'Légumes sautés',en:'Sautéed vegetables'},prix:1000},
+  {id:'ac-pommes',nom:{fr:'Pommes sautées',en:'Sautéed potatoes'},prix:1000},
+  {id:'ac-frites',nom:{fr:'Frites',en:'Fries'},desc:{fr:'Igname, pomme de terre ou patate douce',en:'Yam, potato or sweet potato'},prix:1000},
+  {id:'ac-amadan',nom:{fr:'Amadan',en:'Amadan'},desc:{fr:'Plantain frit',en:'Fried plantain'},prix:1000}]},
+ {id:'desserts',t:{fr:'Desserts',en:'Desserts'},articles:[
+  {id:'fruits',nom:{fr:'Salade de fruits',en:'Fruit salad'},desc:{fr:'Selon saison',en:'Seasonal'},prix:1000},
+  {id:'laitcaille',nom:{fr:'Lait caillé façon Yawa',en:"Yawa's curdled milk"},
+   desc:{fr:'Fruits frais, topping au choix : coco râpé, kluiklui, cocanda…',
+         en:'Fresh fruits, topping of your choice: grated coconut, kluiklui, cocanda…'},prix:1500}]},
+ {id:'boissons',t:{fr:'Boissons',en:'Drinks'},articles:[
+  {id:'eau03',nom:{fr:'Eau 0,3 L',en:'Water 0.3 L'},prix:300},
+  {id:'eau15',nom:{fr:'Eau 1,5 L',en:'Water 1.5 L'},prix:1000},
+  {id:'limonade',nom:{fr:'Limonade',en:'Lemonade'},prix:500},
+  {id:'bissap',nom:{fr:'Bissap de Yawa',en:"Yawa's bissap"},prix:500},
+  {id:'ananas',nom:{fr:"Jus d'ananas",en:'Pineapple juice'},prix:1200},
+  {id:'orange',nom:{fr:"Jus d'orange",en:'Orange juice'},prix:1200},
+  {id:'pasteque',nom:{fr:'Jus de pastèque',en:'Watermelon juice'},prix:1200},
+  {id:'gingembre',nom:{fr:'Jus de gingembre',en:'Ginger juice'},prix:2000},
+  {id:'coca',nom:{fr:'Coca',en:'Coke'},prix:1000},
+  {id:'sobebra',nom:{fr:'Sucrerie Sobebra',en:'Sobebra soft drink'},prix:1000},
+  {id:'chill',nom:{fr:'Chill Citron',en:'Chill Citron'},prix:1000},
+  {id:'beninoise',nom:{fr:'Béninoise',en:'Béninoise'},prix:1000},
+  {id:'beaufort',nom:{fr:'Beaufort',en:'Beaufort'},prix:1000},
+  {id:'tequila',nom:{fr:'Tequila',en:'Tequila'},prix:1000}]},
+ {id:'shots',t:{fr:'Shots — les Soto',en:'Shots — the Soto'},articles:[
+  {id:'sweetsoto',nom:{fr:'Sweet Soto',en:'Sweet Soto'},
+   desc:{fr:'Liqueur de vin de palme macéré de dattes & de souchet',en:'Palm-wine liqueur infused with dates & tiger nut'},prix:1000},
+  {id:'softsoto',nom:{fr:'Soft Soto',en:'Soft Soto'},
+   desc:{fr:'Liqueur de vin de palme, dattes, café de dattes & poivre africain',en:'Palm-wine liqueur, dates, date-coffee & African pepper'},prix:1000},
+  {id:'spicysoto',nom:{fr:'Spicy Soto',en:'Spicy Soto'},
+   desc:{fr:'Liqueur de vin de palme macéré de dattes et de piment',en:'Palm-wine liqueur infused with dates & chili'},prix:1000}]}
+];
+
+const TEXTES={
+ fr:{titre:'La carte',voirCommande:'Voir ma commande',maCommande:'Ma commande',total:'Total',
+  tonNom:"Ton nom (pour t'appeler)",tonTel:'Ton numéro',etPaiement:'Paiement',
+  mentionPaiement:'Paiement sécurisé via Kkiapay.',payer:'Payer',commander:'Commander',
+  momo:'MTN MoMo',moov:'Moov Money',carte:'Carte bancaire',cashComptoir:'Au comptoir',cashTable:'À la table',
+  sousEmporter:"Commande sans compte — on t'appelle quand c'est prêt.",
+  sousSurplace:n=>`Table ${n} · on t'apporte ça directement.`,
+  badgeEmporter:'À emporter',badgeTable:n=>`Table ${n}`,
+  sousPanneauEmporter:'Vérifie, puis passe commande.',
+  sousPanneauSurplace:n=>`Service à la table ${n}.`,
+  confTitreEmporter:"C'est commandé. La cuisine s'y met.",
+  confTitreSurplace:"C'est noté. On s'occupe de toi.",
+  confInstrEmporter:"Donne ce code au comptoir. On t'appelle par ton prénom quand c'est prêt.",
+  confInstrSurplace:n=>`Ta commande arrive à la table ${n}. Ce code, c'est ton reçu.`,
+  champsRequis:"Ton prénom et un numéro valide, et c'est parti !"},
+ en:{titre:'The menu',voirCommande:'View my order',maCommande:'My order',total:'Total',
+  tonNom:'Your name (so we can call you)',tonTel:'Your number',etPaiement:'Payment',
+  mentionPaiement:'Secure payment via Kkiapay.',payer:'Pay',commander:'Place order',
+  momo:'MTN MoMo',moov:'Moov Money',carte:'Bank card',cashComptoir:'At the counter',cashTable:'At the table',
+  sousEmporter:"Order without an account — we'll call you when it's ready.",
+  sousSurplace:n=>`Table ${n} · we'll bring it right to you.`,
+  badgeEmporter:'Takeaway',badgeTable:n=>`Table ${n}`,
+  sousPanneauEmporter:'Check it, then place your order.',
+  sousPanneauSurplace:n=>`Table service at table ${n}.`,
+  confTitreEmporter:'Order placed. The kitchen is on it.',
+  confTitreSurplace:"Got it. We're taking care of you.",
+  confInstrEmporter:"Give this code at the counter. We'll call your name when it's ready.",
+  confInstrSurplace:n=>`Your order is on its way to table ${n}. This code is your receipt.`,
+  champsRequis:'Your first name and a valid number, and off we go!'}
+};
+
+/* ---------- Contexte (décision Mika 23/07 : QR à table = sur place) ---------- */
+const params=new URLSearchParams(location.search);
+const tableParam=params.get('table');
+const numeroTable=tableParam?tableParam.replace(/[^0-9A-Za-z]/g,'').slice(0,4):null;
+const modeService=numeroTable?'surplace':'emporter';
+
+let langue='fr',moyenPaiement=modeService==='surplace'?'cash':'momo';
+const panier={};
+
+function majIcones(){if(window.lucide)lucide.createIcons();}
+function fmt(n){return n.toLocaleString(langue==='fr'?'fr-FR':'en-US');}
+function trouverArticle(id){for(const c of MENU){const a=c.articles.find(x=>x.id===id);if(a)return a;}return null;}
+
+/* ---------- Contexte + langue appliqués au DOM ---------- */
+function appliquerContexte(){
+ const t=TEXTES[langue];
+ const badge=document.getElementById('badgeContexte');
+ if(modeService==='surplace'){
+  badge.innerHTML=`<span class="badge-table"><i data-lucide="map-pin">•</i>${t.badgeTable(numeroTable)}</span>`;
+  document.getElementById('sousTitre').textContent=t.sousSurplace(numeroTable);
+  document.getElementById('sousPanneau').textContent=t.sousPanneauSurplace(numeroTable);
+  document.getElementById('champsEmporter').style.display='none';
+ }else{
+  badge.innerHTML=`<span class="badge-emporter"><i data-lucide="shopping-bag">•</i>${t.badgeEmporter}</span>`;
+  document.getElementById('sousTitre').textContent=t.sousEmporter;
+  document.getElementById('sousPanneau').textContent=t.sousPanneauEmporter;
+  document.getElementById('champsEmporter').style.display='block';
+ }
+}
+function appliquerLangue(){
+ const t=TEXTES[langue];
+ document.querySelectorAll('[data-t]').forEach(el=>{const v=t[el.dataset.t];if(typeof v==='string')el.textContent=v;});
+ document.documentElement.lang=langue;
+ appliquerContexte();dessinerCategories();dessinerMenu();majPanier();
+}
+document.getElementById('btnLangue').addEventListener('click',()=>{
+ langue=langue==='fr'?'en':'fr';
+ document.getElementById('btnLangue').textContent=langue==='fr'?'EN':'FR';
+ appliquerLangue();majIcones();
+});
+
+/* ---------- Onglets = ancres ---------- */
+function dessinerCategories(){
+ const c=document.getElementById('categories');
+ c.innerHTML=MENU.map(cat=>`<button class="cat" data-cat="${cat.id}">${cat.t[langue]}</button>`).join('');
+ c.querySelectorAll('.cat').forEach(btn=>btn.addEventListener('click',()=>{
+  activerOnglet(btn.dataset.cat);
+  document.getElementById('sec-'+btn.dataset.cat).scrollIntoView({behavior:'smooth'});}));
+}
+function dessinerMenu(){
+ document.getElementById('listeMenu').innerHTML=MENU.map(cat=>`
+  <section class="section-menu" id="sec-${cat.id}">
+   <h3>${cat.t[langue]}</h3>
+   ${cat.articles.map(a=>{
+    const q=panier[a.id]||0;
+    return `<div class="article">
+     <div class="infos">
+      <div class="nom">${a.nom[langue]}</div>
+      ${a.desc?`<div class="desc">${a.desc[langue]}</div>`:''}
+      <div class="prix">${fmt(a.prix)} FCFA</div>
+     </div>
+     ${q===0
+      ?`<button class="btn-plus" data-plus="${a.id}" aria-label="Ajouter"><i data-lucide="plus">+</i></button>`
+      :`<div class="stepper"><button data-moins="${a.id}" aria-label="Retirer"><i data-lucide="minus">−</i></button><span>${q}</span><button data-plus="${a.id}" aria-label="Ajouter"><i data-lucide="plus">+</i></button></div>`}
+    </div>`;}).join('')}
+  </section>`).join('');
+ document.querySelectorAll('[data-plus]').forEach(b=>b.addEventListener('click',()=>{
+  panier[b.dataset.plus]=(panier[b.dataset.plus]||0)+1;dessinerMenu();majPanier();}));
+ document.querySelectorAll('[data-moins]').forEach(b=>b.addEventListener('click',()=>{
+  const id=b.dataset.moins;panier[id]=Math.max(0,(panier[id]||0)-1);
+  if(panier[id]===0)delete panier[id];
+  dessinerMenu();majPanier();}));
+ majOngletActif();majIcones();
+}
+function activerOnglet(id){
+ document.querySelectorAll('.cat').forEach(b=>b.classList.toggle('actif',b.dataset.cat===id));
+}
+function majOngletActif(){
+ const ligne=122;let courant=MENU[0].id;
+ document.querySelectorAll('.section-menu').forEach(s=>{
+  if(s.getBoundingClientRect().top<=ligne)courant=s.id.slice(4);});
+ activerOnglet(courant);
+}
+let defilementPrevu=false;
+window.addEventListener('scroll',()=>{
+ if(defilementPrevu)return;defilementPrevu=true;
+ requestAnimationFrame(()=>{majOngletActif();defilementPrevu=false;});
+},{passive:true});
+
+/* ---------- Panier ---------- */
+function totalPanier(){return Object.entries(panier).reduce((s,[id,q])=>s+trouverArticle(id).prix*q,0);}
+function qtePanier(){return Object.values(panier).reduce((s,q)=>s+q,0);}
+function majPanier(){
+ const qte=qtePanier();
+ document.getElementById('barrePanier').classList.toggle('cachee',qte===0);
+ document.getElementById('badgeQte').textContent=qte;
+ document.getElementById('barreTotal').textContent=fmt(totalPanier())+' FCFA';
+}
+
+const panneau=document.getElementById('panneau'),voile=document.getElementById('voile');
+function ouvrir(){
+ document.getElementById('lignesPanier').innerHTML=Object.entries(panier).map(([id,q])=>{
+  const a=trouverArticle(id);
+  return `<div class="ligne-panier"><span>${a.nom[langue]} <span class="qte">× ${q}</span></span>
+   <span class="montant">${fmt(a.prix*q)} FCFA</span></div>`;}).join('');
+ document.getElementById('panneauTotal').textContent=fmt(totalPanier())+' FCFA';
+ dessinerPaiements();
+ panneau.classList.add('visible');voile.classList.add('visible');majIcones();
+}
+function fermer(){panneau.classList.remove('visible');voile.classList.remove('visible');}
+document.getElementById('barrePanier').addEventListener('click',ouvrir);
+document.getElementById('btnFermer').addEventListener('click',fermer);
+voile.addEventListener('click',fermer);
+
+/* ---------- Paiement ---------- */
+function moyensDispo(){
+ const t=TEXTES[langue];
+ return {momo:t.momo,moov:t.moov,carte:t.carte,
+  cash:modeService==='surplace'?t.cashTable:t.cashComptoir};
+}
+function dessinerPaiements(){
+ const c=document.getElementById('paiements'),moyens=moyensDispo();
+ if(!moyens[moyenPaiement])moyenPaiement='momo';
+ c.innerHTML=Object.entries(moyens).map(([id,nom])=>
+  `<button class="chip-p ${id===moyenPaiement?'actif':''}" data-moyen="${id}">${nom}</button>`).join('');
+ c.querySelectorAll('.chip-p').forEach(b=>b.addEventListener('click',()=>{
+  moyenPaiement=b.dataset.moyen;dessinerPaiements();}));
+ majBoutonCommander();
+}
+function majBoutonCommander(){
+ const t=TEXTES[langue];
+ document.getElementById('btnCommander').textContent=
+  moyenPaiement==='cash'?t.commander:`${t.payer} ${fmt(totalPanier())} FCFA`;
+}
+
+function genererCode(){
+ const car='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+ return Array.from({length:6},()=>car[Math.floor(Math.random()*car.length)]).join('');
+}
+
+document.getElementById('btnCommander').addEventListener('click',()=>{
+ const t=TEXTES[langue];
+ let nom=null,tel=null;
+ if(modeService==='emporter'){
+  nom=document.getElementById('nom').value.trim();
+  tel=document.getElementById('telephone').value.trim();
+  if(nom.length<2||tel.length<8){alert(t.champsRequis);return;}
+ }
+ const code=genererCode();
+
+ /* Charge utile — préfigure le modèle de données Supabase (table `commandes`).
+    Production : moyen digital → widget Kkiapay (momo/moov/carte) → webhook
+    Kkiapay → Edge Function Supabase → statut 'payee' + reference_paiement.
+    'cash' (au comptoir / à la table) → insert direct, statut 'en_attente'.
+    Puis notification à l'équipe cuisine (avec le n° de table si sur place). */
+ const commande={
+  code,
+  mode:modeService,                 // 'surplace' | 'emporter'
+  table:numeroTable,                // n° de table (sur place) sinon null
+  articles:Object.entries(panier).map(([id,q])=>({id,qte:q,prix:trouverArticle(id).prix})),
+  total:totalPanier(),
+  moyen_paiement:moyenPaiement,
+  statut:moyenPaiement==='cash'?'en_attente':'a_payer',
+  client:{nom,tel},
+  langue
+ };
+ console.log('[commande] à envoyer vers Supabase :',commande);
+
+ document.getElementById('vueCommande').style.display='none';
+ document.getElementById('codeAffiche').textContent=code;
+ document.getElementById('confTitre').textContent=
+  modeService==='surplace'?t.confTitreSurplace:t.confTitreEmporter;
+ document.getElementById('confInstr').textContent=
+  modeService==='surplace'?t.confInstrSurplace(numeroTable):t.confInstrEmporter;
+ document.getElementById('ecranConfirmation').classList.add('visible');
+});
+
+/* ---------- Init ---------- */
+appliquerLangue();majPanier();
+window.addEventListener('DOMContentLoaded',majIcones);
+window.addEventListener('load',majIcones);
+</script>
+</body>
+</html>
