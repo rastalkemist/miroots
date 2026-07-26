@@ -23,14 +23,6 @@ Double-cliquer `index.html` (accueil) ou `bar.html` (bar) dans un navigateur. Au
 
 Les `.woff2` / `.woff` Museo se déposent dans `fonts/` (voir `fonts/README.md`). **Tant qu'elles sont absentes, l'app fonctionne quand même** : le repli **Roboto** (acté) prend le relais, `MuseoModerno` reste servie par Google Fonts. Rien ne casse.
 
-## Règle d'or — aucun secret dans ce dépôt
-
-Ce dépôt est **public**. On n'y met **jamais** de clé ni de secret : les clés **Supabase** et **Kkiapay** vivent côté serveur (Edge Functions / variables d'environnement), jamais dans le code du site. Voir `.gitignore`.
-
-## Sources de vérité (hors dépôt public)
-
-La **Bible de marque** (le pourquoi), le **Design System** (le quoi) et les documents stratégiques/financiers restent dans le projet Roots.bj (et/ou un dépôt **privé**). En cas de doute sur une décision de marque, la Bible fait foi.
-
 ## Versionnement
 
 C'est Git qui porte l'historique : les suffixes de version dans les noms de fichiers (ex. `mi-roots-v5.html`) sont abandonnés au profit de `index.html` — l'historique des versions vit dans les commits.
