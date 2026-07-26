@@ -1,0 +1,142 @@
+#!/bin/sh
+# ─────────────────────────────────────────────────────────────
+# pre-commit — garde-fou de compartimentage Roots
+# Bloque : fichiers internes indexés, motifs de la denylist,
+#          secrets connus, JS invalide.
+#
+# Principe : FAIL-CLOSED. Sans denylist lisible, rien ne passe.
+# Contournement d'urgence : git commit --no-verify (à ne jamais
+# utiliser sans avoir relu le diff ligne à ligne).
+# ─────────────────────────────────────────────────────────────
+set -u
+
+DENYLIST="../roots-interne/denylist.txt"
+FAIL=0
+
+rouge() { printf '\033[1;31m%s\033[0m\n' "$1"; }
+jaune() { printf '\033[1;33m%s\033[0m\n' "$1"; }
+vert()  { printf '\033[1;32m%s\033[0m\n' "$1"; }
+
+# ── 1. Fail-closed : pas de denylist, pas de commit ──────────
+if [ ! -f "$DENYLIST" ]; then
+  rouge "═══ COMMIT BLOQUÉ ═══"
+  echo "Denylist introuvable : $DENYLIST"
+  echo ""
+  echo "Le garde-fou refuse de s'exécuter à l'aveugle. Un hook qui"
+  echo "laisse passer faute de règles est pire que pas de hook."
+  echo ""
+  echo "Restaure ../roots-interne/denylist.txt — dossier VOISIN du dépôt."
+  exit 1
+fi
+
+# ── 2. Aucun fichier du compartiment interne ne doit être indexé ──
+INTERNES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^_internal/' || true)
+if [ -n "$INTERNES" ]; then
+  rouge "═══ COMMIT BLOQUÉ ═══"
+  echo "Des fichiers du compartiment interne sont indexés :"
+  printf '%s\n' "$INTERNES" | sed 's/^/  → /'
+  echo ""
+  echo "Retire-les de l'index :  git reset HEAD _internal/"
+  FAIL=1
+fi
+
+# ── 3. Lignes AJOUTÉES uniquement (le retrait d'un secret est permis) ──
+# Le garde-fou et la denylist contiennent les motifs par nécessité :
+# les scanner reviendrait à s'auto-bloquer. Ils sont exclus du scan de
+# CONTENU — jamais du contrôle de CHEMIN de l'étape 2, qui reste entier.
+AJOUTS=$(git diff --cached -U0 --diff-filter=ACMR -- . \
+  ':(exclude).githooks/*' ':(exclude).gitignore' \
+  | grep -E '^\+' | grep -vE '^\+\+\+' || true)
+
+if [ -n "$AJOUTS" ]; then
+
+  # Sous-ensemble sans les lignes « techniquement légitimes » : celles
+  # qui portent une URL ou une affectation de configuration. Sert aux
+  # motifs préfixés @runtime-ok: — la mention à l'exécution est admise,
+  # la mention en prose ne l'est pas (arbitrage Mika du 26/07).
+  AJOUTS_PROSE=$(printf '%s\n' "$AJOUTS" \
+    | grep -vE 'https?://' \
+    | grep -vE '^\+[[:space:]]*(const|let|var|export|import)[[:space:]]' \
+    | grep -vE '(_URL|_KEY|_ENDPOINT|_HOST)[[:space:]]*[:=]' || true)
+
+  # 3a. Motifs de la denylist (noms de personnes, stratégie, etc.)
+  while IFS= read -r motif || [ -n "$motif" ]; do
+    case "$motif" in ''|\#*) continue ;; esac
+
+    CIBLE="$AJOUTS"
+    ETIQ=""
+    case "$motif" in
+      @runtime-ok:*)
+        motif=${motif#@runtime-ok:}
+        CIBLE="$AJOUTS_PROSE"
+        ETIQ=" (prose seulement — la mention à l'exécution est admise)"
+        ;;
+    esac
+
+    HITS=$(printf '%s\n' "$CIBLE" | grep -iE -- "$motif" || true)
+    if [ -n "$HITS" ]; then
+      if [ "$FAIL" -eq 0 ]; then rouge "═══ COMMIT BLOQUÉ ═══"; fi
+      echo ""
+      jaune "Motif interdit détecté : $motif$ETIQ"
+      printf '%s\n' "$HITS" | head -5 | sed 's/^/  → /'
+      FAIL=1
+    fi
+  done < "$DENYLIST"
+
+  # 3b. Secrets à forme reconnaissable (indépendant de la denylist)
+  # « service_role » seul est le NOM d'un rôle Supabase, pas un secret :
+  # le citer en prose est légitime. Ce qui est secret, c'est la clé — un
+  # JWT — attrapée par le motif eyJ…, ou une affectation explicite.
+  # Longueurs volontairement PERMISSIVES (leçon de l'épreuve du 26/07) :
+  # exiger la longueur canonique laisse passer un jeton tronqué, une
+  # variante de format ou un copier-coller incomplet. Une défense doit
+  # être large sur ce qu'elle attrape ; le faux positif est ici sans coût.
+  SECRETS="sbp_[A-Za-z0-9]{12,}
+sb(p|s)_[a-z]+_[A-Za-z0-9]{12,}
+service_[_-]?role[_-]?key[\"'\''[:space:]]*[:=]
+eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}
+-----BEGIN [A-Z ]*PRIVATE KEY-----
+(sk|pk|rk)_(live|test|prod)?_?[A-Za-z0-9]{12,}
+gh[pousr]_[A-Za-z0-9]{12,}
+xox[baprs]-[A-Za-z0-9-]{10,}
+AKIA[0-9A-Z]{12,}
+AIza[0-9A-Za-z_-]{20,}
+(api[_-]?key|secret|password|passwd|mot[_-]?de[_-]?passe)[\"'\''[:space:]]*[:=][\"'\''[:space:]]*[A-Za-z0-9/+=_-]{12,}"
+
+  printf '%s\n' "$SECRETS" | while IFS= read -r motif; do
+    [ -z "$motif" ] && continue
+    HITS=$(printf '%s\n' "$AJOUTS" | grep -iE -- "$motif" || true)
+    if [ -n "$HITS" ]; then
+      rouge "═══ SECRET POTENTIEL DÉTECTÉ ═══"
+      jaune "Motif : $motif"
+      printf '%s\n' "$HITS" | head -3 | sed 's/^/  → /'
+      echo ""
+      echo "RAPPEL : poussé = public pour toujours. Si ce secret a déjà"
+      echo "été poussé, le retirer ne suffit pas — il faut le FAIRE TOURNER."
+      exit 1
+    fi
+  done || FAIL=1
+fi
+
+# ── 4. node --check sur le JS indexé (convention de travail) ──
+if command -v node >/dev/null 2>&1; then
+  for f in $(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.js$' || true); do
+    [ -f "$f" ] || continue
+    if ! node --check "$f" >/dev/null 2>&1; then
+      rouge "═══ COMMIT BLOQUÉ ═══"
+      echo "JS invalide : $f"
+      node --check "$f" 2>&1 | sed 's/^/  /'
+      FAIL=1
+    fi
+  done
+fi
+
+# ── Verdict ──────────────────────────────────────────────────
+if [ "$FAIL" -ne 0 ]; then
+  echo ""
+  echo "En cas de doute : ne pas commiter, demander."
+  exit 1
+fi
+
+vert "✓ Garde-fou de compartimentage : rien à signaler."
+exit 0

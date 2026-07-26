@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────────
+# Roots / miroots — dépôt PUBLIC (sert GitHub Pages)
+# Règle Mika du 24/07 : sécurité et compartimentation avant tout.
+# Deny-by-default. Le privé ne passe jamais au public.
+# ─────────────────────────────────────────────────────────────
+
+# ── Compartiment interne : ne doit JAMAIS être versionné ──
+_internal/
+_internal/**
+
+# ── Secrets ──
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+secrets.*
+*secret*.json
+*credentials*.json
+service_role*
+*.token
+
+# ── Sauvegardes et exports de base ──
+*.sql.gz
+*.dump
+*.bak
+backup/
+dumps/
+
+# ── Dépendances et build ──
+node_modules/
+dist/
+build/
+.cache/
+*.log
+npm-debug.log*
+
+# ── Systèmes et éditeurs ──
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*~
+
+# ── Archives lourdes (le bundle zip que Git a remplacé) ──
+*.zip
+*.rar
+*.7z
+
+# ── Fichiers de travail ──
+brouillon*
+draft*
+*_wip.*
+*_prive.*
