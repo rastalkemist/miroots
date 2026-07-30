@@ -61,7 +61,7 @@
 <main id="contenu"></main>
 
 <!-- Bouton (+) focal -->
-<button class="fab" id="fab" aria-label="Réserver ou commander"><svg class="i"><use href="#i-plus"/></svg></button>
+<button class="fab" id="fab" data-t="reserver">Réserver</button>
 
 <!-- Super-nav des 3 verbes -->
 <nav class="chrome-bas" id="superNav">
@@ -108,14 +108,14 @@
         <input id="nomResa" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
       <div class="champ groupe"><label for="telResa" data-t="tel">Ton numéro (pour te confirmer)</label>
         <input type="tel" id="telResa" autocomplete="tel"></div>
-      <div class="recap" id="recapResa"><span id="recapTexte"></span>
+      <div class="recap" id="recapResa">
+        <span class="titre" data-t="totalTitre">Total</span>
+        <span id="recapTexte"></span>
         <span class="total" id="recapTotal"></span></div>
-      <p class="sans-frais" data-t="sansFrais">Rien de plus ne s'ajoute.</p>
       <p class="consent" id="texteConsentResa"></p>
-      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
       <button class="bouton-confirmer" id="btnResa" disabled data-t="reserver">Réserver</button>
       <p class="erreur" id="erreurResa" role="alert" aria-live="polite"></p>
-      <p class="mention" data-t="sansCompte">Aucun compte requis. Ton code de confirmation suffit.</p>
+      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
     </div>
     <div class="confirmation" id="confResa">
       <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
@@ -142,10 +142,9 @@
       <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label>
         <input type="tel" id="telCmd" autocomplete="tel"></div>
       <p class="consent" id="texteConsentCmd"></p>
-      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
       <button class="bouton-confirmer" id="btnCmd" disabled data-t="commander">Commander</button>
       <p class="erreur" id="erreurCmd" role="alert" aria-live="polite"></p>
-      <p class="mention" data-t="cmdMention">Paiement au comptoir. Sans compte.</p>
+      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
     </div>
     <div class="confirmation" id="confCmd">
       <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
@@ -179,7 +178,6 @@
       etPersonnes: 'Combien serez-vous ?', etService: 'Service',
       tel: 'Ton numéro (pour te confirmer)', tonNomResa: 'Ton prénom', pNom: 'Ton prénom',
       reserver: 'Réserver',
-      sansCompte: 'Aucun compte requis. Ton code de confirmation suffit.',
       cestReserve: "C'est réservé. On t'attend.",
       instrResa: "Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.",
       voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
@@ -191,10 +189,9 @@
       partage: 'partagé', reunion_privee: 'privé', prive: 'privé',
       jusqua: function (n) { return "jusqu'à " + n + ' personne' + (n > 1 ? 's' : ''); },
       parPers: ' / pers.', monnaie: 'FCFA',
-      complet: 'Complet sur ce créneau.', priveOccupe: 'Privatisé sur ce créneau.',
-      resteDeLaPlace: 'Il reste de la place.', sansFrais: "Rien de plus ne s'ajoute.",
+      complet: "C'est complet, une prochaine fois !", priveOccupe: 'Privatisé sur ce créneau.',
       refuseGarde: "Envoi impossible pour le moment. Réessaie dans un instant.",
-      maxAtteint: 'Maximum atteint',
+      maxAtteint: 'Maximum atteint', totalTitre: 'Total',
       onRegarde: 'On regarde…', onReserve: 'On réserve…', onEnvoie: 'On envoie…',
       aujourdhui: "Aujourd'hui", demain: 'Demain',
       sur_place: 'Sur place', emporter: 'À emporter',
@@ -219,7 +216,6 @@
       etPersonnes: 'How many of you?', etService: 'Service',
       tel: 'Your number (to confirm)', tonNomResa: 'Your first name', pNom: 'Your first name',
       reserver: 'Book now',
-      sansCompte: 'No account needed. Your confirmation code is enough.',
       cestReserve: 'Booked. See you soon.',
       instrResa: 'Show this code at the front desk. Keep it: it lets you retrieve your booking, even without an account.',
       voirDetail: 'See full menu →', cmdTotal: 'Order total',
@@ -231,10 +227,9 @@
       partage: 'shared', reunion_privee: 'private', prive: 'private',
       jusqua: function (n) { return 'up to ' + n + ' person' + (n > 1 ? 's' : ''); },
       parPers: ' / person', monnaie: 'FCFA',
-      complet: 'Fully booked for this slot.', priveOccupe: 'Booked privately for this slot.',
-      resteDeLaPlace: 'Still available.', sansFrais: 'Nothing else is added.',
+      complet: 'Fully booked — another time!', priveOccupe: 'Booked privately for this slot.',
       refuseGarde: 'Cannot send right now. Try again in a moment.',
-      maxAtteint: 'Maximum reached',
+      maxAtteint: 'Maximum reached', totalTitre: 'Total',
       onRegarde: 'Checking…', onReserve: 'Booking…', onEnvoie: 'Sending…',
       aujourdhui: 'Today', demain: 'Tomorrow',
       sur_place: 'Eat in', emporter: 'Takeaway',
@@ -400,14 +395,14 @@
     /* Un seul créneau possible : le choix n'en est pas un, on ne le demande pas. */
     $('groupeCreneaux').style.display = liste.length > 1 ? '' : 'none';
     liste.forEach(function (c) {
-      var tarif = tarifDe(resa.offre, c);
       var b = document.createElement('button');
       b.type = 'button';
       b.className = 'chip' + (resa.creneau === c ? ' actif' : '');
       b.setAttribute('aria-pressed', resa.creneau === c ? 'true' : 'false');
-      b.innerHTML = '<span class="lib"></span><span class="sous"></span>';
+      /* La pastille porte le creneau, pas son prix : a trois par ligne elle
+         reste lisible, et le total s'affiche des qu'un creneau est choisi. */
+      b.innerHTML = '<span class="lib"></span>';
       b.querySelector('.lib').textContent = libelleCreneau(c);
-      b.querySelector('.sous').textContent = prix(tarif.prix) + (tarif.parPersonne ? t().parPers : '');
       b.addEventListener('click', function () { resa.creneau = c; resa.creneauDit = true; dessinerCreneaux(); interroger(); });
       z.appendChild(b);
     });
@@ -464,7 +459,7 @@
         /* On dit qu'il reste de la place, jamais combien : la salle tient plus
            que ce qu'elle ouvre, et le nombre poserait une question qui n'a pas
            lieu d'etre. */
-        $('jauge').textContent = t().resteDeLaPlace;
+        $('jauge').textContent = '';
       } else {
         $('jauge').textContent = '';
       }

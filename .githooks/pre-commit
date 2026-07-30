@@ -46,9 +46,25 @@ fi
 # Le garde-fou et la denylist contiennent les motifs par nécessité :
 # les scanner reviendrait à s'auto-bloquer. Ils sont exclus du scan de
 # CONTENU — jamais du contrôle de CHEMIN de l'étape 2, qui reste entier.
+# ── Normalisation Unicode ─────────────────────────────────────────────
+# Un accent peut s'ecrire d'une seule piece, ou comme la lettre suivie
+# d'un signe. Les deux se ressemblent a l'ecran et ne se ressemblent pas
+# a la comparaison : sans cette etape, la seconde forme traverse tous les
+# motifs. On ramene le texte a une forme unique avant de comparer.
+# Sans normaliseur disponible, on continue et on le DIT : un filet dont
+# on ignore la portee est pire qu'un filet troue.
+normaliser_nfc() {
+  if perl -CSD -MUnicode::Normalize -e1 >/dev/null 2>&1; then
+    perl -CSD -MUnicode::Normalize -pe '$_ = NFC($_)'
+  else
+    printf '%s\n' "  ! normaliseur Unicode absent : la forme decomposee d'un accent n'est pas couverte" >&2
+    cat
+  fi
+}
+
 AJOUTS=$(git diff --cached -U0 --diff-filter=ACMR -- . \
   ':(exclude).githooks/*' ':(exclude).gitignore' \
-  | grep -E '^\+' | grep -vE '^\+\+\+' || true)
+  | grep -E '^\+' | grep -vE '^\+\+\+' | normaliser_nfc || true)
 
 if [ -n "$AJOUTS" ]; then
 

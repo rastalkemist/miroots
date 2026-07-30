@@ -10,6 +10,23 @@
 # ─────────────────────────────────────────────────────────────
 set -u
 
+# ── Normalisation Unicode ─────────────────────────────────────────────
+# Un accent peut s'ecrire d'une seule piece, ou comme la lettre suivie
+# d'un signe. Les deux se ressemblent a l'ecran et ne se ressemblent pas
+# a la comparaison : sans cette etape, la seconde forme traverse tous les
+# motifs. On ramene le texte a une forme unique avant de comparer.
+# Sans normaliseur disponible, on continue et on le DIT : un filet dont
+# on ignore la portee est pire qu'un filet troue.
+normaliser_nfc() {
+  if perl -CSD -MUnicode::Normalize -e1 >/dev/null 2>&1; then
+    perl -CSD -MUnicode::Normalize -pe '$_ = NFC($_)'
+  else
+    printf '%s\n' "  ! normaliseur Unicode absent : la forme decomposee d'un accent n'est pas couverte" >&2
+    cat
+  fi
+}
+
+
 # Fichier de règles, dans un dossier VOISIN du dépôt et jamais versionné.
 # Adapter ce chemin si le dossier porte un autre nom.
 DENYLIST="${ROOTS_REGLES:-../roots-interne/denylist.txt}"
@@ -54,7 +71,7 @@ while read -r ref_locale sha_local ref_distante sha_distant; do
     FAIL=1
   fi
 
-  AJOUTS=$(printf '%s\n' "$DIFF" | grep -E '^\+' | grep -vE '^\+\+\+' || true)
+  AJOUTS=$(printf '%s\n' "$DIFF" | grep -E '^\+' | grep -vE '^\+\+\+' | normaliser_nfc || true)
   [ -z "$AJOUTS" ] && continue
 
   AJOUTS_PROSE=$(printf '%s\n' "$AJOUTS" \

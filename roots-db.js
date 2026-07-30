@@ -231,6 +231,31 @@ window.Roots = window.Roots || {};
 
   function paiementMonte() { return !!adaptateurPaiement; }
 
+  /* Suivi de l'encaissement. Le retour du widget ne vaut rien : on interroge le
+     serveur jusqu'a ce que l'etat quitte l'attente. Les intervalles s'allongent
+     pour ne pas marteler la base ; passe le delai, on ne conclut PAS — on rend
+     « indetermine », qui se dit a l'ecran « on verifie » et jamais « paye ». */
+  var CADENCE = [1500, 2000, 3000, 4000, 5000, 8000];
+
+  function suivrePaiement(lire, opts) {
+    var o = opts || {};
+    var limite = Date.now() + (o.limite || 180000);
+    var i = 0;
+    return new Promise(function (resoudre, rejeter) {
+      (function tour() {
+        Promise.resolve().then(lire).then(function (r) {
+          var etat = r && r.statut_paiement;
+          if (etat && etat !== 'en_attente') return resoudre({ statut: etat, ligne: r });
+          if (Date.now() >= limite) return resoudre({ statut: 'indetermine', ligne: r || null });
+          setTimeout(tour, CADENCE[Math.min(i++, CADENCE.length - 1)]);
+        }, function (e) {
+          if (Date.now() >= limite) return rejeter(e);
+          setTimeout(tour, CADENCE[Math.min(i++, CADENCE.length - 1)]);
+        });
+      })();
+    });
+  }
+
   function encaisser(reference) {
     if (!adaptateurPaiement) return Promise.reject(new Error('aucun adaptateur de paiement'));
     if (!reference) return Promise.reject(new Error('reference absente'));
@@ -288,6 +313,19 @@ window.Roots = window.Roots || {};
     monterPaiement: monterPaiement,
     paiementMonte: paiementMonte,
     encaisser: encaisser,
+    suivrePaiement: suivrePaiement,
+
+    /* Le montant vient de la base, jamais du navigateur : ces deux portes
+       rendent la reference a presenter et la somme que le serveur a figee. */
+    initierPaiementCommande: function (commande, jeton) {
+      return appeler('initier_paiement_commande', { p_commande: commande, p_jeton: jeton });
+    },
+
+    initierPaiementReservation: function (type, code, tel) {
+      return appeler('initier_paiement_reservation', {
+        p_type: type, p_code: code, p_tel: telephone(tel)
+      });
+    },
     notice: notice,
     texteNotice: texteNotice,
     chargerNotices: chargerNotices,
