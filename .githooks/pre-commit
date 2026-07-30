@@ -1,6 +1,6 @@
 #!/bin/sh
 # ─────────────────────────────────────────────────────────────
-# pre-commit — garde-fou de compartimentage Roots
+# pre-commit — garde-fou du dépôt public
 # Bloque : fichiers internes indexés, motifs de la denylist,
 #          secrets connus, JS invalide.
 #
@@ -10,7 +10,9 @@
 # ─────────────────────────────────────────────────────────────
 set -u
 
-DENYLIST="../roots-interne/denylist.txt"
+# Fichier de règles, dans un dossier VOISIN du dépôt et jamais versionné.
+# Adapter ce chemin si le dossier porte un autre nom.
+DENYLIST="${ROOTS_REGLES:-../roots-interne/denylist.txt}"
 FAIL=0
 
 rouge() { printf '\033[1;31m%s\033[0m\n' "$1"; }
@@ -53,7 +55,7 @@ if [ -n "$AJOUTS" ]; then
   # Sous-ensemble sans les lignes « techniquement légitimes » : celles
   # qui portent une URL ou une affectation de configuration. Sert aux
   # motifs préfixés @runtime-ok: — la mention à l'exécution est admise,
-  # la mention en prose ne l'est pas (arbitrage Mika du 26/07).
+  # la mention en prose ne l'est pas (mention à l'exécution admise).
   AJOUTS_PROSE=$(printf '%s\n' "$AJOUTS" \
     | grep -vE 'https?://' \
     | grep -vE '^\+[[:space:]]*(const|let|var|export|import)[[:space:]]' \
@@ -87,7 +89,7 @@ if [ -n "$AJOUTS" ]; then
   # « service_role » seul est le NOM d'un rôle Supabase, pas un secret :
   # le citer en prose est légitime. Ce qui est secret, c'est la clé — un
   # JWT — attrapée par le motif eyJ…, ou une affectation explicite.
-  # Longueurs volontairement PERMISSIVES (leçon de l'épreuve du 26/07) :
+  # Longueurs volontairement PERMISSIVES :
   # exiger la longueur canonique laisse passer un jeton tronqué, une
   # variante de format ou un copier-coller incomplet. Une défense doit
   # être large sur ce qu'elle attrape ; le faux positif est ici sans coût.

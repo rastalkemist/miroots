@@ -1,94 +1,204 @@
-# CLAUDE.md — dépôt `miroots`
+# CLAUDE.md — dépôt public
 
-> **Ce dépôt est public.** Tout ce qui y entre est lisible par n'importe qui, définitivement.
-> Ce qui n'est pas destiné à être public ne vit pas ici. **En cas de doute : ne pas commiter, demander.**
+> **Ce dépôt est public.** Tout ce qui y entre est lisible par n'importe qui,
+> définitivement. Ce qui n'est pas destiné à être public ne vit pas ici.
+> **En cas de doute : ne pas écrire, demander.**
 
 ---
 
 ## 1. Le projet
 
-Application web du **Roots**, un lieu à Cotonou (Bénin) : réservation d'espaces de travail et de logements, commande sur place. Sans compte — identité minimale et code de confirmation. Bilingue français / anglais, conçue pour le mobile d'abord.
+Application web du **Roots**, un lieu à Cotonou (Bénin) : réservation d'espaces
+de travail et de logements, commande sur place. Sans compte — identité minimale
+et code de confirmation. Bilingue français / anglais, mobile d'abord.
 
-Ouverture au public : tous les jours, 7 h – 19 h.
+Ouverture : tous les jours, 7 h – 19 h.
 
 ## 2. Nature du site
 
-Site **statique** — HTML, CSS, JavaScript — servi tel quel, sans étape de construction ni dépendance à installer. Un dépôt par sous-domaine.
+Site **statique** — HTML, CSS, JavaScript — servi tel quel, sans étape de
+construction ni dépendance à installer. Un dépôt par sous-domaine.
 
-## 3. Deux dialectes d'interface
+**Aucune dépendance externe** : polices auto-hébergées, icônes en SVG intégré,
+champ téléphone embarqué. La seule adresse externe appelée à l'exécution est
+celle de la base.
 
-Une seule famille visuelle — même palette, mêmes polices, même sémantique de statut — mais deux grammaires de forme, et **un seul dialecte par écran**.
+## 3. Une seule source pour le style, une seule pour le chrome
 
-**Dialecte A « rond / ambiant »**, sur les écrans destinés au public. Pilules `999px`, cartes `26px`, module `17px`, champ `13px`, surfaces lumineuses, animations douces — coupées sous `prefers-reduced-motion`. Les prix ne sont jamais en rouge : encre neutre.
+`roots.css` est la **source unique du style** : aucun écran ne porte de balise
+`<style>`, aucun ne redéfinit une valeur en dur. Le fichier est ordonné —
+jetons de marque, base, chrome partagé, dialecte public, dialecte de console,
+puis une section par écran. Une règle propre à un écran est rattachée par
+`:where(body.p-…)`, ce qui la scope **sans peser sur la spécificité** :
+rattacher une règle ne doit jamais changer qui l'emporte dans la cascade.
 
-**Dialecte B « tuiles / opérationnel »**, sur les écrans de gestion. Tuiles carrées jointives à fort contraste : rayon `4px`, gouttière `4px`, pas de grille `96px`, aplats saturés, grande icône plus libellé de un à trois mots, liseré d'état `3px`. **Aucun flou, aucune ombre, aucun dégradé, aucune animation** — le retour d'interaction est un changement d'état franc.
+`roots.js` est la **source unique du chrome** : planche d'icônes, champ
+téléphone international, navigation basse, menu déroulant, toast, et le
+comportement des panneaux modaux.
 
-Le dialecte B est une grammaire d'opération, pas une interface appauvrie : une tuile peut ouvrir un tableau dense. C'est l'entrée qui est grosse, pas le contenu qui est pauvre.
+Toute duplication entre écrans est un défaut, pas un raccourci : trois copies
+divergent, et elles l'ont déjà fait.
 
-**La règle du cartouche gouverne le logo, les dialectes gouvernent les composants.** Les écrans de gestion gardent donc le cartouche **rond**. Corollaire : jamais de cartouche carré dans une interface.
+## 4. Deux dialectes d'interface
 
-## 4. Contraintes d'exécution
+Une seule famille visuelle — même palette, mêmes polices, même sémantique de
+statut — mais deux grammaires, et **un seul dialecte par écran**.
+
+**Dialecte A « rond / ambiant »**, sur les écrans publics. Pilules `999px`,
+cartes `26px`, module `17px`, champ `13px`, surfaces lumineuses, animations
+douces coupées sous `prefers-reduced-motion`. Les prix ne sont jamais en rouge :
+encre neutre.
+
+Deux **surfaces** pour ce dialecte, qui ne changent que l'encre et la structure
+du chrome, jamais ses dimensions : `data-surface="ambiante"` pour l'accueil posé
+sur le jardin, `data-surface="claire"` pour les pages de contenu.
+
+**Dialecte B « tuiles / opérationnel »**, sur les écrans de gestion. Tuiles
+carrées jointives à fort contraste : **rayon nul**, gouttière `4px`, pas de
+grille `96px`, aplats saturés, grande icône plus libellé de un à trois mots.
+**Aucun liseré, aucun flou, aucune ombre, aucun dégradé, aucune animation** — le
+retour d'interaction est un changement d'état franc. La couleur d'une tuile dit
+son **état** ; ce qu'on peut *faire* se signale par une encre inversée portant un
+verbe, ou par un chevron. Une tuile sans verbe ni chevron est en lecture seule.
+
+Le dialecte B est une grammaire d'opération, pas une interface appauvrie : une
+tuile peut ouvrir un tableau dense. C'est l'entrée qui est grosse, pas le contenu
+qui est pauvre.
+
+**La règle du cartouche gouverne le logo, les dialectes gouvernent les
+composants.** Les écrans de gestion gardent donc le cartouche **rond** ; jamais
+de cartouche carré dans une interface.
+
+## 5. Contraintes d'exécution
 
 **Mobile d'abord**, sur des appareils d'entrée de gamme.
 
-Sur la connectivité : la couverture réseau est bonne et ce n'est pas une contrainte structurante. Le dogme « hors-ligne d'abord » ne s'applique pas. Survivent, chacun pour son motif propre :
+Sur la surface publique, la couverture réseau n'est pas une contrainte
+structurante. Survivent, chacun pour son motif propre :
 
-- **identifiants générés côté client et clé d'idempotence** sur toute écriture — correction générale contre les doubles soumissions, indépendante du réseau ;
-- **cache applicatif** (manifest et service worker) — pour la vitesse et l'installabilité ;
-- **file d'attente locale** sur les seuls gestes critiques — rare, mais grave s'il échoue au mauvais moment.
+- **identifiant généré côté client et clé d'idempotence** sur toute écriture —
+  protection contre les doubles soumissions, indépendante du réseau ;
+- **cache applicatif** — pour la vitesse et l'installabilité ;
+- **file d'attente locale** sur les seuls gestes critiques.
 
-## 5. Accessibilité — non négociable, partout
+Sur les écrans de gestion, en revanche, la dégradation hors ligne est explicite :
+état « non synchronisé » visible sur l'objet concerné, fonctions indisponibles
+grisées et non cachées.
 
-Cibles tactiles **≥ 44 px**, contrastes **AA**, `prefers-reduced-motion` respecté, `aria-live` sur les changements d'état, focus clavier visible.
+## 6. Accessibilité — non négociable, partout
 
-La sémantique de statut par la couleur — jaune : attente · terracotta : préparation · vert : confirmé ou prêt · rouge : annulé ou urgence · vert forêt : terminé — est **toujours doublée d'une icône ou d'une position**, jamais portée par la couleur seule.
+Cibles tactiles **≥ 44 px**, contrastes **AA**, `prefers-reduced-motion`
+respecté, `aria-live` sur les changements d'état, focus clavier visible, lien
+d'évitement vers le contenu, un titre de niveau 1 par page.
 
-**Accessibilité ≠ littératie.** L'accessibilité s'applique à tous les écrans. Les aménagements de lecture, eux, sont un **mode assisté** neutre, attaché à un **poste**, activable par la personne qui l'occupe — jamais un attribut stocké sur quelqu'un, jamais une caractéristique attribuée aux visiteurs du site.
+Un panneau qui se déclare modal doit l'être : le focus n'en sort pas, la touche
+d'échappement le ferme, et le geste « retour » du téléphone le referme au lieu de
+quitter la page. Ce comportement vit dans `roots.js` — ne pas le réécrire par
+écran.
 
-## 6. Marque et jetons
+La sémantique de statut par la couleur — jaune : attente · terracotta :
+préparation · vert : confirmé ou prêt · rouge : annulé ou urgence · vert forêt :
+terminé — est **toujours doublée d'une icône ou d'une position**, jamais portée
+par la couleur seule.
 
-`roots-tokens.css` est la **source unique** des variables. Aucun écran ne redéfinit une valeur en dur.
+**Toute affirmation de conformité porte sa mesure.** On n'écrit pas « contraste
+AA vérifié » : on lance le contrôle qui mesure sur le rendu, et l'on montre le
+résultat.
 
-**Palette de marque, cinq couleurs** : vert `#006838`, jaune `#FFC840`, terracotta `#CE5A2C`, rouge `#CD0909`, noir `#1A1A1A` — répartition 60/25/15. **Secondaires**, surfaces et encres, jamais en concurrence : blanc cassé `#FDFBF6`, crème `#F8EDDA`, terre brune `#76403D`, vert nuit `#0A332E` (`--encre`), vert forêt `#2F4B3C`. **Un seul gris de service** : `#E4E1DA`.
+**Accessibilité ≠ littératie.** L'accessibilité s'applique partout. Les
+aménagements de lecture sont des **réglages offerts à tous, à tout moment** — une
+densité, et des médias autres que le texte. Jamais un attribut stocké sur
+quelqu'un, jamais une caractéristique attribuée à un visiteur.
 
-**Typographie** : MuseoModerno et la famille Museo, auto-hébergées dans `fonts/`, repli Roboto. **Cooper Black est réservée au logotype Roots Café**, vectorisée, jamais en webfont.
+## 7. Marque et jetons
 
-**Logo** : cartouche rond (`r_roots_*`) pour le web, carré (`roots_*`) pour l'imprimé.
+Les jetons vivent dans la section 1 de `roots.css`.
 
-**Iconographie** : deux registres qui ne se mélangent jamais — les symboles issus de la fresque, extraits verbatim et jamais redessinés, pour l'expression de marque ; **Lucide** pour les icônes fonctionnelles.
+**Palette de marque, cinq couleurs** : vert `#006838`, jaune `#FFC840`,
+terracotta `#CE5A2C`, rouge `#CD0909`, noir `#1A1A1A` — répartition 60/25/15.
+**Secondaires**, surfaces et encres, jamais en concurrence : blanc cassé
+`#FDFBF6`, crème `#F8EDDA`, terre brune `#76403D`, vert nuit `#0A332E`
+(`--encre`), vert forêt `#2F4B3C`. **Un seul gris de service** : `#E4E1DA`.
 
-**Crédits** — toute mention d'attribution se recopie telle quelle :
+**Terracotta profond `#B84F26`** : déclinaison sombre de la troisième couleur,
+comme le vert nuit l'est du vert. Elle sert d'**encre** et de filet là où le
+terracotta de marque ne tient pas le seuil AA — mesuré 3,96:1 sur blanc cassé
+contre 4,85:1 pour le profond. Le terracotta de marque reste l'aplat.
 
-> Identité de marque, système et direction artistique : Michael Gnimadi.
-> Logo Roots : création originale de Loïc Malo — Évolu (Communication 360°, Bénin),
-> en sessions de travail avec Mika ; contributeur design de l'identité.
-> Iconographie : Ame Karaba.
+**Échelle typographique**, base 16, quarte juste ×1,333 : 12 · 14 · 16 · 21 ·
+28 · 38 · 64. Un texte ne se code jamais en pixels bruts : il prend un palier.
+Un champ de saisie ne descend jamais sous 16 px — en dessous, iOS agrandit la
+page dès qu'on entre dedans.
 
-## 7. Nomenclature
+**Typographie** : MuseoModerno et la famille Museo, auto-hébergées dans `fonts/`,
+repli Roboto. **Cooper Black est réservée au logotype du Café**, vectorisée,
+jamais en webfont.
 
-Grille **2×3** : **Mi / NU** × **Roots / Plan / Roam**. Barre de navigation basse : **Plan · Roots · Roam**, Roots au centre. Bascule Mi ↔ NU en haut à gauche ; menu des sections en haut à droite.
+**Logo** : cartouche rond pour le web, carré pour l'imprimé.
 
-En v1, le monde **Roots** est vivant ; **Plan** et **Roam** sont présents mais dormants. **Mi** est actif, **NU** dormant.
+**Iconographie** : deux registres qui ne se mélangent jamais — les symboles
+issus de la fresque, extraits verbatim et jamais redessinés, pour l'expression de
+marque ; un jeu fonctionnel pour les icônes d'interface.
 
-⚠️ Le verbe **« Road » n'existe plus** — renommé **« Plan »**. Le fichier `vecteurs/lockup_mi_road.svg` conserve son nom jusqu'à son renommage effectif : ce n'est pas une coquille.
+**Crédits** : voir `CREDITS.md`. Toute mention d'attribution se recopie telle
+quelle.
 
-## 8. Règles de code
+## 8. Nomenclature
 
-- **Aucune clé, aucun jeton, aucun mot de passe dans ce dépôt.** Ce qui doit rester secret vit dans des variables d'environnement côté serveur.
-- **Un élément publié ici est public pour toujours.** S'il n'aurait pas dû l'être, il doit être **remplacé**, pas seulement retiré. Réécrire l'historique ne suffit jamais seul.
-- **Les montants se recalculent côté serveur.** Une valeur venue du navigateur n'est jamais autorité.
-- **Les écritures comptables ne se modifient pas** : correction par écriture inverse, jamais par mise à jour ni suppression.
-- Les écritures ouvertes au public portent une **vérification anti-robot** et une **limitation de débit**.
-- `node --check` sur tout JavaScript avant commit. Noms de fichiers **en minuscules, sans suffixe de version**. Références CSS **en relatif**.
+Grille **2×3** : **Mi / NU** × **Roots / Plan / Roam**. Barre de navigation
+basse : **Plan · Roots · Roam**, Roots au centre. Bascule Mi ↔ NU en haut à
+gauche ; menu des sections en haut à droite.
 
-## 9. Conventions de travail
+En v1, le monde **Roots** est vivant ; **Plan** et **Roam** sont présents mais
+dormants. **Mi** est actif, **NU** dormant.
 
-L'agent **édite dans le dépôt** ; le mainteneur relit les différences et commit lui-même. **L'agent ne pousse jamais.**
+Le verbe **« Road » n'existe plus** : il s'appelle **« Plan »**.
+
+## 9. Règles de code
+
+- **Aucune clé, aucun jeton, aucun mot de passe ici.** Ce qui doit rester secret
+  vit dans des variables d'environnement côté serveur.
+- **Un élément publié ici est public pour toujours.** S'il n'aurait pas dû
+  l'être, il doit être **remplacé**, pas seulement retiré.
+- **Aucun raisonnement interne dans le code, commentaires compris** : ni marqueur
+  de décision, ni renvoi à une note de travail, ni aveu d'état d'avancement, ni
+  note « à faire ». Un commentaire se lit exactement comme le code. Il dit la
+  **contrainte**, jamais l'endroit où elle a été écrite.
+- **Les montants se recalculent côté serveur.** Une valeur venue du navigateur
+  n'est jamais autorité.
+- **Les écritures comptables ne se modifient pas** : correction par écriture
+  inverse, jamais par mise à jour ni suppression.
+- Les écritures ouvertes au public portent une **vérification anti-robot** et une
+  **limitation de débit**.
+- `node --check` sur tout JavaScript avant commit. Noms de fichiers **en
+  minuscules, sans suffixe de version**. Références CSS **en relatif**.
+
+## 10. Avant de publier
+
+**Ne pas juger le rendu en ouvrant un fichier depuis le disque.** Le navigateur y
+bloque l'import de modules et plusieurs comportements paraissent défaillants sans
+l'être. Servir le dossier — `python -m http.server` — puis regarder sur
+`http://localhost:8000`.
+
+Deux contrôles, hébergés hors de ce dépôt, chacun avec un mode qui pose des
+défauts volontaires et vérifie qu'ils sont vus. Les lancer tous les deux avant
+de publier.
+
+Les scripts de `.githooks/` refusent de s'exécuter sans leur fichier de règles,
+et bloquent alors toute écriture : c'est voulu, pas une panne.
+
+## 11. Conventions de travail
+
+L'agent **édite dans le dépôt** ; le mainteneur relit les différences et commit
+lui-même. **L'agent ne pousse jamais.**
 
 **Toujours demander avant une action conséquente ou irréversible.**
 
-Les scripts de vérification présents dans `.githooks/` refusent de s'exécuter sans leur fichier de règles, et bloquent alors toute écriture : c'est voulu. Ne jamais contourner par `--no-verify` sans avoir relu la différence ligne à ligne.
+Quand un écran existe, on le clone à l'identique et l'on ne change que ce qui a
+été demandé. Les propositions se font **à côté**, jamais à la place.
 
-## 10. Portée de ce fichier
+## 12. Portée de ce fichier
 
-Ce document décrit **ce qu'il faut savoir pour écrire du code dans ce dépôt**, et rien d'autre. Il ne décrit ni l'organisation, ni ses activités, ni ses outils, ni ses documents. Ne pas l'étendre dans ces directions.
+Ce document décrit **ce qu'il faut savoir pour écrire du code dans ce dépôt**, et
+rien d'autre. Il ne décrit ni l'organisation, ni ses activités, ni ses outils, ni
+ses documents. Ne pas l'étendre dans ces directions.

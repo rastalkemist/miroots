@@ -1,12 +1,20 @@
 # ─────────────────────────────────────────────────────────────
-# Roots / miroots — dépôt PUBLIC (sert GitHub Pages)
-# Règle Mika du 24/07 : sécurité et compartimentation avant tout.
-# Deny-by-default. Le privé ne passe jamais au public.
+# Dépôt public — sert GitHub Pages.
+# Deny-by-default : ce qui n'est pas explicitement destiné au public
+# ne passe pas.
 # ─────────────────────────────────────────────────────────────
 
-# ── Compartiment interne : ne doit JAMAIS être versionné ──
+# ── Jamais versionné ──
 _internal/
 _internal/**
+
+# Outils de mesure et de relecture : ils portent par nécessité les motifs
+# qu'ils traquent, et la liste de ces motifs décrit ce que l'on protège.
+# Ils vivent à côté du dépôt, jamais dedans.
+design/
+
+# Page de contrôle : écrit dans la vraie base, ne se publie jamais.
+controle.html
 
 # ── Secrets ──
 .env
@@ -48,7 +56,7 @@ desktop.ini
 *.swp
 *~
 
-# ── Archives lourdes (le bundle zip que Git a remplacé) ──
+# ── Archives ──
 *.zip
 *.rar
 *.7z

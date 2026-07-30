@@ -1,32 +1,64 @@
 # Mi Roots — application du tiers-lieu Roots (PWA)
 
-Application web du **Roots Café** (Cotonou) : réservation d'espaces et commande au bar, **sans compte** (identité minimale + code de confirmation type billet d'avion), bilingue FR/EN, pensée mobile-first pour des téléphones d'entrée de gamme.
+Application web du **Roots** (Cotonou) : réservation d'espaces et commande sur
+place, **sans compte** — identité minimale et code de confirmation. Bilingue
+français / anglais, conçue pour le mobile d'abord.
 
-> Ce dépôt contient le **code du site/app** (public, servi par GitHub Pages). La stratégie de marque, la bible et les documents sensibles **ne vivent pas ici** — voir « Sources de vérité » plus bas.
+Ouverture : tous les jours, 7 h – 19 h.
 
 ## Contenu
 
 | Fichier / dossier | Rôle |
 |---|---|
-| `index.html` | Écran d'accueil `mi.roots.bj` — boucle vidéo (placeholder), réservation sans compte, FR/EN |
-| `bar.html` | Écran « Encas & Rafraîchissements » — carte du bar, panier, paiement Kkiapay, sans compte |
-| `roots-fonts.css` | Déclarations `@font-face` des polices auto-hébergées (Museo) — pointent vers `fonts/` |
-| `roots-tokens.css` | Jetons de design (couleurs, typo, formes) — source unique pour tout nouvel écran |
-| `fonts/` | Polices `.woff2` / `.woff` auto-hébergées (voir `fonts/README.md`) |
-| `CREDITS.md` | Crédits des vecteurs (œuvre d'Ame Karaba, logotypes) |
+| `index.html` | Accueil `mi.roots.bj` — réservation d'espace et commande, en une feuille à deux onglets |
+| `carte.html` | La carte — articles, panier, prise de commande |
+| `retrouver.html` | Retrouver une réservation avec son code |
+| `confidentialite.html` | Politique de confidentialité, bilingue |
+| `roots.css` | **Source unique du style.** Jetons de marque, dialecte public, dialecte de console, chrome partagé |
+| `roots.js` | **Source unique du chrome** — planche d'icônes, champ téléphone, navigation, menu, toast |
+| `roots-db.js` | Passerelle unique vers la base : lectures, écritures, traduction des messages d'erreur |
+| `roots-fonts.css` | Déclarations `@font-face` des polices auto-hébergées |
+| `fonts/` | Polices `.woff2` auto-hébergées |
+| `vendor/` | Champ téléphone international, embarqué |
+| `CREDITS.md` | Crédits de l'iconographie et des logotypes |
+
+## Aucune dépendance externe
+
+Le site ne charge **rien** depuis un tiers : polices auto-hébergées, icônes en
+SVG intégré, champ téléphone embarqué. La seule adresse externe appelée à
+l'exécution est celle de la base de données.
 
 ## Ouvrir en local
 
-Double-cliquer `index.html` (accueil) ou `bar.html` (bar) dans un navigateur. Aucune installation, aucun build. En ligne, les polices `MuseoModerno` et le repli `Roboto` se chargent via Google Fonts ; les icônes via Lucide (CDN).
+**Ne pas double-cliquer sur `index.html`.** Ouvert directement depuis le disque,
+le navigateur refuse d'importer certains modules et plusieurs comportements
+paraissent défaillants alors qu'ils ne le sont pas — la mise en forme du numéro
+de téléphone, notamment.
 
-## Polices
+Servir le dossier, puis ouvrir `http://localhost:8000` :
 
-Les `.woff2` / `.woff` Museo se déposent dans `fonts/` (voir `fonts/README.md`). **Tant qu'elles sont absentes, l'app fonctionne quand même** : le repli **Roboto** (acté) prend le relais, `MuseoModerno` reste servie par Google Fonts. Rien ne casse.
+```
+python -m http.server
+```
+
+Aucune installation, aucune étape de construction.
+
+## Vérifier avant de publier
+
+Les outils de mesure et de relecture ne vivent pas dans ce dépôt : ils portent
+par nécessité les motifs qu'ils recherchent. Ils s'exécutent depuis le dossier
+qui les héberge, en recevant ce dépôt en argument.
+
+Chacun dispose d'un mode qui pose des défauts volontaires et vérifie qu'ils sont
+détectés : un contrôle tout vert qui n'a jamais rougi est une hypothèse, pas une
+preuve.
 
 ## Versionnement
 
-C'est Git qui porte l'historique : les suffixes de version dans les noms de fichiers (ex. `mi-roots-v5.html`) sont abandonnés au profit de `index.html` — l'historique des versions vit dans les commits.
+L'historique vit dans les commits. Les noms de fichiers ne portent pas de
+suffixe de version.
 
 ## Licence
 
-Voir `LICENSE.txt`. Code et identité **propriétaires, tous droits réservés**. L'œuvre iconographique est créditée à **Ame Karaba** (voir `CREDITS.md`) ; la police **Museo** relève de sa propre licence (acquisition en cours).
+Voir `LICENSE.txt` — code et identité propriétaires, tous droits réservés.
+L'iconographie est créditée dans `CREDITS.md`.

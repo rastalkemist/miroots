@@ -4,270 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Mi Roots — Le jardin, où que tu sois</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@500;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="roots-fonts.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/css/intlTelInput.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.454.0/umd/lucide.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@25/build/js/intlTelInput.min.js" defer></script>
+<link rel="stylesheet" href="vendor/intlTelInput.min.css">
+<link rel="stylesheet" href="roots.css">
+<script src="roots-db.js"></script>
 <script src="roots.js"></script>
-<style>
-/* ==========================================================================
-   PORTE D'ENTRÉE — mi.roots.bj (index) · v2 (23/07/2026)
-   Feedback Mika intégré :
-   · Logo = ankh_roots + UN mot (Mi/NU) ; clic sur le mot → bande déroulante
-     « Mi (solo) ··· (social) NU » (« ··· » = bascule ; NU dormant en v1).
-   · Hero VIDE : rien que le jardin à l'arrivée.
-   · Super-nav des 3 verbes tout en bas (ICÔNES seules — le nom est en haut).
-   · Bouton (+) focal, blanc, + vert (thème du monde), centré juste au-dessus
-     du super-nav → ouvre le dialogue « même qu'avant » à 2 onglets :
-     « Réserver un espace » (auto) | « Commander » (menu compact).
-   · Roots Radio = ligne (titre du morceau + on/off) en haut à droite, sous le nav.
-   · Titre de l'univers en HAUT À DROITE, juste à gauche du hamburger.
-   · Langue auto (locale) ; l'icône de bascule vit dans le hamburger.
-   · Pas de « Mon Espace » dans le menu fonctionnel (= verbe Road).
-   ========================================================================== */
-:root{
- --marge:5%; --site-w:90%; --col:500px;
- --roots-vert:#006838;--roots-jaune:#FFC840;--roots-terracotta:#CE5A2C;
- --roots-rouge:#CD0909;--roots-noir:#1A1A1A;
- --creme:#F8EDDA;--vert-nuit:#0A332E;--vert-foret:#2F4B3C;
- --blanc-casse:#FDFBF6;--carte-blanc:#FFFFFF;
- --gris-ilot:#E4E1DA;--gris-service:#E4E1DA;--vert-selection:rgba(0,104,56,.08);
- --encre:var(--vert-nuit);--encre-discrete:var(--vert-foret);
- --font-corps:'Museo Sans','Roboto',system-ui,sans-serif;
- --font-moderno:'MuseoModerno',var(--font-corps);
- --font-chiffres:'Museo Slab','Roboto Slab','Rockwell',serif;
- --r-pilule:999px;--r-carte:26px;--r-module:17px;--r-champ:13px;
- --safe-bas:env(safe-area-inset-bottom,0px);
-}
-*{box-sizing:border-box}
-html{background:var(--vert-nuit)}
-body{margin:0;min-height:100vh;font-family:var(--font-corps);color:var(--blanc-casse);overflow-x:hidden;background:var(--vert-nuit)}
-svg.lucide{width:1em;height:1em;vertical-align:-0.12em}
-
-/* ---------- Fond jardin (placeholder vidéo) ---------- */
-.video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;
- background:linear-gradient(160deg,#35703f,#006838 45%,#174f28 80%,#0A332E)}
-.video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;
- background:radial-gradient(circle,rgba(255,200,64,.42),transparent 62%);animation:respirer 9s ease-in-out infinite}
-@keyframes respirer{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.12);opacity:1}}
-.video-fond .feuille{position:absolute;border-radius:0 55% 0 55%;background:rgba(10,51,46,.5);
- animation:bercer 12s ease-in-out infinite;transform-origin:bottom center}
-@keyframes bercer{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
-.voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;
- background:linear-gradient(180deg,rgba(8,34,20,.5),transparent 26%,transparent 62%,rgba(6,26,16,.5))}
-
-/* ══════════════ CHROME HAUT ══════════════ */
-.chrome-haut{position:fixed;top:0;left:0;right:0;z-index:6;padding:12px 0}
-.chrome-inner{width:var(--site-w);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
-.chrome-inner>.ankh-home{justify-self:start}
-.chrome-inner>.centre{justify-self:center}
-.chrome-inner>.chrome-droite{justify-self:end}
-/* Pastille dépliée : l'ankh reste toujours en place (gauche) ; le reste
-   (titre, langue, menu) s'efface vers la gauche « sous » la pastille, qui
-   s'aligne à droite le temps du choix, puis tout revient au centre. */
-.chrome-inner{transition:grid-template-columns .5s cubic-bezier(.22,.85,.3,1)}
-.chrome-titre,.chrome-droite{transition:opacity .3s ease,transform .34s ease}
-/* uniquement sur téléphone : place étroite → on efface le reste et la pastille
-   s'aligne à droite. Sur tablette/laptop il y a la place, donc rien ne bouge. */
-@media(max-width:639px){
- /* la pastille s'ouvre centrée et glisse à droite ; la colonne de gauche ne
-    descend jamais sous ~66px : elle se fige à cette marge de l'ankh (plus gros
-    ici) et l'étirement continue vers la droite. */
- .chrome-inner.deploie{grid-template-columns:minmax(66px,1fr) auto minmax(0,1fr)}
- .chrome-inner.deploie .centre{gap:0}
- .chrome-inner.deploie .chrome-titre,.chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-12px);width:0;min-width:0;margin:0;overflow:hidden}
-}
-/* pas de filigrane bleuâtre au tap sur mobile */
-.chrome-haut,.chrome-bas,.chrome-haut *,.chrome-bas *{-webkit-tap-highlight-color:transparent}
-.toggle,.ankh-home,.chrome-burger,.lang-btn,.verbe{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-.centre{display:flex;align-items:center;gap:5px}
-/* -- marque + toggle (gauche) -- */
-.marque-wrap{display:flex;align-items:center;gap:9px}
-.ankh-home{display:flex;align-items:center;flex-shrink:0;filter:drop-shadow(0 1px 3px rgba(0,0,0,.4))}
-.ankh-home svg{width:51px;height:51px;display:block}
-.toggle{position:relative;display:flex;align-items:center;height:44px;max-width:44px;overflow:hidden;cursor:pointer;
- background:rgba(253,251,246,.95);backdrop-filter:blur(6px);border-radius:var(--r-pilule);box-shadow:0 3px 12px rgba(5,25,18,.2);
- transition:max-width .42s cubic-bezier(.2,.9,.25,1)}
-.toggle.ouvert{max-width:300px;transition:max-width .62s cubic-bezier(.22,.85,.3,1)}
-.toggle .mot{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-moderno);font-weight:700;font-size:20px;color:var(--roots-vert);line-height:1}
-.toggle .reste{display:flex;align-items:center;gap:8px;padding-right:16px;flex-shrink:0}
-.reste .sub{font-size:11px;color:var(--encre-discrete);font-style:italic}
-.switch{width:42px;height:22px;border-radius:var(--r-pilule);background:var(--gris-ilot);border:1px solid var(--gris-service);position:relative;cursor:pointer;flex-shrink:0}
-.switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--roots-vert);transition:left .2s ease}
-.reste .nu{font-family:var(--font-moderno);font-weight:700;font-size:17px;color:var(--vert-foret)}
-/* -- titre + hamburger (droite) -- */
-.chrome-droite{display:flex;align-items:center;gap:8px}
-.lang-btn{height:42px;padding:0 4px;border:none;background:none;color:var(--blanc-casse);font-family:var(--font-corps);font-weight:700;font-size:14px;cursor:pointer;text-shadow:0 1px 4px rgba(0,0,0,.4)}
-.chrome-titre{font-family:var(--font-moderno);font-weight:700;font-size:22px;color:var(--blanc-casse);
- text-shadow:0 1px 6px rgba(0,0,0,.4);letter-spacing:.01em}
-.chrome-burger{width:38px;height:42px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--blanc-casse);filter:drop-shadow(0 1px 4px rgba(0,0,0,.4))}
-.chrome-burger svg{width:32px;height:32px}
-
-/* -- Roots Radio : ligne sous le nav, en haut à droite -- */
-.radio-wrap{position:fixed;bottom:40vh;left:0;right:0;z-index:5;pointer-events:none}
-.radio-inner{width:var(--site-w);margin:0 auto;display:flex;justify-content:flex-end}
-.radio-ligne{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;max-width:100%;
- background:rgba(10,51,46,.55);backdrop-filter:blur(6px);border-radius:var(--r-pilule);padding:5px 6px 5px 13px}
-.radio-ligne .quoi{font-size:11.5px;color:var(--creme);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.radio-ligne .quoi b{font-weight:700}
-.radio-btn{width:28px;height:28px;border-radius:50%;border:none;background:rgba(253,251,246,.2);color:var(--blanc-casse);
- display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.radio-btn.actif{background:var(--roots-jaune);color:var(--roots-noir)}
-.radio-btn svg{width:15px;height:15px}
-
-/* ══════════════ SUPER-NAV (bas) — icônes seules ══════════════ */
-/* Super-nav : barre pleine largeur en bas, 3 parts égales. Bordure de thème,
-   verbe actif = cercle vert autour de l'icône (pas de remplissage plein). */
-.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;
- min-height:68px;height:7.5vh;padding-bottom:var(--safe-bas);
- background:var(--blanc-casse);border-top:2px solid var(--roots-vert);box-shadow:0 -6px 24px rgba(5,25,18,.18)}
-.verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;
- color:var(--vert-foret);display:flex;align-items:center;justify-content:center}
-.ico-rond{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.ico-rond svg{width:52px;height:52px}
-.verbe.actif .ico-rond{background:var(--roots-vert);color:var(--blanc-casse)}
-.verbe.dormant{opacity:.55}
-.verbe.dormant::after{content:'';position:absolute;top:11px;right:calc(50% - 30px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
-/* Tablette et écrans larges : retour à la pastille centrale */
-@media(min-width:640px){
- .chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));
-  width:auto;min-height:0;height:auto;padding:6px;border:1.5px solid var(--roots-vert);
-  border-radius:var(--r-pilule);box-shadow:0 12px 34px rgba(5,25,18,.4)}
- .verbe{flex:0 0 auto;padding:4px 6px}
- .ico-rond{width:62px;height:62px}
-}
-
-/* -- Bouton (+) focal -- */
-.fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;
- width:56px;height:56px;border-radius:50%;background:var(--blanc-casse);border:none;color:var(--roots-vert);
- box-shadow:0 12px 30px rgba(5,25,18,.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
-.fab svg{width:26px;height:26px}
-@media(min-width:640px){.fab{bottom:calc(134px + var(--safe-bas))}}
-
-/* ---------- Contenu (jardin seul) ---------- */
-main{position:relative;z-index:2;min-height:100vh}
-
-/* ══════════════ Voile + feuilles (dialogues) ══════════════ */
-.voile{position:fixed;inset:0;z-index:12;background:rgba(5,20,14,.5);opacity:0;pointer-events:none;transition:opacity .25s ease}
-.voile.visible{opacity:1;pointer-events:auto}
-.feuille-bas{position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);
- width:min(450px,100%);max-height:90vh;overflow-y:auto;scrollbar-width:none;background:var(--blanc-casse);color:var(--encre);
- border-radius:var(--r-carte) var(--r-carte) 0 0;padding:18px 18px calc(26px + var(--safe-bas));
- box-shadow:0 -12px 40px rgba(5,25,18,.35);transition:transform .34s cubic-bezier(.2,.9,.25,1)}
-.feuille-bas::-webkit-scrollbar{display:none}
-.feuille-bas.visible{transform:translate(-50%,0)}
-@media(min-width:500px){.feuille-bas{bottom:22px;border-radius:var(--r-carte)}}
-.poignee{width:38px;height:4px;background:var(--gris-service);border-radius:4px;margin:0 auto 14px}
-.tete{display:flex;align-items:center;justify-content:space-between;margin:0 2px 8px}
-.tete .ou{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete)}
-.fermer{background:none;border:none;color:var(--encre-discrete);font-size:22px;cursor:pointer;line-height:1;padding:2px 6px}
-
-/* -- Onglets du dialogue (+) -- */
-.onglets{display:flex;background:var(--gris-ilot);border-radius:var(--r-pilule);padding:3px;margin-bottom:16px}
-.onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:10px;border-radius:var(--r-pilule);
- font-family:var(--font-corps);font-size:13.5px;font-weight:700;cursor:pointer}
-.onglets button.actif{background:var(--roots-vert);color:var(--blanc-casse)}
-.contenu{display:none}.contenu.actif{display:block}
-
-/* -- Formulaire réservation (repris de l'accueil v5) -- */
-.groupe{margin-bottom:16px}
-.etiquette{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete);margin-bottom:8px}
-.selecteur-espaces{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.option-espace{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-module);padding:12px 6px 10px;text-align:center;cursor:pointer;font-family:var(--font-corps)}
-.option-espace .ico{display:block;height:34px;margin-bottom:6px}
-.option-espace .ico svg{height:100%;width:auto}
-.option-espace .nom{font-size:12px;font-weight:700;color:var(--encre)}
-.option-espace.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
-.rangee-chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--r-pilule);padding:9px 15px;font-family:var(--font-corps);font-size:13px;color:var(--encre);cursor:pointer;line-height:1.25}
-.chip .sous{display:block;font-size:10.5px;color:var(--encre-discrete);text-align:center;font-family:var(--font-chiffres)}
-.chip.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
-.chip.indispo{opacity:.4;cursor:not-allowed}
-.stepper{display:flex;align-items:center;gap:14px}
-.stepper button{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--gris-service);background:var(--carte-blanc);color:var(--encre);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.stepper span{font-weight:700;font-size:16px;min-width:20px;text-align:center}
-.champ{margin-bottom:13px}
-.champ label{display:block;font-size:11px;color:var(--encre-discrete);margin-bottom:5px;font-weight:600}
-.champ input{width:100%;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);padding:12px 13px;color:var(--encre);font-family:var(--font-corps);font-size:14.5px}
-.champ input:focus{outline:none;border-color:var(--roots-vert);background:var(--carte-blanc)}
-/* -- Téléphone international (intl-tel-input), aligné sur retrouver.html -- */
-/* styles du CHAMP uniquement (scopés à .champ) : sinon ils touchent aussi le
-   conteneur de la liste rattaché au <body> qui porte aussi la classe .iti. */
-.champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--r-champ);height:48px}
-.champ .iti:focus-within{border-color:var(--roots-vert);background:var(--carte-blanc)}
-.iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:16px;padding:0 14px}
-.iti input[type=tel]:focus{outline:none}
-.iti__country-container{display:flex;align-items:center;padding:0 4px}
-.iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
-.iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;font-size:16px;padding:0 4px}
-/* liste des pays (rattachée au <body>) : lisible partout, au-dessus de tout */
-.iti--container,.iti--fullscreen-popup{z-index:10000}
-.iti__dropdown-content{background:#fff;color:#1A1A1A}
-.iti__country-name{color:#1A1A1A}
-.iti__dial-code{color:#6b7b70}
-.iti__country.iti__highlight{background:rgba(0,104,56,.10)}
-.message-ferme{background:#FBEAE7;border:1.5px solid rgba(205,9,9,.25);border-radius:var(--r-champ);padding:10px 13px;font-size:12.5px;color:#A01414;margin-bottom:13px;display:none}
-.message-ferme.visible{display:block}
-.recap{background:var(--gris-ilot);border-radius:15px;padding:12px 15px;font-size:13px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
-.recap .total{font-weight:700;color:var(--encre);font-size:17px;font-family:var(--font-chiffres)}
-.bouton-confirmer{width:100%;background:var(--roots-vert);color:var(--blanc-casse);border:none;border-radius:var(--r-pilule);padding:16px;font-family:var(--font-corps);font-weight:700;font-size:15px;cursor:pointer}
-.bouton-confirmer:disabled{opacity:.35;cursor:not-allowed}
-.mention{text-align:center;font-size:11.5px;color:var(--encre-discrete);margin-top:10px}
-
-/* -- Menu compact (onglet Commander) -- */
-/* le menu compact défile dans sa propre zone : le total + « Commander »
-   restent visibles sans parcourir toute la carte. */
-#menuCompact{max-height:34vh;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gris-ilot)}
-#menuCompact::-webkit-scrollbar{display:none}
-#menuCompact .cat-compacte:first-child{margin-top:4px}
-.cat-compacte{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--vert-foret);margin:14px 2px 8px;padding-left:8px;border-left:3px solid var(--roots-vert)}
-.art-compact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--gris-ilot)}
-.art-compact .n{font-size:14px;font-weight:600}
-.art-compact .p{font-size:12px;color:var(--encre-discrete);font-family:var(--font-chiffres)}
-.art-compact .btn-plus{width:32px;height:32px;border-radius:50%;border:none;background:var(--roots-vert);color:var(--blanc-casse);font-size:16px;cursor:pointer;flex-shrink:0}
-.art-compact .stepper-c{display:flex;align-items:center;gap:9px;background:var(--vert-selection);border:2px solid var(--roots-vert);border-radius:var(--r-pilule);padding:2px;flex-shrink:0}
-.art-compact .stepper-c button{width:27px;height:27px;border-radius:50%;border:none;background:var(--carte-blanc);color:var(--encre);font-size:13px;cursor:pointer}
-.art-compact .stepper-c span{font-weight:700;font-size:13px;min-width:14px;text-align:center}
-.lien-detail{display:block;text-align:center;margin-top:14px;font-size:12.5px;color:var(--roots-terracotta);font-weight:700;text-decoration:none}
-
-/* -- Confirmation partagée -- */
-.confirmation{display:none;text-align:center;padding:14px 6px 6px}
-.confirmation.visible{display:block}
-.confirmation .soleil-ok{height:46px;margin:0 auto 10px;display:flex;justify-content:center}
-.confirmation .soleil-ok svg{height:100%;width:auto}
-.code{font-family:var(--font-chiffres);font-weight:700;font-size:32px;letter-spacing:.13em;color:var(--roots-vert);margin:8px 0}
-.instructions{font-size:13px;color:var(--encre-discrete);line-height:1.55;max-width:300px;margin:0 auto}
-
-/* ══════════════ Menu hamburger (sections) ══════════════ */
-/* Menu de l'expérience : déroulé depuis le hamburger (haut-droite), pas du bas */
-.menu-pop{position:fixed;top:62px;right:5%;z-index:15;width:min(300px,86vw);max-height:calc(100vh - 84px);overflow-y:auto;scrollbar-width:none;
- background:var(--blanc-casse);color:var(--encre);border-radius:var(--r-carte);padding:6px 12px 12px;
- box-shadow:0 18px 44px rgba(5,25,18,.38);transform-origin:top right;
- transform:scale(.9) translateY(-8px);opacity:0;pointer-events:none;
- transition:transform .26s cubic-bezier(.2,.9,.25,1),opacity .2s ease}
-.menu-pop::-webkit-scrollbar{display:none}
-.menu-pop.visible{transform:scale(1) translateY(0);opacity:1;pointer-events:auto}
-.voile-doux{background:rgba(5,20,14,.22)}
-.lien-section{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--encre);padding:14px 8px;border-bottom:1px solid var(--gris-ilot);font-size:15px;font-weight:600;cursor:pointer}
-.lien-section:last-child{border-bottom:none}
-.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--vert-selection);color:var(--roots-vert);display:flex;align-items:center;justify-content:center}
-.lien-section .ico svg{width:19px;height:19px}
-.lien-section .txt{flex:1}
-.lien-section .txt small{display:block;font-size:11.5px;font-weight:400;color:var(--encre-discrete);margin-top:1px}
-.drawer-pied{display:flex;align-items:center;justify-content:flex-end;margin-top:16px;padding:0 6px}
-.mini-btn{display:flex;align-items:center;gap:7px;background:var(--gris-ilot);border:none;border-radius:var(--r-pilule);padding:9px 14px;font-family:var(--font-corps);font-weight:700;font-size:13px;color:var(--encre);cursor:pointer}
-.mini-btn svg{width:15px;height:15px}
-
-/* -- Toast (dormant) -- */
-.toast{position:fixed;left:50%;bottom:calc(156px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:20;
- background:rgba(10,51,46,.95);color:var(--creme);font-size:13px;font-weight:600;padding:11px 18px;border-radius:var(--r-pilule);
- box-shadow:0 8px 24px rgba(5,25,18,.4);opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;max-width:80vw;text-align:center}
-.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
-</style>
+<script src="vendor/intlTelInput.min.js" defer></script>
 </head>
-<body>
+<body class="p-accueil" data-surface="ambiante">
+
+<script>Roots.sprite()</script>
 
 <div class="video-fond" aria-hidden="true">
   <div class="halo"></div>
@@ -277,17 +23,12 @@ main{position:relative;z-index:2;min-height:100vh}
 </div>
 <div class="voile-lisibilite"></div>
 
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
 <!-- ══════════════ CHROME HAUT ══════════════ -->
 <header class="chrome-haut">
   <div class="chrome-inner">
-    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg xmlns="http://www.w3.org/2000/svg" width="110" height="111" viewBox="0 0 110 111">
-<path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/>
-<path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/>
-<path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/>
-<path fill-rule="nonzero" fill="rgb(80.392157%, 3.529412%, 3.529412%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/>
-<path fill-rule="nonzero" fill="rgb(100%, 78.431373%, 25.098039%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/>
-<path fill-rule="nonzero" fill="rgb(0%, 40.784314%, 21.960784%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>
-</svg></a>
+    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
     <div class="centre">
     <div class="toggle" id="marque">
       <span class="mot" id="motMode">Mi</span>
@@ -298,11 +39,11 @@ main{position:relative;z-index:2;min-height:100vh}
         <span class="nu">NU</span>
       </span>
     </div>
-    <span class="chrome-titre" id="titreExp">Roots</span>
+    <a class="chrome-titre" id="titreExp" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><i data-lucide="menu">≡</i></button>
+      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -311,30 +52,30 @@ main{position:relative;z-index:2;min-height:100vh}
 <div class="radio-wrap"><div class="radio-inner">
   <div class="radio-ligne">
     <span class="quoi" id="radioQuoi"></span>
-    <button class="radio-btn" id="btnRadio" aria-label="Roots Radio"><i data-lucide="play">▷</i></button>
+    <button class="radio-btn" id="btnRadio" aria-label="Roots Radio"><svg class="i"><use href="#i-play"/></svg></button>
   </div>
 </div></div>
 
 <!-- Contenu : le jardin seul -->
-<main></main>
+<h1 class="hors-ecran">Mi Roots — le jardin, où que tu sois</h1>
+<main id="contenu"></main>
 
 <!-- Bouton (+) focal -->
-<button class="fab" id="fab" aria-label="Réserver ou commander"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+<button class="fab" id="fab" aria-label="Réserver ou commander"><svg class="i"><use href="#i-plus"/></svg></button>
 
-<!-- Super-nav des 3 verbes (icônes) -->
+<!-- Super-nav des 3 verbes -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><i data-lucide="compass">✳</i></span></button>
-  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><i data-lucide="sprout">❦</i></span></button>
-  <button class="verbe dormant" data-verbe="road" aria-label="Road"><span class="ico-rond"><i data-lucide="route">↝</i></span></button>
+  <button class="verbe dormant" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
 
-<!-- ══════════════ Dialogue (+) : Réserver | Commander ══════════════ -->
+<!-- ══════════════ Feuille du bas (+) : Réserver | Commander ══════════════ -->
 <div class="voile" id="voileDlg"></div>
-<div class="feuille-bas" id="dialogue">
+<div class="feuille-bas" id="dialogue" role="dialog" aria-modal="true" aria-label="Réserver ou commander">
   <div class="poignee"></div>
   <div class="tete">
-    <span class="ou">Mi · Roots</span>
-    <button class="fermer" id="fermerDlg" aria-label="Fermer"><i data-lucide="x">×</i></button>
+    <button class="fermer" id="fermerDlg" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
   </div>
   <div class="onglets" id="onglets">
     <button class="actif" data-ong="reserver" data-t="ongReserver">Réserver un espace</button>
@@ -347,246 +88,797 @@ main{position:relative;z-index:2;min-height:100vh}
       <div class="groupe"><span class="etiquette" data-t="etEspace">Espace</span>
         <div class="selecteur-espaces" id="selecteurEspaces"></div></div>
       <div class="groupe"><span class="etiquette" data-t="etJour">Quel jour ?</span>
-        <div class="champ" style="margin-bottom:0"><input type="date" id="dateResa"></div></div>
-      <div class="groupe"><span class="etiquette" data-t="etCreneau">Créneau</span>
-        <div class="rangee-chips" id="chipsCreneaux"></div>
-        <div class="message-ferme" id="messageFerme" style="margin-top:11px"></div></div>
-      <div class="groupe" id="groupePersonnes" style="display:none;">
-        <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
-        <div class="stepper">
-          <button type="button" id="moinsPersonnes" aria-label="Moins"><i data-lucide="minus">−</i></button>
-          <span id="valeurPersonnes">1</span>
-          <button type="button" id="plusPersonnes" aria-label="Plus"><i data-lucide="plus">+</i></button>
+        <div class="champ" style="margin-bottom:0"><input type="date" id="dateResa" aria-label="Quel jour ?" data-al="etJour"></div></div>
+      <div class="rangee-choix">
+        <div class="groupe col-creneaux" id="groupeCreneaux"><span class="etiquette" data-t="etCreneau">Créneau</span>
+          <div class="rangee-chips" id="chipsCreneaux"></div></div>
+        <div class="groupe col-personnes" id="groupePersonnes" style="display:none">
+          <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
+          <div class="stepper">
+            <button type="button" id="moinsPersonnes" aria-label="Moins"><svg class="i"><use href="#i-minus"/></svg></button>
+            <span id="valeurPersonnes">1</span>
+            <button type="button" id="plusPersonnes" aria-label="Plus"><svg class="i"><use href="#i-plus"/></svg></button>
+            <span class="max" id="maxPersonnes"></span>
+          </div>
         </div>
       </div>
+      <div class="message-ferme" id="messageFerme" role="status" aria-live="polite"></div>
+      <p class="jauge" id="jauge" aria-live="polite" style="margin-top:0"></p>
+      <div class="champ groupe" style="margin-bottom:13px"><label for="nomResa" data-t="tonNomResa">Ton prénom</label>
+        <input id="nomResa" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
       <div class="champ groupe"><label for="telResa" data-t="tel">Ton numéro (pour te confirmer)</label>
-        <input type="tel" id="telResa" autocomplete="off"></div>
-      <div class="recap"><span id="recapTexte" data-t="recapVide">Choisis un espace et un forfait</span>
+        <input type="tel" id="telResa" autocomplete="tel"></div>
+      <div class="recap" id="recapResa"><span id="recapTexte"></span>
         <span class="total" id="recapTotal"></span></div>
+      <p class="sans-frais" data-t="sansFrais">Rien de plus ne s'ajoute.</p>
+      <p class="consent" id="texteConsentResa"></p>
+      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
       <button class="bouton-confirmer" id="btnResa" disabled data-t="reserver">Réserver</button>
+      <p class="erreur" id="erreurResa" role="alert" aria-live="polite"></p>
       <p class="mention" data-t="sansCompte">Aucun compte requis. Ton code de confirmation suffit.</p>
     </div>
     <div class="confirmation" id="confResa">
-      <div class="soleil-ok" id="soleil1"></div>
+      <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
       <p style="margin:0;font-size:14.5px;font-weight:700;" data-t="cestReserve">C'est réservé. On t'attend.</p>
-      <div class="code" id="codeResa">------</div>
+      <div class="code" id="codeResa">——————</div>
+      <p class="quoi-conf" id="quoiResa"></p>
       <p class="instructions" data-t="instrResa">Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.</p>
+      <p class="montant-conf" id="montantResa"></p>
+      <div class="retenue" id="blocRetenue"><span data-t="cRetenue">Ta place est gardée encore</span> <span class="reste" id="resteResa">--:--</span></div>
     </div>
   </div>
 
-  <!-- Onglet Commander (menu compact) -->
+  <!-- Onglet Commander -->
   <div class="contenu" id="ct-commander">
     <div id="vueCmd">
       <div id="menuCompact"></div>
       <a class="lien-detail" href="carte.html" data-t="voirDetail">Voir la carte détaillée →</a>
-      <div class="recap" style="margin-top:14px;"><span data-t="cmdTotal">Total commande</span>
-        <span class="total" id="cmdTotal">0 FCFA</span></div>
-      <div class="champ"><label for="nomCmd" data-t="tonNom">Ton nom (pour t'appeler)</label><input id="nomCmd" placeholder="Prénom"></div>
-      <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label><input type="tel" id="telCmd" autocomplete="off"></div>
+      <div class="groupe" style="margin-top:14px"><span class="etiquette" data-t="etService">Service</span>
+        <div class="rangee-chips" id="chipsService"></div></div>
+      <div class="recap" id="recapCmd"><span data-t="cmdTotal">Total commande</span>
+        <span class="total" id="cmdTotal"></span></div>
+      <div class="champ"><label for="nomCmd" data-t="tonNom">Ton nom (pour t'appeler)</label>
+        <input id="nomCmd" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
+      <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label>
+        <input type="tel" id="telCmd" autocomplete="tel"></div>
+      <p class="consent" id="texteConsentCmd"></p>
+      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
       <button class="bouton-confirmer" id="btnCmd" disabled data-t="commander">Commander</button>
-      <p class="mention" data-t="cmdMention">Paiement au comptoir ou via Kkiapay. Sans compte.</p>
+      <p class="erreur" id="erreurCmd" role="alert" aria-live="polite"></p>
+      <p class="mention" data-t="cmdMention">Paiement au comptoir. Sans compte.</p>
     </div>
     <div class="confirmation" id="confCmd">
-      <div class="soleil-ok" id="soleil2"></div>
+      <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
       <p style="margin:0;font-size:14.5px;font-weight:700;" data-t="cestCommande">C'est commandé. La cuisine s'y met.</p>
-      <div class="code" id="codeCmd">------</div>
+      <div class="code" id="codeCmd">——————</div>
       <p class="instructions" data-t="instrCmd">Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.</p>
+      <p class="note-partielle" id="partielCmd" style="display:none"></p>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ Menu hamburger ══════════════ -->
+<!-- ══════════════ Menu déroulant ══════════════ -->
 <div class="voile voile-doux" id="voileMenu"></div>
 <div class="menu-pop" id="drawer">
   <div class="tete" style="justify-content:flex-end">
-    <button class="fermer" id="fermerMenu" aria-label="Fermer"><i data-lucide="x">×</i></button></div>
+    <button class="fermer" id="fermerMenu" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div id="sections"></div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="menu-data.js"></script>
+
 <script>
-/* Filet de sécurité : si menu-data.js n'a pas chargé, on évite le crash global
-   (le menu restera vide jusqu'à ce que le fichier soit en ligne). */
-if(typeof MENU==='undefined'){window.MENU=[];}
+(function () {
+  'use strict';
 
-/* ══════════════ Données ══════════════ */
-const OFFRE={
- jardin:{creneaux:[{id:'jour',prix:2000},{id:'mois',prix:15000}]},
- partage:{creneaux:[{id:'matin',prix:3000},{id:'aprem',prix:3000},{id:'jour',prix:5000}]},
- prive:{creneaux:[{id:'matin',prix:8000},{id:'aprem',prix:8000},{id:'jour',prix:15000}]}};
-const HORAIRES={0:null,1:[7,19],2:[7,19],3:[7,19],4:[7,19],5:[7,19],6:[7,13]};
-const PLAGES={matin:[7,13],aprem:[13,19],jour:[7,19]};
+  var T = {
+    fr: {
+      ongReserver: 'Réserver un espace', ongCommander: 'Commander',
+      etEspace: 'Espace', etJour: 'Quel jour ?', etCreneau: 'Créneau',
+      etPersonnes: 'Combien serez-vous ?', etService: 'Service',
+      tel: 'Ton numéro (pour te confirmer)', tonNomResa: 'Ton prénom', pNom: 'Ton prénom',
+      reserver: 'Réserver',
+      sansCompte: 'Aucun compte requis. Ton code de confirmation suffit.',
+      cestReserve: "C'est réservé. On t'attend.",
+      instrResa: "Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.",
+      voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
+      tonNom: "Ton nom (pour t'appeler)", tonTel: 'Ton numéro',
+      commander: 'Commander', cmdMention: 'Paiement au comptoir. Sans compte.',
+      cestCommande: "C'est commandé. La cuisine s'y met.",
+      instrCmd: "Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.",
+      matin: 'Matinée', apres_midi: 'Après-midi', journee: 'Journée',
+      partage: 'partagé', reunion_privee: 'privé', prive: 'privé',
+      jusqua: function (n) { return "jusqu'à " + n + ' personne' + (n > 1 ? 's' : ''); },
+      parPers: ' / pers.', monnaie: 'FCFA',
+      complet: 'Complet sur ce créneau.', priveOccupe: 'Privatisé sur ce créneau.',
+      resteDeLaPlace: 'Il reste de la place.', sansFrais: "Rien de plus ne s'ajoute.",
+      refuseGarde: "Envoi impossible pour le moment. Réessaie dans un instant.",
+      maxAtteint: 'Maximum atteint',
+      onRegarde: 'On regarde…', onReserve: 'On réserve…', onEnvoie: 'On envoie…',
+      aujourdhui: "Aujourd'hui", demain: 'Demain',
+      sur_place: 'Sur place', emporter: 'À emporter',
+      cRetenue: 'Ta place est gardée encore', expire: 'Le temps est écoulé — la place a été relâchée.',
+      manqueContact: 'Indique ton prénom et un numéro valide.',
+      menuVide: "La carte n'est pas disponible pour le moment.",
+      partiel: function (l) { return 'À ajouter au comptoir : ' + l + '.'; },
+      radio: 'Roots Radio',
+      toastVerbe: function (v) { return v + ' arrive bientôt.'; },
+      toastNu: 'Le mode NU (communauté) arrive bientôt.',
+      politique: 'Politique de confidentialité',
+      saut: 'Aller au contenu',
+      sections: [
+        { ico: 'i-carte', t: 'La carte', s: 'Toute la carte, en détail', href: 'carte.html' },
+        { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau', href: 'index.html?ouvrir=reserver' },
+        { ico: 'i-ticket', t: 'Ma réservation', s: 'Retrouver avec ton code', href: 'retrouver.html' }
+      ]
+    },
+    en: {
+      ongReserver: 'Book a space', ongCommander: 'Order',
+      etEspace: 'Space', etJour: 'Which day?', etCreneau: 'Time slot',
+      etPersonnes: 'How many of you?', etService: 'Service',
+      tel: 'Your number (to confirm)', tonNomResa: 'Your first name', pNom: 'Your first name',
+      reserver: 'Book now',
+      sansCompte: 'No account needed. Your confirmation code is enough.',
+      cestReserve: 'Booked. See you soon.',
+      instrResa: 'Show this code at the front desk. Keep it: it lets you retrieve your booking, even without an account.',
+      voirDetail: 'See full menu →', cmdTotal: 'Order total',
+      tonNom: 'Your name (so we can call you)', tonTel: 'Your number',
+      commander: 'Place order', cmdMention: 'Pay at the counter. No account.',
+      cestCommande: 'Order placed. The kitchen is on it.',
+      instrCmd: 'Give this code at the counter. We call your name when ready.',
+      matin: 'Morning', apres_midi: 'Afternoon', journee: 'Full day',
+      partage: 'shared', reunion_privee: 'private', prive: 'private',
+      jusqua: function (n) { return 'up to ' + n + ' person' + (n > 1 ? 's' : ''); },
+      parPers: ' / person', monnaie: 'FCFA',
+      complet: 'Fully booked for this slot.', priveOccupe: 'Booked privately for this slot.',
+      resteDeLaPlace: 'Still available.', sansFrais: 'Nothing else is added.',
+      refuseGarde: 'Cannot send right now. Try again in a moment.',
+      maxAtteint: 'Maximum reached',
+      onRegarde: 'Checking…', onReserve: 'Booking…', onEnvoie: 'Sending…',
+      aujourdhui: 'Today', demain: 'Tomorrow',
+      sur_place: 'Eat in', emporter: 'Takeaway',
+      cRetenue: 'Your spot is held for another', expire: 'Time is up — the spot has been released.',
+      manqueContact: 'Please give your first name and a valid number.',
+      menuVide: 'The menu is not available right now.',
+      partiel: function (l) { return 'To add at the counter: ' + l + '.'; },
+      radio: 'Roots Radio',
+      toastVerbe: function (v) { return v + ' coming soon.'; },
+      toastNu: 'NU mode (community) coming soon.',
+      politique: 'Privacy Policy',
+      saut: 'Skip to content',
+      sections: [
+        { ico: 'i-carte', t: 'Menu', s: 'Food for your soul', href: 'carte.html' },
+        { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },
+        { ico: 'i-ticket', t: 'My booking', s: 'Find it with your code', href: 'retrouver.html' }
+      ]
+    }
+  };
 
-/* MENU : chargé depuis menu-data.js (source unique, partagée avec carte.html) */
+  var VERBES = { plan: 'Plan', roots: 'Roots', roam: 'Roam' };
+  var ORDRE_CRENEAUX = ['matin', 'apres_midi', 'journee'];
+  var ICONE_MODE = { coworking: 'i-esp-coworking', partage: 'i-esp-partage',
+                   reunion_privee: 'i-esp-reunion_privee', prive: 'i-esp-reunion_privee' };
 
-const ICONES={
- jardin:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="21.27 7.75 179.31 178.87"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 31.738281 41.210938 C 38.699219 52.425781 45.9375 63.476562 53.015625 74.621094 C 55.007812 77.734375 57.722656 80.527344 60.972656 77.746094 C 62.40625 76.523438 62.316406 71.777344 61.164062 69.570312 C 55.644531 58.988281 49.71875 48.597656 43.523438 38.394531 C 41.214844 34.921875 38.402344 31.8125 35.179688 29.167969 C 34.113281 28.222656 31.609375 28.351562 30.007812 28.820312 C 29.074219 29.097656 28.617188 31.015625 27.910156 32.261719 C 29.222656 35.53125 30.078125 38.632812 31.699219 41.25 Z M 193.601562 149.601562 C 193.9375 148.386719 191.757812 145.464844 190.128906 144.839844 C 175.332031 139.101562 160.464844 133.53125 145.4375 128.421875 C 143.230469 127.664062 138.617188 128.777344 137.691406 130.410156 C 135.40625 134.546875 138.957031 136.734375 142.527344 138.097656 C 153.464844 142.261719 164.402344 146.4375 175.339844 150.484375 C 179.4375 152.007812 183.664062 153.191406 189.085938 154.921875 C 190.585938 153.269531 192.960938 151.6875 193.558594 149.601562 Z M 122.847656 82.339844 C 130.117188 72.625 137.316406 62.839844 144.316406 52.933594 C 146.566406 49.914062 148.324219 46.558594 149.527344 42.988281 C 150.171875 40.882812 148.890625 38.1875 148.460938 35.761719 C 146.554688 36.4375 143.886719 36.546875 142.855469 37.898438 C 133.902344 49.671875 125.152344 61.644531 116.492188 73.699219 C 115.058594 75.6875 113.65625 78.191406 113.507812 80.527344 C 113.410156 82.578125 115.140625 84.714844 116.492188 87.859375 C 119.484375 85.261719 121.503906 84.070312 122.847656 82.339844 M 100.691406 14.660156 C 99.308594 14.390625 96.246094 16.875 95.808594 18.636719 C 91.898438 34.210938 88.339844 49.871094 84.871094 65.542969 C 83.875 69.878906 83.957031 74.621094 89.414062 75.597656 C 95.28125 76.640625 95.949219 71.378906 96.753906 67.402344 C 98.324219 59.617188 99.476562 51.761719 100.730469 43.925781 C 101.984375 36.089844 103.277344 28.234375 104.828125 18.6875 C 103.953125 17.710938 102.558594 15.015625 100.710938 14.660156 Z M 143.835938 105.082031 C 152.070312 102.714844 160.367188 100.496094 168.46875 97.742188 C 175.164062 95.449219 181.71875 92.757812 188.089844 89.679688 C 189.480469 89 189.78125 86.058594 190.585938 84.160156 C 188.867188 83.484375 186.945312 81.921875 185.445312 82.25 C 170.160156 85.652344 154.9375 89.300781 139.703125 93.050781 C 137.433594 93.503906 135.335938 94.574219 133.636719 96.140625 C 132.003906 97.882812 130.117188 100.863281 130.652344 102.683594 C 131.1875 104.503906 134.433594 105.667969 136.003906 106.761719 C 139.382812 106.054688 141.660156 105.707031 143.859375 105.082031 Z M 105.84375 133.203125 C 106.15625 119.558594 95.351562 108.246094 81.707031 107.929688 C 81.621094 107.929688 81.535156 107.925781 81.449219 107.925781 C 66.953125 107.304688 54.695312 118.550781 54.078125 133.050781 C 54.0625 133.359375 54.054688 133.667969 54.054688 133.980469 C 54.21875 147.640625 65.25 158.671875 78.914062 158.839844 C 94.375 158.839844 105.742188 147.988281 105.863281 133.222656 Z M 128.8125 130.886719 C 128.554688 157.964844 106.539062 179.980469 79.925781 179.78125 C 52.082031 179.582031 30.117188 157.964844 30.335938 131.054688 C 30.554688 104.148438 53.585938 81.960938 80.941406 82.179688 C 107.339844 82.136719 128.777344 103.503906 128.820312 129.902344 C 128.820312 130.230469 128.820312 130.558594 128.8125 130.886719 "/></svg>`,
- partage:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="12.87 -3.23 107.61 122.26"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 100.917969 36.683594 C 100.660156 28.882812 95.359375 24.0625 89.917969 24.25 C 85.601562 24.402344 82.261719 29.25 82.550781 34.890625 C 82.769531 39.050781 89.550781 44.78125 93.851562 43.203125 C 97.078125 41.972656 99.378906 38.183594 100.917969 36.683594 M 75.71875 62.050781 C 74.25 52.621094 71.859375 49.652344 65.28125 49.691406 C 60.089844 49.691406 57.28125 53.691406 57.398438 60.882812 C 57.5 66.882812 61.871094 70.582031 69.398438 69.320312 C 71.828125 68.972656 73.628906 64.59375 75.71875 62.050781 Z M 52.121094 25.792969 C 52.269531 19.351562 48.121094 14.691406 42.019531 14.492188 C 36.898438 14.320312 32.109375 19.632812 32.019531 25.550781 C 31.960938 30.410156 37.929688 35.300781 44.121094 35.472656 C 49.511719 35.621094 52 32.632812 52.121094 25.792969 M 102.621094 89.792969 C 102.511719 83.921875 97 76.851562 92.621094 76.933594 C 87.148438 77.03125 82.621094 83.390625 82.980469 90.550781 C 83.191406 94.972656 88.308594 98.953125 93.871094 98.992188 C 99.429688 99.03125 102.730469 95.472656 102.621094 89.792969 M 54.53125 84.84375 L 53.441406 84.0625 C 53.375 82.804688 53.234375 81.550781 53.019531 80.3125 C 51.738281 74.570312 46.882812 70.324219 41.019531 69.820312 C 35.859375 69.453125 31.859375 71.203125 30.019531 76.28125 C 27.71875 82.550781 31.199219 86.691406 35.648438 90.332031 C 36.542969 91.226562 37.617188 91.925781 38.800781 92.382812 C 41.800781 93.152344 45.800781 95.042969 47.800781 93.84375 C 50.789062 92.03125 52.359375 87.972656 54.53125 84.84375 M 86.941406 54.132812 C 86.558594 58.070312 86.191406 62.011719 85.761719 66.511719 C 87.167969 66.390625 88.511719 66.300781 89.851562 66.160156 C 101.417969 64.972656 110.261719 71.851562 113.339844 84.441406 C 115.949219 95.070312 110.25 106.710938 100.601562 110.441406 C 90.210938 114.5 74.808594 105.792969 71.199219 93.621094 C 70.199219 90.222656 69.871094 86.621094 69.121094 82.472656 L 65.039062 82 C 63.539062 87.402344 62.871094 92.542969 60.738281 97 C 56.199219 106.5 45.539062 109.820312 36 105.390625 C 23.78125 99.710938 17.398438 88.5 18.78125 75.132812 C 19.78125 65.683594 28.28125 58.53125 38.210938 58.890625 C 40.28125 58.972656 42.351562 59.222656 44.667969 59.421875 L 48.179688 46.621094 C 36.878906 47.621094 27.898438 43.671875 22.101562 33.953125 C 18.28125 27.550781 21.261719 21.152344 22.859375 14.953125 C 25.121094 6.210938 38.167969 1.300781 48.859375 4.800781 C 62.378906 9.230469 66.058594 20.300781 59.5 37.640625 L 71.570312 39.09375 C 71.449219 30.832031 71.699219 22.210938 78.710938 16.800781 C 82.03125 14.242188 87.351562 12.980469 91.648438 13.222656 C 104.828125 13.953125 113.359375 23.703125 112.210938 35.460938 C 110.929688 48.160156 101.308594 55.351562 86.941406 54.132812 "/></svg>`,
- prive:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="2.06 -1.69 174.55 244.73"><path fill="rgb(10.196078%,10.196078%,10.196078%)" d="M 94.402344 7.371094 C 92.171875 9.371094 88.199219 11.113281 87.96875 13.292969 C 86.460938 27.460938 85.570312 41.710938 85.050781 55.953125 C 84.992188 57.652344 88.378906 59.480469 90.160156 61.25 C 91.710938 59.382812 94.339844 57.660156 94.601562 55.632812 C 95.878906 45.851562 96.679688 35.992188 97.308594 26.140625 C 97.671875 20.390625 97.371094 14.601562 97.371094 8.820312 Z M 128.539062 27.890625 C 121.082031 37.511719 113.539062 47.113281 106.671875 57.121094 C 105.007812 59.542969 104.050781 65.070312 105.460938 66.480469 C 108.992188 70.011719 112.1875 65.921875 114.929688 63.5625 C 116.566406 61.925781 118.035156 60.132812 119.320312 58.210938 C 124.980469 50.921875 130.679688 43.660156 136.242188 36.300781 C 138.71875 33.03125 140.910156 29.550781 143.390625 25.933594 C 136.660156 21.441406 132.140625 23.273438 128.539062 27.910156 Z M 39.921875 24.972656 C 42.660156 30.621094 45.960938 35.980469 49.769531 40.972656 C 54.769531 47.480469 60.492188 53.433594 65.769531 59.691406 C 68.179688 62.53125 70.589844 65.691406 74.652344 62.839844 C 78.960938 59.792969 77.152344 56.113281 74.550781 53 C 65.628906 42.335938 56.628906 31.722656 47.550781 21.160156 C 46.371094 19.792969 44.6875 18.863281 41.609375 16.453125 C 40.78125 20.273438 39.070312 23.261719 39.921875 24.972656 M 29.300781 210.441406 C 29.410156 222.601562 30.460938 223.441406 41.480469 221.910156 C 45.652344 221.339844 49.902344 221.433594 54.089844 221 C 85.089844 217.773438 116.089844 214.402344 147.089844 211.3125 C 151.019531 210.910156 152.949219 209.589844 152.96875 205.671875 C 152.96875 203.140625 153.429688 200.523438 152.871094 198.121094 C 152.582031 196.863281 150.53125 195.050781 149.332031 195.121094 C 131 195.75 112.640625 196.230469 94.332031 197.589844 C 75.21875 199 56.1875 201.640625 37.082031 203.042969 C 30.921875 203.460938 27.757812 204.730469 29.300781 210.441406 M 24.589844 84.78125 C 24.589844 89.402344 24.492188 92.050781 24.589844 94.691406 C 25.402344 113.242188 26.402344 131.792969 27.039062 150.351562 C 27.429688 161.742188 27.429688 173.140625 27.320312 184.542969 C 27.257812 190.132812 29.320312 191.660156 34.96875 191.171875 C 71.339844 187.992188 107.730469 184.902344 144.152344 182.402344 C 151.152344 181.921875 152.550781 179.402344 152.359375 173.261719 C 151.558594 147.710938 151.109375 122.152344 150.492188 96.601562 C 150.4375 94.832031 150.03125 93.082031 149.558594 89.691406 L 143.390625 96.980469 C 138.21875 103.089844 133.199219 109.320312 127.839844 115.242188 C 124.839844 118.5625 121.507812 117.972656 118.609375 114.640625 C 114.308594 109.703125 110.039062 104.730469 105.609375 99.882812 C 101.4375 95.300781 97.121094 90.882812 92.390625 85.882812 C 89.980469 89.441406 88.199219 92.023438 86.449219 94.621094 C 81.289062 102.332031 76.179688 110.082031 70.96875 117.761719 C 68.789062 120.980469 65.96875 121.371094 62.800781 119.132812 C 60.902344 117.800781 59.078125 116.367188 57.339844 114.832031 C 47 105.300781 36.582031 95.761719 24.589844 84.78125 M 65.371094 106.332031 C 71.300781 97.441406 76.769531 89.210938 82.28125 81.011719 C 83.808594 78.730469 85.28125 76.421875 87.03125 74.292969 C 91.03125 69.292969 94.75 69.140625 99.089844 73.902344 C 105.910156 81.390625 112.691406 88.902344 119.210938 96.660156 C 123.03125 101.191406 125.421875 100.660156 128.789062 95.960938 C 135.171875 87.070312 141.859375 78.351562 149.070312 70.132812 C 153.660156 64.890625 158.480469 66.492188 160.378906 73.402344 C 161.429688 77.277344 162.097656 81.246094 162.378906 85.25 C 165.007812 121.890625 167.550781 158.53125 164.671875 195.25 C 164.050781 203.25 163.75 211.25 163.492188 219.25 C 163.351562 223.441406 161.160156 224.25 157.371094 224.53125 C 124.949219 226.871094 92.558594 229.453125 60.152344 231.902344 C 51.152344 232.582031 42.039062 233.300781 32.980469 233.613281 C 22.042969 233.972656 20.160156 232.441406 18.851562 221.261719 C 17.371094 208.472656 16.011719 195.632812 15.410156 182.78125 C 13.792969 148.203125 12.601562 113.601562 11.269531 79.011719 C 11.128906 76.902344 11.195312 74.785156 11.46875 72.691406 C 12.46875 66.800781 17.582031 64.261719 22.71875 67.152344 C 24.722656 68.316406 26.574219 69.730469 28.230469 71.351562 C 39.378906 81.980469 50.460938 92.683594 61.582031 103.351562 C 62.492188 104.230469 63.539062 104.902344 65.371094 106.332031 "/></svg>`};
-const SOLEIL=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 191 178"><defs><clipPath id="okc"><path d="M 27 14 L 190.46 14 L 190.46 177 L 27 177 Z"/></clipPath></defs><g clip-path="url(#okc)"><path fill="rgb(0%,40.784314%,21.960784%)" d="M 31.738281 41.210938 C 38.699219 52.425781 45.9375 63.476562 53.015625 74.621094 C 55.007812 77.734375 57.722656 80.527344 60.972656 77.746094 C 62.40625 76.523438 62.316406 71.777344 61.164062 69.570312 C 55.644531 58.988281 49.71875 48.597656 43.523438 38.394531 C 41.214844 34.921875 38.402344 31.8125 35.179688 29.167969 C 34.113281 28.222656 31.609375 28.351562 30.007812 28.820312 C 29.074219 29.097656 28.617188 31.015625 27.910156 32.261719 C 29.222656 35.53125 30.078125 38.632812 31.699219 41.25 Z M 193.601562 149.601562 C 193.9375 148.386719 191.757812 145.464844 190.128906 144.839844 C 175.332031 139.101562 160.464844 133.53125 145.4375 128.421875 C 143.230469 127.664062 138.617188 128.777344 137.691406 130.410156 C 135.40625 134.546875 138.957031 136.734375 142.527344 138.097656 C 153.464844 142.261719 164.402344 146.4375 175.339844 150.484375 C 179.4375 152.007812 183.664062 153.191406 189.085938 154.921875 C 190.585938 153.269531 192.960938 151.6875 193.558594 149.601562 Z M 122.847656 82.339844 C 130.117188 72.625 137.316406 62.839844 144.316406 52.933594 C 146.566406 49.914062 148.324219 46.558594 149.527344 42.988281 C 150.171875 40.882812 148.890625 38.1875 148.460938 35.761719 C 146.554688 36.4375 143.886719 36.546875 142.855469 37.898438 C 133.902344 49.671875 125.152344 61.644531 116.492188 73.699219 C 115.058594 75.6875 113.65625 78.191406 113.507812 80.527344 C 113.410156 82.578125 115.140625 84.714844 116.492188 87.859375 C 119.484375 85.261719 121.503906 84.070312 122.847656 82.339844 M 100.691406 14.660156 C 99.308594 14.390625 96.246094 16.875 95.808594 18.636719 C 91.898438 34.210938 88.339844 49.871094 84.871094 65.542969 C 83.875 69.878906 83.957031 74.621094 89.414062 75.597656 C 95.28125 76.640625 95.949219 71.378906 96.753906 67.402344 C 98.324219 59.617188 99.476562 51.761719 100.730469 43.925781 C 101.984375 36.089844 103.277344 28.234375 104.828125 18.6875 C 103.953125 17.710938 102.558594 15.015625 100.710938 14.660156 Z M 143.835938 105.082031 C 152.070312 102.714844 160.367188 100.496094 168.46875 97.742188 C 175.164062 95.449219 181.71875 92.757812 188.089844 89.679688 C 189.480469 89 189.78125 86.058594 190.585938 84.160156 C 188.867188 83.484375 186.945312 81.921875 185.445312 82.25 C 170.160156 85.652344 154.9375 89.300781 139.703125 93.050781 C 137.433594 93.503906 135.335938 94.574219 133.636719 96.140625 C 132.003906 97.882812 130.117188 100.863281 130.652344 102.683594 C 131.1875 104.503906 134.433594 105.667969 136.003906 106.761719 C 139.382812 106.054688 141.660156 105.707031 143.859375 105.082031 Z M 105.84375 133.203125 C 106.15625 119.558594 95.351562 108.246094 81.707031 107.929688 C 81.621094 107.929688 81.535156 107.925781 81.449219 107.925781 C 66.953125 107.304688 54.695312 118.550781 54.078125 133.050781 C 54.0625 133.359375 54.054688 133.667969 54.054688 133.980469 C 54.21875 147.640625 65.25 158.671875 78.914062 158.839844 C 94.375 158.839844 105.742188 147.988281 105.863281 133.222656 Z M 128.8125 130.886719 C 128.554688 157.964844 106.539062 179.980469 79.925781 179.78125 C 52.082031 179.582031 30.117188 157.964844 30.335938 131.054688 C 30.554688 104.148438 53.585938 81.960938 80.941406 82.179688 C 107.339844 82.136719 128.777344 103.503906 128.820312 129.902344 C 128.820312 130.230469 128.820312 130.558594 128.8125 130.886719 "/></g></svg>`;
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
 
-const TEXTES={
- fr:{ongReserver:'Réserver un espace',ongCommander:'Commander',
-  etEspace:'Espace',etJour:'Quel jour ?',etCreneau:'Créneau',etPersonnes:'Combien serez-vous ?',
-  choisirEspace:"Choisis d'abord un espace",indispoJour:'Indispo ce jour',aujourdhui:"Aujourd'hui",
-  tel:'Ton numéro (pour te confirmer)',recapVide:'Choisis un espace et un créneau',reserver:'Réserver',
-  sansCompte:'Aucun compte requis. Ton code de confirmation suffit.',
-  cestReserve:"C'est réservé. On t'attend.",
-  instrResa:'Montre ce code à l\'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.',
-  voirDetail:'Voir la carte détaillée →',cmdTotal:'Total commande',tonNom:"Ton nom (pour t'appeler)",tonTel:'Ton numéro',
-  commander:'Commander',cmdMention:'Paiement au comptoir ou via Kkiapay. Sans compte.',
-  cestCommande:"C'est commandé. La cuisine s'y met.",
-  instrCmd:"Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.",
-  espaces:{jardin:'Jardin connecté',partage:'Bureau partagé',prive:'Bureau privé'},
-  creneaux:{matin:'Matinée',aprem:'Après-midi',jour:'Journée',mois:'Abonnement mensuel'},
-  fermeJour:'Fermé le dimanche — choisis un autre jour.',
-  telInvalide:'Entre un numéro valide.',champsCmd:'Ton prénom et un numéro valide, et c\'est parti !',
-  radio:'En ce moment · Roots Sessions Vol. 4',
-  toastVerbe:v=>`${v} arrive bientôt.`,toastNu:'Le mode NU (communauté) arrive bientôt.',
-  sections:[{ico:'utensils',t:'La carte',s:'Toute la carte, en détail',href:'carte.html'},
-   {ico:'ticket',t:'Ma réservation',s:'Retrouver avec ton code',href:'retrouver.html'}]},
- en:{ongReserver:'Book a space',ongCommander:'Order',
-  etEspace:'Space',etJour:'Which day?',etCreneau:'Time slot',etPersonnes:'How many of you?',
-  choisirEspace:'Pick a space first',indispoJour:'Not that day',aujourdhui:'Today',
-  tel:'Your number (to confirm)',recapVide:'Pick a space and a slot',reserver:'Book now',
-  sansCompte:'No account needed. Your confirmation code is enough.',
-  cestReserve:'Booked. See you soon.',
-  instrResa:'Show this code at the front desk. Keep it: it lets you retrieve your booking, even without an account.',
-  voirDetail:'See full menu →',cmdTotal:'Order total',tonNom:'Your name (so we can call you)',tonTel:'Your number',
-  commander:'Place order',cmdMention:'Pay at the counter or via Kkiapay. No account.',
-  cestCommande:'Order placed. The kitchen is on it.',
-  instrCmd:'Give this code at the counter. We call your name when ready.',
-  espaces:{jardin:'Connected garden',partage:'Shared desk',prive:'Private office'},
-  creneaux:{matin:'Morning',aprem:'Afternoon',jour:'Full day',mois:'Monthly pass'},
-  fermeJour:'Closed on Sundays — pick another day.',
-  telInvalide:'Enter a valid number.',champsCmd:'Your first name and a valid number, off we go!',
-  radio:'Now playing · Roots Sessions Vol. 4',
-  toastVerbe:v=>`${v} coming soon.`,toastNu:'NU mode (community) coming soon.',
-  sections:[{ico:'utensils',t:'Menu',s:'Food for your soul',href:'carte.html'},
-   {ico:'ticket',t:'My booking',s:'Find it with your code',href:'retrouver.html'}]}
-};
-const VERBES={roots:'Roots',road:'Road',roam:'Roam'};
-let langue=(navigator.language||'fr').toLowerCase().startsWith('en')?'en':'fr';
-function fmt(n){return n.toLocaleString(langue==='fr'?'fr-FR':'en-US');}
-function majIcones(){if(window.lucide)lucide.createIcons();}
+  var $ = function (id) { return document.getElementById(id); };
+  function t() { return T[langue]; }
+  function fmt(n) { return Number(n || 0).toLocaleString(langue === 'fr' ? 'fr-FR' : 'en-US'); }
+  function prix(n) { return fmt(n) + ' ' + t().monnaie; }
 
-/* ---------- Chrome partagé (roots.js) : toggle Mi/NU, super-nav, menu, toast ---------- */
-const chromeUI=Roots.initChrome({
- getLangue:()=>langue,
- getSections:l=>TEXTES[l].sections,
- toastNu:l=>TEXTES[l].toastNu,
- toastVerbe:(l,label)=>TEXTES[l].toastVerbe(label),
- verbes:VERBES
-});
+  /* ---------- État ---------- */
 
-/* ---------- Roots Radio ---------- */
-document.getElementById('btnRadio').addEventListener('click',e=>{e.currentTarget.classList.toggle('actif');});
+  var OFFRES = [];
+  var resa = { offre: null, date: '', creneau: null, creneauDit: false, personnes: 1, dispo: null, notice: null };
+  var CATEGORIES = [];
+  var ARTICLES = {};
+  var panier = {};
+  var cmd = { service: 'sur_place', notice: null };
+  var itiResa = null, itiCmd = null;
 
-/* ══════════════ Dialogue (+) ══════════════ */
-const voileDlg=document.getElementById('voileDlg'),dialogue=document.getElementById('dialogue');
-function ouvrirDlg(){dialogue.classList.add('visible');voileDlg.classList.add('visible');majIcones();}
-function fermerDlg(){dialogue.classList.remove('visible');voileDlg.classList.remove('visible');}
-document.getElementById('fab').addEventListener('click',ouvrirDlg);
-document.getElementById('fermerDlg').addEventListener('click',fermerDlg);
-voileDlg.addEventListener('click',fermerDlg);
-document.getElementById('onglets').addEventListener('click',e=>{
- const b=e.target.closest('button');if(!b)return;
- document.querySelectorAll('#onglets button').forEach(x=>x.classList.toggle('actif',x===b));
- document.getElementById('ct-reserver').classList.toggle('actif',b.dataset.ong==='reserver');
- document.getElementById('ct-commander').classList.toggle('actif',b.dataset.ong==='commander');
- majIcones();});
+  /* ---------- Chrome ---------- */
 
-/* ---------- Réservation (repris de v5) ---------- */
-let etat={espace:'partage',creneau:null,personnes:1};
-const dR=document.getElementById('dateResa');
-function jourIdx(){return dR.value?new Date(dR.value+'T00:00').getDay():new Date().getDay();}
-function estAujourdhui(){return dR.value===new Date().toISOString().slice(0,10);}
-function creneauDispo(id,day){if(id==='mois')return true;const o=HORAIRES[day];if(!o)return false;const p=PLAGES[id];return p[0]>=o[0]&&p[1]<=o[1];}
-function dessinerEspaces(){
- const t=TEXTES[langue],c=document.getElementById('selecteurEspaces');
- c.innerHTML=Object.keys(OFFRE).map(id=>`<button type="button" class="option-espace ${etat.espace===id?'actif':''}" data-id="${id}"><span class="ico">${ICONES[id]}</span><div class="nom">${t.espaces[id]}</div></button>`).join('');
- c.querySelectorAll('.option-espace').forEach(b=>b.addEventListener('click',()=>{etat.espace=b.dataset.id;etat.creneau=null;dessinerEspaces();dessinerCreneaux();majRecap();}));
- document.getElementById('groupePersonnes').style.display=etat.espace==='jardin'?'block':'none';
-}
-function dessinerCreneaux(){
- const t=TEXTES[langue],c=document.getElementById('chipsCreneaux'),day=jourIdx();
- if(!etat.espace){c.innerHTML=`<span style="color:var(--encre-discrete);font-size:12.5px;">${t.choisirEspace}</span>`;return;}
- c.innerHTML=OFFRE[etat.espace].creneaux.map(f=>{const d=creneauDispo(f.id,day);
-  return `<button type="button" class="chip ${etat.creneau===f.id?'actif':''} ${d?'':'indispo'}" data-c="${f.id}" ${d?'':'disabled'}>${t.creneaux[f.id]}<span class="sous">${d?fmt(f.prix)+' FCFA':t.indispoJour}</span></button>`;}).join('');
- c.querySelectorAll('.chip:not(.indispo)').forEach(b=>b.addEventListener('click',()=>{etat.creneau=b.dataset.c;dessinerCreneaux();majRecap();}));
-}
-document.getElementById('moinsPersonnes').addEventListener('click',()=>{etat.personnes=Math.max(1,etat.personnes-1);document.getElementById('valeurPersonnes').textContent=etat.personnes;});
-document.getElementById('plusPersonnes').addEventListener('click',()=>{etat.personnes=Math.min(10,etat.personnes+1);document.getElementById('valeurPersonnes').textContent=etat.personnes;});
-dR.addEventListener('change',()=>{if(etat.creneau&&!creneauDispo(etat.creneau,jourIdx()))etat.creneau=null;majMessage();dessinerCreneaux();majRecap();});
-function majMessage(){const t=TEXTES[langue],msg=document.getElementById('messageFerme');const ferme=HORAIRES[jourIdx()]===null;msg.textContent=ferme?t.fermeJour:'';msg.classList.toggle('visible',ferme);}
-function majRecap(){
- const t=TEXTES[langue],btn=document.getElementById('btnResa'),tx=document.getElementById('recapTexte'),to=document.getElementById('recapTotal');
- if(!etat.espace||!etat.creneau){tx.textContent=t.recapVide;to.textContent='';btn.disabled=true;return;}
- const f=OFFRE[etat.espace].creneaux.find(x=>x.id===etat.creneau);
- const jour=estAujourdhui()?t.aujourdhui:new Date(dR.value+'T00:00').toLocaleDateString(langue==='fr'?'fr-FR':'en-US',{weekday:'short',day:'numeric',month:'short'});
- tx.textContent=`${t.espaces[etat.espace]} · ${t.creneaux[etat.creneau]} · ${jour}`;
- to.textContent=`${fmt(f.prix)} FCFA`;
- btn.disabled=!creneauDispo(etat.creneau,jourIdx());
-}
-function code6(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join('');}
-document.getElementById('btnResa').addEventListener('click',()=>{
- const t=TEXTES[langue];
- if((document.getElementById('telResa').value||'').replace(/\D/g,'').length<8){alert(t.telInvalide);return;}
- if(!etat.creneau||!creneauDispo(etat.creneau,jourIdx()))return;
- document.getElementById('vueResa').style.display='none';
- document.getElementById('soleil1').innerHTML=SOLEIL;
- document.getElementById('codeResa').textContent=code6();
- document.getElementById('confResa').classList.add('visible');
-});
+  var chromeUI = Roots.initChrome({
+    getLangue: function () { return langue; },
+    getSections: function (l) { return T[l].sections; },
+    toastNu: function (l) { return T[l].toastNu; },
+    toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
+    verbes: VERBES
+  });
 
-/* ---------- Commander (menu compact) ---------- */
-const panierC={};
-function trouver(id){for(const c of MENU){const a=c.articles.find(x=>x.id===id);if(a)return a;}return null;}
-function dessinerMenuCompact(){
- document.getElementById('menuCompact').innerHTML=MENU.map(cat=>`<div class="cat-compacte">${cat.t[langue]}</div>`+cat.articles.map(a=>{
-  const q=panierC[a.id]||0;
-  return `<div class="art-compact"><div><div class="n">${a.nom[langue]}</div><div class="p">${fmt(a.prix)} FCFA</div></div>${q===0?`<button class="btn-plus" data-plus="${a.id}">+</button>`:`<div class="stepper-c"><button data-moins="${a.id}">−</button><span>${q}</span><button data-plus="${a.id}">+</button></div>`}</div>`;}).join('')).join('');
- document.querySelectorAll('#menuCompact [data-plus]').forEach(b=>b.addEventListener('click',()=>{panierC[b.dataset.plus]=(panierC[b.dataset.plus]||0)+1;dessinerMenuCompact();majCmd();}));
- document.querySelectorAll('#menuCompact [data-moins]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.moins;panierC[id]=Math.max(0,(panierC[id]||0)-1);if(!panierC[id])delete panierC[id];dessinerMenuCompact();majCmd();}));
-}
-function totalCmd(){return Object.entries(panierC).reduce((s,[id,q])=>s+trouver(id).prix*q,0);}
-function majCmd(){document.getElementById('cmdTotal').textContent=fmt(totalCmd())+' FCFA';document.getElementById('btnCmd').disabled=totalCmd()===0;}
-document.getElementById('btnCmd').addEventListener('click',()=>{
- const t=TEXTES[langue];
- const nom=document.getElementById('nomCmd').value.trim(),tel=(document.getElementById('telCmd').value||'').replace(/\D/g,'');
- if(nom.length<2||tel.length<8){alert(t.champsCmd);return;}
- document.getElementById('vueCmd').style.display='none';
- document.getElementById('soleil2').innerHTML=SOLEIL;
- document.getElementById('codeCmd').textContent=code6();
- document.getElementById('confCmd').classList.add('visible');
-});
+  $('btnRadio').addEventListener('click', function (e) { e.currentTarget.classList.toggle('actif'); });
 
-/* Menu hamburger + sections : gérés par Roots.initChrome (voir chromeUI). */
+  /* ---------- Feuille du bas ---------- */
 
-/* ---------- Langue ---------- */
-function appliquerLangue(){
- const t=TEXTES[langue];
- document.querySelectorAll('[data-t]').forEach(el=>{const v=t[el.dataset.t];if(typeof v==='string')el.textContent=v;});
- document.documentElement.lang=langue;
- document.getElementById('btnLangue').textContent=langue==='fr'?'EN':'FR';
- document.getElementById('radioQuoi').innerHTML=t.radio.replace('·','·');
- dessinerEspaces();dessinerCreneaux();majMessage();majRecap();dessinerMenuCompact();majCmd();chromeUI.dessinerSections();majIcones();
-}
-document.getElementById('btnLangue').addEventListener('click',()=>{langue=langue==='fr'?'en':'fr';appliquerLangue();});
+  var voileDlg = $('voileDlg'), dialogue = $('dialogue');
+  var feuille = Roots.modale(dialogue, {
+    cle: 'feuille',
+    montrer: function () { dialogue.classList.add('visible'); voileDlg.classList.add('visible'); },
+    cacher: function () { dialogue.classList.remove('visible'); voileDlg.classList.remove('visible'); }
+  });
+  function ouvrirDlg() { feuille.ouvrir(); }
+  function fermerDlg() { feuille.fermer(); }
+  $('fab').addEventListener('click', ouvrirDlg);
+  $('fermerDlg').addEventListener('click', fermerDlg);
+  voileDlg.addEventListener('click', fermerDlg);
+  $('onglets').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    document.querySelectorAll('#onglets button').forEach(function (x) { x.classList.toggle('actif', x === b); });
+    $('ct-reserver').classList.toggle('actif', b.dataset.ong === 'reserver');
+    $('ct-commander').classList.toggle('actif', b.dataset.ong === 'commander');
+  });
 
-/* ---------- Téléphone international : bloc réutilisable roots.js (Roots.initTelRoots) ---------- */
+  /* ---------- Messages inline ---------- */
 
-/* ---------- Init ---------- */
-dR.value=new Date().toISOString().slice(0,10);dR.min=dR.value;
-appliquerLangue();
-window.addEventListener('DOMContentLoaded',majIcones);
-window.addEventListener('load',()=>{
- Roots.initTelRoots(document.getElementById('telResa'));
- Roots.initTelRoots(document.getElementById('telCmd'));
- majIcones();
-});
+  function montrerErreur(id, msg) { var e = $(id); e.textContent = msg; e.classList.add('visible'); }
+  function cacherErreur(id) { var e = $(id); e.textContent = ''; e.classList.remove('visible'); }
+
+  /* ---------- Notice de traitement ----------
+     Elle reste affichée au-dessus du bouton : c'est la validation qui vaut
+     acceptation. Si la notice ne le dit pas elle-même, l'écran l'énonce. */
+
+  /* La notice du socle fait foi : c'est SA version qui est scellee avec le
+     consentement. L'ecran n'ajoute sa phrase que si la notice ne la dit pas —
+     sinon il afficherait des mots que la version enregistree ne couvre pas. */
+  function texteNotice(n) { return Roots.db.texteNotice(n, langue); }
+
+  /* ---------- Réservation ---------- */
+
+  /* Une offre porte un nom, pas un nom d'espace suivi d'un suffixe de mode :
+     « Bureau partage » se lit, « Le bureau — partage » se decode. Le socle ne
+     porte que `espaces.nom`, en francais et sans le mode ; les deux langues
+     vivent donc ici. A porter au socle le jour ou l'offre y aura son nom. */
+  var NOMS_OFFRE = {
+    'jardin|coworking': { fr: 'Jardin connecté', en: 'Connected garden' },
+    'bureau|partage': { fr: 'Bureau partagé', en: 'Shared office' },
+    'bureau|prive': { fr: 'Bureau privé', en: 'Private office' },
+    'bureau|reunion_privee': { fr: 'Bureau privé', en: 'Private office' }
+  };
+
+  function libelleOffre(o) {
+    var n = NOMS_OFFRE[o.slug + '|' + o.mode];
+    if (n && n[langue]) return n[langue];
+    var suffixe = t()[o.mode];
+    return suffixe ? o.nom + ' — ' + suffixe : o.nom;
+  }
+
+  /* Le socle peut ecrire le creneau de plusieurs facons ; on ramene la clef a
+     celle du dictionnaire avant de chercher, sinon le libelle retombe sur la
+     valeur brute et reste en francais quelle que soit la langue. */
+  /* Normalisee des l'entree : si l'on se contentait de traduire a l'affichage,
+     le libelle serait juste mais l'ordre des creneaux, lui, resterait faux. */
+  function cleCreneau(c) {
+    var k = String(c || '').toLowerCase().replace(/[\s-]+/g, '_');
+    if (k === 'apresmidi' || k === 'aprem') k = 'apres_midi';
+    return k;
+  }
+
+  function libelleCreneau(c) { return t()[cleCreneau(c)] || c; }
+
+  function tarifDe(o, creneau) {
+    var trouve = null;
+    o.creneaux.forEach(function (c) { if (c.creneau === creneau) trouve = c; });
+    return trouve;
+  }
+
+  function dessinerOffres() {
+    var z = $('selecteurEspaces');
+    z.innerHTML = '';
+    OFFRES.forEach(function (o) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'option-espace' + (resa.offre === o ? ' actif' : '');
+      b.setAttribute('aria-pressed', resa.offre === o ? 'true' : 'false');
+      /* L'îlot porte le nom de l'espace et son icône, rien d'autre : le prix
+         vit sur le créneau et n'apparaît qu'une fois le choix fait. */
+      b.innerHTML = '<span class="ico"><svg class="brand" aria-hidden="true"><use href="#' +
+        (ICONE_MODE[o.mode] || 'i-esp-coworking') + '"/></svg></span><div class="nom"></div>';
+      b.querySelector('.nom').textContent = libelleOffre(o);
+      b.addEventListener('click', function () { choisirOffre(o); });
+      z.appendChild(b);
+    });
+  }
+
+  function choisirOffre(o) {
+    resa.offre = o;
+    var possibles = o.creneaux.map(function (c) { return c.creneau; });
+    /* Un créneau unique est implicite. Sinon le choix reste entier, sauf s'il a
+       déjà été dit et qu'il vaut encore pour cette offre. */
+    if (possibles.length === 1) { resa.creneau = possibles[0]; resa.creneauDit = false; }
+    else if (!(resa.creneauDit && possibles.indexOf(resa.creneau) !== -1)) { resa.creneau = null; resa.creneauDit = false; }
+    if (resa.personnes > o.capacite) resa.personnes = o.capacite;
+    dessinerOffres(); dessinerCreneaux(); majPersonnes(); interroger();
+  }
+
+  function dessinerCreneaux() {
+    var z = $('chipsCreneaux');
+    z.innerHTML = '';
+    if (!resa.offre) { $('groupeCreneaux').style.display = 'none'; return; }
+    var liste = ORDRE_CRENEAUX.filter(function (c) { return tarifDe(resa.offre, c); });
+    resa.offre.creneaux.forEach(function (c) { if (liste.indexOf(c.creneau) === -1) liste.push(c.creneau); });
+    /* Un seul créneau possible : le choix n'en est pas un, on ne le demande pas. */
+    $('groupeCreneaux').style.display = liste.length > 1 ? '' : 'none';
+    liste.forEach(function (c) {
+      var tarif = tarifDe(resa.offre, c);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (resa.creneau === c ? ' actif' : '');
+      b.setAttribute('aria-pressed', resa.creneau === c ? 'true' : 'false');
+      b.innerHTML = '<span class="lib"></span><span class="sous"></span>';
+      b.querySelector('.lib').textContent = libelleCreneau(c);
+      b.querySelector('.sous').textContent = prix(tarif.prix) + (tarif.parPersonne ? t().parPers : '');
+      b.addEventListener('click', function () { resa.creneau = c; resa.creneauDit = true; dessinerCreneaux(); interroger(); });
+      z.appendChild(b);
+    });
+  }
+
+  function plafondPersonnes() {
+    if (!resa.offre) return 1;
+    var cap = resa.offre.capacite || 1;
+    if (resa.dispo && typeof resa.dispo.places_restantes === 'number') {
+      cap = Math.min(cap, Math.max(1, resa.dispo.places_restantes));
+    }
+    return Math.max(1, cap);
+  }
+
+  function majPersonnes() {
+    var plafond = plafondPersonnes();
+    if (resa.personnes > plafond) resa.personnes = plafond;
+    if (resa.personnes < 1) resa.personnes = 1;
+    $('valeurPersonnes').textContent = resa.personnes;
+    $('maxPersonnes').textContent = (resa.personnes >= plafond && plafond > 1)
+      ? t().maxAtteint : '';
+    $('moinsPersonnes').disabled = resa.personnes <= 1;
+    $('plusPersonnes').disabled = resa.personnes >= plafond;
+    $('groupePersonnes').style.display = plafond > 1 ? 'block' : 'none';
+    majRecap();
+  }
+
+  var jetonDispo = 0;
+  async function interroger() {
+    if (!resa.offre || !resa.date || !resa.creneau) {
+      ++jetonDispo;
+      resa.dispo = null;
+      $('jauge').textContent = '';
+      $('messageFerme').classList.remove('visible');
+      majPersonnes();
+      return;
+    }
+    var mien = ++jetonDispo;
+    $('jauge').textContent = t().onRegarde;
+    $('messageFerme').classList.remove('visible');
+    try {
+      var d = await Roots.db.disponibiliteEspace(resa.offre.slug, resa.offre.mode, resa.date, resa.creneau);
+      if (mien !== jetonDispo) return;
+      resa.dispo = d;
+      if (d && d.exclusif_neutralise) {
+        $('jauge').textContent = '';
+        $('messageFerme').textContent = t().priveOccupe;
+        $('messageFerme').classList.add('visible');
+      } else if (d && d.complet) {
+        $('jauge').textContent = '';
+        $('messageFerme').textContent = t().complet;
+        $('messageFerme').classList.add('visible');
+      } else if (d) {
+        /* On dit qu'il reste de la place, jamais combien : la salle tient plus
+           que ce qu'elle ouvre, et le nombre poserait une question qui n'a pas
+           lieu d'etre. */
+        $('jauge').textContent = t().resteDeLaPlace;
+      } else {
+        $('jauge').textContent = '';
+      }
+      majPersonnes(); majRecap();
+    } catch (e) {
+      if (mien !== jetonDispo) return;
+      resa.dispo = null;
+      $('jauge').textContent = '';
+      $('messageFerme').textContent = e.message;
+      $('messageFerme').classList.add('visible');
+      majRecap();
+    }
+  }
+
+  function montantLu() {
+    if (!resa.offre || !resa.creneau) return null;
+    var c = tarifDe(resa.offre, resa.creneau);
+    if (!c) return null;
+    return { total: c.parPersonne ? c.prix * resa.personnes : c.prix, parPersonne: c.parPersonne, unite: c.prix };
+  }
+
+  function libelleJour(iso) {
+    var auj = new Date(); auj.setHours(12, 0, 0, 0);
+    var jour = new Date(iso + 'T12:00:00');
+    var ecart = Math.round((jour - auj) / 86400000);
+    if (ecart === 0) return t().aujourdhui;
+    if (ecart === 1) return t().demain;
+    return jour.toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+
+  function majRecap() {
+    var m = montantLu();
+    /* Tant que l'espace et le créneau ne sont pas dits, aucun montant n'est
+       affiché : la zone reste entièrement vide. */
+    if (!m || !resa.offre || !resa.creneau) {
+      $('recapResa').classList.remove('visible');
+      $('recapTexte').textContent = '';
+      $('recapTotal').textContent = '';
+    } else {
+      $('recapTexte').textContent = libelleOffre(resa.offre) + ' · ' + libelleCreneau(resa.creneau) +
+        ' · ' + libelleJour(resa.date);
+      $('recapTotal').textContent = prix(m.total);
+      $('recapResa').classList.add('visible');
+    }
+    var bloque = !resa.offre || !resa.date || !resa.creneau || !resa.notice ||
+      (resa.dispo && (resa.dispo.complet || resa.dispo.exclusif_neutralise));
+    $('btnResa').disabled = !!bloque;
+  }
+
+  function numeroDe(input, iti) {
+    if (iti && typeof iti.getNumber === 'function') {
+      var v = iti.getNumber();
+      if (v) return v;
+    }
+    return (input.value || '').trim();
+  }
+
+  function numeroValide(input, iti) {
+    if (iti && typeof iti.isValidNumber === 'function' && input.value.trim()) {
+      var r = iti.isValidNumber();
+      if (r !== null && typeof r !== 'undefined') return !!r;
+    }
+    return numeroDe(input, iti).replace(/\D/g, '').length >= 8;
+  }
+
+  var gardeResa = Roots.garde($('btnResa').parentNode, 'complement');
+
+  var resaEnCours = false;
+  async function reserver() {
+    if (resaEnCours) return;
+    cacherErreur('erreurResa');
+    if (gardeResa.pris()) return montrerErreur('erreurResa', t().refuseGarde);
+    var nom = $('nomResa').value.trim();
+    if (!nom || !numeroValide($('telResa'), itiResa)) return montrerErreur('erreurResa', t().manqueContact);
+    if (!resa.notice) return;
+
+    resaEnCours = true;
+    var b = $('btnResa');
+    b.classList.add('occupe');
+    b.textContent = t().onReserve;
+    try {
+      await gardeResa.patienter();
+      var r = await Roots.db.reserverEspace({
+        espace: resa.offre.slug, mode: resa.offre.mode, date: resa.date, creneau: resa.creneau,
+        personnes: resa.personnes, nom: nom, tel: numeroDe($('telResa'), itiResa),
+        consentement: resa.notice.version
+      });
+      confirmerResa(r);
+    } catch (e) {
+      montrerErreur('erreurResa', e.message);
+      interroger();
+    } finally {
+      resaEnCours = false;
+      b.classList.remove('occupe');
+      b.textContent = t().reserver;
+    }
+  }
+
+  var minuteur = null;
+  function confirmerResa(r) {
+    $('vueResa').style.display = 'none';
+    $('confResa').classList.add('visible');
+    $('codeResa').textContent = (r && r.code) || '——————';
+    var pers = resa.personnes + ' ' + (langue === 'en'
+      ? (resa.personnes > 1 ? 'people' : 'person')
+      : (resa.personnes > 1 ? 'personnes' : 'personne'));
+    $('quoiResa').innerHTML = '<span class="q"></span><span class="jour"></span>';
+    $('quoiResa').querySelector('.q').textContent =
+      libelleOffre(resa.offre) + ' · ' + libelleCreneau(resa.creneau) + ' · ' + pers;
+    $('quoiResa').querySelector('.jour').textContent =
+      new Date(resa.date + 'T12:00:00').toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB',
+        { weekday: 'long', day: 'numeric', month: 'long' });
+    $('montantResa').textContent = (r && typeof r.montant !== 'undefined' && r.montant !== null) ? prix(r.montant) : '';
+    dialogue.scrollTop = 0;
+
+    if (r && r.expire_le) {
+      var fin = new Date(r.expire_le).getTime();
+      var tic = function () {
+        var reste = Math.max(0, Math.floor((fin - Date.now()) / 1000));
+        var mm = String(Math.floor(reste / 60));
+        var ss = String(reste % 60);
+        if (mm.length < 2) mm = '0' + mm;
+        if (ss.length < 2) ss = '0' + ss;
+        $('resteResa').textContent = mm + ':' + ss;
+        if (reste === 0) {
+          clearInterval(minuteur);
+          $('blocRetenue').textContent = t().expire;
+        }
+      };
+      clearInterval(minuteur);
+      tic();
+      minuteur = setInterval(tic, 1000);
+    } else {
+      $('blocRetenue').style.display = 'none';
+    }
+  }
+
+  /* ---------- Commande ---------- */
+
+  function dessinerService() {
+    var z = $('chipsService');
+    z.innerHTML = '';
+    ['sur_place', 'emporter'].forEach(function (s) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chip' + (cmd.service === s ? ' actif' : '');
+      b.setAttribute('aria-pressed', cmd.service === s ? 'true' : 'false');
+      b.textContent = t()[s];
+      b.addEventListener('click', function () { cmd.service = s; dessinerService(); });
+      z.appendChild(b);
+    });
+  }
+
+  function dessinerMenuCompact() {
+    var z = $('menuCompact');
+    z.innerHTML = '';
+    var vues = 0;
+    CATEGORIES.forEach(function (cat) {
+      var articles = cat.articles.filter(function (a) { return a.dispo !== false; });
+      /* Une catégorie sans article visible ne s'affiche pas. */
+      if (!articles.length) return;
+      vues++;
+      var titre = document.createElement('div');
+      titre.className = 'cat-compacte';
+      titre.textContent = langue === 'en' ? (cat.nom_en || cat.nom_fr) : (cat.nom_fr || cat.nom_en);
+      z.appendChild(titre);
+      articles.forEach(function (a) {
+        var q = panier[a.id] || 0;
+        var ligne = document.createElement('div');
+        ligne.className = 'art-compact';
+        ligne.innerHTML = '<div><div class="n"></div><div class="p"></div></div>';
+        ligne.querySelector('.n').textContent = langue === 'en' ? (a.nom_en || a.nom_fr) : (a.nom_fr || a.nom_en);
+        ligne.querySelector('.p').textContent = prix(a.prix);
+        if (q === 0) {
+          var plus = document.createElement('button');
+          plus.type = 'button';
+          plus.className = 'btn-plus';
+          plus.textContent = '+';
+          plus.setAttribute('aria-label', '+');
+          plus.addEventListener('click', function () { ajouter(a.id, 1); });
+          ligne.appendChild(plus);
+        } else {
+          var st = document.createElement('div');
+          st.className = 'stepper-c';
+          var bm = document.createElement('button');
+          bm.type = 'button'; bm.textContent = '−'; bm.setAttribute('aria-label', '−');
+          bm.addEventListener('click', function () { ajouter(a.id, -1); });
+          var val = document.createElement('span');
+          val.textContent = q;
+          var bp = document.createElement('button');
+          bp.type = 'button'; bp.textContent = '+'; bp.setAttribute('aria-label', '+');
+          bp.addEventListener('click', function () { ajouter(a.id, 1); });
+          st.appendChild(bm); st.appendChild(val); st.appendChild(bp);
+          ligne.appendChild(st);
+        }
+        z.appendChild(ligne);
+      });
+    });
+    if (!vues) {
+      var vide = document.createElement('p');
+      vide.className = 'vide-menu';
+      vide.textContent = t().menuVide;
+      z.appendChild(vide);
+    }
+  }
+
+  function ajouter(id, delta) {
+    var q = (panier[id] || 0) + delta;
+    if (q <= 0) delete panier[id]; else panier[id] = Math.min(50, q);
+    dessinerMenuCompact();
+    majCmd();
+  }
+
+  /* Total lu à partir des prix de la carte : il sert l'affichage, jamais l'envoi. */
+  function totalCmd() {
+    var s = 0;
+    Object.keys(panier).forEach(function (id) {
+      var a = ARTICLES[id];
+      if (a) s += a.prix * panier[id];
+    });
+    return s;
+  }
+
+  function majCmd() {
+    var lignes = Object.keys(panier).length;
+    /* Panier vide : pas de total affiché. */
+    $('recapCmd').classList.toggle('visible', lignes > 0);
+    $('cmdTotal').textContent = lignes ? prix(totalCmd()) : '';
+    $('btnCmd').disabled = !lignes || !cmd.notice;
+  }
+
+  var cmdEnCours = false;
+  async function commander() {
+    if (cmdEnCours) return;
+    cacherErreur('erreurCmd');
+    var lignes = Object.keys(panier);
+    if (!lignes.length) return;
+    var nom = $('nomCmd').value.trim();
+    if (!nom || !numeroValide($('telCmd'), itiCmd)) return montrerErreur('erreurCmd', t().manqueContact);
+    if (!cmd.notice) return;
+
+    cmdEnCours = true;
+    var b = $('btnCmd');
+    b.classList.add('occupe');
+    b.textContent = t().onEnvoie;
+    try {
+      var r = await Roots.db.ouvrirCommande({
+        nom: nom, tel: numeroDe($('telCmd'), itiCmd),
+        service: cmd.service, consentement: cmd.notice.version
+      });
+      var manquants = [];
+      for (var i = 0; i < lignes.length; i++) {
+        var id = lignes[i];
+        try {
+          await Roots.db.ajouterArticle(r.id, r.jeton, id, panier[id]);
+        } catch (e2) {
+          var a = ARTICLES[id];
+          manquants.push(a ? (langue === 'en' ? (a.nom_en || a.nom_fr) : (a.nom_fr || a.nom_en)) : id);
+        }
+      }
+      confirmerCmd(r, manquants);
+    } catch (e) {
+      montrerErreur('erreurCmd', e.message);
+    } finally {
+      cmdEnCours = false;
+      b.classList.remove('occupe');
+      b.textContent = t().commander;
+    }
+  }
+
+  function confirmerCmd(r, manquants) {
+    $('vueCmd').style.display = 'none';
+    $('confCmd').classList.add('visible');
+    $('codeCmd').textContent = (r && r.code) || '——————';
+    if (manquants && manquants.length) {
+      $('partielCmd').textContent = t().partiel(manquants.join(', '));
+      $('partielCmd').style.display = 'block';
+    } else {
+      $('partielCmd').style.display = 'none';
+    }
+    dialogue.scrollTop = 0;
+  }
+
+  /* ---------- Langue ---------- */
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-p]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-p')];
+      if (typeof v === 'string') el.placeholder = v;
+    });
+    document.querySelectorAll('[data-al]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-al')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
+    });
+    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
+    $('radioQuoi').textContent = t().radio;
+    if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);
+    if (cmd.notice) $('texteConsentCmd').textContent = texteNotice(cmd.notice);
+    dessinerOffres(); dessinerCreneaux(); majPersonnes(); majRecap();
+    dessinerService(); dessinerMenuCompact(); majCmd();
+    chromeUI.dessinerSections();
+  }
+
+  /* ---------- Chargement ---------- */
+
+  async function chargerEspaces() {
+    var d = await Roots.db.espaces();
+    var parId = {};
+    (d.espaces || []).forEach(function (e) { parId[e.id] = e; });
+    var vus = {};
+    (d.capacites || []).forEach(function (c) {
+      var e = parId[c.espace_id];
+      if (!e) return;
+      var tarifs = (d.tarifs || []).filter(function (x) { return x.espace_id === c.espace_id && x.mode === c.mode; });
+      /* Un couple espace x mode sans tarif n'est pas une offre. */
+      if (!tarifs.length) return;
+      var cle = e.slug + '|' + c.mode;
+      if (vus[cle]) return;
+      vus[cle] = true;
+      OFFRES.push({
+        slug: e.slug, nom: e.nom, mode: c.mode, capacite: c.capacite,
+        creneaux: tarifs.map(function (x) { return { creneau: cleCreneau(x.creneau), prix: x.prix, parPersonne: x.par_personne }; })
+      });
+    });
+    OFFRES.sort(function (a, b) {
+      var pa = Math.min.apply(null, a.creneaux.map(function (x) { return x.prix; }));
+      var pb = Math.min.apply(null, b.creneaux.map(function (x) { return x.prix; }));
+      return pa - pb;
+    });
+    /* Aucun espace n'est présélectionné : la parole revient à l'utilisateur. */
+    dessinerOffres();
+  }
+
+  async function chargerCarte() {
+    var d = await Roots.db.carte();
+    var parCat = {};
+    (d.articles || []).forEach(function (a) {
+      ARTICLES[a.id] = a;
+      (parCat[a.categorie_id] = parCat[a.categorie_id] || []).push(a);
+    });
+    CATEGORIES = (d.categories || []).map(function (c) {
+      return {
+        id: c.id, nom_fr: c.nom_fr, nom_en: c.nom_en,
+        articles: (parCat[c.id] || []).slice().sort(function (x, y) { return (x.ordre || 0) - (y.ordre || 0); })
+      };
+    });
+    dessinerMenuCompact();
+    majCmd();
+  }
+
+  async function demarrer() {
+    var maintenant = new Date();
+    var debut = new Date(maintenant.getTime() + 86400000);
+    var fin = new Date(maintenant.getTime() + 30 * 86400000);
+    $('dateResa').min = debut.toISOString().slice(0, 10);
+    $('dateResa').max = fin.toISOString().slice(0, 10);
+    $('dateResa').value = debut.toISOString().slice(0, 10);
+    resa.date = $('dateResa').value;
+
+    try {
+      await chargerEspaces();
+      resa.notice = await Roots.db.notice('espace');
+      if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);
+      majRecap();
+    } catch (e) {
+      montrerErreur('erreurResa', e.message);
+    }
+
+    try {
+      await chargerCarte();
+      cmd.notice = await Roots.db.notice('commande');
+      if (cmd.notice) $('texteConsentCmd').textContent = texteNotice(cmd.notice);
+      majCmd();
+    } catch (e) {
+      montrerErreur('erreurCmd', e.message);
+    }
+  }
+
+  /* ---------- Câblage des gestes ---------- */
+
+  $('dateResa').addEventListener('change', function () { resa.date = this.value; interroger(); });
+  $('moinsPersonnes').addEventListener('click', function () { resa.personnes--; majPersonnes(); });
+  $('plusPersonnes').addEventListener('click', function () { resa.personnes++; majPersonnes(); });
+  $('btnResa').addEventListener('click', reserver);
+  $('btnCmd').addEventListener('click', commander);
+  $('btnLangue').addEventListener('click', function () {
+    langue = langue === 'fr' ? 'en' : 'fr';
+    Roots.retenirLangue(langue);
+    appliquerLangue();
+  });
+
+  /* Un lien profond ouvre la feuille sur l'onglet demandé. */
+  function ouvrirDepuisLien() {
+    var quoi = new URLSearchParams(location.search).get('ouvrir');
+    if (quoi !== 'reserver' && quoi !== 'commander') return;
+    var onglet = document.querySelector('#onglets button[data-ong="' + quoi + '"]');
+    if (onglet) onglet.click();
+    ouvrirDlg();
+  }
+
+  appliquerLangue();
+  demarrer();
+  ouvrirDepuisLien();
+
+  window.addEventListener('load', function () {
+    itiResa = Roots.initTelRoots($('telResa'));
+    itiCmd = Roots.initTelRoots($('telCmd'));
+  });
+})();
 </script>
 </body>
 </html>

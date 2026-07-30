@@ -10,7 +10,9 @@
 # ─────────────────────────────────────────────────────────────
 set -u
 
-DENYLIST="../roots-interne/denylist.txt"
+# Fichier de règles, dans un dossier VOISIN du dépôt et jamais versionné.
+# Adapter ce chemin si le dossier porte un autre nom.
+DENYLIST="${ROOTS_REGLES:-../roots-interne/denylist.txt}"
 FAIL=0
 ZERO="0000000000000000000000000000000000000000"
 
