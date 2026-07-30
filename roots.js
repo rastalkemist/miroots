@@ -401,6 +401,58 @@
     document.body.insertAdjacentElement('afterbegin', hote);
   }
 
+
+  /* Une bande qui defile a l'horizontale doit pouvoir s'attraper. Au doigt, le
+     navigateur s'en charge ; a la souris, rien ne l'attrape et la molette
+     verticale ne la concerne pas. On rend les deux gestes disponibles, et un
+     glissement ne se termine jamais en clic sur l'element survole. */
+  function glisser(bande) {
+    if (!bande || bande.dataset.glisse) return;
+    bande.dataset.glisse = '1';
+    var actif = false, departX = 0, departScroll = 0, bouge = false;
+
+    function suivre(e) {
+      if (!actif) return;
+      var d = e.clientX - departX;
+      if (Math.abs(d) > 3) bouge = true;
+      bande.scrollLeft = departScroll - d;
+      e.preventDefault();
+    }
+    function relacher() {
+      if (!actif) return;
+      actif = false;
+      bande.classList.remove('glisse');
+      window.removeEventListener('pointermove', suivre);
+      window.removeEventListener('pointerup', relacher);
+      window.removeEventListener('pointercancel', relacher);
+    }
+    bande.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') return;
+      if (bande.scrollWidth <= bande.clientWidth) return;
+      actif = true;
+      bouge = false;
+      departX = e.clientX;
+      departScroll = bande.scrollLeft;
+      bande.classList.add('glisse');
+      window.addEventListener('pointermove', suivre);
+      window.addEventListener('pointerup', relacher);
+      window.addEventListener('pointercancel', relacher);
+    });
+    bande.addEventListener('click', function (e) {
+      if (!bouge) return;
+      bouge = false;
+      e.stopPropagation();
+      e.preventDefault();
+    }, true);
+    bande.addEventListener('wheel', function (e) {
+      if (bande.scrollWidth <= bande.clientWidth) return;
+      if (Math.abs(e.deltaX) >= Math.abs(e.deltaY) || !e.deltaY) return;
+      bande.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }, { passive: false });
+  }
+
   global.Roots = global.Roots || {};
   global.Roots.sprite = sprite;
+  global.Roots.glisser = glisser;
 })(window);

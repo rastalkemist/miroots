@@ -80,16 +80,16 @@
 
     <span class="etiquette-paiement" data-t="etPaiement">Paiement</span>
     <div class="paiements" id="paiements"></div>
-    <p class="consent" id="texteConsent"></p>
-      <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
     <button class="bouton-confirmer" id="btnCommander" disabled data-t="commander">Commander</button>
     <p class="erreur" id="erreurCmd" role="alert" aria-live="polite"></p>
     <p class="mention" data-t="mentionPaiement">Paiement sécurisé via KkiaPay.</p>
+    <p class="consent" id="texteConsent"></p>
+    <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
   </div>
 
   <div class="ecran-confirmation" id="ecranConfirmation">
     <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
-    <p style="margin:0;font-size:14.5px;font-weight:700;" id="confTitre"></p>
+    <p class="conf-titre" id="confTitre"></p>
     <div class="code" id="codeAffiche">——————</div>
     <p class="instructions" id="confInstr"></p>
     <p class="note-partielle" id="partielCmd" style="display:none"></p>
@@ -275,10 +275,13 @@
       b.addEventListener('click', function () {
         activerOnglet(cat.ancre);
         var s = $('sec-' + cat.ancre);
-        if (s) s.scrollIntoView({ behavior: 'smooth' });
+        if (!s) return;
+        var calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        s.scrollIntoView({ behavior: calme ? 'auto' : 'smooth' });
       });
       z.appendChild(b);
     });
+    Roots.glisser(z);
     majOngletActif();
   }
 
@@ -291,7 +294,10 @@
 
   function majOngletActif() {
     if (!CATEGORIES.length) return;
-    var ligne = 122;
+    /* Sous la pile collante : ce qui passe au-dessus de cette ligne est
+       cache par l'en-tete et la bande de categories. */
+    var bande = $('categories');
+    var ligne = bande ? bande.getBoundingClientRect().bottom + 1 : 0;
     var courant = CATEGORIES[0].ancre;
     var sections = document.querySelectorAll('.section-menu');
     Array.prototype.forEach.call(sections, function (s) {

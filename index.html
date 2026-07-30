@@ -112,14 +112,14 @@
         <span class="titre" data-t="totalTitre">Total</span>
         <span id="recapTexte"></span>
         <span class="total" id="recapTotal"></span></div>
-      <p class="consent" id="texteConsentResa"></p>
       <button class="bouton-confirmer" id="btnResa" disabled data-t="reserver">Réserver</button>
       <p class="erreur" id="erreurResa" role="alert" aria-live="polite"></p>
+      <p class="consent" id="texteConsentResa"></p>
       <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
     </div>
     <div class="confirmation" id="confResa">
       <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
-      <p style="margin:0;font-size:14.5px;font-weight:700;" data-t="cestReserve">C'est réservé. On t'attend.</p>
+      <p class="conf-titre" data-t="cestReserve">C'est réservé. On t'attend.</p>
       <div class="code" id="codeResa">——————</div>
       <p class="quoi-conf" id="quoiResa"></p>
       <p class="instructions" data-t="instrResa">Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.</p>
@@ -135,20 +135,20 @@
       <a class="lien-detail" href="carte.html" data-t="voirDetail">Voir la carte détaillée →</a>
       <div class="groupe" style="margin-top:14px"><span class="etiquette" data-t="etService">Service</span>
         <div class="rangee-chips" id="chipsService"></div></div>
-      <div class="recap" id="recapCmd"><span data-t="cmdTotal">Total commande</span>
+      <div class="recap" id="recapCmd"><span class="titre" data-t="cmdTotal">Total commande</span>
         <span class="total" id="cmdTotal"></span></div>
       <div class="champ"><label for="nomCmd" data-t="tonNom">Ton nom (pour t'appeler)</label>
         <input id="nomCmd" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
       <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label>
         <input type="tel" id="telCmd" autocomplete="tel"></div>
-      <p class="consent" id="texteConsentCmd"></p>
       <button class="bouton-confirmer" id="btnCmd" disabled data-t="commander">Commander</button>
       <p class="erreur" id="erreurCmd" role="alert" aria-live="polite"></p>
+      <p class="consent" id="texteConsentCmd"></p>
       <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
     </div>
     <div class="confirmation" id="confCmd">
       <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
-      <p style="margin:0;font-size:14.5px;font-weight:700;" data-t="cestCommande">C'est commandé. La cuisine s'y met.</p>
+      <p class="conf-titre" data-t="cestCommande">C'est commandé. La cuisine s'y met.</p>
       <div class="code" id="codeCmd">——————</div>
       <p class="instructions" data-t="instrCmd">Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.</p>
       <p class="note-partielle" id="partielCmd" style="display:none"></p>
@@ -185,7 +185,7 @@
       commander: 'Commander', cmdMention: 'Paiement au comptoir. Sans compte.',
       cestCommande: "C'est commandé. La cuisine s'y met.",
       instrCmd: "Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.",
-      matin: 'Matinée', apres_midi: 'Après-midi', journee: 'Journée',
+      matin: 'Matinée', apres_midi: 'Après-m', journee: 'Journée',
       partage: 'partagé', reunion_privee: 'privé', prive: 'privé',
       jusqua: function (n) { return "jusqu'à " + n + ' personne' + (n > 1 ? 's' : ''); },
       parPers: ' / pers.', monnaie: 'FCFA',
