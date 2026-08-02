@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-pgQB53tgJk5Ss1FrS+grH9yNrIjd7Q1TOsNqLs6POuU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation — Roots</title>
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
+<link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
 <script src="roots-db.js"></script>
 <script src="roots.js"></script>
@@ -35,7 +37,7 @@
     </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -47,11 +49,12 @@
   <section class="bloc" id="recherche">
     <div class="champ">
       <span class="etiquette" data-t="lCode">Code de réservation</span>
-      <input type="text" id="code" maxlength="6" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="ABC123">
+      <input type="text" id="code" maxlength="6" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-describedby="codeFormat">
+      <span class="aide-champ" id="codeFormat" data-t="fCode">Six signes, lettres et chiffres — par exemple ABC123.</span>
     </div>
     <div class="champ">
       <span class="etiquette" data-t="lTel">Numéro utilisé</span>
-      <input type="tel" id="tel" autocomplete="tel">
+      <input type="tel" inputmode="tel" id="tel" autocomplete="tel">
     </div>
     <button class="principal" id="btnChercher" data-t="bChercher">Retrouver</button>
     <p class="erreur cache" id="erreur" role="alert" aria-live="polite"></p>
@@ -74,9 +77,9 @@
 
 <!-- ══════════════ Super-nav + menu déroulant + toast ══════════════ -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe dormant" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
-  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
-  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+  <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe dormant" aria-disabled="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
 <div class="voile-menu" id="voileMenu"></div>
 <div class="menu-pop" id="drawer">
@@ -113,6 +116,9 @@
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
       mentions: 'Mentions légales',
       saut: 'Aller au contenu',
+      phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
       sections: [
         { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau', href: 'index.html?ouvrir=reserver' },
         { ico: 'i-carte', t: 'La carte', s: 'Toute la carte, en détail', href: 'carte.html' }
@@ -140,6 +146,9 @@
       toastNu: 'NU mode (community) coming soon.',
       mentions: 'Legal notices',
       saut: 'Skip to content',
+      phase: 'Trial version. Some features are incomplete or unavailable.',
+      fCode: 'Six characters, letters and digits — for example ABC123.',
+      fCode: 'Six characters, letters and digits — for example ABC123.',
       sections: [
         { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },
         { ico: 'i-carte', t: 'Menu', s: 'Food for your soul', href: 'carte.html' }

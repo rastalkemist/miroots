@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-eZDWtmWmy2FeusAidy/2Fiiof9qWT28opdbll5DBAEA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Caisse — Roots</title>
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<script src="roots-db.js"></script>
+<script src="roots.js"></script>
+</head>
+<body class="p-caisse dialecte-b">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu">Aller au contenu</a>
+
+<div class="barre-poste pleine-largeur">
+  <div class="bande-console"><span class="poste">Caisse</span></div>
+</div>
+<div class="bandeau-etat pleine-largeur">
+  <div class="bande-console">
+    <span class="puce-statut puce-statut--console termine" id="etatTiroir">Tiroir fermé</span>
+  </div>
+</div>
+
+<main id="contenu" class="console bande-console">
+
+  <!-- ══════ Écran 1 — ouvrir le tiroir ══════
+       Douze quantités, aucun champ de total. Le total est en lecture seule et
+       il est calculé par la fonction qui l'enregistrera. Le fond est immuable :
+       une erreur de comptage à l'ouverture se règle par un mot au motif de
+       clôture, jamais par une correction ici. -->
+  <section id="vueTiroir">
+    <h1>Ouvrir le tiroir</h1>
+    <p class="aide">Compte le fond, coupure par coupure. Rien d'autre à saisir.</p>
+    <div id="coupures" class="grille-coupures"></div>
+    <div class="total-lecture">
+      <span>Fond compté</span>
+      <output class="somme" id="totalFond" aria-live="polite">0</output>
+    </div>
+    <button class="btn-b action-large" id="btnOuvrir">Ouvrir le tiroir</button>
+    <div class="recap-erreurs cache" id="erreurTiroir" role="alert"></div>
+  </section>
+
+  <!-- ══════ Écran 2 — le comptoir ══════
+       L'opérateur ne navigue pas : il résout ce que le client lui tend. Le
+       numéro est toujours exigé, puis le code ou le jour. La porte ne rend
+       qu'une vente — jamais une liste, qui serait un total. -->
+  <section id="vueComptoir" class="cache">
+    <h1>Encaisser</h1>
+    <p class="aide">Le numéro du client, puis son code — ou le jour de sa venue.</p>
+
+    <label class="etiquette" for="qTel">Numéro du client</label>
+    <input class="champ-b" type="tel" id="qTel" inputmode="tel" autocomplete="off">
+    <label class="etiquette" for="qCode">Code</label>
+    <input class="champ-b" type="text" id="qCode" maxlength="6" autocapitalize="characters" spellcheck="false" autocomplete="off">
+    <label class="etiquette" for="qJour">ou jour de la venue</label>
+    <input class="champ-b" type="date" id="qJour">
+    <button class="btn-b action-large" id="btnChercher">Chercher la vente</button>
+    <div class="recap-erreurs cache" id="erreurRech" role="alert"></div>
+
+    <div id="vente" class="cache">
+      <h2 id="venteNom">—</h2>
+      <div class="du">
+        <span class="etiquette">À encaisser</span>
+        <output class="somme" id="duSomme">0</output>
+      </div>
+
+      <h2>Moyen</h2>
+      <div class="moyens" id="moyens"></div>
+
+      <div id="blocEspece" class="cache">
+        <h2>Reçu du client</h2>
+        <div class="pave-num" id="pave"></div>
+        <div class="total-lecture">
+          <span>Reçu</span>
+          <output class="somme" id="recuSomme">0</output>
+        </div>
+        <div class="monnaie cache" id="monnaie" role="status" aria-live="polite"></div>
+      </div>
+
+      <button class="btn-b action-large" id="btnEncaisser">Encaisser</button>
+      <div class="recap-erreurs cache" id="erreurEnc" role="alert"></div>
+    </div>
+  </section>
+
+  <section id="vueFait" class="cache">
+    <div class="etat-ecran">
+      <span class="titre" id="faitTitre">Encaissé</span>
+      <span class="aide" id="faitDit"></span>
+    </div>
+    <button class="btn-b action-large" id="btnSuivant">Encaisser une autre vente</button>
+  </section>
+
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var COUPURES = [10000, 5000, 2000, 1000, 500, 250, 200, 100, 50, 25, 10, 5];
+  var MOYENS = [
+    { cle: 'espece', mot: 'Espèces' }, { cle: 'momo', mot: 'MoMo' },
+    { cle: 'moov', mot: 'Moov' }, { cle: 'carte', mot: 'Carte' },
+    { cle: 'autre', mot: 'Autre' }
+  ];
+  var compte = {}, service = null, vente = null, moyen = null, recu = 0;
+
+  function fr(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+  function voir(id, oui) { $(id).classList.toggle('cache', !oui); }
+
+  /* Le message d'erreur du serveur est ecrit pour un journal, pas pour un
+     ecran : on traduit le code, on ne recopie pas la phrase. */
+  function dire(idBloc, e) {
+    var code = (e && (e.code || e.message)) ? String(e.code || '') : '';
+    var mots = {
+      '42501': "Ton compte n'a pas l'accès caisse.",
+      '23503': "Ouvre d'abord le tiroir.",
+      '23505': "Un service est déjà ouvert sur cette caisse.",
+      '23514': "Vérifie les valeurs saisies.",
+      '53400': "Trop de recherches. Patiente une minute.",
+      '22023': "Demande mal formée."
+    };
+    $(idBloc).textContent = mots[code] || "L'opération n'a pas abouti.";
+    voir(idBloc, true);
+  }
+
+  /* ---------- Écran 1 : le comptage du fond ---------- */
+  function poserCoupures() {
+    var h = '';
+    COUPURES.forEach(function (c) {
+      compte[c] = 0;
+      h += '<div class="ligne-coupure">' +
+           '<span class="valeur">' + fr(c) + '</span>' +
+           '<div class="compteur-gros">' +
+           '<button type="button" data-c="' + c + '" data-p="-1" aria-label="Retirer un billet de ' + c + '">−</button>' +
+           '<output id="q' + c + '">0</output>' +
+           '<button type="button" data-c="' + c + '" data-p="1" aria-label="Ajouter un billet de ' + c + '">+</button>' +
+           '</div></div>';
+    });
+    $('coupures').innerHTML = h;
+  }
+
+  $('coupures').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-c]'); if (!b) return;
+    var c = b.dataset.c;
+    compte[c] = Math.max(0, compte[c] + Number(b.dataset.p));
+    $('q' + c).textContent = compte[c];
+    total();
+  });
+
+  /* Le total se lit, il ne se saisit pas — et il est calcule par la meme
+     fonction que celle qui l'enregistrera. */
+  function total() {
+    Roots.db.totalCoupures(compte).then(function (t) {
+      $('totalFond').textContent = fr(t);
+    }, function () { $('totalFond').textContent = '—'; });
+  }
+
+  var verrouOuvrir = false;
+  $('btnOuvrir').addEventListener('click', function () {
+    if (verrouOuvrir) return;
+    verrouOuvrir = true; $('btnOuvrir').disabled = true; voir('erreurTiroir', false);
+    Roots.db.ouvrirServiceCaisse(compte).then(function (r) {
+      service = r; ouvrirComptoir(r);
+    }, function (e) {
+      dire('erreurTiroir', e); verrouOuvrir = false; $('btnOuvrir').disabled = false;
+    });
+  });
+
+  function ouvrirComptoir(s) {
+    $('etatTiroir').textContent = 'Tiroir ouvert';
+    $('etatTiroir').className = 'puce-statut puce-statut--console confirme';
+    voir('vueTiroir', false); voir('vueComptoir', true);
+  }
+
+  /* ---------- Écran 2 : le comptoir ---------- */
+  function poserMoyens() {
+    $('moyens').innerHTML = MOYENS.map(function (m) {
+      return '<button class="tuile" type="button" data-m="' + m.cle + '" aria-pressed="false">' +
+             '<span class="tuile-libelle">' + m.mot + '</span></button>';
+    }).join('');
+  }
+
+  $('moyens').addEventListener('click', function (e) {
+    var b = e.target.closest('.tuile'); if (!b) return;
+    moyen = b.dataset.m;
+    Array.prototype.forEach.call($('moyens').children, function (t) {
+      t.setAttribute('aria-pressed', String(t === b));
+    });
+    voir('blocEspece', moyen === 'espece');
+  });
+
+  function poserPave() {
+    var t = ['1','2','3','4','5','6','7','8','9','00','0','C'];
+    $('pave').innerHTML = t.map(function (x) {
+      return '<button type="button" data-k="' + x + '"' +
+             (x === 'C' ? ' class="effacer"' : '') + '>' + x + '</button>';
+    }).join('');
+  }
+
+  $('pave').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-k]'); if (!b) return;
+    var k = b.dataset.k;
+    recu = (k === 'C') ? 0 : Number(String(recu) + k);
+    $('recuSomme').textContent = fr(recu);
+    monnaie();
+  });
+
+  /* La monnaie ne se calcule JAMAIS ici. */
+  function monnaie() {
+    if (!vente || !recu) { voir('monnaie', false); return; }
+    Roots.db.monnaieARendre(vente.du, recu).then(function (m) {
+      if (!m.suffisant) {
+        $('monnaie').innerHTML = '<span class="somme">Manque ' + fr(m.manque) + '</span>';
+      } else {
+        $('monnaie').innerHTML = '<span class="somme">Rendre ' + fr(m.monnaie) + '</span>' +
+          '<ul>' + (m.detail || []).map(function (d) {
+            return '<li>' + fr(d.coupure) + ' × ' + d.nombre + '</li>';
+          }).join('') + '</ul>' +
+          (m.indivisible ? '<p class="aide">Reste non rendable : ' + fr(m.indivisible) + '</p>' : '');
+      }
+      voir('monnaie', true);
+    }, function () { voir('monnaie', false); });
+  }
+
+  var verrouRech = false;
+  $('btnChercher').addEventListener('click', function () {
+    if (verrouRech) return;
+    verrouRech = true; $('btnChercher').disabled = true;
+    voir('erreurRech', false); voir('vente', false);
+    Roots.db.trouverVenteComptoir({
+      tel: $('qTel').value, code: $('qCode').value || null, jour: $('qJour').value || null
+    }).then(function (r) {
+      if (r.resultat === 'trouvee') { vente = r; montrerVente(r); }
+      else if (r.resultat === 'plusieurs') {
+        $('erreurRech').textContent = r.nombre + ' ventes ce jour-là. Demande le code.';
+        voir('erreurRech', true);
+      } else {
+        $('erreurRech').textContent = 'Aucune vente à régler avec ces éléments.';
+        voir('erreurRech', true);
+      }
+      verrouRech = false; $('btnChercher').disabled = false;
+    }, function (e) {
+      dire('erreurRech', e); verrouRech = false; $('btnChercher').disabled = false;
+    });
+  });
+
+  function montrerVente(r) {
+    $('venteNom').textContent = (r.nom || 'Client') + ' — ' + r.code;
+    $('duSomme').textContent = fr(r.du);
+    recu = 0; $('recuSomme').textContent = '0'; voir('monnaie', false);
+    moyen = null; voir('blocEspece', false);
+    Array.prototype.forEach.call($('moyens').children, function (t) {
+      t.setAttribute('aria-pressed', 'false');
+    });
+    voir('vente', true);
+  }
+
+  /* Le verrou se ferme au premier appui : il couvre le double appui sur reseau
+     lent. Le socle a le filet pour le reste. */
+  var verrouEnc = false;
+  $('btnEncaisser').addEventListener('click', function () {
+    if (verrouEnc || !vente) return;
+    if (!moyen) { $('erreurEnc').textContent = 'Choisis un moyen.'; voir('erreurEnc', true); return; }
+    verrouEnc = true; $('btnEncaisser').disabled = true; voir('erreurEnc', false);
+    Roots.db.encaisserAuComptoir(vente.type, vente.id, moyen).then(function (r) {
+      if (r.resultat !== 'constate') {
+        $('erreurEnc').textContent = 'À signaler : ' + (r.motif || r.resultat);
+        voir('erreurEnc', true);
+        verrouEnc = false; $('btnEncaisser').disabled = false;
+        return;
+      }
+      $('faitDit').textContent = fr(r.montant) + ' encaissés — ' + r.reference;
+      voir('vueComptoir', false); voir('vueFait', true);
+      verrouEnc = false; $('btnEncaisser').disabled = false;
+    }, function (e) {
+      dire('erreurEnc', e); verrouEnc = false; $('btnEncaisser').disabled = false;
+    });
+  });
+
+  $('btnSuivant').addEventListener('click', function () {
+    vente = null; $('qCode').value = ''; $('qJour').value = '';
+    voir('vueFait', false); voir('vueComptoir', true); voir('vente', false);
+  });
+
+  /* À l'ouverture : le tiroir est-il deja ouvert ? mon_service_caisse ne rend
+     PAS l'attendu — c'est deliberé, et on ne cherche pas la porte qui le
+     donnerait. */
+  poserCoupures(); poserMoyens(); poserPave();
+  Roots.db.monServiceCaisse().then(function (r) {
+    if (r && r.service) {
+      service = r;
+      ouvrirComptoir(r);
+      if (r.ouvert_par_moi === false) {
+        $('etatTiroir').textContent = 'Tiroir ouvert par quelqu’un d’autre';
+      }
+    }
+  }, function () { /* hors ligne : l'ecran d'ouverture reste, rien ne se perd */ });
+})();
+</script>
+</body>
+</html>

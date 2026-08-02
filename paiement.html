@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kwiYQQBBW4ckf+LL9FyApt1FNdOKPh3X3OpZpI9TlA8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Paiement — Mi Roots</title>
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<script src="roots-db.js"></script>
+<script src="roots.js"></script>
+</head>
+<body class="p-paiement" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre"><a class="chrome-titre" id="titreExp" href="index.html">Roots</a></div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="scene">
+  <h1 class="hors-ecran" data-t="h1">Paiement</h1>
+
+  <!-- Un seul panneau. Son contenu est reecrit selon l'issue ; role="status"
+       parce que la zone change sans prendre le focus — WCAG 4.1.3, niveau AA. -->
+  <section class="panneau" id="panneau" role="status" aria-live="polite" data-issue="attente">
+    <div class="jauge" id="jauge" aria-hidden="true"><i></i></div>
+    <h2 class="titre-issue" id="titre">…</h2>
+    <p class="dit" id="dit"></p>
+    <div class="avert cache" id="avert"></div>
+    <div class="bloc-code cache" id="blocCode">
+      <span class="etiquette" data-t="lCode">Ton code de commande</span>
+      <span class="code" id="code">------</span>
+    </div>
+    <p class="dit cache" id="montantLigne"><span class="montant" id="montant"></span></p>
+    <div class="apres">
+      <button class="principal" id="action"></button>
+      <a class="lien-second cache" id="second" href="retrouver.html"></a>
+    </div>
+  </section>
+</div>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe dormant" aria-disabled="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+
+<div class="voile voile-doux" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="poignee"></div>
+  <div id="sections"></div>
+  <a class="consent-lien" href="confidentialite.html" data-t="politique">Politique de confidentialité</a>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     LES CINQ ETATS DU PAIEMENT.
+     Ce ne sont pas cinq etats d'egale nature : c'est UN moment d'attente
+     et QUATRE issues. « sans reponse » n'est pas un cinquieme etat du
+     paiement — c'est l'attente qui rend la main. Ce qui change entre
+     « on verifie » et « sans reponse », ce n'est pas le paiement, c'est
+     nous.
+     Sur trois de ces ecrans le mot fait tout le travail : la couleur est
+     sur un filet, jamais sur le sens.
+     ------------------------------------------------------------------ */
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
+      h1: 'Paiement',
+      lCode: 'Ton code de commande',
+      politique: 'Politique de confidentialité',
+      etats: {
+        attente: {
+          titre: 'On vérifie ton paiement',
+          dit: 'Reste sur cette page, ça prend moins d’une minute. Ton code est déjà enregistré : tu le retrouveras même si tu fermes cet onglet.',
+          action: null, second: null, jauge: true, code: true
+        },
+        payee: {
+          titre: 'Paiement reçu',
+          dit: 'Ta commande est réglée. Tu peux emporter ta facture.',
+          action: 'Recevoir ma facture', second: 'Retrouver ma commande',
+          jauge: false, code: true
+        },
+        refusee: {
+          titre: 'Le paiement n’a pas abouti',
+          dit: '<strong>Aucun montant n’a été prélevé.</strong> Tu peux réessayer, ou régler au comptoir.',
+          action: 'Réessayer le paiement', second: 'Retrouver ma commande',
+          jauge: false, code: true
+        },
+        'sans-reponse': {
+          titre: 'Pas encore de réponse',
+          dit: 'Nous n’avons pas encore de réponse de ton opérateur. Cela peut prendre quelques minutes de plus.',
+          avert: 'Ne paie pas une seconde fois. Si le montant est parti, il sera constaté et ta commande sera réglée. Garde ton code.',
+          action: 'Vérifier à nouveau', second: 'Retrouver ma commande',
+          jauge: false, code: true
+        },
+        regularisation: {
+          titre: 'Ton paiement est bien arrivé',
+          dit: 'Il reste une vérification de notre côté avant de valider ta commande. Nous revenons vers toi — garde ton code.',
+          action: 'Retrouver ma commande', second: null,
+          jauge: false, code: true
+        }
+      }
+    },
+    en: {
+      saut: 'Skip to content',
+      phase: 'Trial version. Some features are incomplete or unavailable.',
+      fCode: 'Six characters, letters and digits — for example ABC123.',
+      fCode: 'Six characters, letters and digits — for example ABC123.',
+      h1: 'Payment',
+      lCode: 'Your order code',
+      politique: 'Privacy Policy',
+      etats: {
+        attente: {
+          titre: 'Checking your payment',
+          dit: 'Stay on this page, it takes less than a minute. Your code is already saved: you will find it again even if you close this tab.',
+          action: null, second: null, jauge: true, code: true
+        },
+        payee: {
+          titre: 'Payment received',
+          dit: 'Your order is settled. You can take your invoice with you.',
+          action: 'Get my invoice', second: 'Find my order',
+          jauge: false, code: true
+        },
+        refusee: {
+          titre: 'The payment did not go through',
+          dit: '<strong>No amount was charged.</strong> You can try again, or pay at the counter.',
+          action: 'Try again', second: 'Find my order',
+          jauge: false, code: true
+        },
+        'sans-reponse': {
+          titre: 'No answer yet',
+          dit: 'We have no answer from your operator yet. This can take a few more minutes.',
+          avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
+          action: 'Check again', second: 'Find my order',
+          jauge: false, code: true
+        },
+        regularisation: {
+          titre: 'Your payment arrived',
+          dit: 'One check remains on our side before your order is validated. We will come back to you — keep your code.',
+          action: 'Find my order', second: null,
+          jauge: false, code: true
+        }
+      }
+    }
+  };
+
+  var langue = Roots.langueRetenue('fr');
+  function t() { return T[langue] || T.fr; }
+  var $ = function (id) { return document.getElementById(id); };
+
+  var vente = (Roots.db.commandesGardees() || [])[0] || null;
+  var etatCourant = 'attente';
+
+  function montrer(cle) {
+    etatCourant = cle;
+    var e = t().etats[cle];
+    var p = $('panneau');
+    p.setAttribute('data-issue', cle);
+    $('titre').textContent = e.titre;
+    $('dit').innerHTML = e.dit;
+    $('jauge').classList.toggle('cache', !e.jauge);
+    $('avert').classList.toggle('cache', !e.avert);
+    if (e.avert) $('avert').textContent = e.avert;
+    $('blocCode').classList.toggle('cache', !e.code || !vente);
+    if (vente) $('code').textContent = vente.code || '------';
+    $('action').classList.toggle('cache', !e.action);
+    if (e.action) $('action').textContent = e.action;
+    $('second').classList.toggle('cache', !e.second);
+    if (e.second) $('second').textContent = e.second;
+  }
+
+  /* Le verrou se ferme au premier appui et ne se rouvre qu'a la reponse : il
+     couvre le double appui sur reseau lent. Un rechargement suivi d'un clic est
+     un geste voulu, et il passe. */
+  var verrou = false;
+  $('action').addEventListener('click', function () {
+    if (verrou) return;
+    verrou = true;
+    $('action').disabled = true;
+    Promise.resolve()
+      .then(function () { return agir(etatCourant); })
+      .then(function () { verrou = false; $('action').disabled = false; });
+  });
+
+  function agir(cle) {
+    if (cle === 'sans-reponse') return sonder();
+    if (cle === 'refusee') { location.href = 'index.html'; return; }
+    location.href = 'retrouver.html';
+  }
+
+  /* La verite se lit sur le serveur, jamais sur le retour du widget.
+     suivrePaiement rend « indetermine » passe le delai, jamais « paye ». */
+  function sonder() {
+    if (!vente) { montrer('sans-reponse'); return Promise.resolve(); }
+    montrer('attente');
+    return Roots.db.suivrePaiement(function () {
+      return Roots.db.consulterCommande(vente.id, vente.jeton);
+    }).then(function (r) {
+      var carte = {
+        verifie: 'payee', paye: 'payee',
+        refuse: 'refusee', echoue: 'refusee',
+        a_regulariser: 'regularisation',
+        indetermine: 'sans-reponse'
+      };
+      montrer(carte[r.statut] || 'sans-reponse');
+    }, function () { montrer('sans-reponse'); });
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    montrer(etatCourant);
+  }
+
+  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; } });
+  $('btnLangue').addEventListener('click', function () {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    Roots.retenirLangue(langue);
+    $('btnLangue').textContent = (langue === 'fr') ? 'EN' : 'FR';
+    appliquerLangue();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  });
+
+  /* Revue : ?etat=payee|refusee|sans-reponse|regularisation|attente
+     Sans parametre, l'ecran sonde reellement le serveur. */
+  var demande = new URLSearchParams(location.search).get('etat');
+  if (demande && !vente) vente = { code: 'ABC123' };
+  appliquerLangue();
+  if (demande && t().etats[demande]) montrer(demande);
+  else sonder();
+})();
+</script>
+</body>
+</html>

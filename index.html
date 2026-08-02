@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ExSuzS9p+ISSpRDK0JNwaeyO+vRr6ISucY5nj4NTu9I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
+<link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
 <script src="roots-db.js"></script>
 <script src="roots.js"></script>
@@ -43,7 +45,7 @@
     </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -65,9 +67,9 @@
 
 <!-- Super-nav des 3 verbes -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe dormant" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
-  <button class="verbe actif" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
-  <button class="verbe dormant" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+  <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe dormant" aria-disabled="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
 
 <!-- ══════════════ Feuille du bas (+) : Réserver | Commander ══════════════ -->
@@ -107,7 +109,7 @@
       <div class="champ groupe" style="margin-bottom:13px"><label for="nomResa" data-t="tonNomResa">Ton prénom</label>
         <input id="nomResa" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
       <div class="champ groupe"><label for="telResa" data-t="tel">Ton numéro (pour te confirmer)</label>
-        <input type="tel" id="telResa" autocomplete="tel"></div>
+        <input type="tel" inputmode="tel" id="telResa" autocomplete="tel"></div>
       <div class="recap" id="recapResa">
         <span class="titre" data-t="totalTitre">Total</span>
         <span id="recapTexte"></span>
@@ -140,7 +142,7 @@
       <div class="champ"><label for="nomCmd" data-t="tonNom">Ton nom (pour t'appeler)</label>
         <input id="nomCmd" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
       <div class="champ"><label for="telCmd" data-t="tonTel">Ton numéro</label>
-        <input type="tel" id="telCmd" autocomplete="tel"></div>
+        <input type="tel" inputmode="tel" id="telCmd" autocomplete="tel"></div>
       <button class="bouton-confirmer" id="btnCmd" disabled data-t="commander">Commander</button>
       <p class="erreur" id="erreurCmd" role="alert" aria-live="polite"></p>
       <p class="consent" id="texteConsentCmd"></p>
@@ -204,6 +206,9 @@
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
       politique: 'Politique de confidentialité',
       saut: 'Aller au contenu',
+      phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
       sections: [
         { ico: 'i-carte', t: 'La carte', s: 'Toute la carte, en détail', href: 'carte.html' },
         { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau', href: 'index.html?ouvrir=reserver' },
@@ -242,6 +247,9 @@
       toastNu: 'NU mode (community) coming soon.',
       politique: 'Privacy Policy',
       saut: 'Skip to content',
+      phase: 'Trial version. Some features are incomplete or unavailable.',
+      fCode: 'Six characters, letters and digits — for example ABC123.',
+      fCode: 'Six characters, letters and digits — for example ABC123.',
       sections: [
         { ico: 'i-carte', t: 'Menu', s: 'Food for your soul', href: 'carte.html' },
         { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },

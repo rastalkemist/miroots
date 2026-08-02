@@ -419,6 +419,57 @@ window.Roots = window.Roots || {};
       });
     },
 
+    /* ---------- Caisse ----------
+       Le montant ne se saisit jamais et ne se calcule jamais ici : le serveur
+       relit le du et rend la monnaie. Ces portes n'ont donc aucun argument de
+       montant a encaisser, deliberement. */
+    monServiceCaisse: function () { return appeler('mon_service_caisse', {}); },
+
+    totalCoupures: function (coupures) {
+      return appeler('total_coupures', { p_coupures: coupures });
+    },
+
+    ouvrirServiceCaisse: function (coupures) {
+      return appeler('ouvrir_service_caisse', { p_coupures: coupures });
+    },
+
+    montantDuPaiement: function (type, id, objet) {
+      return appeler('montant_du_paiement', {
+        p_cible_type: type, p_cible_id: id, p_objet: objet || 'total'
+      });
+    },
+
+    monnaieARendre: function (du, recu) {
+      return appeler('monnaie_a_rendre', { p_du: du, p_recu: recu });
+    },
+
+    encaisserAuComptoir: function (type, id, moyen, reference) {
+      return appeler('encaisser_au_comptoir', {
+        p_cible_type: type, p_cible_id: id, p_moyen: moyen,
+        p_objet: 'total', p_reference: reference || null
+      });
+    },
+
+    /* Le numero est toujours exige ; ensuite le code OU le jour. La porte ne
+       rend qu'une vente, jamais une liste : trois lignes chiffrees seraient un
+       total, et un total reconstitue l'attendu du soir. */
+    trouverVenteComptoir: function (o) {
+      return appeler('trouver_vente_comptoir', {
+        p_code: o.code || null,
+        p_tel: o.tel ? telephone(o.tel) : null,
+        p_jour: o.jour || null
+      });
+    },
+
+    choisirRemiseComptoir: function (o) {
+      return appeler('choisir_remise_comptoir', {
+        p_vente_type: o.type, p_vente_id: o.id, p_canal: o.canal,
+        p_tel: o.tel ? telephone(o.tel) : null,
+        p_consentement: o.consentement || null,
+        p_courriel: o.courriel || null
+      });
+    },
+
     demanderEvenement: function (o) {
       return appeler('demander_evenement', {
         p_nature: o.nature, p_nom: o.nom, p_tel: telephone(o.tel), p_email: o.email || null,
