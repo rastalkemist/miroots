@@ -50,6 +50,14 @@ window.Roots = window.Roots || {};
       { fr: 'Ce créneau n’est pas encore ouvert à la réservation.', en: 'This slot is not open for booking yet.' },
     'espace retenu en usage exclusif sur ce creneau':
       { fr: 'Ce créneau est privatisé. Choisis-en un autre.', en: 'This slot is booked privately. Please pick another.' },
+    'cet usage se reserve aupres de l\'equipe':
+      { fr: 'Cet usage se réserve auprès de l’équipe. Écris-nous et on te répond.',
+        en: 'This usage is booked with our team. Get in touch and we will reply.' },
+    'mode d\'usage non offert pour cet espace':
+      { fr: 'Cet usage n’est pas proposé pour cet espace.', en: 'This usage is not offered for this space.' },
+    'version de consentement inconnue ou perimee':
+      { fr: 'Recharge la page : la notice a changé depuis l’ouverture de cet onglet.',
+        en: 'Please reload: the notice changed since this tab was opened.' },
     'la cle d\'idempotence doit etre un uuid tire au hasard':
       { fr: 'Recharge la page et recommence.', en: 'Please reload the page and try again.' },
     'cle d\'idempotence deja utilisee':

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ExSuzS9p+ISSpRDK0JNwaeyO+vRr6ISucY5nj4NTu9I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9Fg7rdqyQzbyX7cgnEs3kvqcu6aUXJ9j/m/BZLw3PGM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
@@ -192,6 +192,7 @@
       jusqua: function (n) { return "jusqu'à " + n + ' personne' + (n > 1 ? 's' : ''); },
       parPers: ' / pers.', monnaie: 'FCFA',
       complet: "C'est complet, une prochaine fois !", priveOccupe: 'Privatisé sur ce créneau.',
+      surDevis: 'Cet usage se réserve auprès de l’équipe.',
       refuseGarde: "Envoi impossible pour le moment. Réessaie dans un instant.",
       maxAtteint: 'Maximum atteint', totalTitre: 'Total',
       onRegarde: 'On regarde…', onReserve: 'On réserve…', onEnvoie: 'On envoie…',
@@ -233,6 +234,7 @@
       jusqua: function (n) { return 'up to ' + n + ' person' + (n > 1 ? 's' : ''); },
       parPers: ' / person', monnaie: 'FCFA',
       complet: 'Fully booked — another time!', priveOccupe: 'Booked privately for this slot.',
+      surDevis: 'This usage is booked with our team.',
       refuseGarde: 'Cannot send right now. Try again in a moment.',
       maxAtteint: 'Maximum reached', totalTitre: 'Total',
       onRegarde: 'Checking…', onReserve: 'Booking…', onEnvoie: 'Sending…',
@@ -438,6 +440,18 @@
     majRecap();
   }
 
+  /* La porte publie deux choses de nature differente : une regle de JAUGE —
+     cet usage prend l'espace en entier — et une regle COMMERCIALE — cet
+     usage se pose par l'equipe. C'est la seconde qui gouverne le bouton.
+     On lit `sur_devis` si la porte la rend ; sinon on retombe sur
+     `exclusif_mode`, qui est le seul indice disponible. Le repli refuse
+     plutot que d'offrir : un bouton qui mene a un refus est un mensonge. */
+  function surDevis(d) {
+    if (!d) return false;
+    if (typeof d.sur_devis !== 'undefined' && d.sur_devis !== null) return !!d.sur_devis;
+    return !!d.exclusif_mode;
+  }
+
   var jetonDispo = 0;
   async function interroger() {
     if (!resa.offre || !resa.date || !resa.creneau) {
@@ -455,7 +469,11 @@
       var d = await Roots.db.disponibiliteEspace(resa.offre.slug, resa.offre.mode, resa.date, resa.creneau);
       if (mien !== jetonDispo) return;
       resa.dispo = d;
-      if (d && d.exclusif_neutralise) {
+      if (surDevis(d)) {
+        $('jauge').textContent = '';
+        $('messageFerme').textContent = t().surDevis;
+        $('messageFerme').classList.add('visible');
+      } else if (d && d.exclusif_neutralise) {
         $('jauge').textContent = '';
         $('messageFerme').textContent = t().priveOccupe;
         $('messageFerme').classList.add('visible');
@@ -513,6 +531,7 @@
       $('recapResa').classList.add('visible');
     }
     var bloque = !resa.offre || !resa.date || !resa.creneau || !resa.notice ||
+      surDevis(resa.dispo) ||
       (resa.dispo && (resa.dispo.complet || resa.dispo.exclusif_neutralise));
     $('btnResa').disabled = !!bloque;
   }
