@@ -19,9 +19,14 @@ Ouverture : tous les jours, 7 h – 19 h.
 Site **statique** — HTML, CSS, JavaScript — servi tel quel, sans étape de
 construction ni dépendance à installer. Un dépôt par sous-domaine.
 
-**Aucune dépendance externe** : polices auto-hébergées, icônes en SVG intégré,
-champ téléphone embarqué. La seule adresse externe appelée à l'exécution est
-celle de la base.
+**Aucune dépendance installée** : polices auto-hébergées, icônes en SVG intégré,
+champ téléphone embarqué.
+
+**Deux adresses externes sont appelées à l'exécution** : celle de la base, et
+celle du widget d'encaissement. La seconde n'est chargée que par `payer.html`,
+un écran qui ne porte **ni code de commande, ni jeton, ni clé de base** et
+n'appelle pas la base. **Aucun autre écran ne charge de script tiers**, et sa
+politique de sécurité reste stricte.
 
 ## 3. Une seule source pour le style, une seule pour le chrome
 

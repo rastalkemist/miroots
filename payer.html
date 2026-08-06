@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://*.kkiapay.me 'sha256-hSSDT6QrI//5e/mQ97+CV8TdvsZail5tKz4D2q03X7w='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
+<title>Paiement — Mi Roots</title>
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+</head>
+<body class="p-payer" data-surface="claire">
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<!-- Cet ecran ne charge ni la passerelle de donnees ni le chrome partage : il
+     n'a besoin d'aucune des deux, et ne pas les charger est le but. Il ne
+     detient ni code de commande, ni jeton, ni cle de base. -->
+
+<div id="contenu" class="scene">
+  <h1 class="hors-ecran" data-t="h1">Paiement</h1>
+
+  <section class="panneau" role="status" aria-live="polite">
+    <h2 class="titre-issue" id="titre">…</h2>
+    <p class="dit" id="dit"></p>
+    <p class="dit cache" id="ligneMontant"><span class="montant" id="montant"></span></p>
+    <div class="apres">
+      <button class="principal cache" id="ouvrir"></button>
+      <a class="lien-second" id="second" href="retrouver.html"></a>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     LA REMISE DU PARCOURS SE FAIT PAR LA MEMOIRE DE SESSION, JAMAIS PAR
+     L'ADRESSE. Une reference portee dans une adresse part aussi dans
+     l'historique du navigateur, dans l'en-tete de provenance vers le
+     prestataire, et dans les journaux de l'hebergeur. La memoire de session
+     appartient a l'onglet, ne survit pas a sa fermeture, et ne laisse aucune
+     trace ailleurs.
+     Le montant vient du serveur : cet ecran le PRESENTE, il ne le calcule
+     pas et ne l'accepte de personne d'autre. Ce qui fait foi reste la lecture
+     serveur, faite par l'ecran suivant.
+     ------------------------------------------------------------------ */
+  var CLE_REMISE = 'roots_remise_paiement';
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu', h1: 'Paiement',
+      ouverture: 'On ouvre le paiement',
+      attends: 'Le paiement s’ouvre dans un instant. Ne ferme pas cette page.',
+      ouvrirBouton: 'Ouvrir le paiement',
+      bloque: 'Le paiement ne s’est pas ouvert',
+      bloqueDit: 'Ton navigateur a empêché le chargement. Réessaie, ou règle au comptoir.',
+      sansRemise: 'Rien à payer ici',
+      sansRemiseDit: 'Cette page s’ouvre depuis ta réservation. Retrouve-la pour reprendre.',
+      retour: 'Retrouver ma réservation',
+      onVerifie: 'On vérifie ton paiement',
+      onVerifieDit: 'Un instant, on demande la réponse au serveur.'
+    },
+    en: {
+      saut: 'Skip to content', h1: 'Payment',
+      ouverture: 'Opening payment',
+      attends: 'Payment opens in a moment. Please keep this page open.',
+      ouvrirBouton: 'Open payment',
+      bloque: 'Payment did not open',
+      bloqueDit: 'Your browser blocked the loading. Try again, or pay at the counter.',
+      sansRemise: 'Nothing to pay here',
+      sansRemiseDit: 'This page opens from your booking. Find it again to resume.',
+      retour: 'Find my booking',
+      onVerifie: 'Checking your payment',
+      onVerifieDit: 'One moment, we are asking the server.'
+    }
+  };
+
+  /* La langue se lit ou les autres ecrans l'ecrivent. Aucune dependance :
+     trois lignes valent mieux qu'un fichier de plus sur cette page. */
+  var langue = 'fr';
+  try {
+    var l = localStorage.getItem('roots.langue');
+    if (l === 'en' || l === 'fr') langue = l;
+  } catch (e) {}
+  function t() { return T[langue] || T.fr; }
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function dire(titre, dit, bouton) {
+    $('titre').textContent = titre;
+    $('dit').textContent = dit;
+    $('ouvrir').classList.toggle('cache', !bouton);
+    if (bouton) $('ouvrir').textContent = bouton;
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    $('second').textContent = t().retour;
+  }
+
+  /* ---------- La remise ---------- */
+  var remise = null;
+  try {
+    var brut = sessionStorage.getItem(CLE_REMISE);
+    if (brut) remise = JSON.parse(brut);
+  } catch (e) { remise = null; }
+
+  appliquerLangue();
+
+  if (!remise || !remise.paiement || !remise.cle) {
+    dire(t().sansRemise, t().sansRemiseDit, null);
+    return;
+  }
+
+  if (typeof remise.montant === 'number' && remise.montant > 0) {
+    $('montant').textContent = String(remise.montant).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' FCFA';
+    $('ligneMontant').classList.remove('cache');
+  }
+
+  /* ---------- Le passage a l'ecran qui interroge le serveur ----------
+     Le retour du widget ne vaut rien : il ne dit pas qu'un paiement a eu lieu.
+     Cet ecran ne conclut donc RIEN et rend la main a celui qui demande la
+     verite au serveur. La remise reste en place pour lui. */
+  function suite() {
+    dire(t().onVerifie, t().onVerifieDit, null);
+    location.replace('paiement.html');
+  }
+
+  /* ---------- L'ouverture ---------- */
+  var monte = false;
+
+  function ouvrirWidget() {
+    if (!window.openKkiapayWidget) {
+      dire(t().bloque, t().bloqueDit, t().ouvrirBouton);
+      return;
+    }
+    try {
+      /* `partnerId` est ce par quoi le serveur retrouve le paiement. `data` le
+         redit : le recepteur cherche l'un puis l'autre, et deux chemins valent
+         mieux qu'un sur la piece qui rattache l'argent a la vente. */
+      window.openKkiapayWidget({
+        amount: remise.montant,
+        key: remise.cle,
+        sandbox: remise.essai === true,
+        position: 'center',
+        partnerId: remise.paiement,
+        data: JSON.stringify({ paiement: remise.paiement })
+      });
+      if (window.addSuccessListener) window.addSuccessListener(suite);
+      if (window.addFailedListener) window.addFailedListener(suite);
+    } catch (e) {
+      dire(t().bloque, t().bloqueDit, t().ouvrirBouton);
+    }
+  }
+
+  function charger() {
+    if (monte) { ouvrirWidget(); return; }
+    dire(t().ouverture, t().attends, null);
+    var s = document.createElement('script');
+    s.src = 'https://cdn.kkiapay.me/k.js';
+    s.onload = function () { monte = true; ouvrirWidget(); };
+    s.onerror = function () { dire(t().bloque, t().bloqueDit, t().ouvrirBouton); };
+    document.head.appendChild(s);
+  }
+
+  $('ouvrir').addEventListener('click', charger);
+  charger();
+})();
+</script>
+</body>
+</html>

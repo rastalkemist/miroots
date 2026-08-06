@@ -9,6 +9,15 @@ window.Roots = window.Roots || {};
   var BASE = 'https://xrqorebcgnixcbqqeoll.supabase.co';
   var CLE  = 'sb_publishable_q7JPy-S8pcXJhxeRAFZb3g_fW221MwC';
 
+  /* Prestataire d'encaissement : la cle PUBLIABLE et le mode. Les deux vont
+     ensemble et se changent ensemble — c'est la seule paire du front qui
+     bascule entre essai et production, et elle n'existe qu'ici. La cle privee
+     et le secret de notification ne sont jamais detenus par un navigateur. */
+  var PAIEMENT = {
+    cle: '512f9ec0f44911efb5aadb3c9a192eba',
+    essai: true
+  };
+
   var entetes = {
     'apikey': CLE,
     'Content-Type': 'application/json'
@@ -328,6 +337,24 @@ window.Roots = window.Roots || {};
     initierPaiementCommande: function (commande, jeton) {
       return appeler('initier_paiement_commande', { p_commande: commande, p_jeton: jeton });
     },
+
+    /* La remise vers l'ecran d'encaissement. Elle passe par la memoire de
+       session : une reference portee dans une adresse part aussi dans
+       l'historique, dans l'en-tete de provenance vers le prestataire et dans
+       les journaux de l'hebergeur. Le montant vient de la porte, jamais de
+       l'ecran. */
+    remisePaiement: function (o) {
+      var remise = {
+        paiement: o.paiement, montant: o.montant,
+        cle: PAIEMENT.cle, essai: PAIEMENT.essai,
+        type: o.type, code: o.code, tel: telephone(o.tel)
+      };
+      try { sessionStorage.setItem('roots_remise_paiement', JSON.stringify(remise)); }
+      catch (e) { return false; }
+      return !!PAIEMENT.cle;
+    },
+
+    reglagePaiement: function () { return { pose: !!PAIEMENT.cle, essai: PAIEMENT.essai }; },
 
     initierPaiementReservation: function (type, code, tel) {
       return appeler('initier_paiement_reservation', {
