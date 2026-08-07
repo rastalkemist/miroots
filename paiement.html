@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kwiYQQBBW4ckf+LL9FyApt1FNdOKPh3X3OpZpI9TlA8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-5G76b1dpFAcUiSw1AJfM2BNH0zqUG6WYBcHrloIdSDg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
@@ -83,7 +83,6 @@
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
       h1: 'Paiement',
       lCode: 'Ton code de commande',
       politique: 'Politique de confidentialité',
@@ -123,7 +122,6 @@
     en: {
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete or unavailable.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
       fCode: 'Six characters, letters and digits — for example ABC123.',
       h1: 'Payment',
       lCode: 'Your order code',
@@ -167,7 +165,33 @@
   function t() { return T[langue] || T.fr; }
   var $ = function (id) { return document.getElementById(id); };
 
-  var vente = (Roots.db.commandesGardees() || [])[0] || null;
+  /* Deux parcours arrivent ici, et ils ne se retrouvent pas de la meme facon.
+     Une COMMANDE se retrouve par le jeton garde dans ce navigateur. Une
+     RESERVATION se retrouve par son code et son numero, remis par l'ecran
+     d'encaissement. Dans les deux cas la verite se lit sur le serveur : le
+     retour du widget ne vaut rien. */
+  var remise = null;
+  try {
+    var brutRemise = sessionStorage.getItem('roots_remise_paiement');
+    if (brutRemise) remise = JSON.parse(brutRemise);
+  } catch (e) { remise = null; }
+
+  var vente = null, lireEtat = null;
+
+  if (remise && remise.code && remise.tel &&
+      String(remise.type || '').indexOf('reservation') === 0) {
+    vente = { code: remise.code };
+    lireEtat = (remise.type === 'reservation_logement')
+      ? function () { return Roots.db.consulterReservationLogement(remise.code, remise.tel); }
+      : function () { return Roots.db.consulterReservationEspace(remise.code, remise.tel); };
+  } else {
+    var cmd = Roots.db.derniereCommande();
+    if (cmd) {
+      vente = cmd;
+      lireEtat = function () { return Roots.db.consulterCommande(cmd.id, cmd.jeton); };
+    }
+  }
+
   var etatCourant = 'attente';
 
   function montrer(cle) {
@@ -210,11 +234,9 @@
   /* La verite se lit sur le serveur, jamais sur le retour du widget.
      suivrePaiement rend « indetermine » passe le delai, jamais « paye ». */
   function sonder() {
-    if (!vente) { montrer('sans-reponse'); return Promise.resolve(); }
+    if (!vente || !lireEtat) { montrer('sans-reponse'); return Promise.resolve(); }
     montrer('attente');
-    return Roots.db.suivrePaiement(function () {
-      return Roots.db.consulterCommande(vente.id, vente.jeton);
-    }).then(function (r) {
+    return Roots.db.suivrePaiement(lireEtat).then(function (r) {
       var carte = {
         verifie: 'payee', paye: 'payee',
         refuse: 'refusee', echoue: 'refusee',

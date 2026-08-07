@@ -343,6 +343,19 @@ window.Roots = window.Roots || {};
        l'historique, dans l'en-tete de provenance vers le prestataire et dans
        les journaux de l'hebergeur. Le montant vient de la porte, jamais de
        l'ecran. */
+    /* Les jetons sont ranges PAR IDENTIFIANT, pas par date : cet ensemble n'a
+       donc pas de « premier element », et le lire comme un tableau rend
+       toujours rien. La regle de choix — la plus recente — vit ici, avec la
+       donnee qui porte l'horodatage. */
+    derniereCommande: function () {
+      var tout = commandesGardees();
+      var ids = Object.keys(tout);
+      if (!ids.length) return null;
+      ids.sort(function (x, y) { return (tout[y].le || 0) - (tout[x].le || 0); });
+      var id = ids[0];
+      return { id: id, jeton: tout[id].jeton, code: tout[id].code };
+    },
+
     remisePaiement: function (o) {
       var remise = {
         paiement: o.paiement, montant: o.montant,
