@@ -33,6 +33,15 @@ de l'identité.
 Les fichiers extraits sont alignés sur la palette de marque. Les exports du
 designer restent la référence d'origine.
 
+## Bibliothèques embarquées
+
+**QR Code Generator for JavaScript** (`vendor/qrcode.js`) — © 2009 Kazuhiko
+Arase, licence MIT — https://github.com/kazuhikoarase/qrcode-generator
+(version 1.5.0). Le mot « QR Code » est une marque déposée de DENSO WAVE
+INCORPORATED. Copie adaptée au dépôt : l'en-tête d'origine est conservé avec
+ses adresses citées sans schéma, et la fonction `createSvgTag`, non employée,
+est retirée ; la version intégrale est à l'adresse ci-dessus.
+
 ## Attribution
 
 Toute mention d'attribution se recopie telle quelle :

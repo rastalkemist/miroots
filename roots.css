@@ -586,6 +586,65 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-paiement) .principal[disabled]{opacity:.35;cursor:not-allowed}
 :where(body.p-paiement) .lien-second{display:inline-block;margin-top:var(--esp-4);color:var(--encre);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold)}
 
+/* ======================================================================== ECRAN — facture (dialecte A) ========================================================================
+   La piece est rendue telle que le socle la porte : blocs dans l'ordre,
+   elements de securite compris, aucun montant calcule ici. Les prix sont en
+   encre neutre, jamais en rouge. A l'impression, seule la piece sort : le
+   chrome et les gestes restent a l'ecran. */
+:where(body.p-facture) .scene{width:var(--ecran-bande);max-width:var(--ecran-colonne);margin:0 auto;padding:var(--esp-8) 0}
+:where(body.p-facture) .panneau{position:relative;overflow:hidden;background:var(--blanc);border-radius:var(--rayon-carte);padding:var(--esp-8) var(--esp-6) var(--esp-6);box-shadow:var(--ombre-posee);text-align:center}
+:where(body.p-facture) .panneau .titre-issue{font-size:var(--t-h2);line-height:var(--lh-28);font-weight:var(--w-a-h2);color:var(--encre);margin:0 0 var(--esp-3)}
+:where(body.p-facture) .panneau .dit{font-size:var(--t-body);line-height:var(--lh-16);font-weight:var(--w-a-corps);color:var(--encre);margin:0 auto var(--esp-6);max-width:34ch}
+:where(body.p-facture) .essai{background:var(--creme);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--esp-6);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
+/* La piece elle-meme suit le modele des factures normalisees du SFE en
+   ligne : typographie neutre du document, boites filetees, en-tetes de tableau
+   sur aplat bleu pale, nombres a point de milliers. C'est le genre « piece
+   fiscale », distinct du dialecte de l'ecran qui l'entoure. */
+:where(body.p-facture) .piece{text-align:left;margin:0 0 var(--esp-6);font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.35;color:#1a1a1a;background:#fff;padding:var(--esp-4) var(--esp-2)}
+:where(body.p-facture) .piece p{margin:0}
+:where(body.p-facture) .entete-doc{display:flex;justify-content:space-between;gap:var(--esp-4);margin:0 0 var(--esp-6)}
+:where(body.p-facture) .v-nom{font-weight:700;letter-spacing:.04em}
+:where(body.p-facture) .f-id{text-align:right}
+:where(body.p-facture) .f-type{font-weight:700}
+:where(body.p-facture) .boites-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);justify-content:space-between;margin:0 0 var(--esp-6)}
+:where(body.p-facture) .boite-doc{border-collapse:collapse;min-width:min(260px,100%)}
+:where(body.p-facture) .boite-doc td{border:1px solid #1a1a1a;padding:3px 8px;vertical-align:top}
+:where(body.p-facture) .boite-doc td.lib{font-style:italic;color:#444;width:5.5em}
+:where(body.p-facture) .boite-client caption{background:#d9d9d9;border:1px solid #1a1a1a;border-bottom:none;font-weight:700;text-align:left;padding:3px 8px}
+:where(body.p-facture) .montants-doc{margin:0 0 var(--esp-4)}
+:where(body.p-facture) .montants-doc .net{font-weight:700}
+:where(body.p-facture) .table-doc{width:100%;border-collapse:collapse;margin:0 0 var(--esp-4)}
+:where(body.p-facture) .table-doc th{background:#dbe5f1;border:1px solid #95a8c6;font-weight:700;text-align:right;padding:3px 8px}
+:where(body.p-facture) .table-doc td{border:1px solid #95a8c6;text-align:right;padding:3px 8px}
+:where(body.p-facture) .table-doc th.gauche, :where(body.p-facture) .table-doc td.gauche{text-align:left}
+:where(body.p-facture) .sep-doc{text-align:center;margin:var(--esp-4) 0 var(--esp-2);font-style:italic}
+:where(body.p-facture) .vent-doc{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--esp-4)}
+:where(body.p-facture) .vent-doc .t-vent{flex:1 1 260px;margin:0}
+:where(body.p-facture) .total-doc{border:1px solid #1a1a1a;padding:6px 14px;font-weight:700;letter-spacing:.08em;white-space:nowrap}
+:where(body.p-facture) .securite-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);align-items:center;border:1px solid #95a8c6;padding:var(--esp-3) var(--esp-4);margin:var(--esp-2) 0 0}
+:where(body.p-facture) .qr-doc{width:112px;height:112px;image-rendering:pixelated}
+:where(body.p-facture) .sec-donnees{flex:1 1 220px;min-width:0}
+:where(body.p-facture) .sec-lib{text-align:center}
+:where(body.p-facture) .sec-code{text-align:center;font-weight:700;margin:0 0 var(--esp-2);overflow-wrap:anywhere}
+:where(body.p-facture) .sec-ligne{display:flex;justify-content:space-between;gap:var(--esp-3)}
+:where(body.p-facture) .sec-ligne b{overflow-wrap:anywhere;text-align:right}
+:where(body.p-facture) .lien-verif{display:inline-flex;align-items:center;min-height:var(--cible-min);margin-top:var(--esp-1);color:var(--encre);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold)}
+:where(body.p-facture) .erreur{margin:0 0 var(--esp-4)}
+:where(body.p-facture) a.consent-lien{display:flex;justify-content:center;align-items:center;min-height:var(--cible-min)}
+:where(body.p-facture) .principal{width:100%;min-height:var(--cible-min);border:none;border-radius:var(--rayon-pilule);background:var(--vert-e2);color:var(--encre-bouton);font-family:var(--font-corps);font-weight:var(--w-a-h2);font-size:var(--t-body);line-height:var(--lh-16);padding:var(--esp-3) var(--esp-6);cursor:pointer}
+:where(body.p-facture) .principal[disabled]{opacity:.35;cursor:not-allowed}
+:where(body.p-facture) .lien-second{display:inline-flex;align-items:center;min-height:var(--cible-min);margin-top:var(--esp-2);color:var(--encre);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold)}
+@media print{
+  :where(body.p-facture) .chrome-haut, :where(body.p-facture) .chrome-bas,
+  :where(body.p-facture) .menu-pop, :where(body.p-facture) .voile,
+  :where(body.p-facture) .toast, :where(body.p-facture) .saut-contenu,
+  :where(body.p-facture) .apres, :where(body.p-facture) .dit,
+  :where(body.p-facture) .erreur, :where(body.p-facture) .titre-issue,
+  :where(body.p-facture) .lien-verif{display:none}
+  :where(body.p-facture) .scene{max-width:none;width:100%;padding:0}
+  :where(body.p-facture) .panneau{box-shadow:none;border-radius:0;padding:0}
+}
+
 /* ======================================================================== LA BANDE — un seul mecanisme de largeur, trois tailles d'ecran ========================================================================
    Ce qui manquait, et dont l'absence forcait a improviser une largeur par
    section : rien ne disait ou une section commence ni ou elle finit. Le chrome

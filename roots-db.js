@@ -467,6 +467,34 @@ window.Roots = window.Roots || {};
       });
     },
 
+    /* ---------- Remise de la piece ----------
+       Le choix du canal appartient au client et se pose sur sa vente ; la
+       piece se lit ensuite par une capacite — le jeton rendu quand elle est
+       prete — jamais par un identifiant que l'on essaie. Un canal de
+       messagerie exige un numero et un consentement : la base refuse
+       l'ecriture sans les deux. */
+
+    choisirRemiseCommande: function (o) {
+      return appeler('choisir_remise_commande', {
+        p_commande: o.id, p_jeton: o.jeton, p_canal: o.canal,
+        p_tel: o.telMessagerie ? telephone(o.telMessagerie) : null,
+        p_consentement: o.consentement || null
+      });
+    },
+
+    choisirRemiseReservation: function (o) {
+      return appeler('choisir_remise_reservation', {
+        p_type: o.type, p_code: o.code, p_tel_contact: telephone(o.tel),
+        p_canal: o.canal,
+        p_tel: o.telMessagerie ? telephone(o.telMessagerie) : null,
+        p_consentement: o.consentement || null
+      });
+    },
+
+    consulterFacture: function (jeton) {
+      return appeler('consulter_facture', { p_jeton: jeton });
+    },
+
     /* ---------- Caisse ----------
        Le montant ne se saisit jamais et ne se calcule jamais ici : le serveur
        relit le du et rend la monnaie. Ces portes n'ont donc aucun argument de

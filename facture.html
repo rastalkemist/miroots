@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-1i3JthTPbGYEy1sBzC2QORQ3o/UyTcwpzzqxiWj7mcw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Ma facture — Mi Roots</title>
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<script src="roots-db.js"></script>
+<script src="roots.js"></script>
+<script src="vendor/qrcode.js"></script>
+</head>
+<body class="p-facture" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre"><a class="chrome-titre" id="titreExp" href="index.html">Roots</a></div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="scene">
+  <h1 class="hors-ecran" data-t="h1">Ma facture</h1>
+
+  <!-- Un seul panneau, reecrit selon l'etat ; role="status" parce que la zone
+       change sans prendre le focus — WCAG 4.1.3, niveau AA. -->
+  <section class="panneau" id="panneau" role="status" aria-live="polite" data-etape="choix">
+    <h2 class="titre-issue" id="titre">…</h2>
+    <p class="dit" id="dit"></p>
+    <div class="essai cache" id="essai"></div>
+    <article class="piece cache" id="piece" lang="fr"></article>
+    <p class="erreur cache" id="erreur" role="alert" aria-live="polite"></p>
+    <div class="apres">
+      <button class="principal" id="action"></button>
+      <a class="lien-second cache" id="second" href="retrouver.html"></a>
+    </div>
+  </section>
+</div>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe dormant" aria-disabled="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+
+<div class="voile voile-doux" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="poignee"></div>
+  <div id="sections"></div>
+  <a class="consent-lien" href="confidentialite.html" data-t="politique">Politique de confidentialité</a>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     LA REMISE DE LA PIECE, en trois temps.
+     1. Le choix : « Télécharger » pose le canal sur la vente. Ce choix
+        appartient au client et se rejoue librement.
+     2. La capacité : la porte rend un jeton quand la pièce est scellée ;
+        c'est lui, et lui seul, qui ouvre la lecture.
+     3. Le rendu : la pièce est composée sur le modèle des factures
+        normalisées remises par le SFE en ligne — mêmes blocs, même ordre,
+        mêmes libellés, éléments de sécurité et QR compris. Le document
+        est en français quelle que soit la langue de l'écran : c'est la
+        langue de la pièce, l'écran autour se traduit.
+     L'écran ne calcule aucun montant ; il rend ce que la porte rend.
+     Une pièce d'essai se dit : l'environnement est scellé sur la pièce.
+     ------------------------------------------------------------------ */
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      h1: 'Ma facture',
+      politique: 'Politique de confidentialité',
+      essai: 'Pièce d’essai — émise sur la plateforme de test de la DGI. Elle n’a pas de valeur fiscale.',
+      verifier: 'Vérifier cette pièce',
+      etapes: {
+        choix: {
+          titre: 'Ta facture',
+          dit: 'Elle est établie sur la plateforme de facturation, puis remise ici. Elle reste disponible tant que tu gardes ton code.',
+          action: 'Télécharger ma facture', second: 'Retrouver ma réservation'
+        },
+        en_cours: {
+          titre: 'Ta facture s’établit',
+          dit: 'Ton paiement est bien enregistré. La pièce est en cours d’établissement — cela prend quelques minutes.',
+          action: 'Vérifier à nouveau', second: 'Retrouver ma réservation'
+        },
+        prete: {
+          titre: 'Ta facture',
+          dit: '',
+          action: 'Télécharger (PDF)', second: 'Retrouver ma réservation'
+        },
+        absente: {
+          titre: 'On ne retrouve pas ta vente',
+          dit: 'La facture se remet sur l’appareil qui a servi à payer. Retrouve ta réservation avec ton code et ton numéro, ou passe au comptoir.',
+          action: 'Retour à l’accueil', second: 'Retrouver ma réservation'
+        }
+      }
+    },
+    en: {
+      saut: 'Skip to content',
+      h1: 'My invoice',
+      politique: 'Privacy Policy',
+      essai: 'Test document — issued on the DGI test platform. It has no fiscal value.',
+      verifier: 'Verify this document',
+      etapes: {
+        choix: {
+          titre: 'Your invoice',
+          dit: 'It is issued on the invoicing platform, then delivered here. It stays available as long as you keep your code.',
+          action: 'Download my invoice', second: 'Find my booking'
+        },
+        en_cours: {
+          titre: 'Your invoice is being issued',
+          dit: 'Your payment is recorded. The document is being issued — this takes a few minutes.',
+          action: 'Check again', second: 'Find my booking'
+        },
+        prete: {
+          titre: 'Your invoice',
+          dit: '',
+          action: 'Download (PDF)', second: 'Find my booking'
+        },
+        absente: {
+          titre: 'We can’t find your sale',
+          dit: 'The invoice is delivered on the device used to pay. Find your booking with your code and number, or ask at the counter.',
+          action: 'Back to home', second: 'Find my booking'
+        }
+      }
+    }
+  };
+
+  /* Les étiquettes des groupes de taxe telles que la DGI les publie. Seul E
+     est notre régime ; une lettre absente de cette table s'affiche nue. */
+  var GROUPES = { E: 'E - TPS' };
+  var MOYENS = {
+    mobile_money: 'MOBILE MONEY', carte: 'CARTE BANCAIRE',
+    espece: 'ESPECES', virement: 'VIREMENT', autre: 'AUTRE'
+  };
+
+  var langue = Roots.langueRetenue('fr');
+  function t() { return T[langue] || T.fr; }
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* Les nombres de la pièce suivent le format des factures du SFE en ligne :
+     milliers séparés par un point, francs entiers. */
+  function fmtF(n) {
+    return String(Math.round(Number(n || 0))).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+  function d2(n) { return (n < 10 ? '0' : '') + n; }
+  function dateDoc(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    return d2(d.getDate()) + '/' + d2(d.getMonth() + 1) + '/' + d.getFullYear();
+  }
+  function heureDoc(iso) {
+    if (!iso) return '';
+    var d = new Date(iso);
+    return dateDoc(iso) + ' ' + d2(d.getHours()) + ':' + d2(d.getMinutes()) + ':' + d2(d.getSeconds());
+  }
+
+  /* Deux parcours, retrouvés comme sur l'écran de paiement : une réservation
+     par la remise de l'écran d'encaissement, une commande par le jeton gardé
+     sur cet appareil. */
+  var remise = null;
+  try {
+    var brutRemise = sessionStorage.getItem('roots_remise_paiement');
+    if (brutRemise) remise = JSON.parse(brutRemise);
+  } catch (e) { remise = null; }
+
+  var vente = null;
+
+  if (remise && remise.code && remise.tel &&
+      String(remise.type || '').indexOf('reservation') === 0) {
+    vente = {
+      mode: 'reservation',
+      type: (remise.type === 'reservation_logement') ? 'logement' : 'espace',
+      code: remise.code, tel: remise.tel
+    };
+  } else {
+    var cmd = Roots.db.derniereCommande();
+    if (cmd) vente = { mode: 'commande', id: cmd.id, jeton: cmd.jeton, code: cmd.code };
+  }
+
+  var etape = vente ? 'choix' : 'absente';
+  var facture = null;
+
+  function montrer(cle) {
+    etape = cle;
+    var e = t().etapes[cle];
+    $('panneau').setAttribute('data-etape', cle);
+    $('titre').textContent = e.titre;
+    $('dit').textContent = e.dit;
+    $('dit').classList.toggle('cache', !e.dit);
+    $('action').textContent = e.action;
+    $('second').textContent = e.second;
+    $('second').classList.remove('cache');
+    $('piece').classList.toggle('cache', cle !== 'prete');
+    $('essai').classList.toggle('cache',
+      cle !== 'prete' || !facture || facture.environnement !== 'test');
+    if (facture && facture.environnement === 'test') $('essai').textContent = t().essai;
+    if (cle === 'prete' && facture) dessiner(facture);
+  }
+
+  function erreur(msg) { var e = $('erreur'); e.textContent = msg; e.classList.remove('cache'); }
+  function cacherErreur() { $('erreur').classList.add('cache'); }
+
+  function el(tag, classe, texte) {
+    var n = document.createElement(tag);
+    if (classe) n.className = classe;
+    if (texte !== undefined && texte !== null) n.textContent = texte;
+    return n;
+  }
+  function tr(cellules, enTete) {
+    var r = document.createElement('tr');
+    cellules.forEach(function (c) {
+      var d = document.createElement(enTete ? 'th' : 'td');
+      if (c && typeof c === 'object') { d.textContent = c.v; if (c.classe) d.className = c.classe; }
+      else d.textContent = (c === undefined || c === null) ? '' : c;
+      r.appendChild(d);
+    });
+    return r;
+  }
+
+  /* Le QR rend, en image, la donnée exacte que la plateforme a scellée sur la
+     pièce. Il n'est composé d'aucune autre source. */
+  function imageQr(donnee) {
+    try {
+      var q = qrcode(0, 'M');
+      q.addData(String(donnee));
+      q.make();
+      return q.createDataURL(4, 8);
+    } catch (e) { return null; }
+  }
+
+  /* La pièce, composée sur le modèle des factures du SFE en ligne : en-tête
+     vendeur et cartouche de la pièce, boîtes adresse et client, montants,
+     lignes, ventilation des impôts, répartition des paiements, éléments de
+     sécurité. Les blocs viennent de la porte, dans cet ordre. */
+  function dessiner(f) {
+    var z = $('piece'); z.innerHTML = '';
+    var v = f.vendeur || {}, c = f.client || {}, tt = f.totaux || {}, s = f.securite || {};
+
+    var entete = el('header', 'entete-doc');
+    var gauche = el('div', 'v-id');
+    gauche.appendChild(el('p', 'v-nom', (v.nom || '').toUpperCase()));
+    gauche.appendChild(el('p', 'v-ifu', 'IFU : ' + (v.ifu || '')));
+    var droite = el('div', 'f-id');
+    droite.appendChild(el('p', 'f-type', f.type || 'FACTURE DE VENTE'));
+    droite.appendChild(el('p', null, 'Facture # ' + (f.numero || '')));
+    droite.appendChild(el('p', null, 'Date : ' + dateDoc(f.date)));
+    droite.appendChild(el('p', null, 'Vendeur : SFE en ligne'));
+    entete.appendChild(gauche); entete.appendChild(droite);
+    z.appendChild(entete);
+
+    var boites = el('div', 'boites-doc');
+    var bv = el('table', 'boite-doc');
+    bv.appendChild(tr([{ v: 'Adresse', classe: 'lib' }, v.adresse || '']));
+    bv.appendChild(tr([{ v: 'Contact', classe: 'lib' }, v.contact || '']));
+    bv.appendChild(tr([{ v: 'VMCF', classe: 'lib' }, v.nim || '']));
+    var bc = el('table', 'boite-doc boite-client');
+    var cap = el('caption', null, 'CLIENT');
+    bc.appendChild(cap);
+    bc.appendChild(tr([{ v: 'Nom', classe: 'lib' }, c.nom || '']));
+    bc.appendChild(tr([{ v: 'IFU', classe: 'lib' }, c.ifu || '']));
+    bc.appendChild(tr([{ v: 'Adresse', classe: 'lib' }, '']));
+    bc.appendChild(tr([{ v: 'Contact', classe: 'lib' }, '']));
+    boites.appendChild(bv); boites.appendChild(bc);
+    z.appendChild(boites);
+
+    var monts = el('div', 'montants-doc');
+    monts.appendChild(el('p', null, 'TTC : ' + fmtF(tt.ttc) + ' f'));
+    monts.appendChild(el('p', null, 'AIB : ' + fmtF(tt.aib) + ' f'));
+    monts.appendChild(el('p', 'net', 'NET A PAYER : ' + fmtF(tt.net_a_payer) + ' f'));
+    z.appendChild(monts);
+
+    var tl = el('table', 'table-doc t-lignes');
+    tl.appendChild(tr(['#', { v: 'Nom', classe: 'gauche' }, 'Prix unitaire', 'Quantité', 'Montant T.T.C.'], true));
+    (f.lignes || []).forEach(function (l) {
+      tl.appendChild(tr([
+        l.rang, { v: l.nom, classe: 'gauche' }, fmtF(l.prix_unitaire),
+        fmtF(l.quantite), fmtF(l.montant) + ' [' + (l.groupe || '') + ']'
+      ]));
+    });
+    z.appendChild(tl);
+
+    z.appendChild(el('p', 'sep-doc', '--- VENTILATION DES IMPÔTS ---'));
+    var vt = el('div', 'vent-doc');
+    var tv = el('table', 'table-doc t-vent');
+    tv.appendChild(tr(['Groupe', 'Total', 'Imposable', 'Impôt'], true));
+    (f.ventilation || []).forEach(function (g) {
+      tv.appendChild(tr([
+        { v: GROUPES[g.groupe] || g.groupe || '', classe: 'gauche' }, fmtF(g.total),
+        (g.imposable === null || g.imposable === undefined) ? '-' : fmtF(g.imposable),
+        (g.impot === null || g.impot === undefined) ? '-' : fmtF(g.impot)
+      ]));
+    });
+    vt.appendChild(tv);
+    vt.appendChild(el('div', 'total-doc', 'Total : ' + fmtF(tt.ttc)));
+    z.appendChild(vt);
+
+    z.appendChild(el('p', 'sep-doc', '--- RÉPARTITION DES PAIEMENTS ---'));
+    var tp = el('table', 'table-doc t-paie');
+    tp.appendChild(tr([{ v: 'Type de paiement', classe: 'gauche' }, 'Payé'], true));
+    (f.paiements || []).forEach(function (p) {
+      tp.appendChild(tr([{ v: MOYENS[p.type] || String(p.type || '').toUpperCase(), classe: 'gauche' }, fmtF(p.paye)]));
+    });
+    z.appendChild(tp);
+
+    z.appendChild(el('p', 'sep-doc', '--- ELÉMENTS DE SÉCURITÉ DE LA FACTURE NORMALISÉE ---'));
+    var bs = el('div', 'securite-doc');
+    var qr = s.qr ? imageQr(s.qr) : null;
+    if (qr) {
+      var img = document.createElement('img');
+      img.className = 'qr-doc';
+      img.src = qr;
+      img.alt = 'QR code de la facture normalisée';
+      bs.appendChild(img);
+    }
+    var sd = el('div', 'sec-donnees');
+    sd.appendChild(el('p', 'sec-lib', 'Code MECeF/DGI'));
+    sd.appendChild(el('p', 'sec-code', s.code_mecef || ''));
+    var lignesSec = [['MECeF NIM :', s.nim || ''], ['MECeF Compteurs :', s.compteurs || ''],
+                     ['MECeF Heure :', heureDoc(s.heure)]];
+    lignesSec.forEach(function (l) {
+      var p = el('p', 'sec-ligne');
+      p.appendChild(el('span', null, l[0]));
+      p.appendChild(el('b', null, l[1]));
+      sd.appendChild(p);
+    });
+    bs.appendChild(sd);
+    z.appendChild(bs);
+
+    if (s.qr && /^https?:\/\//.test(String(s.qr))) {
+      var a = document.createElement('a');
+      a.className = 'lien-verif';
+      a.href = s.qr;
+      a.rel = 'noopener';
+      a.textContent = t().verifier;
+      z.appendChild(a);
+    }
+  }
+
+  function poserChoix() {
+    if (vente.mode === 'reservation') {
+      return Roots.db.choisirRemiseReservation({
+        type: vente.type, code: vente.code, tel: vente.tel, canal: 'telechargement'
+      });
+    }
+    return Roots.db.choisirRemiseCommande({
+      id: vente.id, jeton: vente.jeton, canal: 'telechargement'
+    });
+  }
+
+  function chercherPiece() {
+    cacherErreur();
+    return poserChoix().then(function (r) {
+      if (!r || r.facture !== 'prete' || !r.jeton) { montrer('en_cours'); return; }
+      return Roots.db.consulterFacture(r.jeton).then(function (f) {
+        if (f && f.resultat === 'trouvee') { facture = f; montrer('prete'); }
+        else montrer('en_cours');
+      });
+    }, function (e) { erreur(e.message); });
+  }
+
+  /* Le verrou se ferme au premier appui et se rouvre à la réponse : il couvre
+     le double appui sur réseau lent. */
+  var verrou = false;
+  $('action').addEventListener('click', function () {
+    if (verrou) return;
+    verrou = true;
+    $('action').disabled = true;
+    Promise.resolve()
+      .then(function () { return agir(etape); })
+      .then(function () { verrou = false; $('action').disabled = false; });
+  });
+
+  function agir(cle) {
+    if (cle === 'absente') { location.href = 'index.html'; return; }
+    if (cle === 'prete') { window.print(); return; }
+    return chercherPiece();
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (elmt) {
+      var v = t()[elmt.getAttribute('data-t')];
+      if (typeof v === 'string') elmt.textContent = v;
+    });
+    montrer(etape);
+  }
+
+  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; } });
+  $('btnLangue').addEventListener('click', function () {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    Roots.retenirLangue(langue);
+    $('btnLangue').textContent = (langue === 'fr') ? 'EN' : 'FR';
+    appliquerLangue();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  });
+
+  appliquerLangue();
+})();
+</script>
+</body>
+</html>
