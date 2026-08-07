@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ymN6KrMgSvoDTvg95BHQyXvVpOoO5K8oZzRz4xyPf8k='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-iFAiWYKuWI7BuzKeXGLj5M+9bPALUulwc5maErURfaI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
@@ -623,6 +623,22 @@
   }
   $('btnPayerResa').addEventListener('click', payerResa);
 
+  /* La somme due vit sur le geste qui l'engage : elle est exacte a cet
+     endroit, et elle ne se lit pas deux fois. Quand le paiement en ligne
+     n'est pas offert, elle reprend sa ligne propre — elle ne disparait jamais
+     avec le bouton. Redessine a chaque changement de langue, sinon la reprise
+     des libelles effacerait le montant. */
+  var montantDu = null;
+
+  function majBoutonPayer() {
+    var du = (typeof montantDu === 'number') && montantDu > 0;
+    var offert = du && Roots.db.reglagePaiement().pose;
+    $('btnPayerResa').classList.toggle('cache', !offert);
+    if (offert) $('btnPayerResa').textContent = t().payer + ' · ' + prix(montantDu);
+    $('montantResa').classList.toggle('cache', !(du && !offert));
+    $('montantResa').textContent = (du && !offert) ? prix(montantDu) : '';
+  }
+
   var minuteur = null;
   function confirmerResa(r) {
     $('vueResa').style.display = 'none';
@@ -637,11 +653,10 @@
     $('quoiResa').querySelector('.jour').textContent =
       new Date(resa.date + 'T12:00:00').toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB',
         { weekday: 'long', day: 'numeric', month: 'long' });
-    $('montantResa').textContent = (r && typeof r.montant !== 'undefined' && r.montant !== null) ? prix(r.montant) : '';
     /* Rien a payer, rien a proposer. Et si le reglage du prestataire n'est pas
        pose, le bouton reste absent plutot que de mener a un mur. */
-    var duSomme = r && typeof r.montant === 'number' && r.montant > 0;
-    $('btnPayerResa').classList.toggle('cache', !(duSomme && Roots.db.reglagePaiement().pose));
+    montantDu = (r && typeof r.montant === 'number') ? r.montant : null;
+    majBoutonPayer();
     dialogue.scrollTop = 0;
 
     if (r && r.expire_le) {
@@ -833,7 +848,7 @@
     if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);
     if (cmd.notice) $('texteConsentCmd').textContent = texteNotice(cmd.notice);
     dessinerOffres(); dessinerCreneaux(); majPersonnes(); majRecap();
-    dessinerService(); dessinerMenuCompact(); majCmd();
+    dessinerService(); dessinerMenuCompact(); majCmd(); majBoutonPayer();
     chromeUI.dessinerSections();
   }
 

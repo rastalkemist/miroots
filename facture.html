@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-1i3JthTPbGYEy1sBzC2QORQ3o/UyTcwpzzqxiWj7mcw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-tz8KmcwJ0vUwIKPw+XXv5QN5ux7tbFN9ttsamOXqv2w='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
@@ -140,12 +140,21 @@
     }
   };
 
-  /* Les étiquettes des groupes de taxe telles que la DGI les publie. Seul E
-     est notre régime ; une lettre absente de cette table s'affiche nue. */
-  var GROUPES = { E: 'E - TPS' };
+  /* Les six groupes de taxe publiés par la DGI, avec leurs étiquettes. Ils se
+     relèvent sur la table du socle, pas sur une lettre supposée : une lettre
+     nue ne se relit pas. Un code absent de cette table s'affiche tel quel. */
+  var GROUPES = {
+    A: 'A - EXO', B: 'B - TAX', C: 'C - EXP',
+    D: 'D - MP',  E: 'E - TPS', F: 'F - RES'
+  };
+
+  /* Les moyens d'encaissement du socle, dans le vocabulaire que la pièce
+     porte devant la plateforme : les deux opérateurs de monnaie électronique
+     y sont un seul et même moyen. La liste vient du code qui l'exerce, non
+     d'une note qui le résume. */
   var MOYENS = {
-    mobile_money: 'MOBILE MONEY', carte: 'CARTE BANCAIRE',
-    espece: 'ESPECES', virement: 'VIREMENT', autre: 'AUTRE'
+    espece: 'ESPECES', momo: 'MOBILE MONEY', moov: 'MOBILE MONEY',
+    carte: 'CARTE BANCAIRE', autre: 'AUTRE'
   };
 
   var langue = Roots.langueRetenue('fr');

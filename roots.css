@@ -404,6 +404,9 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 :where(body.p-accueil) .retenue{background:var(--roots-jaune);color:var(--roots-noir);border-radius:var(--rayon-module);padding:11px 15px;font-size:var(--t-sm);font-weight:700;margin:14px auto 0;max-width:300px}
 :where(body.p-accueil) .retenue .reste{font-family:var(--font-chiffres);font-size:var(--t-body)}
 :where(body.p-accueil) .montant-conf{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-body);color:var(--encre);margin:10px 0 0}
+/* Le geste se detache de ce qui l'explique : sans cet ecart, le bouton colle
+   au texte qui le precede et rompt le rythme du bloc. */
+:where(body.p-accueil) .confirmation .apres{margin-top:var(--esp-4)}
 :where(body.p-accueil) .voile-doux{background:rgba(5,20,14,.22)}
 :where(body.p-accueil) .drawer-pied{display:flex;align-items:center;justify-content:flex-end;margin-top:16px;padding:0 6px}
 :where(body.p-accueil) .mini-btn{display:flex;align-items:center;gap:7px;background:var(--gris-ilot);border:none;border-radius:var(--rayon-pilule);padding:9px 14px;font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);color:var(--encre);cursor:pointer}
@@ -600,7 +603,12 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    ligne : typographie neutre du document, boites filetees, en-tetes de tableau
    sur aplat bleu pale, nombres a point de milliers. C'est le genre « piece
    fiscale », distinct du dialecte de l'ecran qui l'entoure. */
-:where(body.p-facture) .piece{text-align:left;margin:0 0 var(--esp-6);font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.35;color:#1a1a1a;background:#fff;padding:var(--esp-4) var(--esp-2)}
+/* L'ACCENT DE LA PIECE — trois valeurs, et rien d'autre a changer.
+   L'aplat est une lavure du vert Roots sur blanc (environ un dixieme) ;
+   c'est une derivation de la rampe, pas un echelon. L'encre et le filet,
+   eux, sont des jetons. L'univers qui emet la piece redefinit ces trois
+   valeurs et rien de plus. */
+:where(body.p-facture) .piece{--accent-aplat:#E4EFE7;--accent-encre:var(--encre);--accent-filet:var(--vert-e3);text-align:left;margin:0 0 var(--esp-6);font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.35;color:var(--noir);background:var(--blanc);padding:var(--esp-4) var(--esp-2)}
 :where(body.p-facture) .piece p{margin:0}
 :where(body.p-facture) .entete-doc{display:flex;justify-content:space-between;gap:var(--esp-4);margin:0 0 var(--esp-6)}
 :where(body.p-facture) .v-nom{font-weight:700;letter-spacing:.04em}
@@ -608,20 +616,20 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-facture) .f-type{font-weight:700}
 :where(body.p-facture) .boites-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);justify-content:space-between;margin:0 0 var(--esp-6)}
 :where(body.p-facture) .boite-doc{border-collapse:collapse;min-width:min(260px,100%)}
-:where(body.p-facture) .boite-doc td{border:1px solid #1a1a1a;padding:3px 8px;vertical-align:top}
-:where(body.p-facture) .boite-doc td.lib{font-style:italic;color:#444;width:5.5em}
-:where(body.p-facture) .boite-client caption{background:#d9d9d9;border:1px solid #1a1a1a;border-bottom:none;font-weight:700;text-align:left;padding:3px 8px}
+:where(body.p-facture) .boite-doc td{border:1px solid var(--noir);padding:3px 8px;vertical-align:top}
+:where(body.p-facture) .boite-doc td.lib{font-style:italic;color:var(--encre-discrete);width:5.5em}
+:where(body.p-facture) .boite-client caption{background:var(--accent-aplat);color:var(--accent-encre);border:1px solid var(--noir);border-bottom:none;font-weight:700;text-align:left;padding:3px 8px}
 :where(body.p-facture) .montants-doc{margin:0 0 var(--esp-4)}
 :where(body.p-facture) .montants-doc .net{font-weight:700}
 :where(body.p-facture) .table-doc{width:100%;border-collapse:collapse;margin:0 0 var(--esp-4)}
-:where(body.p-facture) .table-doc th{background:#dbe5f1;border:1px solid #95a8c6;font-weight:700;text-align:right;padding:3px 8px}
-:where(body.p-facture) .table-doc td{border:1px solid #95a8c6;text-align:right;padding:3px 8px}
+:where(body.p-facture) .table-doc th{background:var(--accent-aplat);color:var(--accent-encre);border:1px solid var(--accent-filet);font-weight:700;text-align:right;padding:3px 8px}
+:where(body.p-facture) .table-doc td{border:1px solid var(--accent-filet);text-align:right;padding:3px 8px}
 :where(body.p-facture) .table-doc th.gauche, :where(body.p-facture) .table-doc td.gauche{text-align:left}
 :where(body.p-facture) .sep-doc{text-align:center;margin:var(--esp-4) 0 var(--esp-2);font-style:italic}
 :where(body.p-facture) .vent-doc{display:flex;flex-wrap:wrap;align-items:flex-start;gap:var(--esp-4)}
 :where(body.p-facture) .vent-doc .t-vent{flex:1 1 260px;margin:0}
-:where(body.p-facture) .total-doc{border:1px solid #1a1a1a;padding:6px 14px;font-weight:700;letter-spacing:.08em;white-space:nowrap}
-:where(body.p-facture) .securite-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);align-items:center;border:1px solid #95a8c6;padding:var(--esp-3) var(--esp-4);margin:var(--esp-2) 0 0}
+:where(body.p-facture) .total-doc{border:1px solid var(--noir);padding:6px 14px;font-weight:700;letter-spacing:.08em;white-space:nowrap}
+:where(body.p-facture) .securite-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);align-items:center;border:1px solid var(--accent-filet);padding:var(--esp-3) var(--esp-4);margin:var(--esp-2) 0 0}
 :where(body.p-facture) .qr-doc{width:112px;height:112px;image-rendering:pixelated}
 :where(body.p-facture) .sec-donnees{flex:1 1 220px;min-width:0}
 :where(body.p-facture) .sec-lib{text-align:center}
