@@ -19,19 +19,21 @@ Ouverture : tous les jours, 7 h – 19 h.
 Site **statique** — HTML, CSS, JavaScript — servi tel quel, sans étape de
 construction ni dépendance à installer. Un dépôt par sous-domaine.
 
-**Aucune dépendance installée** : polices auto-hébergées, icônes en SVG intégré,
-champ téléphone embarqué.
-
-**Deux adresses externes sont appelées à l'exécution** : celle de la base, et
-celle du widget d'encaissement. La seconde n'est chargée que par `payer.html`,
-un écran qui ne porte **ni code de commande, ni jeton, ni clé de base** et
-n'appelle pas la base. **Aucun autre écran ne charge de script tiers**, et sa
-politique de sécurité reste stricte.
+**Aucune dépendance externe** : polices auto-hébergées, icônes en SVG intégré,
+champ téléphone embarqué. La seule adresse externe appelée à l'exécution est
+celle de la base.
 
 ## 3. Une seule source pour le style, une seule pour le chrome
 
-`roots.css` est la **source unique du style** : aucun écran ne porte de balise
-`<style>`, aucun ne redéfinit une valeur en dur. Le fichier est ordonné —
+**Les jetons vivent dans `roots-tokens.css`, servi avant `roots.css` sur tous les
+écrans.** Ce fichier est **généré** depuis deux pièces — la palette et l'échelle
+typographique — et **ne s'édite pas à la main** : une valeur qui n'y figure pas
+fait refuser la composition. Couleurs, tailles, interlignes, espacement, rythme,
+interlettrage, anneau de focus, durées et courbes en viennent tous.
+
+`roots.css` est la **source unique du style** : elle **n'écrit aucune valeur du
+système** — ni couleur, ni taille — elle ne fait que les employer par leur jeton.
+Aucun écran ne porte de balise `<style>`, aucun ne redéfinit une valeur en dur. Le fichier est ordonné —
 jetons de marque, base, chrome partagé, dialecte public, dialecte de console,
 puis une section par écran. Une règle propre à un écran est rattachée par
 `:where(body.p-…)`, ce qui la scope **sans peser sur la spécificité** :
@@ -101,10 +103,12 @@ d'échappement le ferme, et le geste « retour » du téléphone le referme au l
 quitter la page. Ce comportement vit dans `roots.js` — ne pas le réécrire par
 écran.
 
-La sémantique de statut par la couleur — jaune : attente · terracotta :
-préparation · vert : confirmé ou prêt · rouge : annulé ou urgence · vert forêt :
-terminé — est **toujours doublée d'une icône ou d'une position**, jamais portée
-par la couleur seule.
+La sémantique de statut par la couleur — jaune : attente · terre cuite :
+préparation · vert : confirmé ou prêt · rouge : annulé ou urgence · gris de
+chrome : terminé — est **toujours doublée d'une icône ou d'une position**, jamais
+portée par la couleur seule. Un statut se prend à l'**échelon 3** de sa famille,
+sauf le jaune, qui descend à l'**échelon 2** : à l'échelon 3 il est trop clair
+pour porter une pastille contre un papier clair.
 
 **Toute affirmation de conformité porte sa mesure.** On n'écrit pas « contraste
 AA vérifié » : on lance le contrôle qui mesure sur le rendu, et l'on montre le
@@ -119,16 +123,37 @@ quelqu'un, jamais une caractéristique attribuée à un visiteur.
 
 Les jetons vivent dans la section 1 de `roots.css`.
 
-**Palette de marque, cinq couleurs** : vert `#006838`, jaune `#FFC840`,
-terracotta `#CE5A2C`, rouge `#CD0909`, noir `#1A1A1A` — répartition 60/25/15.
-**Secondaires**, surfaces et encres, jamais en concurrence : blanc cassé
-`#FDFBF6`, crème `#F8EDDA`, terre brune `#76403D`, vert nuit `#0A332E`
-(`--encre`), vert forêt `#2F4B3C`. **Un seul gris de service** : `#E4E1DA`.
+**Palette de marque : quatre familles, cinq échelons chacune**, posées sur une
+seule échelle de clarté. **La classe est l'échelon, pas la teinte** : à échelon
+égal, les familles portent le même contraste.
 
-**Terracotta profond `#B84F26`** : déclinaison sombre de la troisième couleur,
-comme le vert nuit l'est du vert. Elle sert d'**encre** et de filet là où le
-terracotta de marque ne tient pas le seuil AA — mesuré 3,96:1 sur blanc cassé
-contre 4,85:1 pour le profond. Le terracotta de marque reste l'aplat.
+| Famille | é1 | é2 | é3 | é4 | é5 |
+|---|---|---|---|---|---|
+| **vert** — canopée | `#0C321A` | `#005B22` | `#12853F` | `#14B34F` | `#30E173` |
+| **rouge** — le sang qui unit | `#5A0B0E` | `#9C1218` | `#E31B23` | `#EF777B` | `#F6B4B7` |
+| **terre cuite** — les matériaux d'ici | `#4C1F13` | `#83361D` | `#C1502A` | `#DE8467` | `#ECBAA9` |
+| **jaune** — la lumière | `#CF8F00` | `#FFB000` | `#FFC840` | `#FFDE8B` | `#FFF0C9` |
+
+**Cinq papiers** : noir `#1A1A1A`, gris d'îlot `#E4E1DA`, crème `#F8EDDA`, blanc
+cassé `#FDFBF6`, blanc `#FFFFFF`. **Un ton de chrome**, hors palette de marque
+parce que son rôle est de disparaître : `#635E53` — encre discrète, limite d'un
+contrôle, statut « terminé ».
+
+**L'encre d'un aplat est une fonction de son échelon**, pour le vert, le rouge et
+la terre cuite : é1 et é2 portent le blanc cassé, é3 le blanc pur, é4 et é5 le
+noir. **Le jaune fait exception** : sa rampe n'a pas de bout sombre, et il porte
+le noir sur ses cinq échelons, sans bascule.
+
+**Aucun jaune n'atteint 3:1 contre un papier clair** — le plus sombre plafonne à
+2,77 sur blanc. Un aplat jaune sur fond clair n'est donc jamais le seul porteur
+d'une information : il faut un mot, une icône ou une position. Le jaune porte du
+noir *dessus*, et il tient *sur* du noir.
+
+**Ces valeurs ne se recopient pas dans un écran** : elles vivent dans la section 1
+de `roots.css` et s'emploient par leur jeton. Sept valeurs sont **retirées** et ne
+doivent pas revenir — `#006838`, `#CD0909`, `#CE5A2C`, `#B84F26`, `#2F4B3C`,
+`#0A332E`, `#76403D`. Les jetons qui les portaient existent encore et pointent sur
+un échelon ; ils sont marqués dans la feuille et destinés à disparaître.
 
 **Échelle typographique**, base 16, quarte juste ×1,333 : 12 · 14 · 16 · 21 ·
 28 · 38 · 64. Un texte ne se code jamais en pixels bruts : il prend un palier.

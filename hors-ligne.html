@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; manifest-src 'self'">
+<meta name="theme-color" content="#005B22">
+<title>Hors ligne — Mi Roots</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+</head>
+<body class="p-paiement" data-surface="claire">
+
+<!-- Cette page est servie par la coque quand le reseau manque. Elle
+     n'execute AUCUN script — `script-src 'none'` le dit et l'impose — parce
+     qu'une page de repli qui depend d'un script est une page de repli qui
+     peut echouer a son tour. Le logo est donc pose en balisage, comme sur
+     payer.html, et la bascule de langue n'existe pas ici : les deux langues
+     sont ecrites l'une sous l'autre. -->
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <span class="ankh-home" aria-hidden="true"><svg viewBox="0 0 110 111" role="img"><path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/><path fill-rule="nonzero" fill="rgb(89.019608%, 10.588235%, 13.72549%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/></svg></span>
+    <span class="chrome-titre">Roots</span>
+  </div>
+</header>
+
+<div id="contenu" class="scene">
+  <section class="panneau" role="status" data-issue="sans-reponse">
+    <h1 class="titre-issue">Tu es hors ligne</h1>
+    <p class="dit">L’application est bien installée, mais le réseau ne répond pas.
+      Rien n’est perdu : reviens sur cette page dès que tu as du signal.</p>
+    <p class="dit" lang="en"><strong>You are offline.</strong> The app is installed,
+      but the network is not answering. Nothing is lost — come back to this page
+      once you have signal again.</p>
+    <div class="apres">
+      <a class="lien-second" href="index.html">Réessayer · Try again</a>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

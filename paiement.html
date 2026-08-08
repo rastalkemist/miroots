@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-JW4HC3LhA8kyENA2URMv0sIVx8P3kDBP8aIlQ07y5O8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-47kA61gfGGnsGc+ZxFSq/7XugY+bJOhJ48q9IyON6eA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
+<meta name="theme-color" content="#005B22">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
@@ -161,7 +166,46 @@
     }
   };
 
-  var langue = Roots.langueRetenue('fr');
+  /* Les libelles qui NOMMENT la vente changent avec le parcours : qui a
+     reserve un espace ne « retrouve » pas une commande, et sa reservation
+     n'est pas une commande reglee. Seul ce qui differe est double ; le reste
+     du texte est commun. Le parcours se lit sur la remise, jamais deduit. */
+  var SELON = {
+    fr: {
+      commande: {
+        lCode: 'Ton code de commande',
+        regle: 'Ta commande est réglée. Tu peux emporter ta facture.',
+        retrouver: 'Retrouver ma commande',
+        avert: 'Ne paie pas une seconde fois. Si le montant est parti, il sera constaté et ta commande sera réglée. Garde ton code.',
+        enCours: 'Il reste une vérification de notre côté avant de valider ta commande. Nous revenons vers toi — garde ton code.'
+      },
+      reservation: {
+        lCode: 'Ton code de réservation',
+        regle: 'Ta réservation est réglée. Tu peux emporter ta facture.',
+        retrouver: 'Retrouver ma réservation',
+        avert: 'Ne paie pas une seconde fois. Si le montant est parti, il sera constaté et ta réservation sera réglée. Garde ton code.',
+        enCours: 'Il reste une vérification de notre côté avant de valider ta réservation. Nous revenons vers toi — garde ton code.'
+      }
+    },
+    en: {
+      commande: {
+        lCode: 'Your order code',
+        regle: 'Your order is settled. You can take your invoice with you.',
+        retrouver: 'Find my order',
+        avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
+        enCours: 'One check remains on our side before your order is validated. We will come back to you — keep your code.'
+      },
+      reservation: {
+        lCode: 'Your booking code',
+        regle: 'Your booking is settled. You can take your invoice with you.',
+        retrouver: 'Find my booking',
+        avert: 'Do not pay a second time. If the amount left your account it will be recorded and your booking settled. Keep your code.',
+        enCours: 'One check remains on our side before your booking is validated. We will come back to you — keep your code.'
+      }
+    }
+  };
+
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
   function t() { return T[langue] || T.fr; }
   var $ = function (id) { return document.getElementById(id); };
 
@@ -176,11 +220,12 @@
     if (brutRemise) remise = JSON.parse(brutRemise);
   } catch (e) { remise = null; }
 
-  var vente = null, lireEtat = null;
+  var vente = null, lireEtat = null, parcours = 'commande';
 
   if (remise && remise.code && remise.tel &&
       String(remise.type || '').indexOf('reservation') === 0) {
     vente = { code: remise.code };
+    parcours = 'reservation';
     lireEtat = (remise.type === 'reservation_logement')
       ? function () { return Roots.db.consulterReservationLogement(remise.code, remise.tel); }
       : function () { return Roots.db.consulterReservationEspace(remise.code, remise.tel); };
@@ -210,6 +255,21 @@
     if (e.action) $('action').textContent = e.action;
     $('second').classList.toggle('cache', !e.second);
     if (e.second) $('second').textContent = e.second;
+    nommerLaVente(cle);
+  }
+
+  function nommerLaVente(cle) {
+    var mots = (SELON[langue] || SELON.fr)[parcours];
+    var etiq = document.querySelector('#blocCode .etiquette');
+    if (etiq) etiq.textContent = mots.lCode;
+    if (cle === 'payee') $('dit').textContent = mots.regle;
+    if (cle === 'sans-reponse') $('avert').textContent = mots.avert;
+    if (cle === 'regularisation') {
+      $('dit').textContent = mots.enCours;
+      $('action').textContent = mots.retrouver;
+    } else if (!$('second').classList.contains('cache')) {
+      $('second').textContent = mots.retrouver;
+    }
   }
 
   /* Le verrou se ferme au premier appui et ne se rouvre qu'a la reponse : il
@@ -257,7 +317,7 @@
     montrer(etatCourant);
   }
 
-  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; } });
+  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; }, getSections: Roots.nav });
   $('btnLangue').addEventListener('click', function () {
     langue = (langue === 'fr') ? 'en' : 'fr';
     Roots.retenirLangue(langue);

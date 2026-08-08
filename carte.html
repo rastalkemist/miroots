@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-q1ho4EnaWORG3IzYSIYXEGHRVkv/c4L2T6kTXW1UbSU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-iU6RCpz5BEcwBc4JjDeFXgi6otPOgQRqCIa1V3f/k/o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
+<meta name="theme-color" content="#005B22">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
 <link rel="stylesheet" href="roots-tokens.css">
@@ -149,11 +154,7 @@
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      sections: [
-        { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau', href: 'index.html?ouvrir=reserver' },
-        { ico: 'i-ticket', t: 'Ma réservation', s: 'Retrouver avec ton code', href: 'retrouver.html' }
-      ]
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
     },
     en: {
       titre: 'Menu', voirCommande: 'View my order', maCommande: 'My order', total: 'Total',
@@ -183,11 +184,7 @@
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete or unavailable.',
       fCode: 'Six characters, letters and digits — for example ABC123.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
-      sections: [
-        { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },
-        { ico: 'i-ticket', t: 'My booking', s: 'Find it with your code', href: 'retrouver.html' }
-      ]
+      fCode: 'Six characters, letters and digits — for example ABC123.'
     }
   };
 
@@ -225,7 +222,7 @@
 
   var chromeUI = Roots.initChrome({
     getLangue: function () { return langue; },
-    getSections: function (l) { return T[l].sections; },
+    getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
     toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
     verbes: VERBES

@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-tz8KmcwJ0vUwIKPw+XXv5QN5ux7tbFN9ttsamOXqv2w='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-civo9irDQS1ztBQ/ufNn5zPM4i2m9GUbUjuJbtAFc9k='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
+<meta name="theme-color" content="#005B22">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
@@ -86,6 +91,11 @@
       politique: 'Politique de confidentialité',
       essai: 'Pièce d’essai — émise sur la plateforme de test de la DGI. Elle n’a pas de valeur fiscale.',
       verifier: 'Vérifier cette pièce',
+      retrouver: { commande: 'Retrouver ma commande', reservation: 'Retrouver ma réservation' },
+      surAppareil: {
+        commande: 'La facture se remet sur l’appareil qui a servi à payer. Passe au comptoir avec ton code.',
+        reservation: 'La facture se remet sur l’appareil qui a servi à payer. Retrouve ta réservation avec ton code et ton numéro, ou passe au comptoir.'
+      },
       etapes: {
         choix: {
           titre: 'Ta facture',
@@ -115,6 +125,11 @@
       politique: 'Privacy Policy',
       essai: 'Test document — issued on the DGI test platform. It has no fiscal value.',
       verifier: 'Verify this document',
+      retrouver: { commande: 'Find my order', reservation: 'Find my booking' },
+      surAppareil: {
+        commande: 'The invoice is delivered on the device used to pay. Ask at the counter with your code.',
+        reservation: 'The invoice is delivered on the device used to pay. Find your booking with your code and number, or ask at the counter.'
+      },
       etapes: {
         choix: {
           titre: 'Your invoice',
@@ -157,7 +172,7 @@
     carte: 'CARTE BANCAIRE', autre: 'AUTRE'
   };
 
-  var langue = Roots.langueRetenue('fr');
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
   function t() { return T[langue] || T.fr; }
   var $ = function (id) { return document.getElementById(id); };
 
@@ -212,8 +227,9 @@
     $('dit').textContent = e.dit;
     $('dit').classList.toggle('cache', !e.dit);
     $('action').textContent = e.action;
-    $('second').textContent = e.second;
+    $('second').textContent = t().retrouver[vente ? vente.mode : 'reservation'];
     $('second').classList.remove('cache');
+    if (cle === 'absente') $('dit').textContent = t().surAppareil[vente ? vente.mode : 'reservation'];
     $('piece').classList.toggle('cache', cle !== 'prete');
     $('essai').classList.toggle('cache',
       cle !== 'prete' || !facture || facture.environnement !== 'test');
@@ -409,7 +425,7 @@
     montrer(etape);
   }
 
-  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; } });
+  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; }, getSections: Roots.nav });
   $('btnLangue').addEventListener('click', function () {
     langue = (langue === 'fr') ? 'en' : 'fr';
     Roots.retenirLangue(langue);

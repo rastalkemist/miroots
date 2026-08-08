@@ -3,8 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-pgQB53tgJk5Ss1FrS+grH9yNrIjd7Q1TOsNqLs6POuU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-50Lwb9Ntou46pR19y4L38PtRLD9KX8pOc76zvCinJ70='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation — Roots</title>
+<meta name="theme-color" content="#005B22">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
 <link rel="stylesheet" href="roots-tokens.css">
@@ -67,6 +72,11 @@
     <div class="archive cache" id="rArchive" data-t="archive">Cette réservation est passée : tu peux la consulter, plus la modifier.</div>
     <button class="secondaire danger cache" id="btnAnnuler"></button>
     <p class="erreur cache" id="erreur2" role="alert" aria-live="polite"></p>
+    <div class="issue-annul cache" id="issueAnnul" role="status" aria-live="polite">
+      <p class="issue-titre" id="issueTitre"></p>
+      <p class="issue-dit" id="issueDit"></p>
+    </div>
+    <button class="secondaire cache" id="btnAccueil" data-t="bAccueil">Retour à l’accueil</button>
     <button class="secondaire" id="btnAutre" data-t="bAutre">Chercher une autre réservation</button>
   </section>
 </div>
@@ -104,6 +114,11 @@
       onCherche: 'On cherche…',
       annuler: 'Annuler cette réservation', confirmer: 'Confirmer l’annulation',
       annulee: 'Réservation annulée.',
+      issues: {
+        annulee: { titre: 'Réservation annulée', dit: 'C’est fait. Si un montant a été réglé, le remboursement suit le barème annoncé et l’équipe te recontacte.' },
+        demande_transmise: { titre: 'Demande d’annulation transmise', dit: 'À moins de sept jours, une annulation se décide avec l’équipe : ta réservation est encore active et ta demande lui est transmise. Elle te répond.' }
+      },
+      bAccueil: 'Retour à l’accueil',
       matin: 'Matinée', apres_midi: 'Après-m', journee: 'Journée',
       lEspace: 'Espace', lLogement: 'Logement', lCreneau: 'Créneau', lPersonnes: 'Personnes',
       lMontant: 'Montant', lEtat: 'État', lAcompte: 'Acompte', lArrivee: 'Arrivée', lDepart: 'Départ',
@@ -118,11 +133,7 @@
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      sections: [
-        { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau', href: 'index.html?ouvrir=reserver' },
-        { ico: 'i-carte', t: 'La carte', s: 'Toute la carte, en détail', href: 'carte.html' }
-      ]
+      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
     },
     en: {
       titre: 'Find my booking', sous: 'Your code and the number you booked with.',
@@ -134,6 +145,11 @@
       onCherche: 'Searching…',
       annuler: 'Cancel this booking', confirmer: 'Confirm cancellation',
       annulee: 'Booking cancelled.',
+      issues: {
+        annulee: { titre: 'Booking cancelled', dit: 'Done. If an amount was paid, the refund follows the published terms and the team will get back to you.' },
+        demande_transmise: { titre: 'Cancellation request sent', dit: 'Within seven days, a cancellation is decided with the team: your booking is still active and your request has been sent. They will reply.' }
+      },
+      bAccueil: 'Back to home',
       matin: 'Morning', apres_midi: 'Afternoon', journee: 'Full day',
       lEspace: 'Space', lLogement: 'Room', lCreneau: 'Slot', lPersonnes: 'People',
       lMontant: 'Amount', lEtat: 'Status', lAcompte: 'Deposit', lArrivee: 'Check-in', lDepart: 'Check-out',
@@ -148,11 +164,7 @@
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete or unavailable.',
       fCode: 'Six characters, letters and digits — for example ABC123.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
-      sections: [
-        { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },
-        { ico: 'i-carte', t: 'Menu', s: 'Food for your soul', href: 'carte.html' }
-      ]
+      fCode: 'Six characters, letters and digits — for example ABC123.'
     }
   };
 
@@ -171,7 +183,7 @@
 
   var chromeUI = Roots.initChrome({
     getLangue: function () { return langue; },
-    getSections: function (l) { return T[l].sections; },
+    getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
     toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
     verbes: VERBES
@@ -189,6 +201,7 @@
     $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     chromeUI.dessinerSections();
     if (trouvee) afficher(trouvee);
+    if (issueCourante) montrerIssue(issueCourante);
   }
 
   /* ---------- Messages inline ---------- */
@@ -290,6 +303,7 @@
 
   async function chercher() {
     cacher('erreur');
+    oublierIssue();
     var code = $('code').value.trim().toUpperCase();
     var tel = numeroSaisi();
     if (code.length !== 6 || tel.replace(/\D/g, '').length < 8) {
@@ -328,11 +342,16 @@
     var tel = numeroSaisi();
     b.disabled = true;
     try {
-      if (trouvee.type === 'espace') await Roots.db.annulerReservationEspace(code, tel);
-      else await Roots.db.annulerReservationLogement(code, tel);
+      /* Le socle rend DEUX issues : la reservation est annulee, ou la demande
+         est transmise a l'equipe. Les confondre dirait au visiteur que sa
+         reservation est annulee alors qu'elle est encore active, et de
+         l'argent en depend. On lit ce que la porte rend. */
+      var rendu = (trouvee.type === 'espace')
+        ? await Roots.db.annulerReservationEspace(code, tel)
+        : await Roots.db.annulerReservationLogement(code, tel);
       var p = await Roots.db.retrouver(code, tel);
       if (p) afficher(p);
-      erreur('erreur2', t().annulee);
+      montrerIssue(rendu && rendu.resultat);
     } catch (e) {
       erreur('erreur2', e.message);
       arme = false;
@@ -343,13 +362,42 @@
     }
   }
 
+  /* L'ecran final de l'annulation. Une issue que la table ne connait pas ne
+     s'invente pas : on ne dit alors rien plutot que d'affirmer a faux. */
+  var issueCourante = null;
+
+  function montrerIssue(resultat) {
+    var mots = t().issues[resultat];
+    issueCourante = mots ? resultat : null;
+    $('issueAnnul').classList.toggle('cache', !mots);
+    $('btnAccueil').classList.toggle('cache', !mots);
+    if (!mots) {
+      if (resultat) erreur('erreur2', t().introuvable);
+      return;
+    }
+    $('issueTitre').textContent = mots.titre;
+    $('issueDit').textContent = mots.dit;
+    /* La demande transmise laisse la reservation ACTIVE : le bouton
+       d'annulation reviendrait de lui-meme au reaffichage, et un second appui
+       rejouerait la demande. On le ferme. */
+    $('btnAnnuler').classList.add('cache');
+  }
+
+  function oublierIssue() {
+    issueCourante = null;
+    $('issueAnnul').classList.add('cache');
+    $('btnAccueil').classList.add('cache');
+  }
+
   /* ---------- Câblage des gestes ---------- */
 
   $('code').addEventListener('input', function () { this.value = this.value.toUpperCase(); });
   $('btnChercher').addEventListener('click', chercher);
   $('btnAnnuler').addEventListener('click', annuler);
+  $('btnAccueil').addEventListener('click', function () { location.href = 'index.html'; });
   $('btnAutre').addEventListener('click', function () {
     trouvee = null;
+    oublierIssue();
     $('resultat').classList.add('cache');
     $('recherche').classList.remove('cache');
     cacher('erreur'); cacher('erreur2');

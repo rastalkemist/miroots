@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://*.kkiapay.me 'sha256-hSSDT6QrI//5e/mQ97+CV8TdvsZail5tKz4D2q03X7w='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-pJAKOutiT/EOhmAu3HgJew6/gHz4yXyaTouuzPmlh3I='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
 <title>Paiement — Mi Roots</title>
+<meta name="theme-color" content="#005B22">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
@@ -15,7 +17,26 @@
 
 <!-- Cet ecran ne charge ni la passerelle de donnees ni le chrome partage : il
      n'a besoin d'aucune des deux, et ne pas les charger est le but. Il ne
-     detient ni code de commande, ni jeton, ni cle de base. -->
+     detient ni code de commande, ni jeton, ni cle de base.
+     Le logo est donc pose en balisage, et non tire de la planche d'icones :
+     c'est le seul ecran qui n'execute aucun de nos scripts, et cela prime sur
+     la regle de source unique.
+     IL PORTE LE MEME BANDEAU QUE LES AUTRES ECRANS — logo, titre, langue —
+     ET AUCUNE NAVIGATION. Ce n'est pas un autre chrome : c'est le chrome
+     commun moins le menu. La distinction n'est pas « payer contre paiement »,
+     elle est « pendant le paiement contre apres » — on n'invite personne a
+     quitter la page tant que l'argent n'a pas bouge.
+     tranche_par: Mika · tranche_le: 2026-08-08 -->
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <span class="ankh-home" aria-hidden="true"><svg viewBox="0 0 110 111" role="img"><path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/><path fill-rule="nonzero" fill="rgb(89.019608%, 10.588235%, 13.72549%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>  </svg></span>
+    <div class="centre"><span class="chrome-titre">Roots</span></div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
+    </div>
+  </div>
+</header>
 
 <div id="contenu" class="scene">
   <h1 class="hors-ecran" data-t="h1">Paiement</h1>
@@ -79,7 +100,7 @@
 
   /* La langue se lit ou les autres ecrans l'ecrivent. Aucune dependance :
      trois lignes valent mieux qu'un fichier de plus sur cette page. */
-  var langue = 'fr';
+  var langue = (navigator.language || 'fr').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr';
   try {
     var l = localStorage.getItem('roots.langue');
     if (l === 'en' || l === 'fr') langue = l;
@@ -88,11 +109,22 @@
 
   var $ = function (id) { return document.getElementById(id); };
 
-  function dire(titre, dit, bouton) {
-    $('titre').textContent = titre;
-    $('dit').textContent = dit;
-    $('ouvrir').classList.toggle('cache', !bouton);
-    if (bouton) $('ouvrir').textContent = bouton;
+  /* On retient les CLES du panneau, jamais les textes deja traduits : sinon
+     une bascule de langue laisse le message dans la langue precedente. C'est
+     la meme parade que celle posee sur l'ecran de paiement. */
+  var etat = null;
+
+  function dire(cTitre, cDit, cBouton) {
+    etat = { titre: cTitre, dit: cDit || null, bouton: cBouton || null };
+    rendreEtat();
+  }
+
+  function rendreEtat() {
+    if (!etat) return;
+    $('titre').textContent = t()[etat.titre] || '';
+    $('dit').textContent = etat.dit ? (t()[etat.dit] || '') : '';
+    $('ouvrir').classList.toggle('cache', !etat.bouton);
+    if (etat.bouton) $('ouvrir').textContent = t()[etat.bouton] || '';
   }
 
   function appliquerLangue() {
@@ -102,7 +134,17 @@
       if (typeof v === 'string') el.textContent = v;
     });
     $('second').textContent = t().retour;
+    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
+    rendreEtat();
   }
+
+  /* La langue s'ecrit la ou les autres ecrans la lisent : une bascule ici
+     suit le visiteur sur l'ecran suivant. */
+  $('btnLangue').addEventListener('click', function () {
+    langue = langue === 'fr' ? 'en' : 'fr';
+    try { localStorage.setItem('roots.langue', langue); } catch (e) {}
+    appliquerLangue();
+  });
 
   /* ---------- La remise ---------- */
   var remise = null;
@@ -114,7 +156,7 @@
   appliquerLangue();
 
   if (!remise || !remise.paiement || !remise.cle) {
-    dire(t().sansRemise, t().sansRemiseDit, null);
+    dire('sansRemise', 'sansRemiseDit', null);
     return;
   }
 
@@ -128,7 +170,7 @@
      Cet ecran ne conclut donc RIEN et rend la main a celui qui demande la
      verite au serveur. La remise reste en place pour lui. */
   function suite() {
-    dire(t().onVerifie, t().onVerifieDit, null);
+    dire('onVerifie', 'onVerifieDit', null);
     location.replace('paiement.html');
   }
 
@@ -137,7 +179,7 @@
 
   function ouvrirWidget() {
     if (!window.openKkiapayWidget) {
-      dire(t().bloque, t().bloqueDit, t().ouvrirBouton);
+      dire('bloque', 'bloqueDit', 'ouvrirBouton');
       return;
     }
     try {
@@ -155,17 +197,17 @@
       if (window.addSuccessListener) window.addSuccessListener(suite);
       if (window.addFailedListener) window.addFailedListener(suite);
     } catch (e) {
-      dire(t().bloque, t().bloqueDit, t().ouvrirBouton);
+      dire('bloque', 'bloqueDit', 'ouvrirBouton');
     }
   }
 
   function charger() {
     if (monte) { ouvrirWidget(); return; }
-    dire(t().ouverture, t().attends, null);
+    dire('ouverture', 'attends', null);
     var s = document.createElement('script');
     s.src = 'https://cdn.kkiapay.me/k.js';
     s.onload = function () { monte = true; ouvrirWidget(); };
-    s.onerror = function () { dire(t().bloque, t().bloqueDit, t().ouvrirBouton); };
+    s.onerror = function () { dire('bloque', 'bloqueDit', 'ouvrirBouton'); };
     document.head.appendChild(s);
   }
 

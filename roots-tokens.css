@@ -1,49 +1,88 @@
-/* ROOTS — jetons. Source unique des variables de marque.
-   Genere : ne pas editer ici. */
+/* ============================================================================
+   ROOTS — JETONS · roots-tokens.css
+   Source unique des variables pour le site, la console et les pièces imprimées.
+   Ce fichier est SERVI avant la feuille de style : celle-ci n'écrit aucune
+   valeur du système, elle les emploie par leur jeton.
 
+   CE QU'IL FAUT SAVOIR POUR INTERVENIR
+   -----------------------------------
+   · La palette est quatre familles de cinq échelons sur une seule échelle de
+     clarté. À échelon égal, les familles portent le même contraste : c'est
+     l'échelon qui fait la classe, pas la teinte.
+   · Deux registres typographiques, deux ratios, et ils ne se mélangent pas :
+     l'interface sur la quarte juste, l'éditorial sur le nombre d'or. Trois
+     barreaux seulement leur sont communs — 16, 33 et 68.
+   · L'encre d'un aplat est une fonction de son échelon, pas un choix. La
+     famille jaune fait exception et porte toujours le noir.
+   · Le rythme vertical se prend sur cinq crans, jamais sur une valeur libre.
+
+   CE QUI CASSE SI ON Y TOUCHE
+   ---------------------------
+   Ce fichier est GÉNÉRÉ. Une modification à la main est perdue à la
+   composition suivante, et la composition refuse d'écrire si une valeur ne
+   figure pas sur sa source, si une paire fond/encre tombe sous AA 4.5, ou si
+   deux niveaux voisins sont séparés de moins d'un palier plein.
+   ============================================================================ */
+
+/* ---------- 0. ALIAS DE REPORT ----------
+   Ces noms existent pour que les pièces antérieures continuent de rendre. Ils
+   pointent sur la valeur de rampe la plus proche en Lab, mesurée. Ils sont
+   destinés à disparaître : n'en introduire aucun nouveau.
+   ⚠ Deux reports dépassent un écart perceptible et ne sont pas des
+   équivalences : `--vert-nuit` et `--terre-brune`. */
 :root {
   --roots-vert: var(--vert-e2);
   --roots-rouge: var(--rouge-e3);
   --roots-terracotta: var(--terre-e3);
-  --roots-jaune: var(--jaune-e5);
+  --roots-jaune: var(--jaune-e3);
   --roots-noir: var(--noir);
   --terre-brune: var(--terre-e1);
   --gris-service: var(--gris-ilot);
 }
 
+/* ---------- 1. LES QUATRE RAMPES ---------- */
+
 :root {
+  /* rampe vert — é1 → é5, clarté croissante */
+  --vert-e1: #0C321A;       /* nuit · L*=17.6 */
+  --vert-e2: #005B22;       /* Roots · L*=33.1 */
+  --vert-e3: #12853F;       /* Garvey · L*=48.6 */
+  --vert-e4: #14B34F;       /* clair · L*=64.1 */
+  --vert-e5: #30E173;       /* vif · L*=79.5 */
+  /* rampe rouge — é1 → é5, clarté croissante */
+  --rouge-e1: #5A0B0E;      /* sang · L*=17.7 */
+  --rouge-e2: #9C1218;      /* brique · L*=33.1 */
+  --rouge-e3: #E31B23;      /* UNIA · L*=48.6 */
+  --rouge-e4: #EF777B;      /* clair · L*=64.1 */
+  --rouge-e5: #F6B4B7;      /* rosé · L*=79.4 */
+  /* rampe terre — é1 → é5, clarté croissante */
+  --terre-e1: #4C1F13;      /* cacao · L*=18.2 */
+  --terre-e2: #83361D;      /* brique cuite · L*=33.0 */
+  --terre-e3: #C1502A;      /* terracotta · L*=48.6 */
+  --terre-e4: #DE8467;      /* argile · L*=64.2 */
+  --terre-e5: #ECBAA9;      /* sable rosé · L*=79.5 */
+  /* rampe jaune — é1 → é5, clarté croissante */
+  --jaune-e1: #CF8F00;      /* ambre · L*=64.1 */
+  --jaune-e2: #FFB000;      /* jaune pur · L*=77.5 */
+  --jaune-e3: #FFC840;      /* Jaune Roots · L*=83.4 */
+  --jaune-e4: #FFDE8B;      /* paille · L*=89.6 */
+  --jaune-e5: #FFF0C9;      /* voile · L*=95.1 */
 
-  --vert-e1: #0C321A;
-  --vert-e2: #005B22;
-  --vert-e3: #12853F;
-  --vert-e4: #14B34F;
-  --vert-e5: #30E173;
+  /* Neutres — hors rampe. Le gris 500 est le seul gris d'encre ; l'îlot est le
+     seul gris de surface. */
+  --noir: #1A1A1A;          /* L*=9.3 */
+  --gris-ilot: #E4E1DA;     /* L*=89.6 */
+  --creme: #F8EDDA;         /* L*=94.1 */
+  --blanc-casse: #FDFBF6;   /* L*=98.6 */
+  --blanc: #FFFFFF;         /* L*=100.0 */
 
-  --rouge-e1: #5A0B0E;
-  --rouge-e2: #9C1218;
-  --rouge-e3: #E31B23;
-  --rouge-e4: #EF777B;
-  --rouge-e5: #F6B4B7;
+  /* ---- CHROME D'INTERFACE — hors palette de marque ----
+     Son rôle est de disparaître, pas de porter la marque : il
+     n'appartient à aucune surface et sert la console comme le public.
+     ⚠ Ce n'est pas un papier : ne pas l'employer en fond de page. */
+  --gris-500: #635E53;      /* L*=40.1 */
 
-  --jaune-e1: #392900;
-  --jaune-e2: #664900;
-  --jaune-e3: #976C00;
-  --jaune-e4: #CB9100;
-  --jaune-e5: #FFC840;
-
-  --terre-e1: #4C1F13;
-  --terre-e2: #83361D;
-  --terre-e3: #C1502A;
-  --terre-e4: #DE8467;
-  --terre-e5: #ECBAA9;
-
-  --blanc: #FFFFFF;
-  --blanc-casse: #FDFBF6;
-  --creme: #F8EDDA;
-  --gris-ilot: #E4E1DA;
-  --gris-500: #635E53;
-  --noir: #1A1A1A;
-
+  /* Alias lisibles. Le nom sert la conversation ; c'est l'échelon qui fait loi. */
   --vert-nuit: var(--vert-e1);
   --vert-roots: var(--vert-e2);
   --vert-garvey: var(--vert-e3);
@@ -54,157 +93,376 @@
   --rouge-unia: var(--rouge-e3);
   --rouge-clair: var(--rouge-e4);
   --rouge-rose: var(--rouge-e5);
-  --jaune-bronze: var(--jaune-e1);
-  --jaune-miel: var(--jaune-e2);
-  --jaune-ocre: var(--jaune-e3);
-  --jaune-ambre: var(--jaune-e4);
-  --jaune-roots: var(--jaune-e5);
   --terre-cacao: var(--terre-e1);
   --terre-brique-cuite: var(--terre-e2);
   --terre-terracotta: var(--terre-e3);
   --terre-argile: var(--terre-e4);
   --terre-sable-rose: var(--terre-e5);
+  --jaune-ambre: var(--jaune-e1);
+  --jaune-jaune-pur: var(--jaune-e2);
+  --jaune-jaune-roots: var(--jaune-e3);
+  --jaune-paille: var(--jaune-e4);
+  --jaune-voile: var(--jaune-e5);
 
+  /* Encre de texte sur fond clair, et sa version discrète. */
   --encre: var(--vert-e1);
   --encre-discrete: var(--gris-500);
+
+  /* ---- TRIPLETS RVB ----
+     `rgba()` exige trois nombres et n'accepte pas `var(--jeton)` sous forme
+     hexadécimale. Sans ces triplets, toute couleur employée en transparence
+     s'écrit en clair dans la feuille de style : elle échappe alors au contrôle
+     et survit à un retrait. Une valeur transparente s'écrit
+     `rgba(var(--vert-e1-rgb), .06)`, jamais `rgba(10, 51, 46, .06)`. */
+  --vert-e1-rgb: 12, 50, 26;
+  --vert-e2-rgb: 0, 91, 34;
+  --vert-e3-rgb: 18, 133, 63;
+  --vert-e4-rgb: 20, 179, 79;
+  --vert-e5-rgb: 48, 225, 115;
+  --rouge-e1-rgb: 90, 11, 14;
+  --rouge-e2-rgb: 156, 18, 24;
+  --rouge-e3-rgb: 227, 27, 35;
+  --rouge-e4-rgb: 239, 119, 123;
+  --rouge-e5-rgb: 246, 180, 183;
+  --terre-e1-rgb: 76, 31, 19;
+  --terre-e2-rgb: 131, 54, 29;
+  --terre-e3-rgb: 193, 80, 42;
+  --terre-e4-rgb: 222, 132, 103;
+  --terre-e5-rgb: 236, 186, 169;
+  --jaune-e1-rgb: 207, 143, 0;
+  --jaune-e2-rgb: 255, 176, 0;
+  --jaune-e3-rgb: 255, 200, 64;
+  --jaune-e4-rgb: 255, 222, 139;
+  --jaune-e5-rgb: 255, 240, 201;
+  --noir-rgb: 26, 26, 26;
+  --gris-ilot-rgb: 228, 225, 218;
+  --creme-rgb: 248, 237, 218;
+  --blanc-casse-rgb: 253, 251, 246;
+  --blanc-rgb: 255, 255, 255;
+  --gris-500-rgb: 99, 94, 83;
+
+  /* ---- DÉRIVATIONS ----
+     Ce ne sont PAS des échelons : ce sont des lavures posées sur le blanc,
+     environ un dixième de la couleur. Elles se marquent comme dérivations et
+     n'entrent dans aucun calcul de rampe. Un contraste ne se déduit pas d'une
+     dérivation : il se mesure. */
+  --vert-lavure: #E4EFE7;    /* fond d'accent d'une pièce fiscale */
+  --rouge-lavure: #FBEAE7;   /* fond d'un message d'indisponibilité */
+
+  /* ---- TEINTES D'OMBRE ET DE VOILE ----
+     Une ombre teintée au noir pur rend un gris sale sur fond blanc : ces deux
+     teintes sont vertes. Elles ne servent QUE sous transparence, et n'ont donc
+     pas de forme hexadécimale. */
+  --ombre-teinte: 5, 25, 18;         /* ombres portées et voiles de panneau */
+  --voile-video-teinte: 8, 34, 20;   /* voile de lisibilité sur image animée */
 }
 
+/* ---------- 2. TYPOGRAPHIE ----------
+   Deux registres, deux ratios, trois barreaux communs. Un barreau appartient à
+   un registre ; tout emploi hors registre est une exception, et elle est
+   inscrite sur la source avec son motif. */
 :root {
-
+  /* Les cinq faces. `--font-cooper` sert un logotype vectorisé, jamais du texte. */
   --font-corps: 'Museo Sans', 'Roboto', system-ui, sans-serif;
   --font-lecture: 'Museo', 'Roboto Serif', Georgia, serif;
   --font-chiffres: 'Museo Slab', 'Roboto Slab', 'Rockwell', serif;
   --font-eclat: 'MuseoModerno', var(--font-corps);
   --font-cooper: 'Cooper Black', 'Cooper Std', 'Cooper BT', serif;
 
+  /* Graisses. ⚠ Le nombre affiché par le nom commercial d'une face Museo n'est
+     pas sa graisse CSS : la fonderie numérote ses membres de famille. Ces
+     jetons visent la face CSS, jamais le nom commercial. */
   --w-thin: 100; --w-light: 300; --w-regular: 400;
   --w-medium: 500; --w-bold: 700; --w-xbold: 800;
-  --w-lecture: 300;
+  --w-lecture: 300;   /* lecture longue = Museo 300 */
 
-  --w-a-corps: var(--w-medium);
-  --w-a-h3: var(--w-light);
-  --w-a-h2: var(--w-bold);
-  --w-a-h1: var(--w-thin);
+  /* DIALECTE A — surface publique. Une graisse par rôle, jamais une fourchette. */
+  --w-a-corps: var(--w-medium);   /* 500 */
+  --w-a-h3: var(--w-light);       /* 300 — respiration */
+  --w-a-h2: var(--w-bold);        /* 700 — l'ossature */
+  --w-a-h1: var(--w-thin);        /* 100 par défaut ; 700 si le ton l'exige */
   --w-a-h1-appuye: var(--w-bold);
-  --w-a-display: var(--w-xbold);
+  --w-a-display: var(--w-xbold);  /* 800, MuseoModerno, avec parcimonie */
+  /* ⚠ Graisse fine (100) : autorisée à partir de 21 px, interdite en dessous —
+     sous ce seuil la rastérisation rend le fût gris au lieu de noir, jusqu'à
+     lui retirer 62 % de son encre à 14 px. Le dialecte B n'en porte jamais.
+     ⚠ Un titre en graisse fine porte moins d'encre qu'un titre plus petit en
+     gras : ne l'employer que si aucun titre de rang inférieur ne le suit. */
 
-
+  /* DIALECTE B — console. Aucune graisse sous 500, jamais de graisse fine :
+     l'écran se lit debout, en plein soleil, parfois avec des gants. */
   --w-b-min: var(--w-medium);
 
-  --t-12: 12px; --t-14: 14px; --t-16: 16px; --t-21: 21px; --t-26: 26px;
-  --t-28: 28px; --t-38: 38px; --t-42: 42px; --t-51: 51px; --t-68: 68px;
+  /* INTERFACE — quarte juste ×1.3333 · demi-palier ×1.1547
+     paliers pleins : 12 · 16 · 21 · 28 · 38 · 51 · 68
+     demi-paliers   : 14 · 18 · 25 · 33 · 44 · 58
+     Un barreau appartient à UN registre. Les seuls communs sont 16 · 33 · 68. */
+  --t-12: 12px;       /* quarte^-1 · plein · calcul 12.00 · ecart 0.0 % */
+  --t-14: 14px;       /* quarte^-0.5 · demi · calcul 13.86 · ecart 1.0 % */
+  --t-16: 16px;       /* base commune · plein · calcul 16.00 · ecart 0.0 % */
+  --t-18: 18px;       /* quarte^0.5 · demi · calcul 18.48 · ecart 2.6 % */
+  --t-21: 21px;       /* quarte^1 · plein · calcul 21.33 · ecart 1.6 % */
+  --t-25: 25px;       /* quarte^1.5 · demi · calcul 24.63 · ecart 1.5 % */
+  --t-28: 28px;       /* quarte^2 · plein · calcul 28.44 · ecart 1.6 % */
+  --t-33: 33px;       /* quarte^2.5 · demi · calcul 32.84 · ecart 0.5 % */
+  --t-38: 38px;       /* quarte^3 · plein · calcul 37.93 · ecart 0.2 % */
+  --t-44: 44px;       /* quarte^3.5 · demi · calcul 43.79 · ecart 0.5 % */
+  --t-51: 51px;       /* quarte^4 · plein · calcul 50.57 · ecart 0.9 % */
+  --t-58: 58px;       /* quarte^4.5 · demi · calcul 58.39 · ecart 0.7 % */
+  --t-68: 68px;       /* quarte^5 · plein · calcul 67.42 · ecart 0.9 % */
 
-  --t-label: var(--t-12);
-  --t-sm: var(--t-14);
-  --t-body: var(--t-16);
-  --t-h3: var(--t-21);
-  --t-h2: var(--t-28);
-  --t-h1: var(--t-42);
-  --t-display: var(--t-68);
+  /* ÉDITORIAL — nombre d'or ×1.6180 · demi-palier ×1.2720
+     paliers pleins : 16 · 26 · 42 · 68
+     demi-paliers   : 13 · 20 · 33 · 53
+     Un barreau appartient à UN registre. Les seuls communs sont 16 · 33 · 68. */
+  --t-13: 13px;       /* or^-0.5 · demi · calcul 12.58 · ecart 3.4 % */
+  --t-20: 20px;       /* or^0.5 · demi · calcul 20.35 · ecart 1.7 % */
+  --t-26: 26px;       /* or^1 · plein · calcul 25.89 · ecart 0.4 % */
+  --t-42: 42px;       /* or^2 · plein · calcul 41.89 · ecart 0.3 % */
+  --t-53: 53px;       /* or^2.5 · demi · calcul 53.28 · ecart 0.5 % */
 
-  --t-ll-note: var(--t-12);
-  --t-ll-corps: var(--t-16);
-  --t-ll-chapo: var(--t-26);
-  --t-ll-intertitre: var(--t-42);
-  --t-ll-titre: var(--t-68);
+  /* Rôles — INTERFACE, dialecte A. Le jeu GRAND ; les deux autres en §2 bis. */
+  --t-display: var(--t-68);   /* graisse 800 · MuseoModerno · avec parcimonie */
+  --t-h1: var(--t-51);        /* graisse 100 en ouverture · 700 sinon */
+  --t-h2: var(--t-38);        /* graisse 700 */
+  --t-h3: var(--t-28);        /* graisse 700 */
+  --t-h4: var(--t-21);        /* graisse 700 */
+  --t-h5: var(--t-16);        /* graisse 700 — l'echelle est epuisee */
+  --t-h6: var(--t-16);        /* graisse 700 italique — l'echelle est epuisee */
+  --t-body: var(--t-16);      /* graisse 500 */
+  --t-sm: var(--t-14);        /* graisse 500 */
+  --t-label: var(--t-12);     /* graisse 700 · capitales */
 
+  /* Rôles — CONSOLE, dialecte B. Quarte pure, aucun emprunt. */
+  --t-b-h1: var(--t-51);      /* graisse 700 */
+  --t-b-h2: var(--t-38);      /* graisse 700 */
+  --t-tuile-libelle-lg: var(--t-28);/* graisse 700 */
+  --t-tuile-libelle: var(--t-21);/* graisse 700 — un cran au-dessus du dialecte A */
 
+  /* Rôles — ÉDITORIAL. Nombre d'or ; la note emprunte, et c'est tracé. */
+  --t-ll-titre: var(--t-68);  /* graisse 100 autorisee — au-dessus de 21 */
+  --t-ll-intertitre: var(--t-42);/* graisse 700 */
+  --t-ll-chapo: var(--t-26);  /* graisse 700 */
+  --t-ll-h4: var(--t-16);     /* graisse 700 — l'echelle est epuisee */
+  --t-ll-corps: var(--t-16);  /* graisse 300 · Museo */
+  --t-ll-note: var(--t-12);   /* graisse 300 — voir exception  ⚠ EXCEPTION TRACÉE — voir la pièce */
+
+  /* Les CHIFFRES — trois moments du prix, un code. 14 → 21 → 33. */
+  --t-prix: var(--t-14);      /* Museo Slab 700 · on choisit — le prix reste discret  ⚠ EXCEPTION TRACÉE — voir la pièce */
+  --t-prix-somme: var(--t-21);/* Museo Slab 700 · on recapitule */
+  --t-prix-total: var(--t-33);/* Museo Slab 700 · on paie — l'emphase monte avec l'engagement  ⚠ EXCEPTION TRACÉE — voir la pièce */
+  --t-code: var(--t-33);      /* Museo Slab 700 · il voyage de l'ecran au recu et au telephone */
+
+  --t-saisie: var(--t-16);   /* sous 16 px, iOS agrandit la page ; l'autre correctif viole SC 1.4.4 (AA) */
+
+  /* ---- FAC-SIMILÉ FISCAL ----
+     ⚠ 13px n'est sur aucun barreau des deux registres, et c'est voulu. Le bloc
+     `.piece` suit la mise en forme d'un document fiscal : police système, corps
+     du document imprimé, disposition du formulaire. Il ne suit pas l'échelle de
+     l'écran qui l'entoure, et l'y ramener changerait un document qui doit
+     rester conforme à son modèle. Ce jeton existe pour que la valeur soit NOMMÉE et
+     bornée à cet emploi ; il ne sert nulle part ailleurs. */
+  --t-piece: 13px;
+
+  /* Encre chaude — encre et filet là où l'échelon 3 de la terre cuite ne tient
+     pas le seuil AA. Mesuré : 8,09 sur blanc cassé, 7,22 sur crème. */
   --encre-chaude: var(--terre-e2);
 
-  --t-tuile-libelle: var(--t-21);
-  --t-tuile-libelle-lg: var(--t-28);
-
-  --t-prix: var(--t-26);
-  --t-code: var(--t-38);
-
-  --lh-12: 1.5;  --lh-14: 1.5;  --lh-16: 1.5;
-  --lh-21: 1.35;
-  --lh-26: 1.2;  --lh-28: 1.2;
-  --lh-38: 1.12; --lh-42: 1.12;
-  --lh-51: 1.05;
-  --lh-68: 1;
+  /* INTERLIGNE — un par barreau. Fonction DÉCROISSANTE de la taille :
+     plus le corps est gros, plus l'interligne se resserre. Relevé chez
+     GOV.UK, où le rapport va de 1,32 au corps à 1,00 au display. */
+  --lh-12: 1.5; --lh-13: 1.5; --lh-14: 1.5; --lh-16: 1.5; --lh-18: 1.35;
+  --lh-20: 1.35; --lh-21: 1.35; --lh-25: 1.2; --lh-26: 1.2; --lh-28: 1.2;
+  --lh-33: 1.12; --lh-38: 1.12; --lh-42: 1.12; --lh-44: 1.12;
+  --lh-51: 1.05; --lh-53: 1.05; --lh-58: 1.05; --lh-68: 1;
   --lh-chiffre: 1;
 
+  /* Interligne du corps d'interface. */
   --lh-corps: var(--lh-16);
 
-  --lh-lecture-ecran: 1.5;
-  --lh-lecture-print: 1.41;
+  /* Lecture longue : DEUX interlignes, pas un. L'écran tient un plancher que
+     le papier n'a pas ; le papier reprend la proportion de sa page. */
+  --lh-lecture-ecran: 1.5;    /* plancher WCAG 1.4.8, AAA, écran — choisi, pas subi */
+  --lh-lecture-print: 1.41;   /* 141 % · dans la plage typographique 120–145 %, à 4 points
+                                 du plafond. Un point au-dessus du « sweet spot » 130–140 %
+                                 du livre imprimé — la quarte juste (1,333) tombait 3 points
+                                 SOUS ce même sweet spot, et se lisait serrée.
+                                 ⓘ 1,41 est aussi le rapport du format A lui-même :
+                                 297 / 210 = 1,4143, et √2 = 1,4142. L'interligne du papier
+                                 reprend donc la proportion de la page qui le porte. */
 
-  --rayon-pilule: 999px;
-  --rayon-carte: 26px;
-  --rayon-module: 16px;
-  --rayon-champ: 12px;
+  /* FORMES DU DIALECTE A. Aucune norme ne régit
+     le rayon de coin. Un cran par famille de composants : champ, module, carte,
+     pilule. ⚠ Les rayons emboîtés se dérivent : rayon intérieur = rayon
+     extérieur moins le remplissage. Déplacer l'un sans l'autre casse
+     l'emboîtement. */
+  --rayon-pilule: 999px;      /* pilule — convention, hors suite par nature */
+  --rayon-carte: 26px;        /* barreau 26 — inchangé */
+  --rayon-module: 16px;       /* barreau 16 — proposé, était 17 */
+  --rayon-champ: 12px;        /* barreau 12 — proposé, était 13 */
 
+  /* Dialecte B — rayon nul, tuiles jointives. */
   --rayon-tuile: 0;
   --tuile-gouttiere: 4px; --tuile-pas: 96px; --tuile-lisere-etat: 3px;
 
-  --mvt-eclair: 70ms;
-  --mvt-court: 110ms;
-  --mvt-moyen: 150ms;
-  --mvt-ample: 240ms;
-  --mvt-long: 400ms;
+  /* MOUVEMENT. Le principe qui gouverne l'échelle : la durée suit la distance
+     — plus un élément parcourt ou grandit, plus il prend de temps. Échelle
+     reprise du Carbon Design System (Apache-2.0). */
+  --mvt-eclair: 70ms;    /* micro-interaction : bouton, pastille, bascule */
+  --mvt-court: 110ms;    /* fondu */
+  --mvt-moyen: 150ms;    /* petite ouverture */
+  --mvt-ample: 240ms;    /* ouverture, apparition d'un bandeau */
+  --mvt-long: 400ms;     /* grande ouverture */
 
-  --courbe-b: cubic-bezier(0.2, 0, 0.38, 0.9);
+  /* Deux registres de courbes, un par dialecte : la console est productive et
+     discrète, la surface publique est expressive. */
+  --courbe-b: cubic-bezier(0.2, 0, 0.38, 0.9);         /* console — standard */
   --courbe-b-entree: cubic-bezier(0, 0, 0.38, 0.9);
   --courbe-b-sortie: cubic-bezier(0.2, 0, 1, 0.9);
-  --courbe-a: cubic-bezier(0.4, 0.14, 0.3, 1);
+  --courbe-a: cubic-bezier(0.4, 0.14, 0.3, 1);          /* public — standard */
   --courbe-a-entree: cubic-bezier(0, 0, 0.3, 1);
   --courbe-a-sortie: cubic-bezier(0.4, 0.14, 1, 1);
 
+  /* ESPACEMENT — base 4. Toute cote d'espacement se prend ici, jamais en
+     valeur libre. */
   --esp-1: 4px; --esp-2: 8px; --esp-3: 12px;
   --esp-4: 16px; --esp-6: 24px; --esp-8: 32px;
-  --esp-5: 20px;
+  --esp-5: 20px;   /* ⚠ seule valeur hors base 8 — retrait proposé */
 
-  --ombre-posee: 0 10px 30px rgba(60, 50, 30, 0.10);
-  --ombre-flottante: 0 10px 30px rgba(10, 25, 14, 0.35);
-  --ombre-carte: var(--ombre-posee);
+  /* OMBRES. Deux seulement : une ombre et sa version sombre. Aucune ombre en
+     dialecte B, aucune sur une pièce imprimée — un flou se trame et se salit. */
+  --ombre-posee: 0 10px 30px rgba(60, 50, 30, 0.10);      /* une carte sur la page */
+  --ombre-flottante: 0 10px 30px rgba(10, 25, 14, 0.35);  /* au-dessus de tout */
+  --ombre-carte: var(--ombre-posee);                      /* alias transitoire */
 
-  --cible-min: 44px;
-  --cible-plancher-aa: 24px;
-  --tuile-action-min: 96px;
+  /* CIBLES TACTILES. Le plancher normatif est SC 2.5.8 (AA), 24 × 24 px CSS ;
+     44 px est SC 2.5.5 (AAA) et c'est la valeur retenue — gant, plein soleil,
+     station debout. Le plancher est déclaré pour que les cas d'exception aient
+     une valeur juste au lieu d'un contournement. */
+  --cible-min: 44px;            /* SC 2.5.5, niveau AAA — valeur retenue */
+  --cible-plancher-aa: 24px;    /* SC 2.5.8, niveau AA — plancher normatif */
+  --tuile-action-min: 96px;     /* contrainte de poste, aucune source : elle n'existe pas */
 }
+
+/* ---------- 2 bis. LES TROIS JEUX D'ÉCRAN — jeux DISCRETS, jamais un
+   `clamp()` : une interpolation ne se contrôle pas à l'œil (GOV.UK).
+   LA LOI DE DÉGRADATION : un petit écran porte MOINS DE NIVEAUX, et
+   c'est le display qui tombe le premier — il est le seul rôle
+   décoratif. Les niveaux bas retombent au corps et se disent par la
+   graisse, puis par l'italique. */
 
 @media (max-width: 640px) {
   :root {
-    --t-h2: var(--t-26);
-    --t-h1: var(--t-28);
-    --t-display: var(--t-42);
+    --t-h1: var(--t-38);
+    --t-h2: var(--t-28);
+    --t-h3: var(--t-21);
+    --t-h4: var(--t-16);
+    --t-body: var(--t-16);
+    --t-ll-titre: var(--t-42);
+    --t-ll-intertitre: var(--t-26);
+    --t-ll-chapo: var(--t-20);
+    --t-ll-corps: var(--t-16);
+    /* le display n'existe pas à ce palier — loi de dégradation */
   }
 }
 @media (min-width: 641px) and (max-width: 1024px) {
   :root {
-    --t-h2: var(--t-28);
-    --t-h1: var(--t-38);
     --t-display: var(--t-51);
+    --t-h1: var(--t-38);
+    --t-h2: var(--t-28);
+    --t-h3: var(--t-21);
+    --t-h4: var(--t-16);
+    --t-body: var(--t-16);
   }
 }
 
+/* ---------- 2 ter. LE RYTHME VERTICAL — CINQ CRANS ----------
+   L'air dit l'appartenance : plus deux blocs sont liés, moins il y a
+   d'air entre eux. Il ne prend jamais une valeur neuve — il se prend
+   sur l'échelle d'espacement. */
 :root {
+  --air-soude: 0px;         /* un seul bloc — terme et sa definition · chiffre et son libelle · citation et son texte */
+  --air-colle: 4px;         /* esp-1 — appartient a ce qui precede — items d'une liste · sous-liste · attribution d'une citatio */
+  --air-lie: 8px;           /* esp-2 — suit immediatement — texte sous son titre · second titre sous le premier · aide et erreu */
+  --air-separe: 12px;       /* esp-3 — deux blocs de meme rang — deux paragraphes · deux couples de definition · apres une list */
+  --air-rompu-h2: 32px;     /* esp-8 — on change de section — au-dessus d'un h2 · avant une mention legale */
+  --air-rompu-h3: 24px;     /* esp-6 — on change de section — au-dessus d'un h3 · autour d'une citation en bloc */
+}
 
-  --jaune-pur-exempte: #FFB000;
+/* ---------- 2 quater. L'INTERLETTRAGE — fonction de la CASSE ----------
+   Butterick : « always add 5–12 % extra letterspacing to text in all
+   caps or small caps. This is particularly important at small sizes. »
+   Le bas de casse n'en prend pas : au premier cran il coûte déjà une ligne
+   sur six, et deux au troisième. */
+:root {
+  --lettrage-bas-de-casse: normal;/* Butterick ne le preconise pas · mesure : 0.02 em coute une ligne sur six et 0.07 e */
+  --lettrage-capitales: 0.07em;   /* Butterick — « always add 5-12 % extra letterspacing to text in all caps or small c */
+  --lettrage-capitales-petites: 0.1em;/* Butterick — « this is particularly important at small sizes » · sous 14 px */
+  --lettrage-code: 0.13em;        /* voir exception code-lettrage */
+}
+.caps, .etiquette { text-transform: uppercase; letter-spacing: var(--lettrage-capitales); }
+@media (max-width: 640px) { .caps, .etiquette { letter-spacing: var(--lettrage-capitales-petites); } }
 
-  --statut-en-attente: var(--jaune-pur-exempte);
+/* ---------- 3. STATUTS ----------
+   Le statut est une TEINTE, l'échelon est une SURFACE. L'identité vit dans la
+   famille — vert confirmé, jaune en attente, terre en préparation, rouge
+   annulé, gris terminé — et le statut se porte à l'échelon 3, celui où la
+   couleur se reconnaît. Encre : blanc pur, 4,72 sur les trois familles sombres.
+   ⚠ 4,72 passe le plancher AA de 0,22 point et n'atteint pas AAA. Un libellé de
+   tuile est du texte courant au sens WCAG : il lui faut 4,5, pas 3,0. La marge
+   est mince, et volontaire.
+   ⚠ Le jaune descend à l'échelon 2 : sa rampe n'a pas de bout sombre, et à
+   l'échelon 3 il est trop clair pour porter une pastille contre un papier clair.
+   Rappel SC 1.4.1 : la couleur n'est jamais le seul canal. Icône ou position. */
+:root {
+  --statut-en-attente: var(--jaune-e2);
   --statut-en-preparation: var(--terre-e3);
   --statut-confirme: var(--vert-e3);
   --statut-annule: var(--rouge-e3);
   --statut-termine: var(--gris-500);
-
+  /* Encre de statut : celle du jaune sur le jaune, blanche sur les trois autres. */
   --encre-statut: var(--blanc);
-  --encre-statut-jaune: var(--noir);
+  --encre-statut-jaune: var(--encre-jaune);
 }
 
+/* ---------- 3 bis. L'ENCRE D'UNE SURFACE PLEINE ----------
+   Dans un bouton plein et sur une tuile du dialecte B, l'encre est le blanc.
+   L'encre d'échelon (§4) ne sert donc que les aplats NON interactifs :
+   bandeaux, fonds éditoriaux, pavés de couleur. */
 :root {
   --encre-bouton: var(--blanc);
-  --vert-selection: rgba(0, 91, 34, .08);
+  --vert-selection: rgba(0, 91, 34, .08);  /* sélection — vert Roots é2 à 8 % */
 }
 
+/* ---------- 4. TABLE D'ENCRE — DIALECTE B ----------
+   Elle n'est pas une liste de cas : c'est une FONCTION DE L'ÉCHELON, vérifiée
+   sur les vingt valeurs à la composition, qui refuse d'écrire si une famille
+   dévie.
+     é1 · é2 → encre claire      é3 → blanc pur, et rien d'autre
+     é4 · é5 → encre noire
+   ⚠ Ce que cette table dit et qu'il faut entendre : **aucun aplat d'échelon 3
+   ne porte de texte courant au niveau AAA**, quelle que soit l'encre — le
+   meilleur cas est 4,72 avec du blanc pur. L'échelon 3 est l'échelon vif, donc
+   celui de la marque : il sert l'interface, pas la lecture longue.
+   ⚠ Crème sur échelon 3 tombe sous 4.5 : interdit. */
 :root {
+  /* Encre d'aplat — FONCTION DE L'ÉCHELON, calculée, pas choisie.
+     Le contrôle refuse d'écrire ce fichier si une famille dévie. */
+  /* Encre d'aplat — FONCTION DE L'ÉCHELON sur les TROIS FAMILLES
+     SOMBRES : vert, rouge, terre cuite. Calculée, pas choisie, et le
+     contrôle refuse d'écrire si une famille dévie. */
+  --encre-e1: var(--blanc-casse); /* pire cas des trois familles sombres : 13.42 */
+  --encre-e2: var(--blanc-casse); /* pire cas des trois familles sombres : 8.06 */
+  --encre-e3: var(--blanc);       /* pire cas des trois familles sombres : 4.72 */
+  --encre-e4: var(--noir);        /* pire cas des trois familles sombres : 6.29 */
+  --encre-e5: var(--noir);        /* pire cas des trois familles sombres : 10.05 */
 
-  --encre-e1: var(--blanc-casse);
-  --encre-e2: var(--blanc-casse);
-  --encre-e3: var(--blanc);
-  --encre-e4: var(--noir);
-  --encre-e5: var(--noir);
+  /* LE JAUNE N'A PAS DE BASCULE — loi 3 de la pièce actée : « la famille
+     jaune porte toujours le noir, jamais le blanc. Pas de bascule, pas de
+     zone morte. » Sa rampe ne descend pas : de L*64 à L*95, quand les trois
+     autres vont de L*18 à L*79. C'est la lumière qui casse la profondeur
+     des autres — donc une seule encre, sur les cinq échelons. */
+  --encre-jaune: var(--noir);     /* pire cas des cinq échelons : 6.28 */
 }
 
 .a-vert-1 { background: var(--vert-e1); color: var(--blanc-casse); }
@@ -217,16 +475,18 @@
 .a-rouge-3 { background: var(--rouge-e3); color: var(--blanc); }
 .a-rouge-4 { background: var(--rouge-e4); color: var(--noir); }
 .a-rouge-5 { background: var(--rouge-e5); color: var(--noir); }
-.a-jaune-1 { background: var(--jaune-e1); color: var(--blanc-casse); }
-.a-jaune-2 { background: var(--jaune-e2); color: var(--blanc-casse); }
-.a-jaune-3 { background: var(--jaune-e3); color: var(--blanc); }
-.a-jaune-4 { background: var(--jaune-e4); color: var(--noir); }
-.a-jaune-5 { background: var(--jaune-e5); color: var(--noir); }
 .a-terre-1 { background: var(--terre-e1); color: var(--blanc-casse); }
 .a-terre-2 { background: var(--terre-e2); color: var(--blanc-casse); }
 .a-terre-3 { background: var(--terre-e3); color: var(--blanc); }
 .a-terre-4 { background: var(--terre-e4); color: var(--noir); }
 .a-terre-5 { background: var(--terre-e5); color: var(--noir); }
+.a-jaune-1 { background: var(--jaune-e1); color: var(--noir); }
+.a-jaune-2 { background: var(--jaune-e2); color: var(--noir); }
+.a-jaune-3 { background: var(--jaune-e3); color: var(--noir); }
+.a-jaune-4 { background: var(--jaune-e4); color: var(--noir); }
+.a-jaune-5 { background: var(--jaune-e5); color: var(--noir); }
+
+/* ---------- 5. COMPOSANTS — DIALECTE A (rond / ambiant · PUBLIC) ---------- */
 
 .roots-base { font-family: var(--font-corps); color: var(--encre); background: var(--creme); }
 .roots-console { font-family: var(--font-corps); color: var(--encre); background: var(--blanc-casse); }
@@ -234,15 +494,15 @@
 .btn-principal {
   background: var(--vert-e2); color: var(--encre-bouton);
   border: none; border-radius: var(--rayon-pilule); padding: var(--esp-4);
-  font-family: var(--font-corps); font-weight: var(--w-a-h2); font-size: var(--t-16);
+  font-family: var(--font-corps); font-weight: 700; font-size: 15px;
   cursor: pointer; width: 100%; min-height: var(--cible-min);
 }
 .btn-principal:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .pastille-flottante {
   background: var(--creme); color: var(--encre);
-  border: none; border-radius: var(--rayon-pilule); padding: var(--esp-4) var(--esp-6);
-  font-weight: var(--w-a-h2); font-size: var(--t-14); cursor: pointer;
+  border: none; border-radius: var(--rayon-pilule); padding: 15px 26px;
+  font-weight: 700; font-size: 14.5px; cursor: pointer;
   min-height: var(--cible-min); box-shadow: var(--ombre-flottante);
 }
 
@@ -254,21 +514,24 @@
 .module-a.actif { border-color: var(--vert-e2); background: #EEF4E9; }
 
 .chip { background: var(--creme); border: 2px solid transparent;
-        border-radius: var(--rayon-pilule); padding: var(--esp-2) var(--esp-4); font-size: var(--t-14);
+        border-radius: var(--rayon-pilule); padding: 9px 15px; font-size: 13px;
         cursor: pointer; min-height: var(--cible-min); }
 .chip.actif { border-color: var(--terre-e3); background: #FDF0EB; }
 
 .champ-saisie {
   background: var(--creme); border: 1.5px solid transparent;
-  border-radius: var(--rayon-champ); padding: var(--esp-3); color: var(--encre);
-  font-family: var(--font-corps); font-size: var(--t-16); width: 100%;
+  border-radius: var(--rayon-champ); padding: 12px 13px; color: var(--encre);
+  font-family: var(--font-corps); font-size: 14.5px; width: 100%;
   min-height: var(--cible-min);
 }
 .champ-saisie:focus { outline: none; border-color: var(--vert-e2); background: var(--blanc); }
 
-.etiquette { font-size: var(--t-12); font-weight: var(--w-bold); text-transform: uppercase;
+.etiquette { font-size: 11px; font-weight: 700; text-transform: uppercase;
              letter-spacing: 0.07em; color: var(--encre-discrete); }
 
+/* Lecture longue : Museo 300, jamais 500. */
+/* Lecture longue. Deux classes, parce qu'il y a deux interlignes : l'écran est
+   tenu par un plancher WCAG que le papier n'a pas. Museo 300, jamais 500. */
 .lecture-longue { font-family: var(--font-lecture); font-weight: var(--w-lecture);
                   font-size: var(--t-ll-corps); line-height: var(--lh-lecture-ecran); }
 @media print {
@@ -276,11 +539,14 @@
 }
 .lecture-longue--print { line-height: var(--lh-lecture-print); }
 
-.code-confirmation { font-weight: var(--w-bold); font-size: var(--t-code); letter-spacing: 0.13em;
+.code-confirmation { font-weight: 700; font-size: 33px; letter-spacing: 0.13em;
                      color: var(--terre-e2); font-family: var(--font-chiffres); }
 .prix { font-family: var(--font-chiffres); font-weight: 700; }
-.erreur-inline { color: var(--rouge-e2); font-size: var(--t-14); font-weight: var(--w-bold);
+.erreur-inline { color: var(--rouge-e2); font-size: 13px; font-weight: 700;
                  margin-top: var(--esp-2); }
+
+/* ---------- 6. COMPOSANTS — DIALECTE B (tuiles / opérationnel · INTERNE) ----------
+   Plat, contraste fort. Aucune animation, aucun flou, aucune ombre, aucun dégradé. */
 
 .grille-tuiles {
   display: grid;
@@ -298,9 +564,10 @@
   min-width: var(--tuile-action-min); min-height: var(--tuile-action-min);
   background: var(--vert-e2); color: var(--encre-bouton);
   font-family: var(--font-corps); font-weight: 700;
-  font-size: var(--t-tuile-libelle); line-height: var(--lh-21); text-align: left;
+  font-size: var(--t-tuile-libelle); line-height: 1.15; text-align: left;
   cursor: pointer;
-
+  /* Retour d'état : court et productif. « Instantané » n'est pas « immobile » —
+     70 ms se sent sans se voir, et `prefers-reduced-motion` le coupe (§7). */
   transition: filter var(--mvt-eclair) var(--courbe-b),
               box-shadow var(--mvt-eclair) var(--courbe-b);
 }
@@ -316,13 +583,22 @@
 .tuile[disabled], .tuile.inactive { opacity: 0.4; cursor: not-allowed; }
 .tuile.a-neutre { background: var(--gris-ilot); color: var(--encre); }
 
+/* UNE TUILE DIT UNE ACTION ; UN STATUT SE PORTE PAR UNE PASTILLE RONDE, posée
+   dans la tuile ou à côté d'elle. La tuile qui porte un statut prend donc une
+   surface neutre. La forme ronde de la pastille traverse les deux dialectes. */
 .carte-statut { background: var(--gris-ilot); color: var(--encre);
                  border-radius: var(--rayon-tuile); padding: var(--esp-3);
                  cursor: default; }
+/* ⚠ `.carte-statut` n'est PAS un bouton et ne doit pas en devenir un. En
+   dialecte B
 
+/* AU SECOURS — dispositif de SÛRETÉ (vie humaine), pas de sécurité info.
+   ⚠ La marque « DÉMO » est obligatoire sur cette tuile tant que le dispositif
+   n'a pas été déclaré opérationnel. Un dispositif que l'on croit opérationnel
+   sans qu'il le soit est plus dangereux que son absence. */
 .tuile-secours {
   background: var(--rouge-e3); color: var(--encre-bouton);
-  border: none; border-radius: var(--rayon-tuile); min-height: calc(var(--tuile-pas) + var(--esp-8) * 2); width: 100%;
+  border: none; border-radius: var(--rayon-tuile); min-height: 160px; width: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--esp-3); font-family: var(--font-corps); font-weight: 800;
   font-size: var(--t-h2); cursor: pointer; transition: none;
@@ -343,8 +619,7 @@
   font-size: var(--t-h2); font-weight: 800; cursor: pointer; transition: none;
 }
 .compteur-gros output {
-
-  flex: 1; min-width: var(--esp-8); display: flex; align-items: center; justify-content: center;
+  flex: 1; display: flex; align-items: center; justify-content: center;
   background: var(--gris-ilot); border-radius: var(--rayon-tuile);
   font-family: var(--font-chiffres); font-size: var(--t-h1); color: var(--encre);
 }
@@ -355,22 +630,33 @@
   background: var(--noir); color: var(--blanc);
   border: none; border-radius: var(--rayon-tuile);
   padding: var(--esp-4) var(--esp-6); font-family: var(--font-corps);
-  font-weight: var(--w-bold); font-size: var(--t-16); min-height: var(--cible-min);
+  font-weight: 700; font-size: 16px; min-height: var(--cible-min);
   cursor: pointer; transition: none;
 }
 
+/* 7.3 LA PASTILLE DE STATUT — la seule façon d'afficher un statut, dans les
+   DEUX dialectes. Ronde : c'est la forme du dialecte A, empruntée exprès.
+   Toujours doublée d'un mot et d'une icône : WCAG 1.4.1, la couleur n'est jamais
+   le seul canal. */
 .puce-statut {
   display: inline-flex; align-items: center; gap: var(--esp-2);
-  font-family: var(--font-corps); font-weight: var(--w-bold);
-  font-size: var(--t-12); line-height: var(--lh-12);
+  font-family: var(--font-corps); font-weight: 700;
+  font-size: var(--t-12); line-height: 1.2;
   padding: var(--esp-1) var(--esp-3);
   border-radius: var(--rayon-pilule);
   white-space: nowrap;
 }
 .puce-statut .puce-icone { width: 14px; height: 14px; stroke-width: 2.25; flex: none; }
+/* Une pastille ne réagit à rien : ni survol, ni focus, ni état actif. Si l'on
+   se surprend à vouloir l'un des trois, c'est qu'on est en train d'en faire un
+   bouton — et alors c'en est un, avec tout ce que cela impose. */
+.puce-statut:hover, .puce-statut:focus, .puce-statut:active { all: unset; }
 
-.puce-statut { pointer-events: none; }
-
+/* Puce de FILTRE — ronde en CONTOUR, pour ne pas se confondre avec la pastille
+   de statut qui est ronde et PLEINE. Celle-ci est choisie par l'utilisateur,
+   donc elle est interactive et porte le plancher tactile.
+   ⚠ Ronde en CONTOUR : elle ne doit pas se confondre avec la pastille de
+   statut, qui est ronde et PLEINE. */
 .puce-filtre {
   display: inline-flex; align-items: center; gap: var(--esp-2);
   font-family: var(--font-corps); font-weight: 700; font-size: var(--t-14);
@@ -380,27 +666,49 @@
 }
 .puce-filtre[aria-pressed="true"] { border-color: var(--vert-e2); background: var(--vert-selection); }
 
+/* Pastille de console — 16 px au plus : c'est une notification, pas un titre.
+   ⚠ Pas de plancher tactile : une pastille ne se clique pas. Si elle devient
+   cliquable, le plancher WCAG s'applique et c'est un autre composant. */
 .puce-statut--console {
   font-size: var(--t-16);
   padding: var(--esp-2) var(--esp-4);
 }
 .puce-statut--console .puce-icone { width: 18px; height: 18px; stroke-width: 2.5; }
 
-.puce-statut.en-attente { background: var(--jaune-pur-exempte); color: var(--encre-statut-jaune); }
+.puce-statut.en-attente { background: var(--jaune-e2); color: var(--encre-statut-jaune); }
 .puce-statut.en-preparation { background: var(--terre-e3); color: var(--encre-statut); }
 .puce-statut.confirme { background: var(--vert-e3); color: var(--encre-statut); }
 .puce-statut.annule { background: var(--rouge-e3); color: var(--encre-statut); }
 .puce-statut.termine { background: var(--gris-500); color: var(--blanc); }
 
-:root {
+/* ---------- 6 bis. LE SOCLE TRANSVERSE ----------
+   Ce qu'un monde ne peut pas redéfinir sans cesser d'être un thème : l'anneau
+   de focus et son dégagement, les durées, les courbes, l'épaisseur de trait,
+   les deux gris, l'espacement. Une couleur directrice n'en fait pas partie.
+   L'épreuve : un jeton appartient au socle si un monde qui le redéfinit cesse
+   d'être un thème. La couleur directrice n'y est pas ; l'anneau de focus y est.
+   ⚠ Le plancher de cible tactile qui lie est SC 2.5.8 (AA), 24 px CSS ; 44 est
+   SC 2.5.5 (AAA), et c'est la valeur retenue. */
 
+:root {
+  /* ANNEAU DE FOCUS. Mesuré contre SC 2.4.13 (AAA), qui demande au moins
+     l'aire d'un périmètre de 2 px CSS et 3:1 entre l'état focalisé et non
+     focalisé. ⚠ Il est en ENCRE, jamais en couleur directrice : c'est ce qui
+     lui permet d'être le même dans les quatre mondes. Le retrait lui donne un
+     contraste des deux côtés ; un anneau collé n'en a que d'un. */
   --focus-trait: var(--encre);
   --focus-ep: 3px;
   --focus-retrait: 2px;
 
+  /* DÉGAGEMENT DU FOCUS — SC 2.4.11 (AA). Un pied ou un en-tête collant peut
+     recouvrir entièrement l'élément qui reçoit le focus ; la parade est le
+     `scroll-padding` posé plus bas. ⚠ Sans lui, l'anneau existe et n'est
+     joignable que par chance. */
   --focus-degagement-haut: calc(var(--entete-h, 68px) + var(--esp-3));
   --focus-degagement-bas: calc(var(--barre-h, 72px) + var(--esp-3));
 
+  /* Trois noms de durée par ce qu'ils SERVENT — un changement sur place, une
+     apparition, un parcours — posés sur l'échelle des durées. */
   --mvt-etat: var(--mvt-court);
   --mvt-apparition: var(--mvt-ample);
   --mvt-parcours: var(--mvt-long);
@@ -408,16 +716,31 @@
   --courbe-sortie: var(--courbe-a-sortie);
   --courbe-etat: var(--courbe-a);
 
+  /* ---- L'ÉPAISSEUR DU TRAIT ----
+     Trait 2 pour toutes les icônes, trait 1 pour le logo — le logo n'est pas
+     une icône et ne suit pas leur épaisseur. L'épaisseur ne se dérive pas de
+     la taille de l'icône : elle est constante.
+     ⚠ `.fab svg` porte 2,6 dans la feuille de style : cette valeur contredit
+     le jeton. Toute icône ajoutée prend `--trait-icone`. */
   --trait-icone: 2;
   --trait-logo: 1;
 
+  /* ---- LES DEUX GRIS ---- 
+     `--gris-aplat` et `--gris-filet` valent la même couleur et ne sont PAS un
+     doublon. Le premier sert les APLATS — le fond d'une pastille de catégorie ;
+     le second sert les TRAITS — le filet sous l'en-tête, la ligne du pied, le
+     contour d'un plat en rupture. Les deux emplois divergent dès qu'un monde
+     change de papier : les aliaser l'un sur l'autre casse ce point. */
   --gris-aplat: var(--gris-ilot);
   --gris-filet: var(--gris-ilot);
 
+  /* Le huitième cran d'espacement, et le rythme de lecture longue qui s'y pose.
+     ⚠ La base est 4, non 8 : le cran de 20 px y est régulier. */
   --esp-7: 28px;
   --ll-rythme: var(--esp-7);
 }
 
+/* L'anneau, et son dégagement. Sans le second, le premier ne se voit pas. */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
   outline: var(--focus-ep) solid var(--focus-trait);
   outline-offset: var(--focus-retrait);
@@ -428,6 +751,10 @@ html {
 }
 body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 
+/* LE SURVOL — la règle du socle, exprimée à travers la table d'échelon.
+   Aucune valeur n'est écrite : l'aplat monte d'un cran, et l'encre suit
+   l'échelon d'arrivée. C'est ce qui garantit qu'un survol ne peut pas casser un
+   contraste — il en change, il ne le perd pas. */
 @media (hover: hover) {
   .a-vert-1:hover { background: var(--vert-e2); color: var(--blanc-casse); }
   .a-vert-2:hover { background: var(--vert-e3); color: var(--blanc); }
@@ -439,47 +766,71 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   .a-rouge-3:hover { background: var(--rouge-e4); color: var(--noir); }
   .a-rouge-4:hover { background: var(--rouge-e5); color: var(--noir); }
   .a-rouge-5:hover { background: var(--rouge-e4); color: var(--noir); }
-  .a-jaune-1:hover { background: var(--jaune-e2); color: var(--blanc-casse); }
-  .a-jaune-2:hover { background: var(--jaune-e3); color: var(--blanc); }
-  .a-jaune-3:hover { background: var(--jaune-e4); color: var(--noir); }
-  .a-jaune-4:hover { background: var(--jaune-e5); color: var(--noir); }
-  .a-jaune-5:hover { background: var(--jaune-e4); color: var(--noir); }
   .a-terre-1:hover { background: var(--terre-e2); color: var(--blanc-casse); }
   .a-terre-2:hover { background: var(--terre-e3); color: var(--blanc); }
   .a-terre-3:hover { background: var(--terre-e4); color: var(--noir); }
   .a-terre-4:hover { background: var(--terre-e5); color: var(--noir); }
   .a-terre-5:hover { background: var(--terre-e4); color: var(--noir); }
+  .a-jaune-1:hover { background: var(--jaune-e2); color: var(--noir); }
+  .a-jaune-2:hover { background: var(--jaune-e3); color: var(--noir); }
+  .a-jaune-3:hover { background: var(--jaune-e4); color: var(--noir); }
+  .a-jaune-4:hover { background: var(--jaune-e5); color: var(--noir); }
+  .a-jaune-5:hover { background: var(--jaune-e4); color: var(--noir); }
 }
 
-:root {
+/* ---------- 6 ter. LES COMPOSANTS DE FORMULAIRE ET D'ÉTAT ----------
+   LA CONTRAINTE QUI LES GOUVERNE TOUS : SC 1.4.11 Non-text Contrast (AA) —
+   « la présentation visuelle des composants d'interface a un rapport de
+   contraste d'au moins 3:1 contre les couleurs adjacentes ». Le texte précise
+   qu'une bordure n'est pas requise si le contrôle a un contenu visible.
+   ⚠ Un CHAMP DE SAISIE VIDE n'a par définition aucun contenu visible : sa
+   limite est le seul moyen de l'identifier, et elle doit donc atteindre 3:1.
+   C'est ce qui interdit d'employer un gris de surface comme limite. */
 
+:root {
+  /* Limite d'un contrôle. ⚠ Le gris de surface rend 1,22 contre le blanc : il
+     ne peut PAS servir de limite, seulement d'aplat. */
   --limite-controle: var(--gris-500);
   --limite-ep: 1.5px;
-  --limite-ep-b: 2px;
+  --limite-ep-b: 2px;          /* le dialecte B est franc : le trait double */
 
+  /* Grille d'écran. ⚠ La largeur de colonne n'est pas une contrainte tranchée :
+     c'est une valeur qui tourne. */
   --ecran-marge: 5%;
   --ecran-bande: 90%;
   --ecran-colonne: 500px;
   --ecran-gouttiere: var(--esp-2);
 }
 
+/* 9.1 CHAMP DE SAISIE — DIALECTE B. Franc, plat, rayon nul.
+   ⚠ Le corps ne descend pas sous 16 : en dessous, iOS agrandit la page à
+   l'entrée dans le champ, et l'autre correctif — `maximum-scale=1` — viole
+   SC 1.4.4 (AA). 16 est le seul correctif accessible. */
 .champ-b {
   width: 100%; min-height: var(--cible-min);
   padding: var(--esp-2) var(--esp-3);
   background: var(--blanc); color: var(--encre);
-  border: var(--limite-ep-b) solid var(--noir);
+  border: var(--limite-ep-b) solid var(--noir);   /* 16,81 — franc, dialecte B */
   border-radius: var(--rayon-tuile);
   font-family: var(--font-corps); font-size: var(--t-16);
   transition: border-color var(--mvt-etat) var(--courbe-etat);
 }
-.champ-b::placeholder { color: var(--gris-500); }
+.champ-b::placeholder { color: var(--gris-500); }   /* 6,45 — lisible, pas décoratif */
 .champ-b:disabled { background: var(--gris-ilot); color: var(--gris-500); cursor: not-allowed; }
 .champ-b.faux { border-color: var(--rouge-e2); }
 .zone-texte-b { min-height: calc(var(--cible-min) * 2); resize: vertical; }
 
+/* 9.2 BARRE DE RECHERCHE — DIALECTE B.
+   ⚠ CE N'EST PAS UN COMPOSANT NEUF, et le déclarer tel serait une faute : c'est
+   un champ B, une icône et un bouton d'effacement. Une classe de disposition
+   suffit ; inventer un composant ici multiplierait les états à tenir. */
 .recherche-b { display: flex; align-items: stretch; gap: var(--tuile-gouttiere); }
 .recherche-b .champ-b { flex: 1; }
 
+/* 9.3 TABLEAU — DIALECTE B.
+   Aucune norme ne régit la densité. Deux critères s'appliquent quand même :
+   SC 1.3.1 (les en-têtes se déclarent par `scope`, pas par le gras) et
+   SC 2.4.11 (un en-tête collant cache le focus — d'où le dégagement local). */
 .tableau-b { width: 100%; border-collapse: collapse; font-size: var(--t-14); }
 .tableau-b th, .tableau-b td {
   padding: var(--esp-2) var(--esp-3); text-align: left;
@@ -490,7 +841,8 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   background: var(--gris-ilot); color: var(--encre);
   font-size: var(--t-12); text-transform: uppercase; letter-spacing: .08em;
 }
-
+/* Un nombre s'aligne à droite et se compose en chiffres tabulaires : sans quoi
+   les colonnes de montants ne se comparent pas d'un coup d'œil. */
 .tableau-b .nombre {
   text-align: right; font-family: var(--font-chiffres);
   font-variant-numeric: tabular-nums;
@@ -500,12 +852,17 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 .tableau-b tbody tr[aria-selected="true"] {
   box-shadow: inset var(--tuile-lisere-etat) 0 0 0 var(--noir);
 }
-
+/* Densité NOMMÉE plutôt que valeurs redéfinies au cas par cas. */
 .tableau-b[data-densite="dense"] th, .tableau-b[data-densite="dense"] td {
   padding: var(--esp-1) var(--esp-2);
 }
 .tableau-b-cadre { overflow: auto; scroll-padding-top: var(--esp-8); }
 
+/* 9.4 PAVÉ NUMÉRIQUE — DIALECTE B, et c'est le canal 4 du mode assisté.
+   « Compter par jetons, pastilles, incréments gros et tactiles plutôt que par
+   saisie de nombres. » Ce n'est pas un clavier : c'est une grille de tuiles.
+   ⚠ N'EXISTE PAS en dialecte A : le public saisit au clavier de son téléphone,
+   avec `inputmode="numeric"`. */
 .pave-num {
   display: grid; grid-template-columns: repeat(3, minmax(var(--tuile-pas), 1fr));
   gap: var(--tuile-gouttiere);
@@ -521,6 +878,13 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 .pave-num button:active { filter: brightness(0.86); }
 .pave-num .effacer { background: var(--noir); color: var(--blanc); }
 
+/* 9.5 PRIMITIVES DE FORMULAIRE — LES DEUX DIALECTES.
+   Zéro dans les jetons, zéro au dépôt. La limite au repos est en
+   `--limite-controle` parce qu'un contrôle non coché n'a aucun contenu visible :
+   sa limite est le seul moyen de l'identifier (SC 1.4.11).
+   La CIBLE fait 44 (SC 2.5.5, AAA) ; la MARQUE fait 24, le plancher normatif
+   (SC 2.5.8, AA). Le contrôle est petit, la cible est grande : c'est le
+   remplissage qui les sépare. */
 .controle-choix {
   display: inline-flex; align-items: center; gap: var(--esp-3);
   min-height: var(--cible-min); cursor: pointer;
@@ -537,7 +901,8 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 .controle-choix input[type="checkbox"] { border-radius: var(--rayon-champ); }
 .controle-choix input:checked { background: var(--vert-e2); border-color: var(--vert-e2); }
 .controle-choix input:disabled { background: var(--gris-ilot); border-color: var(--gris-500); }
-
+/* L'état coché ne se dit PAS par la seule couleur (SC 1.4.1) : la marque est une
+   forme, tracée à l'encre du bouton plein. */
 .controle-choix input:checked::after {
   content: ""; display: block; height: 100%;
   background: var(--encre-bouton);
@@ -546,10 +911,13 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 }
 .controle-choix input[type="radio"]:checked::after { --marque-cochee: var(--marque-point); }
 .controle-choix input[type="checkbox"]:checked::after { --marque-cochee: var(--marque-coche); }
-
+/* Dialecte B : mêmes règles, angle nul et trait franc. */
 .dialecte-b .controle-choix input { border-color: var(--noir); border-radius: var(--rayon-tuile); }
 .dialecte-b .controle-choix input:checked { background: var(--noir); border-color: var(--noir); }
 
+/* Liste déroulante — le `select` NATIF, habillé. On ne réécrit pas un select :
+   le natif porte le clavier, la recherche à la frappe et le sélecteur du
+   système sur mobile, et aucune réécriture ne les rend tous les trois. */
 .liste-choix {
   appearance: none; width: 100%; min-height: var(--cible-min);
   padding: var(--esp-2) var(--esp-8) var(--esp-2) var(--esp-3);
@@ -563,6 +931,21 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   border-radius: var(--rayon-tuile);
 }
 
+/* 9.6 ÉTATS D'ÉCRAN — VIDE · CHARGEMENT · HORS LIGNE.
+   SC 4.1.3 Status Messages, niveau AA : « les messages d'état peuvent être
+   déterminés par programme au moyen d'un rôle ou de propriétés, de sorte
+   qu'ils soient présentés par les technologies d'assistance SANS recevoir le
+   focus. » Le critère nomme l'indicateur d'occupation, le « aucun résultat »
+   et le compte d'erreurs.
+   → Ces trois blocs portent `role="status"` et `aria-live="polite"`. Le CSS ne
+   peut pas poser un rôle : il est écrit ici pour que personne ne l'oublie.
+
+   ⚠ CONFLIT À CONNAÎTRE. Le §7 coupe TOUTE animation sous
+   `prefers-reduced-motion` — `animation-duration: .01ms !important` sur `*`.
+   Un chargement dont le seul signal est un rond qui tourne devient donc, pour
+   qui a demandé moins de mouvement, un rond IMMOBILE : le signal disparaît
+   entièrement. **Le chargement ne se dit donc jamais par le seul mouvement.**
+   Il porte un mot, et le mouvement n'est qu'un renfort. */
 .etat-ecran {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--esp-3); padding: var(--esp-8) var(--esp-4); text-align: center;
@@ -574,6 +957,7 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 .etat-ecran .ic { width: var(--t-38); height: var(--t-38); stroke-width: var(--trait-icone); }
 .dialecte-b .etat-ecran { border-radius: var(--rayon-tuile); background: var(--gris-ilot); }
 
+/* Chargement — barre DÉTERMINÉE quand la durée est connue, mot toujours. */
 .chargement-barre {
   width: 100%; height: var(--esp-1); background: var(--gris-ilot);
   border-radius: var(--rayon-pilule); overflow: hidden;
@@ -583,24 +967,44 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   transition: width var(--mvt-parcours) var(--courbe-etat);
 }
 
+/* Hors ligne — bandeau persistant, jamais modal, et il ne masque rien.
+   Le jaune de l'échelon 2 porte le noir : 9,50. C'est le meilleur contraste de statut
+   du système, et c'est voulu — l'information la plus dégradante doit être la
+   plus lisible. */
 .bandeau-hors-ligne {
   display: flex; align-items: center; gap: var(--esp-3);
   padding: var(--esp-2) var(--esp-4); min-height: var(--cible-plancher-aa);
-  background: var(--jaune-pur-exempte); color: var(--noir);
+  background: var(--jaune-e2); color: var(--noir);
   font-size: var(--t-14); font-weight: var(--w-bold);
 }
 
+/* 9.7 RÉCAPITULATIF D'ERREURS EN TÊTE DE FORMULAIRE.
+   Patron du GOV.UK Design System, repris tel quel parce qu'il est éprouvé :
+   « mettre le récapitulatif en tête du conteneur `main`, au-dessus du `h1` » ·
+   « déplacer le focus clavier dessus » · « lier chaque erreur à la réponse
+   fautive » · « le titre dit toujours la même chose » · « le libellé du
+   récapitulatif est identique à celui du champ » · « toujours l'afficher, même
+   pour une seule erreur ».
+   Le titre est constant : « Il y a un problème ». SC 4.1.3 impose que le
+   COMPTE soit annoncé — d'où `role="alert"` sur le bloc. */
 .recap-erreurs {
   border: var(--limite-ep-b) solid var(--rouge-e2);
   border-radius: var(--rayon-module);
   padding: var(--esp-4); margin-bottom: var(--esp-6);
-  background: var(--blanc); color: var(--rouge-e2);
+  background: var(--blanc); color: var(--rouge-e2);   /* 8,08 */
 }
 .recap-erreurs h2 { font-size: var(--t-h3); margin: 0 0 var(--esp-2); }
 .recap-erreurs ul { margin: 0; padding-left: var(--esp-4); }
 .recap-erreurs a { color: inherit; text-underline-offset: 3px; }
 .dialecte-b .recap-erreurs { border-radius: var(--rayon-tuile); }
 
+/* 9.8 PANNEAU DE CONFIRMATION.
+   ⚠ NE PAS ÉCRIRE DE COMPOSANT NEUF : `Roots.modale` existe au dépôt, avec son
+   entrée d'historique pour le geste retour et son piège à focus. Le panneau de
+   Un panneau qui se déclare modal doit l'être : le focus n'en sort pas, la
+   touche d'échappement le ferme, et le geste « retour » du téléphone le referme
+   au lieu de quitter la page. Ne pas réécrire ce comportement par écran : seule
+   la peau est posée ici. */
 .panneau-confirmation {
   background: var(--blanc); color: var(--encre);
   border-radius: var(--rayon-carte); padding: var(--esp-6);
@@ -609,7 +1013,9 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 .panneau-confirmation .actions {
   display: flex; gap: var(--esp-3); margin-top: var(--esp-6);
 }
-
+/* L'action qui engage est PLEINE, et il n'y en a qu'une par écran. Celle qui
+   annule est en contour : ce n'est pas une couleur qui les sépare, c'est un
+   poids — la couleur seule ne dit jamais un sens (SC 1.4.1). */
 .panneau-confirmation .secondaire {
   background: transparent; color: var(--encre);
   border: var(--limite-ep-b) solid var(--limite-controle);
@@ -622,10 +1028,15 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   border-radius: var(--rayon-tuile); border-color: var(--noir);
 }
 
+/* 9.9 LES MARQUES DE COCHE — tracées, pas dessinées.
+   Géométrie reprise de Lucide (licence ISC), tracée au trait 2 comme les
+   quatorze icônes du sprite maison. */
 :root {
   --marque-coche: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");
   --marque-point: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='6' fill='black'/></svg>");
 }
+
+/* ---------- 7. ACCESSIBILITÉ — UNIVERSELLE, LES DEUX DIALECTES ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -642,3 +1053,21 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
+
+/* ---------- 8. RÈGLES D'OR (rappel) ----------
+   · LA CLASSE EST L'ÉCHELON, PAS LA TEINTE. Un échelon 1 porte n'importe quel
+     échelon 5 : seize couples, tous au-dessus de 8,0.
+   · DEUX DIALECTES, UN SEUL PAR ÉCRAN. Traversent seuls : le logo, la palette,
+     la sémantique de statut, les polices, le code de confirmation.
+   · ACCESSIBILITÉ ≠ LITTÉRATIE. WCAG partout ; la littératie est une contrainte
+     de POSTE, jamais un attribut de personne.
+   · WCAG 1.4.1 : la couleur n'est jamais le seul canal — icône ou position.
+   · AA est le plancher universel, pas un plafond. AAA sur la lecture longue.
+   · Icônes de marque : extraction verbatim de la planche d'Ame Karaba
+     (187 œuvres, 20 familles — vérifié). Jamais redessinées, jamais sur un
+     bouton d'encaissement. Icônes fonctionnelles : Lucide, jamais mélangées.
+   · Cooper Black : logotypes servant le Café uniquement, jamais en webfont.
+   · MuseoModerno : h1 énergiques seulement — display font qui fatigue en continu.
+   · Prix jamais en rouge ni teinte chaude ; en --encre.
+   · Museo : le nombre du nom commercial n'est pas la graisse CSS.
+   ------------------------------------------------------------- */
