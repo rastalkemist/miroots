@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
+<!-- ============================================================================
+     ROOTS — LES CINQ ICÔNES DE STATUT
+
+     Ce que ce fichier fait : il déclare cinq symboles SVG réutilisables, un par
+     statut de commande. Ils se posent une fois dans la page et s'appellent
+     ensuite par `<use href="#i-st-...">`.
+
+     Ce qu'il exige : être servi dans la page AVANT la première utilisation, et
+     hériter d'une règle qui pose `stroke: currentColor`. Les tracés n'ont
+     aucune couleur propre : ils prennent l'encre de l'élément qui les porte.
+
+     Ce qu'il refuse : servir seul. Une icône ne porte jamais l'information à
+     elle seule — le mot reste le premier canal, l'icône est le second
+     (WCAG SC 1.4.1, niveau A). Une pastille de statut porte les deux.
+
+     Ce qui casserait si on le modifiait : changer `stroke-width` ou le
+     `viewBox` d'un seul symbole désaccorde les cinq entre eux et avec les
+     autres icônes du dépôt, qui sont toutes tracées au trait 2 sur une grille
+     de 24. La géométrie vient de la bibliothèque Lucide (licence ISC).
+     ============================================================================ -->
+
+<!-- EN ATTENTE — l'horloge. Le temps passe et rien n'a encore été fait. -->
+<symbol id="i-st-attente" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 16 14"/>
+</symbol>
+
+<!-- EN PRÉPARATION — la flamme. Quelque chose est en train de se faire. -->
+<symbol id="i-st-preparation" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6
+           .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3
+           a2.5 2.5 0 0 0 2.5 2.5z"/>
+</symbol>
+
+<!-- CONFIRMÉ — la coche cerclée. C'est acquis. -->
+<symbol id="i-st-confirme" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="10"/>
+  <path d="m9 12 2 2 4-4"/>
+</symbol>
+
+<!-- ANNULÉ — la croix cerclée. La forme s'oppose à la coche, et c'est voulu :
+     confirmé et annulé sont les deux seuls statuts que le daltonisme confond
+     (écart mesuré 1,04 en deutéranopie). La FORME les sépare quand la couleur
+     ne le fait plus. -->
+<symbol id="i-st-annule" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="12" cy="12" r="10"/>
+  <path d="m15 9-6 6M9 9l6 6"/>
+</symbol>
+
+<!-- TERMINÉ — le classeur. Ce n'est pas un échec : c'est rangé, et ça recule. -->
+<symbol id="i-st-termine" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="2" y="3" width="20" height="5" rx="1"/>
+  <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/>
+  <path d="M10 12h4"/>
+</symbol>
+</svg>

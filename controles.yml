@@ -1,0 +1,65 @@
+name: Contrôles
+
+# Se déclenche à chaque poussée et à chaque proposition de fusion sur `main`.
+# Le résultat est visible dans l'onglet « Actions » du dépôt : une coche verte
+# ou une croix rouge, sans rien à installer sur un poste.
+#
+# Une croix N'EMPÊCHE PAS la poussée : elle la marque. Ce qui bloque une fusion
+# se règle dans Settings → Branches → Require status checks.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  controles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Le contrôle doit d'abord prouver qu'il voit ce qu'il prétend voir.
+      # Un contrôle qui ne sait plus refuser passe tout en vert.
+      - name: Épreuve du contrôle
+        run: |
+          python ci/verifier.py --epreuve | tee epreuve.txt
+          {
+            echo '## Épreuve du contrôle'
+            echo '```'
+            cat epreuve.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Syntaxe JavaScript
+        run: |
+          set -e
+          n=0
+          for f in $(git ls-files '*.js'); do
+            node --check "$f" && echo "  ✓ $f" || exit 1
+            n=$((n+1))
+          done
+          echo "## Syntaxe JavaScript" >> "$GITHUB_STEP_SUMMARY"
+          echo "$n fichier(s) analysé(s), aucune erreur de syntaxe." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Jetons, couleurs, tailles, commentaires
+        run: |
+          set +e
+          python ci/verifier.py . | tee controles.txt
+          code=${PIPESTATUS[0]}
+          {
+            echo '## Contrôles du dépôt'
+            echo '```'
+            cat controles.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $code

@@ -1,3 +1,9 @@
+/* BANDEAU ROOTS · **RANG : PRODUIT** · **ÉTAT : vivant**
+   PRODUIT — régénérable ; ne se corrige jamais à la main.
+   ⓘ régénéré par le générateur depuis les deux pièces · toute correction se fait sur la pièce ou sur le générateur
+   Le rang vient du registre ; ce bandeau est posé, jamais écrit à la main.
+   FIN BANDEAU */
+
 /* ============================================================================
    ROOTS — JETONS · roots-tokens.css
    Source unique des variables pour le site, la console et les pièces imprimées.
@@ -113,7 +119,9 @@
      hexadécimale. Sans ces triplets, toute couleur employée en transparence
      s'écrit en clair dans la feuille de style : elle échappe alors au contrôle
      et survit à un retrait. Une valeur transparente s'écrit
-     `rgba(var(--vert-e1-rgb), .06)`, jamais `rgba(10, 51, 46, .06)`. */
+     `rgba(var(--jeton-rgb), .06)` — jamais en trois nombres écrits à la main,
+     et un contre-exemple ne se donne pas non plus en clair : une couleur citée
+     dans un commentaire circule comme une couleur. */
   --vert-e1-rgb: 12, 50, 26;
   --vert-e2-rgb: 0, 91, 34;
   --vert-e3-rgb: 18, 133, 63;
@@ -140,14 +148,24 @@
   --blanc-casse-rgb: 253, 251, 246;
   --blanc-rgb: 255, 255, 255;
   --gris-500-rgb: 99, 94, 83;
+  --vert-lavure-rgb: 228, 239, 231;
+  --rouge-lavure-rgb: 251, 234, 231;
+  --module-actif-rgb: 238, 244, 233;
+  --puce-active-rgb: 253, 240, 235;
+  --teinte-ombre-posee-rgb: 60, 50, 30;
+  --teinte-ombre-flottante-rgb: 10, 25, 14;
 
   /* ---- DÉRIVATIONS ----
      Ce ne sont PAS des échelons : ce sont des lavures posées sur le blanc,
      environ un dixième de la couleur. Elles se marquent comme dérivations et
      n'entrent dans aucun calcul de rampe. Un contraste ne se déduit pas d'une
      dérivation : il se mesure. */
-  --vert-lavure: #E4EFE7;    /* fond d'accent d'une pièce fiscale */
-  --rouge-lavure: #FBEAE7;   /* fond d'un message d'indisponibilité */
+  --vert-lavure: #E4EFE7;       /* lavure du vert Roots sur blanc */
+  --rouge-lavure: #FBEAE7;      /* lavure du rouge brique sur blanc */
+  --module-actif: #EEF4E9;      /* fond d'un module sélectionné */
+  --puce-active: #FDF0EB;       /* fond d'une puce sélectionnée */
+  --teinte-ombre-posee: #3C321E;/* teinte de l'ombre d'une carte */
+  --teinte-ombre-flottante: #0A190E;/* teinte de l'ombre d'un élément flottant */
 
   /* ---- TEINTES D'OMBRE ET DE VOILE ----
      Une ombre teintée au noir pur rend un gris sale sur fond blanc : ces deux
@@ -338,8 +356,8 @@
 
   /* OMBRES. Deux seulement : une ombre et sa version sombre. Aucune ombre en
      dialecte B, aucune sur une pièce imprimée — un flou se trame et se salit. */
-  --ombre-posee: 0 10px 30px rgba(60, 50, 30, 0.10);      /* une carte sur la page */
-  --ombre-flottante: 0 10px 30px rgba(10, 25, 14, 0.35);  /* au-dessus de tout */
+  --ombre-posee: 0 10px 30px rgba(var(--teinte-ombre-posee-rgb), 0.10);
+  --ombre-flottante: 0 10px 30px rgba(var(--teinte-ombre-flottante-rgb), 0.35);
   --ombre-carte: var(--ombre-posee);                      /* alias transitoire */
 
   /* CIBLES TACTILES. Le plancher normatif est SC 2.5.8 (AA), 24 × 24 px CSS ;
@@ -443,7 +461,7 @@
    bandeaux, fonds éditoriaux, pavés de couleur. */
 :root {
   --encre-bouton: var(--blanc);
-  --vert-selection: rgba(0, 91, 34, .08);  /* sélection — vert Roots é2 à 8 % */
+  --vert-selection: rgba(var(--vert-e2-rgb), .08);
 }
 
 /* ---------- 4. TABLE D'ENCRE — DIALECTE B ----------
@@ -524,13 +542,13 @@
 
 .module-a { background: var(--creme); border: 2px solid transparent;
             border-radius: var(--rayon-module); cursor: pointer; }
-.module-a.actif { border-color: var(--vert-e2); background: #EEF4E9; }
+.module-a.actif { border-color: var(--vert-e2); background: var(--module-actif); }
 
 .chip { background: var(--creme); border: 2px solid transparent;
         border-radius: var(--rayon-pilule); padding: 9px 15px;
         font-size: var(--t-sm);
         cursor: pointer; min-height: var(--cible-min); }
-.chip.actif { border-color: var(--terre-e3); background: #FDF0EB; }
+.chip.actif { border-color: var(--terre-e3); background: var(--puce-active); }
 
 .champ-saisie {
   background: var(--creme); border: 1.5px solid transparent;
@@ -767,8 +785,14 @@
      recouvrir entièrement l'élément qui reçoit le focus ; la parade est le
      `scroll-padding` posé plus bas. ⚠ Sans lui, l'anneau existe et n'est
      joignable que par chance. */
-  --focus-degagement-haut: calc(var(--entete-h, 68px) + var(--esp-3));
-  --focus-degagement-bas: calc(var(--barre-h, 72px) + var(--esp-3));
+  /* Hauteurs du chrome collant. Elles appartiennent à la surface qui les
+     dessine et se redéclarent chez elle ; les valeurs posées ici sont le
+     défaut, et elles existent sous un nom pour qu'aucun nombre ne vive à
+     l'intérieur d'un `calc()`. */
+  --entete-h: 68px;
+  --barre-h: 72px;
+  --focus-degagement-haut: calc(var(--entete-h) + var(--esp-3));
+  --focus-degagement-bas: calc(var(--barre-h) + var(--esp-3));
 
   /* Trois noms de durée par ce qu'ils SERVENT — un changement sur place, une
      apparition, un parcours — posés sur l'échelle des durées. */
