@@ -154,13 +154,13 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .ankh-home svg{width:44px;height:44px;display:block}
 .toggle{position:relative;display:flex;align-items:center;height:44px;max-width:44px;overflow:hidden;cursor:pointer;background:var(--roots-vert);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--roots-vert),0 3px 10px rgba(var(--vert-e2-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
 .toggle.ouvert{max-width:300px;transition:max-width var(--mvt-parcours) var(--courbe-entree)}
-.toggle .mot{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-eclat);font-weight:700;font-size:var(--t-h3);color:var(--blanc);line-height:1}
+.toggle .mot{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--blanc);line-height:1}
 .toggle .reste{display:flex;align-items:center;gap:8px;padding-right:14px;flex-shrink:0}
 .reste .sub{font-size:var(--t-label);color:var(--blanc);font-style:italic}
 .switch{width:42px;height:22px;border-radius:var(--rayon-pilule);background:rgba(var(--blanc-casse-rgb),.20);border:1px solid rgba(var(--blanc-casse-rgb),.3);position:relative;cursor:pointer;flex-shrink:0}
 .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--blanc);transition:left var(--mvt-etat) var(--courbe-etat)}
 .reste .nu{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-body);color:var(--blanc)}
-.chrome-titre{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-h3);color:var(--roots-vert);letter-spacing:.01em}
+.chrome-titre{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--roots-vert);letter-spacing:.01em}
 .chrome-droite{display:flex;align-items:center;gap:8px}
 .lang-btn{height:44px;min-width:44px;padding:0 4px;border:none;background:none;color:var(--roots-vert);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer}
 .chrome-burger{width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--encre)}
@@ -242,7 +242,7 @@ body[data-surface="ambiante"] .toast{bottom:calc(156px + var(--safe-bas));z-inde
 .bandeau-etiquette{flex:none;border-radius:var(--rayon-pilule);padding:2px var(--esp-3);background:var(--encre);color:var(--encre-bouton);font-size:var(--t-label);line-height:var(--lh-12);font-weight:var(--w-bold);letter-spacing:.07em}
 /* Un exemple de format se DIT au lecteur d'ecran : un indice de saisie ne porte
    aucun nom accessible et disparait a la frappe. */
-.aide-champ{display:block;margin-top:var(--esp-1);color:var(--encre);font-size:var(--t-label);line-height:var(--lh-12)}
+.aide-champ{display:block;margin-top:var(--esp-1);color:var(--encre);font-size:var(--t-note);line-height:var(--lh-12)}
 /* Sur la surface ambiante, et la seule, l'en-tete quitte le flux : le bandeau
    passerait dessous et l'effacerait. L'ecart se DERIVE de la hauteur d'en-tete
    ambiante, declaree a cote de la regle qui la produit. */
@@ -277,7 +277,7 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .cache{display:none}
 .erreur{font-weight:700;line-height:1.4;font-size:var(--t-sm);color:var(--rouge-e2);text-align:center}
 .erreur.visible{display:block}
-.mention{margin-top:10px;color:var(--encre-discrete);font-size:var(--t-sm);text-align:center}
+.mention{margin-top:10px;color:var(--encre-discrete);font-size:var(--t-note);text-align:center}
 .vide-menu{color:var(--encre-discrete);font-size:var(--t-sm)}
 .conf-titre{margin:0;font-size:var(--t-body);font-weight:700}
 .code{letter-spacing:.13em;color:var(--roots-vert);font-weight:700;font-family:var(--font-chiffres);font-size:var(--t-code);margin:8px 0}
@@ -429,7 +429,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .article{background:var(--blanc);border-radius:var(--rayon-module);padding:14px 15px;margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:center;box-shadow:var(--ombre-2)}
 :where(body.p-carte) .article .infos{flex:1}
 :where(body.p-carte) .article .nom{font-size:var(--t-sm);font-weight:700}
-:where(body.p-carte) .article .desc{font-size:var(--t-sm);color:var(--encre-chaude);margin-top:3px;line-height:1.4;font-family:var(--font-lecture);font-weight:300}
+:where(body.p-carte) .article .desc{font-size:var(--t-note);color:var(--terre-e3);margin-top:3px;line-height:1.4;font-family:var(--font-lecture);font-weight:300}
 :where(body.p-carte) .article .prix{font-size:var(--t-sm);font-weight:700;color:var(--encre);margin-top:5px;font-family:var(--font-chiffres)}
 :where(body.p-carte) .article.rupture{box-shadow:none;background:transparent;border:1px dashed var(--gris-service)}
 :where(body.p-carte) .article.rupture .infos{opacity:.55}
@@ -522,14 +522,42 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    publique : la page se lit d'un bout a l'autre. La mesure se compte en
    signes et non en pixels — la colonne est exprimee dans la police de lecture,
    ce qui la tient entre 65 et 75 signes des que l'ecran le permet. */
+/* Reglage de taille de la lecture longue : le facteur multiplie TOUT le registre
+   editorial, pas le seul corps. Les rapports entre niveaux sont la raison d'etre
+   de l'echelle ; n'agrandir que le corps les detruirait. Le facteur par defaut
+   vaut 1, donc la colonne rend a l'identique sans le script. La commande exige
+   deux cibles de 44 px : les reduire fait tomber le critere de taille de cible. */
+.lecture-longue{--zoom-lecture:1;
+  --t-ll-titre:calc(var(--t-68) * var(--zoom-lecture));
+  --t-ll-intertitre:calc(var(--t-42) * var(--zoom-lecture));
+  --t-ll-chapo:calc(var(--t-26) * var(--zoom-lecture));
+  --t-ll-h4:calc(var(--t-20) * var(--zoom-lecture));
+  --t-ll-h5:calc(var(--t-16) * var(--zoom-lecture));
+  --t-ll-h6:calc(var(--t-16) * var(--zoom-lecture));
+  --t-ll-corps:calc(var(--t-16) * var(--zoom-lecture));
+  --t-ll-note:calc(var(--t-12) * var(--zoom-lecture))}
+.regle-taille{position:sticky;top:var(--esp-2);z-index:4;display:flex;align-items:center;justify-content:flex-end;gap:var(--esp-2);margin:0 0 var(--air-separe)}
+.regle-taille button{width:var(--cible-min);height:var(--cible-min);flex-shrink:0;border:1px solid var(--gris-service);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--encre);font-family:var(--font-corps);font-size:var(--t-ll-h5);line-height:1;cursor:pointer}
+.regle-taille button:disabled{color:var(--encre-discrete);cursor:default}
+.regle-taille .etat{font-family:var(--font-corps);font-size:var(--t-note);color:var(--encre-discrete);font-variant-numeric:tabular-nums;min-width:6ch;text-align:center}
 :where(body.p-confidentialite) .lecture{width:var(--site-w);max-width:54ch;margin:0 auto;padding:20px 0 0;font-family:var(--font-lecture);font-size:var(--t-ll-corps)}
-:where(body.p-confidentialite) .lecture h1{font-family:var(--font-lecture);font-weight:100;font-size:var(--t-ll-titre);line-height:var(--lh-68);margin:0 0 var(--ll-rythme);color:var(--encre);text-wrap:balance}
+:where(body.p-confidentialite) .lecture h1{font-family:var(--font-lecture);font-weight:var(--w-ll-h1);font-size:var(--t-ll-titre);line-height:var(--lh-68);margin:0 0 var(--ll-rythme);color:var(--encre-ll-h1);text-wrap:balance}
 :where(body.p-confidentialite) .lecture .chapo{font-family:var(--font-chiffres);font-style:italic;font-weight:700;font-size:var(--t-ll-chapo);line-height:1.35;color:var(--encre);margin:0 0 var(--ll-demi);text-wrap:balance}
 :where(body.p-confidentialite) .lecture .version{font-family:var(--font-corps);font-size:var(--t-ll-note);font-weight:700;text-transform:uppercase;letter-spacing:.07em;line-height:1.45;color:var(--encre-discrete);margin:0 0 calc(var(--ll-demi) * 3)}
-:where(body.p-confidentialite) .lecture h2{font-family:var(--font-corps);font-weight:700;font-size:var(--t-ll-intertitre);line-height:1.2;margin:calc(var(--ll-demi) * 4) 0 var(--ll-demi);color:var(--encre);text-wrap:balance}
-:where(body.p-confidentialite) .lecture p{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-lecture-ecran);color:var(--encre);margin:0 0 var(--ll-demi);text-wrap:pretty}
+:where(body.p-confidentialite) .lecture h2{font-family:var(--font-corps);font-weight:var(--w-ll-h2);font-size:var(--t-ll-intertitre);line-height:var(--lh-42);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h2);text-wrap:balance}
+/* Niveaux 3 a 6 de la lecture longue. Taille, graisse, casse, style et encre
+   sortent tous d'un jeton : aucune valeur ne s'ecrit ici. h4 et h6 portent une
+   encre d'accent ; a 16 px en graisse 300, h6 compte comme du texte courant et
+   exige 4,5:1. Il ne tient ce rapport que sur blanc et blanc casse. Poser une
+   page de lecture longue sur creme ou sur un aplat gris casse ce rapport : sur
+   ces fonds l'accent redescend d'un echelon. */
+:where(body.p-confidentialite) .lecture h3{font-family:var(--font-corps);font-weight:var(--w-ll-h3);font-size:var(--t-ll-chapo);line-height:var(--lh-26);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h3);text-wrap:balance}
+:where(body.p-confidentialite) .lecture h4{font-family:var(--font-corps);font-weight:var(--w-ll-h4);font-size:var(--t-ll-h4);line-height:var(--lh-20);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h4);text-wrap:balance}
+:where(body.p-confidentialite) .lecture h5{font-family:var(--font-corps);font-weight:var(--w-ll-h5);font-size:var(--t-ll-h5);line-height:var(--lh-16);text-transform:var(--casse-ll-h5);letter-spacing:var(--lettrage-ll-h5);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h5)}
+:where(body.p-confidentialite) .lecture h6{font-family:var(--font-corps);font-weight:var(--w-ll-h6);font-size:var(--t-ll-h6);line-height:var(--lh-16);font-style:var(--style-ll-h6);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h6)}
+:where(body.p-confidentialite) .lecture p{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-prose);color:var(--encre);margin:0 0 var(--air-separe);text-wrap:pretty}
 :where(body.p-confidentialite) .lecture ul{margin:0 0 var(--ll-demi);padding-left:20px}
-:where(body.p-confidentialite) .lecture li{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-lecture-ecran);color:var(--encre);margin:0 0 var(--ll-demi);text-wrap:pretty}
+:where(body.p-confidentialite) .lecture li{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-item);color:var(--encre);margin:0 0 var(--air-lie);text-wrap:pretty}
 :where(body.p-confidentialite) .lecture li:last-child{margin-bottom:0}
 :where(body.p-confidentialite) .lecture strong{font-weight:700}
 :where(body.p-confidentialite) .lecture a{color:var(--roots-vert);text-underline-offset:3px}

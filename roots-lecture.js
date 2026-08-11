@@ -5,8 +5,8 @@
    Exige un conteneur `.lecture-longue` et une commande `.regle-taille`. */
 (function () {
   'use strict';
-  var CRANS = [1, 1.1026, 1.2051, 1.3077, 1.4103];   // (13 + n x 1.3333) / 13
-  var CORPS = ['9,75', '10,75', '11,75', '12,75', '13,75'];  // en points
+  var CRANS = [1, 1.0833, 1.1667, 1.25, 1.3333];   // (12 + n) / 12, en points
+  var CORPS = ['12', '13', '14', '15', '16'];  // en points
   var CLE = 'roots.lecture.cran';
 
   function poser(zone, n) {

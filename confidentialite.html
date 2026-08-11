@@ -16,6 +16,7 @@
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
 <script src="roots-db.js"></script>
 <script src="roots.js"></script>
+<script src="roots-lecture.js" defer></script>
 </head>
 <body class="p-confidentialite" data-surface="claire">
 <script>Roots.sprite()</script>
@@ -45,7 +46,13 @@
   </div>
 </header>
 
-<div id="contenu" class="lecture">
+<div id="contenu" class="lecture lecture-longue">
+<div class="regle-taille" role="group" aria-label="Taille du texte">
+  <button type="button" data-taille="moins" aria-label="Réduire la taille du texte">−</button>
+  <span class="etat" aria-live="polite">12 pt</span>
+  <button type="button" data-taille="plus" aria-label="Augmenter la taille du texte">+</button>
+</div>
+
 
 <div class="texte" data-langue="fr">
 <h1>Politique de confidentialité</h1>
