@@ -282,6 +282,9 @@
   --w-ll-h6: 300;
   --style-ll-h6: italic;
   --encre-ll-h6: var(--vert-e3);
+  --w-ll-chapo: 700;
+  --style-ll-chapo: italic;
+  --encre-ll-chapo: var(--vert-e3);
 
   --t-saisie: var(--t-16);   /* comportement observe de Safari iOS, sans specification publiee ; l'autre correctif viole SC 1.4.4 (AA) */
 

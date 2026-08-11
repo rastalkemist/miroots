@@ -524,7 +524,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    ce qui la tient entre 65 et 75 signes des que l'ecran le permet. */
 :where(body.p-confidentialite) .lecture{width:var(--site-w);max-width:54ch;margin:0 auto;padding:20px 0 0;font-family:var(--font-lecture);font-size:var(--t-ll-corps)}
 :where(body.p-confidentialite) .lecture h1{font-family:var(--font-lecture);font-weight:var(--w-ll-h1);margin:0 0 var(--ll-rythme);color:var(--encre-ll-h1);text-wrap:balance}
-:where(body.p-confidentialite) .lecture .chapo{font-family:var(--font-chiffres);font-style:italic;font-weight:700;font-size:var(--t-ll-chapo);line-height:1.35;color:var(--encre);margin:0 0 var(--ll-demi);text-wrap:balance}
+:where(body.p-confidentialite) .lecture .chapo{font-family:var(--font-chiffres);font-style:var(--style-ll-chapo);font-weight:var(--w-ll-chapo);font-size:var(--t-ll-chapo);line-height:var(--lh-26);color:var(--encre-ll-chapo);margin:0 0 var(--air-lie);text-wrap:balance}
 :where(body.p-confidentialite) .lecture .version{font-family:var(--font-corps);font-size:var(--t-ll-note);font-weight:700;text-transform:uppercase;letter-spacing:.07em;line-height:1.45;color:var(--encre-discrete);margin:0 0 calc(var(--ll-demi) * 3)}
 :where(body.p-confidentialite) .lecture h2{font-family:var(--font-corps);font-weight:var(--w-ll-h2);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h2);text-wrap:balance}
 /* h6 accentue est du texte courant : 16 px en graisse 300 exige 4,5:1. L'accent
