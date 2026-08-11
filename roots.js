@@ -114,12 +114,12 @@
      portaient le conteneur du tiroir sans aucune liste, donc un tiroir
      vide. Ajouter un ecran se fait desormais ICI, et nulle part ailleurs.
 
-     L'ecran courant se retire tout seul de la liste : inutile de proposer
-     d'aller ou l'on est. La regle est mecanique et tient en une ligne —
-     on retire l'entree dont le chemin est celui de la page ET qui ne
-     porte pas de parametre. Un lien vers soi AVEC parametre est une
-     action, pas une navigation : « Reserver un espace » ouvre la feuille
-     depuis l'accueil et doit donc y rester.
+     LA LISTE NE CHANGE PAS D'UN ECRAN A L'AUTRE. Une navigation repetee
+     doit apparaitre dans le meme ordre sur chaque page — WCAG 3.2.3,
+     niveau AA. L'entree de la page courante n'est donc pas retiree : elle
+     est MARQUEE, par aria-current et par une classe. Retirer l'entree
+     ferait changer la forme du menu d'un ecran a l'autre, ce qui desoriente
+     et prive le lecteur d'ecran de sa position.
      ------------------------------------------------------------------ */
   var NAV = {
     fr: [
@@ -134,10 +134,17 @@
     ]
   };
 
+  function ici() { return location.pathname.split('/').pop() || 'index.html'; }
+
   function nav(langue) {
-    var ici = location.pathname.split('/').pop() || 'index.html';
-    return (NAV[langue] || NAV.fr).filter(function (e) {
-      return e.href.indexOf('?') !== -1 || e.href !== ici;
+    var page = ici();
+    return (NAV[langue] || NAV.fr).map(function (e) {
+      var copie = { ico: e.ico, t: e.t, s: e.s, href: e.href };
+      /* Un lien vers soi AVEC parametre est une action et non une navigation :
+         « Reserver un espace » ouvre la feuille depuis l'accueil, il ne s'y
+         marque donc pas comme page courante. */
+      copie.courant = e.href.indexOf('?') === -1 && e.href === page;
+      return copie;
     });
   }
 
@@ -224,18 +231,20 @@
           '<svg class="i fleche"><use href="#i-chevron"/></svg>';
         a.querySelector('.t').textContent = s.t;
         a.querySelector('small').textContent = s.s;
+        if (s.courant) { a.classList.add('courant'); a.setAttribute('aria-current', 'page'); }
         cont.appendChild(a);
       });
       /* Les mentions légales ferment le menu, en second niveau : une ligne
          soulignée, pas une entrée de navigation. */
-      /* On est deja sur les mentions : ne pas s'y proposer soi-meme. Meme
-         regle que pour les entrees de navigation, appliquee au pied. */
-      if ((location.pathname.split('/').pop() || '') === 'confidentialite.html') return;
       var pied = document.createElement('div');
       pied.className = 'mentions';
       var lien = document.createElement('a');
       lien.href = 'confidentialite.html';
       lien.textContent = MENTIONS[getLangue()] || MENTIONS.fr;
+      if (ici() === 'confidentialite.html') {
+        lien.classList.add('courant');
+        lien.setAttribute('aria-current', 'page');
+      }
       pied.appendChild(lien);
       cont.appendChild(pied);
     }
@@ -384,10 +393,209 @@
     };
   }
 
+  /* ------------------------------------------------------------------
+     LA HAUTEUR REELLE DU BANDEAU, PUBLIEE.
+     Elle depend du contenu de l'en-tete et non de l'echelle : elle ne peut
+     donc pas vivre dans les jetons. Une regle qui veut coller un element
+     sous le bandeau lit --chrome-haut-h ; sans elle, l'element passe
+     DERRIERE le bandeau, qui est collant et d'un rang superieur.
+     ------------------------------------------------------------------ */
+  function publierHauteurChrome() {
+    var h = document.querySelector('.chrome-haut');
+    if (!h) return;
+    function poser() {
+      document.documentElement.style.setProperty(
+        '--chrome-haut-h', Math.round(h.getBoundingClientRect().height) + 'px');
+    }
+    poser();
+    if (window.ResizeObserver) new ResizeObserver(poser).observe(h);
+    else window.addEventListener('resize', poser);
+  }
+
+  /* ------------------------------------------------------------------
+     LA FEUILLE DU BAS SE FERME EN LA TIRANT.
+     Le geste ne demarre QUE si la feuille est deja en haut de son propre
+     defilement : sinon il se battrait avec le defilement du contenu, et
+     c'est le defilement qui doit gagner. Il ne demarre pas depuis un champ
+     ni depuis une commande.
+     Au-dela du seuil, la fermeture n'est pas reecrite ici : on declenche le
+     bouton de fermeture existant, qui porte deja tout ce qu'elle doit
+     faire. Deux chemins de fermeture seraient deux verites.
+     Qui a demande moins de mouvement ne recoit pas d'animation de retour.
+     ------------------------------------------------------------------ */
+  var SEUIL_FERMETURE = 110;
+
+  function feuilleGlissante() {
+    var f = document.querySelector('.feuille-bas');
+    if (!f) return;
+    var prise = f.querySelector('.poignee'), tete = f.querySelector('.tete');
+    var fermer = f.querySelector('.fermer');
+    if (!prise || !fermer) return;
+    var y0 = null, dy = 0, transition = f.style.transition;
+    var doux = !window.matchMedia || !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function debut(e) {
+      if (f.scrollTop > 0) return;
+      var c = e.target;
+      if (c && c.closest && c.closest('input, textarea, select, button, a')) return;
+      y0 = e.touches ? e.touches[0].clientY : e.clientY;
+      dy = 0;
+      f.style.transition = 'none';
+    }
+    function bouge(e) {
+      if (y0 === null) return;
+      var y = e.touches ? e.touches[0].clientY : e.clientY;
+      dy = Math.max(0, y - y0);
+      if (dy > 4 && e.cancelable) e.preventDefault();
+      f.style.transform = 'translate(-50%, ' + dy + 'px)';
+    }
+    function fin() {
+      if (y0 === null) return;
+      var franchi = dy > SEUIL_FERMETURE;
+      y0 = null;
+      f.style.transition = doux ? transition : 'none';
+      f.style.transform = '';
+      if (franchi) fermer.click();
+    }
+
+    [prise, tete].forEach(function (zone) {
+      if (!zone) return;
+      zone.addEventListener('touchstart', debut, { passive: true });
+      zone.addEventListener('mousedown', debut);
+    });
+    f.addEventListener('touchmove', bouge, { passive: false });
+    f.addEventListener('touchend', fin);
+    f.addEventListener('touchcancel', fin);
+    window.addEventListener('mousemove', bouge);
+    window.addEventListener('mouseup', fin);
+  }
+
+  /* Les deux gestes du code s'accrochent d'eux-memes a tout element portant
+     data-code-copier ou data-code-cartel. L'ecran n'a donc qu'a poser le
+     balisage : aucun script d'ecran a modifier, aucun condensat a recalculer.
+     La source du code est l'element designe par data-code-source. */
+  function accrocherGestesDuCode() {
+    function lire(b) {
+      var src = document.getElementById(b.getAttribute('data-code-source'));
+      return src ? (src.textContent || '').trim() : '';
+    }
+    function dire(b, mot) {
+      var avant = b.getAttribute('data-libelle') || b.textContent;
+      b.setAttribute('data-libelle', avant);
+      b.textContent = mot;
+      setTimeout(function () { b.textContent = avant; }, 1800);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-code-copier]'), function (b) {
+      b.addEventListener('click', function () {
+        var code = lire(b);
+        if (!code) return;
+        copier(code, function (ok) { dire(b, ok ? b.getAttribute('data-fait') || 'Copié' : '…'); });
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-code-cartel]'), function (b) {
+      b.addEventListener('click', function () {
+        var code = lire(b);
+        if (!code) return;
+        var lignes = (b.getAttribute('data-lignes') || '').split('|').filter(Boolean);
+        cartel({ code: code, titre: b.getAttribute('data-titre') || 'Roots',
+                 lignes: lignes, nomFichier: 'roots-' + code });
+      });
+    });
+  }
+
+  window.addEventListener('load', function () {
+    publierHauteurChrome();
+    feuilleGlissante();
+    accrocherGestesDuCode();
+  });
+
+  /* ------------------------------------------------------------------
+     LE CODE : LE COPIER, ET L'EMPORTER EN IMAGE.
+     Le client perd son code parce qu'il ne lui est donne qu'aux moments ou
+     il pense a autre chose. Deux gestes, et deux seulement.
+
+     LE CARTEL NE PORTE QUE LE CODE ET SON CONTEXTE. Jamais le numero de
+     telephone, jamais le montant. Le code seul n'ouvre rien — c'est le
+     couple code + numero qui ouvre une vente. Un cartel portant les deux
+     transformerait une image partagee par megarde en cle complete.
+     ------------------------------------------------------------------ */
+  function copier(texte, surFait) {
+    function fini(ok) { if (surFait) surFait(ok); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(texte).then(function () { fini(true); },
+                                               function () { fini(false); });
+      return;
+    }
+    /* Repli pour les navigateurs sans presse-papiers : une zone hors ecran,
+       selectionnee puis copiee. Elle est retiree dans tous les cas. */
+    var z = document.createElement('textarea');
+    z.value = texte;
+    z.setAttribute('readonly', '');
+    z.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+    document.body.appendChild(z);
+    z.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(z);
+    fini(ok);
+  }
+
+  var CARTEL = { l: 640, h: 400 };
+
+  /* opts : { code, titre, lignes: [..], nomFichier }
+     Le dessin se fait dans le navigateur : rien ne part, rien n'est demande
+     a un serveur. Les couleurs se lisent sur les jetons servis, pour qu'une
+     correction de palette suive sans retoucher ce code. */
+  function cartel(opts, surFait) {
+    var jeton = function (n, repli) {
+      var v = getComputedStyle(document.documentElement).getPropertyValue(n);
+      return (v && v.trim()) || repli;
+    };
+    var c = document.createElement('canvas');
+    var e = Math.min(3, window.devicePixelRatio || 1);
+    c.width = CARTEL.l * e; c.height = CARTEL.h * e;
+    var x = c.getContext('2d');
+    if (!x) { if (surFait) surFait(false); return; }
+    x.scale(e, e);
+
+    x.fillStyle = jeton('--blanc-casse', '#FDFBF6');
+    x.fillRect(0, 0, CARTEL.l, CARTEL.h);
+    x.fillStyle = jeton('--roots-vert', '#005B22');
+    x.fillRect(0, 0, CARTEL.l, 10);
+
+    x.textAlign = 'center';
+    x.fillStyle = jeton('--encre-discrete', '#635E53');
+    x.font = '600 20px system-ui, sans-serif';
+    x.fillText((opts.titre || 'Roots').toUpperCase(), CARTEL.l / 2, 74);
+
+    x.fillStyle = jeton('--encre', '#0C321A');
+    x.font = '700 84px ui-monospace, Menlo, Consolas, monospace';
+    x.fillText(String(opts.code || ''), CARTEL.l / 2, 186);
+
+    x.font = '400 22px system-ui, sans-serif';
+    (opts.lignes || []).slice(0, 3).forEach(function (l, i) {
+      x.fillText(String(l), CARTEL.l / 2, 240 + i * 34);
+    });
+
+    x.fillStyle = jeton('--encre-discrete', '#635E53');
+    x.font = '400 18px system-ui, sans-serif';
+    x.fillText('mi.roots.bj', CARTEL.l / 2, CARTEL.h - 30);
+
+    try {
+      var a = document.createElement('a');
+      a.href = c.toDataURL('image/png');
+      a.download = (opts.nomFichier || 'code-roots') + '.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      if (surFait) surFait(true);
+    } catch (err) { if (surFait) surFait(false); }
+  }
+
   global.Roots.garde = garde;
   global.Roots.initTelRoots = initTelRoots;
   global.Roots.initChrome = initChrome;
   global.Roots.nav = nav;
+  global.Roots.copier = copier;
+  global.Roots.cartel = cartel;
   global.Roots.modale = modale;
   global.Roots.langueRetenue = langueRetenue;
   global.Roots.retenirLangue = retenirLangue;

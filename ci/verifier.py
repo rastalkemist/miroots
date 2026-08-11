@@ -193,7 +193,8 @@ def controle_e(d, dire, mal):
         if r >= len(rendu):
             ecarts.append(f"{nom} manque dans les jetons")
         elif rendu[r] != valeur:
-            ecarts.append(f"{nom} vaut « {rendu[r]} » au lieu de « {valeur} »")
+            ecarts.append(f"{nom} — les jetons portent « {rendu[r]} », "
+                          f"l'empreinte « {valeur} »")
     surplus = sum(len(v) for v in vues.values()) - attendu
     dire(f"E · empreinte : {attendu} déclarations attendues · "
          f"{len(ecarts)} divergence(s) · {surplus} déclaration(s) en trop")
@@ -202,8 +203,20 @@ def controle_e(d, dire, mal):
     if len(ecarts) > 8:
         mal(f"E · et {len(ecarts) - 8} autre(s) divergence(s)")
     if surplus > 0:
-        mal(f"E · {surplus} déclaration(s) absente(s) de l'empreinte — "
-            f"le fichier a été enrichi sans être regénéré")
+        mal(f"E · {surplus} déclaration(s) des jetons ne figurent pas "
+            f"à l'empreinte")
+    if ecarts or surplus:
+        # Les deux cotes sont produits ensemble. Un ecart dit qu'ils ne l'ont
+        # pas ete, sans dire lequel a bouge : jetons retouches a la main, ou
+        # empreinte non livree avec eux. Nommer une cause ici ferait diagnostiquer
+        # a la place du lecteur, sur une information que ce controle n'a pas.
+        dire("  ⓘ L'empreinte n'est pas la référence des valeurs : c'est le "
+             "sceau des jetons,")
+        dire("    posé au même moment qu'eux. Un écart dit qu'ils ont été "
+             "séparés — il ne dit")
+        dire("    pas lequel des deux a raison. Les deux se corrigent en "
+             "regénérant, jamais")
+        dire("    en éditant, et les deux fichiers se livrent ensemble.")
 
 
 def epreuve():

@@ -1,9 +1,3 @@
-# BANDEAU ROOTS · **RANG : PRODUIT** · **ÉTAT : vivant**
-# PRODUIT — régénérable ; ne se corrige jamais à la main.
-# ⓘ le sceau du fichier de jetons · produit avec lui · toute retouche fait refuser la poussée
-# Le rang vient du registre ; ce bandeau est posé, jamais écrit à la main.
-# FIN BANDEAU
-
 # Empreinte du fichier de jetons.
 # Un nom, une valeur. Aucune provenance : ce fichier est publiable,
 # la piece dont il descend ne l'est pas.
@@ -49,8 +43,9 @@ jeton,rang,valeur
 --encre-e4,0,var(--noir)
 --encre-e5,0,var(--noir)
 --encre-jaune,0,var(--noir)
---encre-ll-h1,0,var(--vert-e3)
---encre-ll-h2,0,var(--encre)
+--encre-ll-chapo,0,var(--vert-e3)
+--encre-ll-h1,0,var(--encre)
+--encre-ll-h2,0,var(--vert-e3)
 --encre-ll-h3,0,var(--encre)
 --encre-ll-h4,0,var(--vert-e3)
 --encre-ll-h5,0,var(--encre)
@@ -185,6 +180,7 @@ jeton,rang,valeur
 --statut-en-attente,0,var(--jaune-e2)
 --statut-en-preparation,0,var(--terre-e3)
 --statut-termine,0,var(--gris-500)
+--style-ll-chapo,0,italic
 --style-ll-h6,0,italic
 --t-10,0,10px
 --t-12,0,12px
@@ -235,9 +231,9 @@ jeton,rang,valeur
 --t-ll-h4,0,var(--t-20)
 --t-ll-h5,0,var(--t-16)
 --t-ll-h6,0,var(--t-16)
---t-ll-intertitre,0,var(--t-42)
+--t-ll-intertitre,0,var(--t-33)
 --t-ll-intertitre,1,var(--t-26)
---t-ll-intertitre,2,var(--t-42)
+--t-ll-intertitre,2,var(--t-33)
 --t-ll-note,0,var(--t-12)
 --t-ll-titre,0,var(--t-68)
 --t-ll-titre,1,var(--t-42)
@@ -306,6 +302,7 @@ jeton,rang,valeur
 --w-bold,0,700
 --w-lecture,0,300
 --w-light,0,300
+--w-ll-chapo,0,700
 --w-ll-h1,0,100
 --w-ll-h2,0,500
 --w-ll-h3,0,700

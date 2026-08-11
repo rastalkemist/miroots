@@ -25,7 +25,18 @@
 <header class="chrome-haut">
   <div class="chrome-inner">
     <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
-    <div class="centre"><a class="chrome-titre" id="titreExp" href="index.html">Roots</a></div>
+    <div class="centre">
+    <div class="toggle" id="marque">
+      <span class="mot" id="motMode">Mi</span>
+      <span class="reste">
+        <span class="sub">(solo)</span>
+        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+        <span class="sub">(social)</span>
+        <span class="nu">NU</span>
+      </span>
+    </div>
+    <a class="chrome-titre" id="titreExp" href="index.html">Roots</a>
+    </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
@@ -65,7 +76,6 @@
 <div class="menu-pop" id="drawer">
   <div class="poignee"></div>
   <div id="sections"></div>
-  <a class="consent-lien" href="confidentialite.html" data-t="politique">Politique de confidentialité</a>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

@@ -509,11 +509,6 @@ window.Roots = window.Roots || {};
       return appeler('ouvrir_service_caisse', { p_coupures: coupures });
     },
 
-    montantDuPaiement: function (type, id, objet) {
-      return appeler('montant_du_paiement', {
-        p_cible_type: type, p_cible_id: id, p_objet: objet || 'total'
-      });
-    },
 
     monnaieARendre: function (du, recu) {
       return appeler('monnaie_a_rendre', { p_du: du, p_recu: recu });

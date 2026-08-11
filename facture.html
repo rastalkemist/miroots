@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-civo9irDQS1ztBQ/ufNn5zPM4i2m9GUbUjuJbtAFc9k='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-z76paxlhVPTl2secgo6sPUMLGHLPXW1FB3e2om4Su7c='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -26,7 +26,18 @@
 <header class="chrome-haut">
   <div class="chrome-inner">
     <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
-    <div class="centre"><a class="chrome-titre" id="titreExp" href="index.html">Roots</a></div>
+    <div class="centre">
+    <div class="toggle" id="marque">
+      <span class="mot" id="motMode">Mi</span>
+      <span class="reste">
+        <span class="sub">(solo)</span>
+        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+        <span class="sub">(social)</span>
+        <span class="nu">NU</span>
+      </span>
+    </div>
+    <a class="chrome-titre" id="titreExp" href="index.html">Roots</a>
+    </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
@@ -62,7 +73,6 @@
 <div class="menu-pop" id="drawer">
   <div class="poignee"></div>
   <div id="sections"></div>
-  <a class="consent-lien" href="confidentialite.html" data-t="politique">Politique de confidentialité</a>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -91,6 +101,7 @@
       politique: 'Politique de confidentialité',
       essai: 'Pièce d’essai — émise sur la plateforme de test de la DGI. Elle n’a pas de valeur fiscale.',
       verifier: 'Vérifier cette pièce',
+      refAchat: 'Réf. achat',
       retrouver: { commande: 'Retrouver ma commande', reservation: 'Retrouver ma réservation' },
       surAppareil: {
         commande: 'La facture se remet sur l’appareil qui a servi à payer. Passe au comptoir avec ton code.',
@@ -105,6 +116,11 @@
         en_cours: {
           titre: 'Ta facture s’établit',
           dit: 'Ton paiement est bien enregistré. La pièce est en cours d’établissement — cela prend quelques minutes.',
+          action: 'Vérifier à nouveau', second: 'Retrouver ma réservation'
+        },
+        en_cours_long: {
+          titre: 'Cela prend plus longtemps que prévu',
+          dit: 'Ton paiement est bien enregistré et ta facture n’est pas perdue : elle n’est pas encore revenue de la plateforme de facturation. Réessaie plus tard, ou passe au comptoir avec ton code — l’équipe la retrouvera.',
           action: 'Vérifier à nouveau', second: 'Retrouver ma réservation'
         },
         prete: {
@@ -125,6 +141,7 @@
       politique: 'Privacy Policy',
       essai: 'Test document — issued on the DGI test platform. It has no fiscal value.',
       verifier: 'Verify this document',
+      refAchat: 'Purchase ref.',
       retrouver: { commande: 'Find my order', reservation: 'Find my booking' },
       surAppareil: {
         commande: 'The invoice is delivered on the device used to pay. Ask at the counter with your code.',
@@ -139,6 +156,11 @@
         en_cours: {
           titre: 'Your invoice is being issued',
           dit: 'Your payment is recorded. The document is being issued — this takes a few minutes.',
+          action: 'Check again', second: 'Find my booking'
+        },
+        en_cours_long: {
+          titre: 'This is taking longer than expected',
+          dit: 'Your payment is recorded and your invoice is not lost — it simply has not come back from the invoicing platform yet. Try again later, or come to the counter with your code and the team will find it.',
           action: 'Check again', second: 'Find my booking'
         },
         prete: {
@@ -219,6 +241,19 @@
   var etape = vente ? 'choix' : 'absente';
   var facture = null;
 
+  /* LA PROMESSE SE PLAFONNE. La porte de remise rend « en cours » pour cinq
+     situations differentes, dont une piece qui ne viendra jamais : l'ecran ne
+     peut donc pas savoir laquelle. Passe trois verifications infructueuses, il
+     cesse de promettre quelques minutes — sans nommer une cause qu'il ignore.
+     Le compte vit dans l'onglet : qui revient le lendemain repart a zero. */
+  var SEUIL_ATTENTE = 3;
+  var essais = 0;
+
+  function attente() {
+    essais += 1;
+    return essais >= SEUIL_ATTENTE ? 'en_cours_long' : 'en_cours';
+  }
+
   function montrer(cle) {
     etape = cle;
     var e = t().etapes[cle];
@@ -283,6 +318,14 @@
     var droite = el('div', 'f-id');
     droite.appendChild(el('p', 'f-type', f.type || 'FACTURE DE VENTE'));
     droite.appendChild(el('p', null, 'Facture # ' + (f.numero || '')));
+    /* La reference de l'achat est une mention COMPTABLE, pas fiscale : elle
+       ne se mele jamais aux champs scelles. Sa place est entre le numero et
+       la date, le geste par lequel on identifie une piece. Le bloc `vente`
+       est ABSENT d'une piece non scellee, et son code peut etre nul si la
+       vente a ete effacee : on n'affiche alors aucun libelle. */
+    if (f.vente && f.vente.code) {
+      droite.appendChild(el('p', null, t().refAchat + ' : ' + f.vente.code));
+    }
     droite.appendChild(el('p', null, 'Date : ' + dateDoc(f.date)));
     droite.appendChild(el('p', null, 'Vendeur : SFE en ligne'));
     entete.appendChild(gauche); entete.appendChild(droite);
@@ -390,10 +433,10 @@
   function chercherPiece() {
     cacherErreur();
     return poserChoix().then(function (r) {
-      if (!r || r.facture !== 'prete' || !r.jeton) { montrer('en_cours'); return; }
+      if (!r || r.facture !== 'prete' || !r.jeton) { montrer(attente()); return; }
       return Roots.db.consulterFacture(r.jeton).then(function (f) {
         if (f && f.resultat === 'trouvee') { facture = f; montrer('prete'); }
-        else montrer('en_cours');
+        else montrer(attente());
       });
     }, function (e) { erreur(e.message); });
   }

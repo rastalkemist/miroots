@@ -152,9 +152,17 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .centre{display:flex;align-items:center;gap:5px}
 .ankh-home{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .ankh-home svg{width:44px;height:44px;display:block}
-.toggle{position:relative;display:flex;align-items:center;height:44px;max-width:44px;overflow:hidden;cursor:pointer;background:var(--roots-vert);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--roots-vert),0 3px 10px rgba(var(--vert-e2-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
+/* Le disque de la pastille est une FONCTION de son logotype, pas un nombre
+   pose a cote : em se rapporte a la taille de police du .mot, donc le disque
+   suit tout changement du logotype sans qu'on y revienne. A 44 px autour d'un
+   mot de 16 il ne restait qu'une tache verte.
+   La CIBLE, elle, ne suit pas — un calque invisible la tient au plancher de
+   44 px, sinon la regle des cibles tombe des que le logotype maigrit. */
+.toggle{--pastille-d:2em}
+.toggle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;min-width:var(--cible-min);height:var(--cible-min)}
+.toggle{position:relative;display:flex;align-items:center;height:var(--pastille-d);max-width:var(--pastille-d);overflow:hidden;cursor:pointer;background:var(--roots-vert);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--roots-vert),0 3px 10px rgba(var(--vert-e2-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
 .toggle.ouvert{max-width:300px;transition:max-width var(--mvt-parcours) var(--courbe-entree)}
-.toggle .mot{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--blanc);line-height:1}
+.toggle .mot{width:var(--pastille-d);height:var(--pastille-d);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--blanc);line-height:1}
 .toggle .reste{display:flex;align-items:center;gap:8px;padding-right:14px;flex-shrink:0}
 .reste .sub{font-size:var(--t-label);color:var(--blanc);font-style:italic}
 .switch{width:42px;height:22px;border-radius:var(--rayon-pilule);background:rgba(var(--blanc-casse-rgb),.20);border:1px solid rgba(var(--blanc-casse-rgb),.3);position:relative;cursor:pointer;flex-shrink:0}
@@ -167,6 +175,13 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .chrome-burger svg{width:30px;height:30px}
 .chrome-titre{position:relative;text-decoration:none;cursor:pointer}
 .chrome-titre::after{content:'';position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:44px}
+/* La page courante reste dans le menu et s'y marque : une navigation
+   repetee doit garder la meme forme sur chaque ecran. Le marquage est
+   double — la couleur seule ne porte jamais une information. */
+.lien-section.courant{background:var(--vert-lavure)}
+.lien-section.courant .t{color:var(--roots-vert);font-weight:var(--w-bold)}
+.lien-section.courant .fleche{opacity:.35}
+.mentions a.courant{font-weight:var(--w-bold);color:var(--roots-vert)}
 .mentions{margin-top:14px;padding:12px 6px 4px;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .mentions a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 8px}
 .pied{width:var(--site-w);max-width:var(--col);margin:26px auto 0;padding:16px 0 4px;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
@@ -302,7 +317,11 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 :where(body.p-accueil) .radio-btn{width:28px;height:28px;border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 :where(body.p-accueil) .radio-btn.actif{background:var(--roots-jaune);color:var(--roots-noir)}
 :where(body.p-accueil) .radio-btn svg{width:15px;height:15px}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-corps);font-size:var(--t-body);font-weight:700;white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+/* Les deux gestes du code. Ce sont des actions secondaires : un seul bouton
+   plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
+.gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--esp-3);flex-wrap:wrap}
+.geste-code{min-height:var(--cible-min);padding:0 var(--esp-4);border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:var(--w-bold);cursor:pointer}
+:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-corps);font-size:var(--t-21);font-weight:700;white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 @media(min-width:640px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}
@@ -415,6 +434,9 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .badge-table svg{width:14px;height:14px}
 :where(body.p-carte) .badge-emporter{display:inline-flex;align-items:center;gap:6px;background:var(--gris-ilot);color:var(--encre-discrete);font-size:var(--t-label);font-weight:700;padding:5px 12px;border-radius:var(--rayon-pilule);margin-bottom:10px}
 :where(body.p-carte) .badge-emporter svg{width:14px;height:14px}
+/* Sans regle, un h1 tombe sur 2em, soit 32 px, qui n'est aucun barreau.
+   Ces ecrans prennent la meme que la carte et retrouver. */
+:where(body.p-accueil, body.p-paiement, body.p-payer, body.p-facture) h1{font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-carte) h1{font-size:var(--t-h2);margin:0 0 6px;line-height:1.15}
 :where(body.p-carte) .sous-titre{font-size:var(--t-sm);color:var(--encre-discrete);margin:0 0 14px;line-height:1.5}
 :where(body.p-carte) .categories{position:sticky;top:var(--entete-h);z-index:9;background:var(--voile-page);backdrop-filter:blur(8px);display:flex;gap:var(--esp-2);overflow-x:auto;overscroll-behavior-x:contain;-webkit-user-select:none;user-select:none;padding:var(--esp-2) 0 var(--esp-3);margin-bottom:6px;scrollbar-width:none;cursor:grab}
