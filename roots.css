@@ -522,42 +522,21 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    publique : la page se lit d'un bout a l'autre. La mesure se compte en
    signes et non en pixels — la colonne est exprimee dans la police de lecture,
    ce qui la tient entre 65 et 75 signes des que l'ecran le permet. */
-/* Reglage de taille de la lecture longue : le facteur multiplie TOUT le registre
-   editorial, pas le seul corps. Les rapports entre niveaux sont la raison d'etre
-   de l'echelle ; n'agrandir que le corps les detruirait. Le facteur par defaut
-   vaut 1, donc la colonne rend a l'identique sans le script. La commande exige
-   deux cibles de 44 px : les reduire fait tomber le critere de taille de cible. */
-.lecture-longue{--zoom-lecture:1;
-  --t-ll-titre:calc(var(--t-68) * var(--zoom-lecture));
-  --t-ll-intertitre:calc(var(--t-42) * var(--zoom-lecture));
-  --t-ll-chapo:calc(var(--t-26) * var(--zoom-lecture));
-  --t-ll-h4:calc(var(--t-20) * var(--zoom-lecture));
-  --t-ll-h5:calc(var(--t-16) * var(--zoom-lecture));
-  --t-ll-h6:calc(var(--t-16) * var(--zoom-lecture));
-  --t-ll-corps:calc(var(--t-16) * var(--zoom-lecture));
-  --t-ll-note:calc(var(--t-12) * var(--zoom-lecture))}
-.regle-taille{position:sticky;top:var(--esp-2);z-index:4;display:flex;align-items:center;justify-content:flex-end;gap:var(--esp-2);margin:0 0 var(--air-separe)}
-.regle-taille button{width:var(--cible-min);height:var(--cible-min);flex-shrink:0;border:1px solid var(--gris-service);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--encre);font-family:var(--font-corps);font-size:var(--t-ll-h5);line-height:1;cursor:pointer}
-.regle-taille button:disabled{color:var(--encre-discrete);cursor:default}
-.regle-taille .etat{font-family:var(--font-corps);font-size:var(--t-note);color:var(--encre-discrete);font-variant-numeric:tabular-nums;min-width:6ch;text-align:center}
 :where(body.p-confidentialite) .lecture{width:var(--site-w);max-width:54ch;margin:0 auto;padding:20px 0 0;font-family:var(--font-lecture);font-size:var(--t-ll-corps)}
-:where(body.p-confidentialite) .lecture h1{font-family:var(--font-lecture);font-weight:var(--w-ll-h1);font-size:var(--t-ll-titre);line-height:var(--lh-68);margin:0 0 var(--ll-rythme);color:var(--encre-ll-h1);text-wrap:balance}
+:where(body.p-confidentialite) .lecture h1{font-family:var(--font-lecture);font-weight:var(--w-ll-h1);margin:0 0 var(--ll-rythme);color:var(--encre-ll-h1);text-wrap:balance}
 :where(body.p-confidentialite) .lecture .chapo{font-family:var(--font-chiffres);font-style:italic;font-weight:700;font-size:var(--t-ll-chapo);line-height:1.35;color:var(--encre);margin:0 0 var(--ll-demi);text-wrap:balance}
 :where(body.p-confidentialite) .lecture .version{font-family:var(--font-corps);font-size:var(--t-ll-note);font-weight:700;text-transform:uppercase;letter-spacing:.07em;line-height:1.45;color:var(--encre-discrete);margin:0 0 calc(var(--ll-demi) * 3)}
-:where(body.p-confidentialite) .lecture h2{font-family:var(--font-corps);font-weight:var(--w-ll-h2);font-size:var(--t-ll-intertitre);line-height:var(--lh-42);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h2);text-wrap:balance}
-/* Niveaux 3 a 6 de la lecture longue. Taille, graisse, casse, style et encre
-   sortent tous d'un jeton : aucune valeur ne s'ecrit ici. h4 et h6 portent une
-   encre d'accent ; a 16 px en graisse 300, h6 compte comme du texte courant et
-   exige 4,5:1. Il ne tient ce rapport que sur blanc et blanc casse. Poser une
-   page de lecture longue sur creme ou sur un aplat gris casse ce rapport : sur
-   ces fonds l'accent redescend d'un echelon. */
-:where(body.p-confidentialite) .lecture h3{font-family:var(--font-corps);font-weight:var(--w-ll-h3);font-size:var(--t-ll-chapo);line-height:var(--lh-26);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h3);text-wrap:balance}
-:where(body.p-confidentialite) .lecture h4{font-family:var(--font-corps);font-weight:var(--w-ll-h4);font-size:var(--t-ll-h4);line-height:var(--lh-20);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h4);text-wrap:balance}
-:where(body.p-confidentialite) .lecture h5{font-family:var(--font-corps);font-weight:var(--w-ll-h5);font-size:var(--t-ll-h5);line-height:var(--lh-16);text-transform:var(--casse-ll-h5);letter-spacing:var(--lettrage-ll-h5);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h5)}
-:where(body.p-confidentialite) .lecture h6{font-family:var(--font-corps);font-weight:var(--w-ll-h6);font-size:var(--t-ll-h6);line-height:var(--lh-16);font-style:var(--style-ll-h6);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h6)}
+:where(body.p-confidentialite) .lecture h2{font-family:var(--font-corps);font-weight:var(--w-ll-h2);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h2);text-wrap:balance}
+/* h6 accentue est du texte courant : 16 px en graisse 300 exige 4,5:1. L'accent
+   ne tient ce rapport que sur blanc et blanc casse. Sur creme ou sur aplat gris
+   il tombe sous le seuil. */
+:where(body.p-confidentialite) .lecture h3{font-family:var(--font-corps);font-weight:var(--w-ll-h3);margin:calc(var(--air-separe) * 2) 0 var(--air-lie);color:var(--encre-ll-h3);text-wrap:balance}
+:where(body.p-confidentialite) .lecture h4{font-family:var(--font-corps);font-weight:var(--w-ll-h4);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h4);text-wrap:balance}
+:where(body.p-confidentialite) .lecture h5{font-family:var(--font-corps);font-weight:var(--w-ll-h5);text-transform:var(--casse-ll-h5);letter-spacing:var(--lettrage-ll-h5);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h5)}
+:where(body.p-confidentialite) .lecture h6{font-family:var(--font-corps);font-weight:var(--w-ll-h6);font-style:var(--style-ll-h6);margin:var(--air-separe) 0 var(--air-lie);color:var(--encre-ll-h6)}
 :where(body.p-confidentialite) .lecture p{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-prose);color:var(--encre);margin:0 0 var(--air-separe);text-wrap:pretty}
 :where(body.p-confidentialite) .lecture ul{margin:0 0 var(--ll-demi);padding-left:20px}
-:where(body.p-confidentialite) .lecture li{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-item);color:var(--encre);margin:0 0 var(--air-lie);text-wrap:pretty}
+:where(body.p-confidentialite) .lecture li{font-family:var(--font-lecture);font-weight:300;font-size:var(--t-ll-corps);line-height:var(--lh-prose);color:var(--encre);margin:0 0 var(--air-lie);text-wrap:pretty}
 :where(body.p-confidentialite) .lecture li:last-child{margin-bottom:0}
 :where(body.p-confidentialite) .lecture strong{font-weight:700}
 :where(body.p-confidentialite) .lecture a{color:var(--roots-vert);text-underline-offset:3px}

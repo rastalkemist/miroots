@@ -1,9 +1,3 @@
-/* BANDEAU ROOTS · **RANG : PRODUIT** · **ÉTAT : vivant**
-   PRODUIT — régénérable ; ne se corrige jamais à la main.
-   ⓘ régénéré par le générateur depuis les deux pièces · toute correction se fait sur la pièce ou sur le générateur
-   Le rang vient du registre ; ce bandeau est posé, jamais écrit à la main.
-   FIN BANDEAU */
-
 /* ============================================================================
    ROOTS — JETONS · roots-tokens.css
    Source unique des variables pour le site, la console et les pièces imprimées.
@@ -227,7 +221,7 @@
 
   /* ÉDITORIAL — nombre d'or ×1.6180 · demi-palier ×1.2720
      paliers pleins : 10 · 16 · 26 · 42 · 68
-     demi-paliers   : 13 · 20
+     demi-paliers   : 13 · 20 · 33
      Un barreau appartient à UN registre. Les seuls communs sont 16 · 33 · 68. */
   --t-10: 10px;       /* or^-1 · plein · calcul 9.89 · ecart 1.1 % — la note et la description · serie entiere */
   --t-13: 13px;       /* or^-0.5 · demi · calcul 12.58 · ecart 3.3 % — le corps de lecture longue · le corps imprime */
@@ -256,8 +250,8 @@
   --t-tuile-libelle: var(--t-21);/* graisse 700 — un cran au-dessus du dialecte A */
 
   /* Rôles — ÉDITORIAL. Nombre d'or ; la note emprunte, et c'est tracé. */
-  --t-ll-titre: var(--t-68);  /* graisse 100 · encre accent-e3 — geste d'ouverture */
-  --t-ll-intertitre: var(--t-42);/* graisse 500 · encre encre */
+  --t-ll-titre: var(--t-68);  /* graisse 100 · encre encre — geste d'ouverture */
+  --t-ll-intertitre: var(--t-33);/* graisse 500 · encre accent-e3  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-ll-chapo: var(--t-26);  /* graisse 700 · encre encre */
   --t-ll-h4: var(--t-20);     /* graisse 700 · encre accent-e3  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-ll-h5: var(--t-16);     /* graisse 300 · casse capitales · encre encre */
@@ -274,9 +268,9 @@
   /* Les niveaux ÉDITORIAUX — graisse, casse, style et encre viennent
      de la pièce. Une valeur écrite ici serait hors contrôle. */
   --w-ll-h1: 100;
-  --encre-ll-h1: var(--vert-e3);
+  --encre-ll-h1: var(--encre);
   --w-ll-h2: 500;
-  --encre-ll-h2: var(--encre);
+  --encre-ll-h2: var(--vert-e3);
   --w-ll-h3: 700;
   --encre-ll-h3: var(--encre);
   --w-ll-h4: 700;
@@ -426,7 +420,7 @@
     --t-body: var(--t-16);
     --t-chrome-titre: var(--t-16);
     --t-ll-titre: var(--t-68);
-    --t-ll-intertitre: var(--t-42);
+    --t-ll-intertitre: var(--t-33);
     --t-ll-chapo: var(--t-26);
     --t-ll-corps: var(--t-16);
   }
@@ -598,17 +592,9 @@
    les rapports entre les niveaux sont la raison d'etre de l'echelle, et un
    reglage qui ne toucherait que le corps les detruirait.
 
-   Cinq crans, un point typographique par cran. Un point vaut 1.3333 px sur un
-   corps de 13 : le facteur est (13 + n x 1.3333) / 13.
-     cran 0 = 1        corps 13.00 px = 9.75 pt   (defaut)
-     cran 1 = 1.1026   corps 14.33 px = 10.75 pt
-     cran 2 = 1.2051   corps 15.67 px = 11.75 pt
-     cran 3 = 1.3077   corps 17.00 px = 12.75 pt
-     cran 4 = 1.4103   corps 18.33 px = 13.75 pt
-
-   ⚠ Le facteur se pose sur le CONTENEUR de lecture, pas sur la racine : le
-   chrome, les prix et la console ne bougent pas. ⚠ Ne pas ecrire une taille en
-   dur dans ce bloc : elle echapperait au reglage. */
+   Cinq crans, un point typographique par cran, sur un corps de 12 pt : le
+   facteur vaut (12 + n) / 12. Le poser sur le CONTENEUR et non sur la racine,
+   sans quoi le chrome et la console suivent. */
 .lecture-longue { --zoom-lecture: 1;
                   font-family: var(--font-lecture); font-weight: var(--w-lecture);
                   font-size: calc(var(--t-ll-corps) * var(--zoom-lecture));
@@ -621,16 +607,24 @@
                      line-height: var(--lh-bloc); }
 .lecture-longue h4 { font-size: calc(var(--t-ll-h4) * var(--zoom-lecture));
                      line-height: var(--lh-prose); }
+.lecture-longue h5 { font-size: calc(var(--t-ll-h5) * var(--zoom-lecture));
+                     line-height: var(--lh-prose); }
+.lecture-longue h6 { font-size: calc(var(--t-ll-h6) * var(--zoom-lecture));
+                     line-height: var(--lh-prose); }
 .lecture-longue .note { font-size: calc(var(--t-ll-note) * var(--zoom-lecture));
                         line-height: var(--lh-aere); }
-.lecture-longue li { line-height: var(--lh-item); }
+/* Un item qui se replie n'est pas un item bref : ses lignes se lisent comme
+   celles d'un paragraphe et prennent l'interligne de prose. Ce qui separe une
+   liste d'une suite de paragraphes est le blanc ENTRE items, pas la compression
+   des lignes. `--lh-item` reste pour ce qui tient sur une seule ligne. */
+.lecture-longue li { line-height: var(--lh-prose); }
 
-/* La commande. Deux cibles pleines, un etat lisible entre elles. Elle se pose
-   en tete de la colonne de lecture et y reste : un reglage qu'il faut aller
-   rechercher n'est pas un mecanisme, c'est un reglage cache. */
+/* Ne pas coller cette commande au bord haut : un en-tete colle y occupe deja le
+   meme bord avec un rang d'empilement superieur, et la commande passe derriere
+   lui, inatteignable au defilement. */
 .regle-taille { display: flex; align-items: center; justify-content: flex-end;
-                gap: var(--esp-1); position: sticky; top: 0; z-index: 5;
-                padding: var(--air-lie) 0; background: var(--blanc-casse);
+                gap: var(--esp-1); padding: var(--air-lie) 0;
+                background: var(--blanc-casse);
                 border-bottom: 1px solid var(--gris-filet); }
 .regle-taille button { min-width: var(--cible-min); min-height: var(--cible-min);
                        border: 0; border-radius: var(--rayon-pilule);
