@@ -239,7 +239,7 @@
   --t-h6: var(--t-13);        /* graisse 700 — le niveau le plus bas de l'interface  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-body: var(--t-16);      /* graisse 500 */
   --t-sm: var(--t-14);        /* graisse 500 */
-  --t-note: var(--t-12);      /* graisse 500 — description · mention · aide de champ */
+  --t-note: var(--t-12);      /* graisse 500 — description · mention · aide de champ · notice de consentement */
   --t-label: var(--t-12);     /* graisse 700 · capitales */
   --t-chrome-titre: var(--t-16);/* logotype MuseoModerno 700 — chrome collant */
 
@@ -409,6 +409,7 @@
     --t-ll-titre: var(--t-42);
     --t-ll-intertitre: var(--t-26);
     --t-ll-chapo: var(--t-16);
+    --t-ll-h4: var(--t-16);
     --t-ll-corps: var(--t-16);
     /* le display n'existe pas à ce palier — loi de dégradation */
   }
@@ -425,6 +426,7 @@
     --t-ll-titre: var(--t-68);
     --t-ll-intertitre: var(--t-33);
     --t-ll-chapo: var(--t-26);
+    --t-ll-h4: var(--t-20);
     --t-ll-corps: var(--t-16);
   }
 }
@@ -591,31 +593,40 @@
    SC 1.4.8 exige qu'un MECANISME soit disponible pour regler la presentation
    d'un bloc de texte. C'est ce mecanisme.
 
-   `--zoom-lecture` multiplie TOUT le registre editorial, jamais le seul corps :
-   les rapports entre les niveaux sont la raison d'etre de l'echelle, et un
-   reglage qui ne toucherait que le corps les detruirait.
+   `--zoom-lecture` ne porte QUE sur le corps, sur les niveaux qui partagent sa
+   taille et sur la note. Les titres qui ont leur propre barreau ne bougent pas :
+   qui agrandit le texte veut lire le corps, pas voir un titre de 68 px porte a
+   90. La note suit parce qu'elle se lit avec le corps ; son barreau suivant vaut
+   16 px et le dernier cran la laisse a 15.
 
-   Cinq crans, un point typographique par cran, sur un corps de 12 pt : le
-   facteur vaut (12 + n) / 12. Le poser sur le CONTENEUR et non sur la racine,
+   Quatre crans, un point typographique par cran, sur un corps de 12 pt : le
+   facteur vaut (12 + n) / 12, et la serie s'arrete a 15 pt. Le barreau suivant
+   du registre editorial vaut 20 px, soit ces memes 15 pt : a la butee le corps
+   touche le niveau au-dessus sans jamais le depasser. Allonger la serie
+   inverserait la hierarchie. Le poser sur le CONTENEUR et non sur la racine,
    sans quoi le chrome et la console suivent. */
 .lecture-longue { --zoom-lecture: 1;
                   font-family: var(--font-lecture); font-weight: var(--w-lecture);
                   font-size: calc(var(--t-ll-corps) * var(--zoom-lecture));
                   line-height: var(--lh-lecture-ecran); }
-.lecture-longue h1 { font-size: calc(var(--t-ll-titre) * var(--zoom-lecture));
-                     line-height: var(--lh-soude); }
-.lecture-longue h2 { font-size: calc(var(--t-ll-intertitre) * var(--zoom-lecture));
-                     line-height: var(--lh-bloc); }
-.lecture-longue h3 { font-size: calc(var(--t-ll-chapo) * var(--zoom-lecture));
-                     line-height: var(--lh-bloc); }
-.lecture-longue h4 { font-size: calc(var(--t-ll-h4) * var(--zoom-lecture));
-                     line-height: var(--lh-prose); }
+.lecture-longue h1 { font-size: var(--t-ll-titre); line-height: var(--lh-soude); }
+.lecture-longue h2 { font-size: var(--t-ll-intertitre); line-height: var(--lh-bloc); }
+.lecture-longue h3 { font-size: var(--t-ll-chapo); line-height: var(--lh-bloc); }
+.lecture-longue h4 { font-size: var(--t-ll-h4); line-height: var(--lh-prose); }
 .lecture-longue h5 { font-size: calc(var(--t-ll-h5) * var(--zoom-lecture));
                      line-height: var(--lh-prose); }
 .lecture-longue h6 { font-size: calc(var(--t-ll-h6) * var(--zoom-lecture));
                      line-height: var(--lh-prose); }
-.lecture-longue .note { font-size: calc(var(--t-ll-note) * var(--zoom-lecture));
-                        line-height: var(--lh-aere); }
+.lecture-longue .note,
+.lecture-longue .version { font-size: calc(var(--t-ll-note) * var(--zoom-lecture));
+                           line-height: var(--lh-aere); }
+/* Sur le plus petit jeu d'ecran, h3 et h4 retombent sur la taille du corps :
+   ils partagent alors son barreau et suivent donc le facteur avec lui. Au-dessus
+   de ce jeu ils ont leur propre barreau et ne bougent pas. */
+@media (max-width: 640px) {
+  .lecture-longue h3 { font-size: calc(var(--t-ll-chapo) * var(--zoom-lecture)); }
+  .lecture-longue h4 { font-size: calc(var(--t-ll-h4) * var(--zoom-lecture)); }
+}
 /* Un item qui se replie n'est pas un item bref : ses lignes se lisent comme
    celles d'un paragraphe et prennent l'interligne de prose. Ce qui separe une
    liste d'une suite de paragraphes est le blanc ENTRE items, pas la compression

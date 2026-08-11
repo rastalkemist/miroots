@@ -229,6 +229,8 @@ jeton,rang,valeur
 --t-ll-corps,1,var(--t-16)
 --t-ll-corps,2,var(--t-16)
 --t-ll-h4,0,var(--t-20)
+--t-ll-h4,1,var(--t-16)
+--t-ll-h4,2,var(--t-20)
 --t-ll-h5,0,var(--t-16)
 --t-ll-h6,0,var(--t-16)
 --t-ll-intertitre,0,var(--t-33)
