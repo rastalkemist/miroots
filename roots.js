@@ -428,9 +428,8 @@
   function feuilleGlissante() {
     var f = document.querySelector('.feuille-bas');
     if (!f) return;
-    var prise = f.querySelector('.poignee'), tete = f.querySelector('.tete');
     var fermer = f.querySelector('.fermer');
-    if (!prise || !fermer) return;
+    if (!fermer) return;
     var y0 = null, dy = 0, transition = f.style.transition;
     var doux = !window.matchMedia || !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -458,11 +457,13 @@
       if (franchi) fermer.click();
     }
 
-    [prise, tete].forEach(function (zone) {
-      if (!zone) return;
-      zone.addEventListener('touchstart', debut, { passive: true });
-      zone.addEventListener('mousedown', debut);
-    });
+    /* La prise ne se limite pas a la poignee : elle couvre TOUTE la feuille,
+       parce qu'une prise cantonnee au bord haut oblige a remonter le pouce et
+       casse l'usage a une main. Ce qui protege le geste n'est pas la zone mais
+       les deux gardes de `debut` — feuille en haut de son defilement, et
+       depart hors d'une commande ou d'un champ. */
+    f.addEventListener('touchstart', debut, { passive: true });
+    f.addEventListener('mousedown', debut);
     f.addEventListener('touchmove', bouge, { passive: false });
     f.addEventListener('touchend', fin);
     f.addEventListener('touchcancel', fin);
