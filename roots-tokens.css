@@ -1,9 +1,3 @@
-/* BANDEAU ROOTS · **RANG : PRODUIT** · **ÉTAT : vivant**
-   PRODUIT — régénérable ; ne se corrige jamais à la main.
-   ⓘ régénéré par le générateur depuis les deux pièces · toute correction se fait sur la pièce ou sur le générateur
-   Le rang vient du registre ; ce bandeau est posé, jamais écrit à la main.
-   FIN BANDEAU */
-
 /* ============================================================================
    ROOTS — JETONS · roots-tokens.css
    Source unique des variables pour le site, la console et les pièces imprimées.
@@ -244,7 +238,9 @@
   --t-h6: var(--t-13);        /* graisse 700 — le niveau le plus bas de l'interface  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-body: var(--t-16);      /* graisse 500 */
   --t-sm: var(--t-14);        /* graisse 500 */
+  --t-note: var(--t-12);      /* graisse 500 — description · mention · aide de champ */
   --t-label: var(--t-12);     /* graisse 700 · capitales */
+  --t-chrome-titre: var(--t-21);/* logotype MuseoModerno 700 — chrome collant */
 
   /* Rôles — CONSOLE, dialecte B. Quarte pure, aucun emprunt. */
   --t-b-h1: var(--t-51);      /* graisse 700 */
@@ -257,8 +253,8 @@
   --t-ll-intertitre: var(--t-42);/* graisse 700 */
   --t-ll-chapo: var(--t-26);  /* graisse 700 */
   --t-ll-h4: var(--t-16);     /* graisse 700 */
-  --t-ll-corps: var(--t-13);  /* graisse 300 · Museo · 9.75 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
-  --t-ll-note: var(--t-10);   /* graisse 300 · 7.50 pt */
+  --t-ll-corps: var(--t-16);  /* graisse 300 · Museo · 12 pt */
+  --t-ll-note: var(--t-12);   /* graisse 300 · 9 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
 
   /* Les CHIFFRES — trois moments du prix, un code. 14 → 21 → 33. */
   --t-prix: var(--t-14);      /* Museo Slab 700 · on choisit — le prix reste discret  ⚠ EXCEPTION TRACÉE — voir la pièce */
@@ -384,10 +380,11 @@
     --t-h3: var(--t-21);
     --t-h4: var(--t-16);
     --t-body: var(--t-16);
+    --t-chrome-titre: var(--t-16);
     --t-ll-titre: var(--t-42);
     --t-ll-intertitre: var(--t-26);
     --t-ll-chapo: var(--t-16);
-    --t-ll-corps: var(--t-13);
+    --t-ll-corps: var(--t-16);
     /* le display n'existe pas à ce palier — loi de dégradation */
   }
 }
@@ -399,10 +396,11 @@
     --t-h3: var(--t-21);
     --t-h4: var(--t-16);
     --t-body: var(--t-16);
+    --t-chrome-titre: var(--t-21);
     --t-ll-titre: var(--t-68);
     --t-ll-intertitre: var(--t-42);
     --t-ll-chapo: var(--t-26);
-    --t-ll-corps: var(--t-13);
+    --t-ll-corps: var(--t-16);
   }
 }
 
