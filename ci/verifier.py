@@ -138,6 +138,9 @@ def controle_d(d, dire, mal):
     dire(f"D · commentaires refusés : {n}")
 
 
+EMPREINTE = "empreinte.csv"
+SCEAU = "jeton,rang,valeur\n--encre,0,#1A1A1A\n--t-corps,0,16px\n"
+
 DEFAUTS = [
     ("A", {FEUILLE: "a { color: var(--jeton-absent); }", JETONS: ":root{--x:1;}"}),
     ("B", {FEUILLE: "a { color: #C1502A; }", JETONS: ":root{--x:1;}"}),
@@ -147,9 +150,60 @@ DEFAUTS = [
     ("D", {FEUILLE: "/* nous gardons cette regle */\na{color:var(--x);}",
            JETONS: ":root{--x:1;}"}),
 ]
+DEFAUTS.append(("E", {FEUILLE: "a { color: var(--encre); }",
+                      JETONS: ":root { --encre: #1A1A1A; --t-corps: 21px; }",
+                      EMPREINTE: SCEAU}))
+
 SAIN = {FEUILLE: "/* La pilule ne descend pas sous 44 px : cible tactile. */\n"
                  "a { color: var(--encre); font-size: var(--t-corps); }",
-        JETONS: ":root { --encre: #1A1A1A; --t-corps: 16px; }"}
+        JETONS: ":root { --encre: #1A1A1A; --t-corps: 16px; }",
+        EMPREINTE: SCEAU}
+
+
+def controle_e(d, dire, mal):
+    """E — le fichier de jetons est-il celui qui est sorti du generateur ?
+
+    L'empreinte porte un nom de jeton et une valeur par ligne, et rien d'autre.
+    Elle est produite en meme temps que le fichier de jetons ; toute divergence
+    signifie que le fichier a ete retouche a la main depuis, ou que l'empreinte
+    n'a pas suivi. Les deux se corrigent en regenerant, jamais en editant.
+
+    Ce controle ne dit PAS que les valeurs sont les bonnes : il dit qu'elles
+    n'ont pas bouge. La justesse se verifie en amont, contre la piece.
+    """
+    css = d / "roots-tokens.css"
+    emp = d / "ci" / "empreinte.csv"
+    if not emp.exists():
+        emp = d / "empreinte.csv"
+    if not css.exists() or not emp.exists():
+        dire("E · empreinte ou jetons absents — contrôle non applicable")
+        return
+    sans_prose = re.sub(r"/\*.*?\*/", "", css.read_text(encoding="utf-8"), flags=re.S)
+    vues = {}
+    for nom, valeur in re.findall(r"(?<![\w-])(--[a-z0-9-]+)\s*:\s*([^;{}]+);", sans_prose):
+        vues.setdefault(nom, []).append(" ".join(valeur.split()))
+    attendu, ecarts = 0, []
+    for ligne in emp.read_text(encoding="utf-8").splitlines():
+        if ligne.startswith("#") or not ligne.strip() or ligne.startswith("jeton,"):
+            continue
+        nom, rang, valeur = ligne.split(",", 2)
+        attendu += 1
+        rendu = vues.get(nom, [])
+        r = int(rang)
+        if r >= len(rendu):
+            ecarts.append(f"{nom} manque dans les jetons")
+        elif rendu[r] != valeur:
+            ecarts.append(f"{nom} vaut « {rendu[r]} » au lieu de « {valeur} »")
+    surplus = sum(len(v) for v in vues.values()) - attendu
+    dire(f"E · empreinte : {attendu} déclarations attendues · "
+         f"{len(ecarts)} divergence(s) · {surplus} déclaration(s) en trop")
+    for e in ecarts[:8]:
+        mal("E · " + e)
+    if len(ecarts) > 8:
+        mal(f"E · et {len(ecarts) - 8} autre(s) divergence(s)")
+    if surplus > 0:
+        mal(f"E · {surplus} déclaration(s) absente(s) de l'empreinte — "
+            f"le fichier a été enrichi sans être regénéré")
 
 
 def epreuve():
@@ -163,7 +217,7 @@ def epreuve():
             for nom, txt in fichiers.items():
                 (d / nom).write_text(txt, encoding="utf-8")
             pris = []
-            for c in (controle_a, controle_b, controle_c, controle_d):
+            for c in (controle_a, controle_b, controle_c, controle_d, controle_e):
                 c(d, lambda _: None, pris.append)
             ok = any(p.startswith(lettre + " ") for p in pris)
             vus += ok
@@ -174,7 +228,7 @@ def epreuve():
         for nom, txt in SAIN.items():
             (d / nom).write_text(txt, encoding="utf-8")
         pris = []
-        for c in (controle_a, controle_b, controle_c, controle_d):
+        for c in (controle_a, controle_b, controle_c, controle_d, controle_e):
             c(d, lambda _: None, pris.append)
         ok = not pris
         vus += ok
@@ -196,7 +250,7 @@ def main(argv):
         refus.append(t)
 
     print(f"=== CONTRÔLES DU DÉPÔT — {d.name} ===\n")
-    for c in (controle_a, controle_b, controle_c, controle_d):
+    for c in (controle_a, controle_b, controle_c, controle_d, controle_e):
         c(d, dire, mal)
     for l in lignes:
         print(("  " + l) if not l.startswith("  ") else l)
@@ -204,7 +258,7 @@ def main(argv):
     if refus:
         print(f"REFUS — {len(refus)} écart(s). Rien ne part tant qu'ils tiennent.")
         return 1
-    print("VERT — les quatre contrôles passent.")
+    print("VERT — les cinq contrôles passent.")
     print("ⓘ Ces contrôles vérifient des propriétés, pas du sens. La relecture reste due.")
     return 0
 

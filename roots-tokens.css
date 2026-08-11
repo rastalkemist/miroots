@@ -1,3 +1,9 @@
+/* BANDEAU ROOTS · **RANG : PRODUIT** · **ÉTAT : vivant**
+   PRODUIT — régénérable ; ne se corrige jamais à la main.
+   ⓘ régénéré par le générateur depuis les deux pièces · toute correction se fait sur la pièce ou sur le générateur
+   Le rang vient du registre ; ce bandeau est posé, jamais écrit à la main.
+   FIN BANDEAU */
+
 /* ============================================================================
    ROOTS — JETONS · roots-tokens.css
    Source unique des variables pour le site, la console et les pièces imprimées.
@@ -221,10 +227,11 @@
 
   /* ÉDITORIAL — nombre d'or ×1.6180 · demi-palier ×1.2720
      paliers pleins : 10 · 16 · 26 · 42 · 68
-     demi-paliers   : 13
+     demi-paliers   : 13 · 20
      Un barreau appartient à UN registre. Les seuls communs sont 16 · 33 · 68. */
   --t-10: 10px;       /* or^-1 · plein · calcul 9.89 · ecart 1.1 % — la note et la description · serie entiere */
   --t-13: 13px;       /* or^-0.5 · demi · calcul 12.58 · ecart 3.3 % — le corps de lecture longue · le corps imprime */
+  --t-20: 20px;       /* or^0.5 · demi · calcul 20.35 · ecart 1.7 % — le quatrieme niveau editorial */
   --t-26: 26px;       /* or^1 · plein · calcul 25.89 · ecart 0.4 % */
   --t-42: 42px;       /* or^2 · plein · calcul 41.89 · ecart 0.3 % */
 
@@ -240,7 +247,7 @@
   --t-sm: var(--t-14);        /* graisse 500 */
   --t-note: var(--t-12);      /* graisse 500 — description · mention · aide de champ */
   --t-label: var(--t-12);     /* graisse 700 · capitales */
-  --t-chrome-titre: var(--t-21);/* logotype MuseoModerno 700 — chrome collant */
+  --t-chrome-titre: var(--t-16);/* logotype MuseoModerno 700 — chrome collant */
 
   /* Rôles — CONSOLE, dialecte B. Quarte pure, aucun emprunt. */
   --t-b-h1: var(--t-51);      /* graisse 700 */
@@ -249,10 +256,12 @@
   --t-tuile-libelle: var(--t-21);/* graisse 700 — un cran au-dessus du dialecte A */
 
   /* Rôles — ÉDITORIAL. Nombre d'or ; la note emprunte, et c'est tracé. */
-  --t-ll-titre: var(--t-68);  /* graisse 700 — graisse 100 autorisee au-dessus de 21 */
-  --t-ll-intertitre: var(--t-42);/* graisse 700 */
-  --t-ll-chapo: var(--t-26);  /* graisse 700 */
-  --t-ll-h4: var(--t-16);     /* graisse 700 */
+  --t-ll-titre: var(--t-68);  /* graisse 100 · encre accent-e3 — geste d'ouverture */
+  --t-ll-intertitre: var(--t-42);/* graisse 500 · encre encre */
+  --t-ll-chapo: var(--t-26);  /* graisse 700 · encre encre */
+  --t-ll-h4: var(--t-20);     /* graisse 700 · encre accent-e3  ⚠ EXCEPTION TRACÉE — voir la pièce */
+  --t-ll-h5: var(--t-16);     /* graisse 300 · casse capitales · encre encre */
+  --t-ll-h6: var(--t-16);     /* graisse 300 · style italique · encre accent-e3 */
   --t-ll-corps: var(--t-16);  /* graisse 300 · Museo · 12 pt */
   --t-ll-note: var(--t-12);   /* graisse 300 · 9 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
 
@@ -261,6 +270,24 @@
   --t-prix-somme: var(--t-21);/* Museo Slab 700 · on recapitule */
   --t-prix-total: var(--t-33);/* Museo Slab 700 · on paie — l'emphase monte avec l'engagement  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-code: var(--t-33);      /* Museo Slab 700 · il voyage de l'ecran au recu et au telephone */
+
+  /* Les niveaux ÉDITORIAUX — graisse, casse, style et encre viennent
+     de la pièce. Une valeur écrite ici serait hors contrôle. */
+  --w-ll-h1: 100;
+  --encre-ll-h1: var(--vert-e3);
+  --w-ll-h2: 500;
+  --encre-ll-h2: var(--encre);
+  --w-ll-h3: 700;
+  --encre-ll-h3: var(--encre);
+  --w-ll-h4: 700;
+  --encre-ll-h4: var(--vert-e3);
+  --w-ll-h5: 300;
+  --casse-ll-h5: uppercase;
+  --lettrage-ll-h5: var(--lettrage-capitales);
+  --encre-ll-h5: var(--encre);
+  --w-ll-h6: 300;
+  --style-ll-h6: italic;
+  --encre-ll-h6: var(--vert-e3);
 
   --t-saisie: var(--t-16);   /* comportement observe de Safari iOS, sans specification publiee ; l'autre correctif viole SC 1.4.4 (AA) */
 
@@ -281,8 +308,9 @@
      plus le corps est gros, plus l'interligne se resserre. Relevé chez
      GOV.UK, où le rapport va de 1,32 au corps à 1,00 au display. */
   --lh-10: 1.682; --lh-12: 1.682; --lh-13: 1.414; --lh-14: 1.414;
-  --lh-16: 1.414; --lh-21: 1.189; --lh-26: 1.189; --lh-28: 1.189;
-  --lh-33: 1.189; --lh-38: 1.189; --lh-42: 1.189; --lh-51: 1; --lh-68: 1;
+  --lh-16: 1.414; --lh-20: 1.189; --lh-21: 1.189; --lh-26: 1.189;
+  --lh-28: 1.189; --lh-33: 1.189; --lh-38: 1.189; --lh-42: 1.189;
+  --lh-51: 1; --lh-68: 1;
   /* Les quatre crans de la grille, nommes. Un texte prend le cran de
      son corps ; l'air se mesure ensuite en fractions de la ligne. */
   --lh-soude: 1;    --lh-bloc: 1.189;
@@ -396,7 +424,7 @@
     --t-h3: var(--t-21);
     --t-h4: var(--t-16);
     --t-body: var(--t-16);
-    --t-chrome-titre: var(--t-21);
+    --t-chrome-titre: var(--t-16);
     --t-ll-titre: var(--t-68);
     --t-ll-intertitre: var(--t-42);
     --t-ll-chapo: var(--t-26);
