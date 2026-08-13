@@ -22,6 +22,13 @@
   function commande(zone) {
     var barre = zone.querySelector('.regle-taille');
     if (!barre) return;
+    /* La commande n'est pas servie sur tous les jeux d'ecran. La ou elle ne
+       l'est pas, un cran retenu d'une autre visite s'appliquerait sans que
+       personne puisse le defaire : le facteur revient a 1 et rien ne s'accroche. */
+    if (barre.offsetParent === null) {
+      zone.style.setProperty('--zoom-lecture', 1);
+      return;
+    }
     var moins = barre.querySelector('[data-taille="moins"]');
     var plus = barre.querySelector('[data-taille="plus"]');
     var etat = barre.querySelector('.etat');

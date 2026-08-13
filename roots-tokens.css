@@ -251,12 +251,13 @@
 
   /* Rôles — ÉDITORIAL. Nombre d'or ; la note emprunte, et c'est tracé. */
   --t-ll-titre: var(--t-68);  /* graisse 100 · encre encre — geste d'ouverture */
-  --t-ll-intertitre: var(--t-33);/* graisse 500 · encre accent-e3  ⚠ EXCEPTION TRACÉE — voir la pièce */
-  --t-ll-chapo: var(--t-26);  /* graisse 700 · encre encre */
+  --t-ll-intertitre: var(--t-42);/* graisse 500 · encre accent-e3 */
+  --t-ll-h3: var(--t-33);     /* graisse 700 · encre encre  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-ll-h4: var(--t-20);     /* graisse 700 · encre accent-e3  ⚠ EXCEPTION TRACÉE — voir la pièce */
-  --t-ll-h5: var(--t-16);     /* graisse 300 · casse capitales · encre encre */
-  --t-ll-h6: var(--t-16);     /* graisse 300 · style italique · encre accent-e3 */
-  --t-ll-corps: var(--t-16);  /* graisse 300 · Museo · 12 pt */
+  --t-ll-h5: var(--t-20);     /* graisse 300 · casse capitales · encre encre */
+  --t-ll-h6: var(--t-20);     /* graisse 300 · style italique · encre accent-e3 */
+  --t-ll-chapo: var(--t-26);  /* graisse 700 · style italique · encre accent-e3 — le paragraphe d'attaque sous le titre */
+  --t-ll-corps: var(--t-20);  /* graisse 300 · Museo · 15 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-ll-note: var(--t-12);   /* graisse 300 · 9 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
 
   /* Les CHIFFRES — trois moments du prix, un code. 14 → 21 → 33. */
@@ -408,8 +409,10 @@
     --t-chrome-titre: var(--t-16);
     --t-ll-titre: var(--t-42);
     --t-ll-intertitre: var(--t-26);
-    --t-ll-chapo: var(--t-16);
+    --t-ll-h3: var(--t-20);
     --t-ll-h4: var(--t-16);
+    --t-ll-h5: var(--t-16);
+    --t-ll-h6: var(--t-16);
     --t-ll-corps: var(--t-16);
     /* le display n'existe pas à ce palier — loi de dégradation */
   }
@@ -424,10 +427,12 @@
     --t-body: var(--t-16);
     --t-chrome-titre: var(--t-21);
     --t-ll-titre: var(--t-68);
-    --t-ll-intertitre: var(--t-33);
-    --t-ll-chapo: var(--t-26);
+    --t-ll-intertitre: var(--t-42);
+    --t-ll-h3: var(--t-33);
     --t-ll-h4: var(--t-20);
-    --t-ll-corps: var(--t-16);
+    --t-ll-h5: var(--t-20);
+    --t-ll-h6: var(--t-20);
+    --t-ll-corps: var(--t-20);
   }
 }
 
@@ -611,7 +616,7 @@
                   line-height: var(--lh-lecture-ecran); }
 .lecture-longue h1 { font-size: var(--t-ll-titre); line-height: var(--lh-soude); }
 .lecture-longue h2 { font-size: var(--t-ll-intertitre); line-height: var(--lh-bloc); }
-.lecture-longue h3 { font-size: var(--t-ll-chapo); line-height: var(--lh-bloc); }
+.lecture-longue h3 { font-size: var(--t-ll-h3); line-height: var(--lh-bloc); }
 .lecture-longue h4 { font-size: var(--t-ll-h4); line-height: var(--lh-prose); }
 .lecture-longue h5 { font-size: calc(var(--t-ll-h5) * var(--zoom-lecture));
                      line-height: var(--lh-prose); }
@@ -624,7 +629,7 @@
    ils partagent alors son barreau et suivent donc le facteur avec lui. Au-dessus
    de ce jeu ils ont leur propre barreau et ne bougent pas. */
 @media (max-width: 640px) {
-  .lecture-longue h3 { font-size: calc(var(--t-ll-chapo) * var(--zoom-lecture)); }
+  .lecture-longue h3 { font-size: calc(var(--t-ll-h3) * var(--zoom-lecture)); }
   .lecture-longue h4 { font-size: calc(var(--t-ll-h4) * var(--zoom-lecture)); }
 }
 /* Un item qui se replie n'est pas un item bref : ses lignes se lisent comme
@@ -648,6 +653,12 @@
 .regle-taille button[disabled] { opacity: .4; cursor: default; }
 .regle-taille .etat { font-size: var(--t-label); color: var(--encre-discrete);
                       min-width: 8ch; text-align: right; }
+/* La commande ne sert que la ou le corps n'est pas deja a sa taille eprouvee.
+   Au-dessus du plus petit jeu d'ecran le corps vaut deja le dernier cran : il
+   n'y a plus rien a regler vers le haut, et une commande sans course est un
+   bouton qui ment. Elle reste servie au plus petit jeu, ou le corps part de
+   plus bas. Le zoom du navigateur reste disponible partout. */
+@media (min-width: 641px) { .regle-taille { display: none; } }
 @media print {
   .lecture-longue { line-height: var(--lh-lecture-print); }
 }
