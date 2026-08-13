@@ -149,7 +149,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .chrome-burger{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .lang-btn{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .verbe{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-.centre{display:flex;align-items:center;gap:5px}
+.centre{display:flex;align-items:center;gap:var(--air-colle)}
 .ankh-home{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
 .ankh-home svg{width:44px;height:44px;display:block}
 /* Le disque de la pastille est une FONCTION de son logotype, pas un nombre
@@ -291,7 +291,7 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .consent:empty{display:none}
 .consent-lien{margin:8px 2px;text-align:center}
 .consent-lien a{text-underline-offset:3px;text-decoration:underline;padding:0 8px;color:var(--encre-discrete);font-size:var(--t-note)}
-.bouton-confirmer{border:none;border-radius:var(--rayon-pilule);min-height:52px;cursor:pointer;background:var(--roots-vert);padding:16px;font-size:var(--t-body);font-weight:700;font-family:var(--font-corps);width:100%;color:var(--blanc)}
+.bouton-confirmer{border:none;border-radius:var(--rayon-pilule);min-height:52px;cursor:pointer;background:var(--roots-vert);padding:16px;font-size:var(--t-body);font-weight:700;font-family:var(--font-eclat);width:100%;color:var(--blanc)}
 .bouton-confirmer:disabled{cursor:not-allowed;opacity:.35}
 .bouton-confirmer.occupe{cursor:progress;opacity:.7}
 /* Retirer du flux sans retirer du document. Le JS qui revele pose toujours
@@ -328,7 +328,7 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--esp-3);flex-wrap:wrap}
 .geste-code{min-height:var(--cible-min);padding:0 var(--esp-4);border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:var(--w-bold);cursor:pointer}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-corps);font-size:var(--t-28);font-weight:700;white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-eclat);font-size:var(--t-28);font-weight:700;white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 @media(min-width:640px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}

@@ -241,7 +241,7 @@
   --t-sm: var(--t-14);        /* graisse 500 */
   --t-note: var(--t-12);      /* graisse 500 — description · mention · aide de champ · notice de consentement */
   --t-label: var(--t-12);     /* graisse 700 · capitales */
-  --t-chrome-titre: var(--t-16);/* logotype MuseoModerno 700 — chrome collant */
+  --t-chrome-titre: var(--t-21);/* logotype MuseoModerno 700 — chrome collant */
 
   /* Rôles — CONSOLE, dialecte B. Quarte pure, aucun emprunt. */
   --t-b-h1: var(--t-51);      /* graisse 700 */
@@ -422,7 +422,7 @@
     --t-h3: var(--t-21);
     --t-h4: var(--t-16);
     --t-body: var(--t-16);
-    --t-chrome-titre: var(--t-16);
+    --t-chrome-titre: var(--t-21);
     --t-ll-titre: var(--t-68);
     --t-ll-intertitre: var(--t-33);
     --t-ll-chapo: var(--t-26);
@@ -636,10 +636,10 @@
 /* Ne pas coller cette commande au bord haut : un en-tete colle y occupe deja le
    meme bord avec un rang d'empilement superieur, et la commande passe derriere
    lui, inatteignable au defilement. */
-.regle-taille { display: flex; align-items: center; justify-content: flex-end;
-                gap: var(--esp-1); padding: var(--air-lie) 0;
-                background: var(--blanc-casse);
-                border-bottom: 1px solid var(--gris-filet); }
+.regle-taille { display: flex; align-items: center; gap: var(--esp-1);
+                width: max-content; margin-inline: auto;
+                font-size: var(--t-label); padding: var(--air-lie) 0;
+                background: var(--blanc-casse); }
 .regle-taille button { min-width: var(--cible-min); min-height: var(--cible-min);
                        border: 0; border-radius: var(--rayon-pilule);
                        background: var(--gris-ilot); color: var(--encre);
