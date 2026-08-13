@@ -256,7 +256,7 @@
   --t-ll-h4: var(--t-20);     /* graisse 700 · encre accent-e3  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-ll-h5: var(--t-20);     /* graisse 300 · casse capitales · encre encre */
   --t-ll-h6: var(--t-20);     /* graisse 300 · style italique · encre accent-e3 */
-  --t-ll-chapo: var(--t-33);  /* graisse 700 · style italique · encre accent-e3 — le paragraphe d'attaque sous le titre */
+  --t-ll-chapo: var(--t-26);  /* graisse 700 · style italique · encre accent-e3 — le paragraphe d'attaque sous le titre */
   --t-ll-corps: var(--t-20);  /* graisse 300 · Museo · 15 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
   --t-ll-note: var(--t-12);   /* graisse 300 · 9 pt  ⚠ EXCEPTION TRACÉE — voir la pièce */
 
@@ -413,7 +413,7 @@
     --t-ll-h4: var(--t-16);
     --t-ll-h5: var(--t-16);
     --t-ll-h6: var(--t-16);
-    --t-ll-chapo: var(--t-26);
+    --t-ll-chapo: var(--t-20);
     --t-ll-corps: var(--t-16);
     /* le display n'existe pas à ce palier — loi de dégradation */
   }
@@ -433,7 +433,7 @@
     --t-ll-h4: var(--t-20);
     --t-ll-h5: var(--t-20);
     --t-ll-h6: var(--t-20);
-    --t-ll-chapo: var(--t-33);
+    --t-ll-chapo: var(--t-26);
     --t-ll-corps: var(--t-20);
   }
 }
