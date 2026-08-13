@@ -161,9 +161,13 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .toggle{--pastille-d:calc(2 * var(--t-chrome-titre))}
 .toggle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;min-width:var(--cible-min);height:var(--cible-min)}
 .toggle{position:relative;display:flex;align-items:center;height:var(--pastille-d);max-width:var(--pastille-d);overflow:hidden;cursor:pointer;background:var(--roots-vert);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--roots-vert),0 3px 10px rgba(var(--vert-e2-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
+/* Deplie, le logotype etait colle a son bord gauche pendant que NU respirait
+   du sien : le retrait de la piste equilibre les deux extremites. Replie, il
+   n'existe pas — le disque doit rester un disque. */
+.toggle.ouvert{padding-left:var(--esp-3)}
 .toggle.ouvert{max-width:300px;transition:max-width var(--mvt-parcours) var(--courbe-entree)}
 .toggle .mot{width:var(--pastille-d);height:var(--pastille-d);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--blanc);line-height:1}
-.toggle .reste{display:flex;align-items:center;gap:8px;padding-right:14px;flex-shrink:0}
+.toggle .reste{display:flex;align-items:center;gap:var(--esp-2);padding-right:var(--esp-3);flex-shrink:0}
 .reste .sub{font-size:var(--t-label);color:var(--blanc);font-style:italic}
 .switch{width:42px;height:22px;border-radius:var(--rayon-pilule);background:rgba(var(--blanc-casse-rgb),.20);border:1px solid rgba(var(--blanc-casse-rgb),.3);position:relative;cursor:pointer;flex-shrink:0}
 .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--blanc);transition:left var(--mvt-etat) var(--courbe-etat)}
@@ -280,10 +284,13 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .iti--fullscreen-popup{z-index:10000}
 /* Le bloc de confidentialite ferme le panneau, sous l'action : la notice puis
    son lien. Les ecarts de ce groupe sont des multiples du pas de 8. */
-.consent{font-size:var(--t-sm);text-align:center;color:var(--encre-discrete);margin:16px 2px 0;line-height:1.45}
+/* La notice de consentement est une NOTE : meme jeton que la description, la
+   mention et l'aide de champ. Son texte vient du serveur — l'ecran ne le
+   compose pas, il l'habille. */
+.consent{font-size:var(--t-note);text-align:center;color:var(--encre-discrete);margin:16px 2px 0;line-height:var(--lh-12)}
 .consent:empty{display:none}
 .consent-lien{margin:8px 2px;text-align:center}
-.consent-lien a{text-underline-offset:3px;text-decoration:underline;padding:0 8px;color:var(--encre-discrete);font-size:var(--t-sm)}
+.consent-lien a{text-underline-offset:3px;text-decoration:underline;padding:0 8px;color:var(--encre-discrete);font-size:var(--t-note)}
 .bouton-confirmer{border:none;border-radius:var(--rayon-pilule);min-height:52px;cursor:pointer;background:var(--roots-vert);padding:16px;font-size:var(--t-body);font-weight:700;font-family:var(--font-corps);width:100%;color:var(--blanc)}
 .bouton-confirmer:disabled{cursor:not-allowed;opacity:.35}
 .bouton-confirmer.occupe{cursor:progress;opacity:.7}
@@ -321,7 +328,7 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--esp-3);flex-wrap:wrap}
 .geste-code{min-height:var(--cible-min);padding:0 var(--esp-4);border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:var(--w-bold);cursor:pointer}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-corps);font-size:var(--t-21);font-weight:700;white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-corps);font-size:var(--t-28);font-weight:700;white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 @media(min-width:640px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}
@@ -401,7 +408,7 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 :where(body.p-accueil) #menuCompact{max-height:34vh;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gris-ilot)}
 :where(body.p-accueil) #menuCompact::-webkit-scrollbar{display:none}
 :where(body.p-accueil) #menuCompact .cat-compacte:first-child{margin-top:4px}
-:where(body.p-accueil) .cat-compacte{font-size:var(--t-label);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gris-500);margin:14px 2px 8px;padding-left:8px;border-left:3px solid var(--roots-terracotta)}
+:where(body.p-accueil) .cat-compacte{font-size:var(--t-label);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--gris-500);margin:14px 2px 8px;padding-left:8px;border-left:3px solid var(--vert-e3)}
 :where(body.p-accueil) .art-compact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--gris-ilot)}
 :where(body.p-accueil) .art-compact .n{font-size:var(--t-sm);font-weight:700}
 :where(body.p-accueil) .art-compact .p{font-size:var(--t-sm);color:var(--encre-discrete);font-family:var(--font-chiffres)}
@@ -446,12 +453,12 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .cat.actif{background:var(--vert-selection);border-color:var(--roots-vert)}
 /* Le saut vers une section la depose sous la pile collante, pas dessous. */
 :where(body.p-carte) .section-menu{scroll-margin-top:calc(var(--entete-h) + var(--cat-h) + var(--esp-3))}
-:where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--esp-8) 0 var(--esp-3);padding-left:var(--esp-3);border-left:3px solid var(--roots-terracotta);display:table}
+:where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--esp-8) 0 var(--esp-3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}
 :where(body.p-carte) .section-menu:first-of-type h3{margin-top:var(--esp-2)}
 :where(body.p-carte) .article{background:var(--blanc);border-radius:var(--rayon-module);padding:14px 15px;margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:center;box-shadow:var(--ombre-2)}
 :where(body.p-carte) .article .infos{flex:1}
 :where(body.p-carte) .article .nom{font-size:var(--t-sm);font-weight:700}
-:where(body.p-carte) .article .desc{font-size:var(--t-note);color:var(--terre-e3);margin-top:3px;line-height:1.4;font-family:var(--font-lecture);font-weight:300}
+:where(body.p-carte) .article .desc{font-size:var(--t-note);color:var(--vert-e3);margin-top:3px;line-height:1.4;font-family:var(--font-lecture);font-weight:300}
 :where(body.p-carte) .article .prix{font-size:var(--t-sm);font-weight:700;color:var(--encre);margin-top:5px;font-family:var(--font-chiffres)}
 :where(body.p-carte) .article.rupture{box-shadow:none;background:transparent;border:1px dashed var(--gris-service)}
 :where(body.p-carte) .article.rupture .infos{opacity:.55}

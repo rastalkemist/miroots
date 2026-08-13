@@ -1,12 +1,14 @@
 /* Reglage de taille de la lecture longue — SC 1.4.8 (mecanisme disponible).
-   Cinq crans, un point typographique par cran. Le facteur multiplie TOUT le
-   registre editorial : les rapports entre niveaux sont la raison d'etre de
-   l'echelle, et un reglage qui ne toucherait que le corps les detruirait.
+   Quatre crans, un point typographique par cran. Le facteur ne porte que sur le
+   corps et sur les niveaux qui partagent sa taille ; les titres au-dessus ne
+   bougent pas. La serie s'arrete a 15 pt parce que le barreau editorial suivant
+   vaut cette taille : au dernier cran le corps touche le niveau au-dessus sans
+   le depasser. Ajouter un cran inverserait la hierarchie.
    Exige un conteneur `.lecture-longue` et une commande `.regle-taille`. */
 (function () {
   'use strict';
-  var CRANS = [1, 1.0833, 1.1667, 1.25, 1.3333];   // (12 + n) / 12, en points
-  var CORPS = ['12', '13', '14', '15', '16'];  // en points
+  var CRANS = [1, 1.0833, 1.1667, 1.25];   // (12 + n) / 12, en points
+  var CORPS = ['12', '13', '14', '15'];  // en points
   var CLE = 'roots.lecture.cran';
 
   function poser(zone, n) {
