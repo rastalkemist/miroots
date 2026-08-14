@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-3/+0WrlXrgBsQsHR55q0ezwVPNp1qWOh8mjdRADSewA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-IBIVynA00G0TCmw1KZZ9D/xxt4CD7m6gU6D+rjDV+sc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation ou ma commande — Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -27,13 +27,13 @@
 <!-- ══════════════ CHROME HAUT ══════════════ -->
 <header class="chrome-haut">
   <div class="chrome-inner">
-    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
     <div class="centre">
       <div class="toggle" id="marque">
         <span class="mot" id="motMode">Mi</span>
         <span class="reste">
           <span class="sub">(solo)</span>
-          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
           <span class="sub">(social)</span>
           <span class="nu">NU</span>
         </span>
@@ -41,8 +41,8 @@
       <a class="chrome-titre" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -96,7 +96,7 @@
 </nav>
 <div class="voile-menu" id="voileMenu"></div>
 <div class="menu-pop" id="drawer">
-  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div id="sections"></div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -146,18 +146,18 @@
                   livree: 'Servie', annulee: 'Annulée' }
     },
     en: {
-      titre: 'Find my booking or order', sous: 'Your code and the number you used.',
-      lCode: 'Your code', lTel: 'Phone number used', bChercher: 'Find',
-      bAutre: 'Find something else',
-      archive: 'This booking is past: you can view it, not change it.',
-      manque: 'Enter the 6-character code and your number.',
-      introuvable: 'Nothing matches this code and number.',
-      onCherche: 'Searching…',
-      annuler: 'Cancel this booking', confirmer: 'Confirm cancellation',
+      titre: 'Find your booking or order', sous: 'Your code, and the number you gave us.',
+      lCode: 'Your code', lTel: 'Phone number used', bChercher: 'Find it',
+      bAutre: 'Look up something else',
+      archive: 'This one’s in the past — you can look, but not change anything.',
+      manque: 'We need the 6-character code and your number.',
+      introuvable: 'Nothing matches that code and number.',
+      onCherche: 'Looking…',
+      annuler: 'Cancel this booking', confirmer: 'Yes, cancel it',
       annulee: 'Booking cancelled.',
       issues: {
-        annulee: { titre: 'Booking cancelled', dit: 'Done. If an amount was paid, the refund follows the published terms and the team will get back to you.' },
-        demande_transmise: { titre: 'Cancellation request sent', dit: 'Within seven days, a cancellation is decided with the team: your booking is still active and your request has been sent. They will reply.' }
+        annulee: { titre: 'Booking cancelled', dit: 'That’s done. If you’ve already paid, the team will be in touch about the refund.' },
+        demande_transmise: { titre: 'Cancellation request sent', dit: 'Inside seven days, the team handles cancellations personally. Your booking is still live and they’ve got your request — they’ll come back to you.' }
       },
       bAccueil: 'Back to home',
       matin: 'Morning', apres_midi: 'Afternoon', journee: 'Full day',
@@ -168,19 +168,19 @@
                annulee: 'Cancelled', expiree: 'Expired', no_show: 'No-show', preemptee: 'Moved' },
       paie: { en_attente: 'To pay', acompte_paye: 'Deposit paid', paye: 'Paid',
               rembourse: 'Refunded', rembourse_partiellement: 'Partly refunded', echoue: 'Payment failed' },
-      toastVerbe: function (v) { return v + ' coming soon.'; },
-      toastNu: 'NU mode (community) coming soon.',
+      toastVerbe: function (v) { return v + ' is on its way.'; },
+      toastNu: 'NU — the community side — is on its way.',
       mentions: 'Legal notices',
       saut: 'Skip to content',
-      phase: 'Trial version. Some features are incomplete or unavailable.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
+      phase: 'Trial version — some things aren’t finished yet.',
+      fCode: 'Six characters, letters and numbers — like ABC123.',
       bPayer: 'Pay now', onOuvre: 'Opening payment…',
-      payerFerme: 'Online payment is not available. You can pay at the counter.',
-      mComptoir: 'This order can be paid online only from the device that placed it. Otherwise your code is enough at the counter.',
-      lCommande: 'My order', lArticles: 'Items', lTotal: 'Total',
+      payerFerme: 'Online payment isn’t available right now. You can pay at the counter.',
+      mComptoir: 'To pay for this online, use the device you ordered from. Otherwise, your code is all you need at the counter.',
+      lCommande: 'Your order', lArticles: 'Items', lTotal: 'Total',
       surPlace: 'Table service', aEmporter: 'Takeaway',
-      archiveCmd: 'An order already in the kitchen is changed with the team, not from this screen.',
-      etatsCmd: { en_attente: 'Received', en_preparation: 'Being prepared', prete: 'Ready',
+      archiveCmd: 'Once an order reaches the kitchen, the team handles any changes — not this screen.',
+      etatsCmd: { en_attente: 'Received', en_preparation: 'Being made', prete: 'Ready',
                   livree: 'Served', annulee: 'Cancelled' }
     }
   };

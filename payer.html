@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-eEbmukGR6LdE+Wnx8Ig6ubdH1z2Dsl8+yaaRbsVl3o8='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-VjjJHjhygfro7yeAnHUV0cdHZHNsgAH4ezECofyuz/g='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -33,7 +33,7 @@
     <span class="ankh-home" aria-hidden="true"><svg viewBox="0 0 110 111" role="img"><path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/><path fill-rule="nonzero" fill="rgb(89.019608%, 10.588235%, 13.72549%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>  </svg></span>
     <div class="centre"><span class="chrome-titre">Roots</span></div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
+      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al="alLangue">EN</button>
     </div>
   </div>
 </header>
@@ -83,6 +83,7 @@
       retour: 'Retrouver ma réservation',
       onVerifie: 'On vérifie ton paiement',
       onVerifieDit: 'Un instant, on demande la réponse au serveur.',
+      alLangue: 'Langue',
       /* Registre LEGAL : vouvoiement, alors que le reste de l'ecran tutoie.
          La difference est voulue et se voit — la plaque porte sa voix. */
       archivage: 'Votre facture vous est remise après paiement. Roots en conserve une copie pendant dix ans ; vous pouvez en demander une copie à tout moment en écrivant à gerant@roots.bj.'
@@ -90,16 +91,17 @@
     en: {
       saut: 'Skip to content', h1: 'Payment',
       ouverture: 'Opening payment',
-      attends: 'Payment opens in a moment. Please keep this page open.',
+      attends: 'Payment opens in a second. Keep this page open.',
       ouvrirBouton: 'Open payment',
-      bloque: 'Payment did not open',
-      bloqueDit: 'Your browser blocked the loading. Try again, or pay at the counter.',
+      bloque: 'Payment didn’t open',
+      bloqueDit: 'Your browser blocked it. Have another go, or pay at the counter.',
       sansRemise: 'Nothing to pay here',
-      sansRemiseDit: 'This page opens from your booking. Find it again to resume.',
+      sansRemiseDit: 'You get to this page from your booking. Pull it up again to carry on.',
       retour: 'Find my booking',
       onVerifie: 'Checking your payment',
-      onVerifieDit: 'One moment, we are asking the server.',
-      archivage: 'Your invoice is issued after payment. Roots retains a copy for ten years; you may request a copy at any time by writing to gerant@roots.bj.'
+      onVerifieDit: 'One moment — we’re asking the server.',
+      alLangue: 'Language',
+      archivage: 'Your invoice is issued once payment is complete. Roots Inc retains a copy for ten years. You may request a copy at any time by writing to gerant@roots.bj.'
     }
   };
 
@@ -137,6 +139,13 @@
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
+    });
+    /* Un libelle lu par un lecteur d'ecran est un texte comme un autre : il
+       suit la langue. Cet ecran ne charge aucun script partage, il porte donc
+       le sien. */
+    document.querySelectorAll('[data-al]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-al')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
     });
     $('second').textContent = t().retour;
     $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';

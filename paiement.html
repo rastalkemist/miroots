@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-VI0/7X1I76Y/9FQFoNb9E8hIh6MQ249OUzNxTVi19aM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-wNAvenehakdUMCbWtvy92g1CH2R0aXyQxIakErXliSI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -24,13 +24,13 @@
 
 <header class="chrome-haut">
   <div class="chrome-inner">
-    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
     <div class="centre">
     <div class="toggle" id="marque">
       <span class="mot" id="motMode">Mi</span>
       <span class="reste">
         <span class="sub">(solo)</span>
-        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
         <span class="sub">(social)</span>
         <span class="nu">NU</span>
       </span>
@@ -39,7 +39,7 @@
     </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -143,46 +143,46 @@
     },
     en: {
       saut: 'Skip to content',
-      phase: 'Trial version. Some features are incomplete or unavailable.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
+      phase: 'Trial version — some things aren’t finished yet.',
+      fCode: 'Six characters, letters and numbers — like ABC123.',
       h1: 'Payment',
       lCode: 'Your order code',
       politique: 'Privacy Policy',
       etats: {
         attente: {
           titre: 'Checking your payment',
-          dit: 'Stay on this page, it takes less than a minute. Your code is already saved: you will find it again even if you close this tab.',
+          dit: 'Hang on here — this takes less than a minute. Your code is already saved, so you won’t lose it even if you close the tab.',
           action: null, second: null, jauge: true, code: true
         },
         payee: {
           titre: 'Payment received',
-          dit: 'Your order is settled. You can take your invoice with you.',
+          dit: 'You’re all settled. Your invoice is ready whenever you are.',
           action: 'Get my invoice', second: 'Find my order',
           jauge: false, code: true
         },
         refusee: {
-          titre: 'The payment did not go through',
-          dit: '<strong>No amount was charged.</strong> You can try again, or pay at the counter.',
+          titre: 'That payment didn’t go through',
+          dit: '<strong>Nothing was charged.</strong> Have another go, or pay at the counter.',
           action: 'Try again', second: 'Find my order',
           jauge: false, code: true
         },
         'sans-reponse': {
-          titre: 'No answer yet',
-          dit: 'We have no answer from your operator yet. This can take a few more minutes.',
-          avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
+          titre: 'No word yet',
+          dit: 'Your provider hasn’t come back to us yet. It can take a few minutes longer than usual.',
+          avert: 'Don’t pay twice. If the money left your account, it’ll show up and your order will be settled. Just keep your code.',
           action: 'Check again', second: 'Find my order',
           jauge: false, code: true
         },
         'sans-reponse-long': {
-          titre: 'Still no answer',
-          dit: 'We are still checking on our side. There is nothing more for you to do here: keep your code, it finds your order at any time.',
-          avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
+          titre: 'Still nothing',
+          dit: 'We’re still chasing it on our side. Nothing left for you to do here — keep your code and it’ll bring your order straight back up.',
+          avert: 'Don’t pay twice. If the money left your account, it’ll show up and your order will be settled. Just keep your code.',
           action: 'Find my order', second: null,
           jauge: false, code: true
         },
         regularisation: {
-          titre: 'Your payment arrived',
-          dit: 'One check remains on our side before your order is validated. We will come back to you — keep your code.',
+          titre: 'Your payment came through',
+          dit: 'One check left on our side before we can release your order. We’ll come back to you — keep your code.',
           action: 'Find my order', second: null,
           jauge: false, code: true
         }
@@ -214,17 +214,17 @@
     en: {
       commande: {
         lCode: 'Your order code',
-        regle: 'Your order is settled. You can take your invoice with you.',
+        regle: 'You’re all settled. Your invoice is ready whenever you are.',
         retrouver: 'Find my order',
-        avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
-        enCours: 'One check remains on our side before your order is validated. We will come back to you — keep your code.'
+        avert: 'Don’t pay twice. If the money left your account, it’ll show up and your order will be settled. Just keep your code.',
+        enCours: 'One check left on our side before we can release your order. We’ll come back to you — keep your code.'
       },
       reservation: {
         lCode: 'Your booking code',
-        regle: 'Your booking is settled. You can take your invoice with you.',
+        regle: 'You’re all settled. Your invoice is ready whenever you are.',
         retrouver: 'Find my booking',
-        avert: 'Do not pay a second time. If the amount left your account it will be recorded and your booking settled. Keep your code.',
-        enCours: 'One check remains on our side before your booking is validated. We will come back to you — keep your code.'
+        avert: 'Don’t pay twice. If the money left your account, it’ll show up and your booking will be settled. Just keep your code.',
+        enCours: 'One check left on our side before we can confirm your booking. We’ll come back to you — keep your code.'
       }
     }
   };

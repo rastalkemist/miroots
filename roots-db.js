@@ -30,49 +30,49 @@ window.Roots = window.Roots || {};
 
   var MESSAGES = {
     'consentement requis':
-      { fr: "Coche l'accord pour continuer.", en: 'Please accept to continue.' },
+      { fr: "Coche l'accord pour continuer.", en: 'Tick the box to carry on.' },
     'commande introuvable ou jeton invalide':
       { fr: 'On ne retrouve pas cette commande sur cet appareil.', en: "We can't find this order on this device." },
     'la commande est deja en preparation':
-      { fr: 'La cuisine a commencé — passe au comptoir pour modifier.', en: 'The kitchen has started — see the counter to change it.' },
+      { fr: 'La cuisine a commencé — passe au comptoir pour modifier.', en: 'The kitchen has already started — ask at the counter to change it.' },
     'quantite hors bornes':
-      { fr: 'Choisis entre 1 et 50.', en: 'Pick between 1 and 50.' },
+      { fr: 'Choisis entre 1 et 50.', en: 'Choose between 1 and 50.' },
     'article indisponible':
-      { fr: "Ce plat n'est plus disponible aujourd'hui.", en: 'This dish is unavailable today.' },
+      { fr: "Ce plat n'est plus disponible aujourd'hui.", en: 'That one’s off today.' },
     'article inconnu':
-      { fr: 'Ce plat ne figure plus à la carte.', en: 'This dish is no longer on the menu.' },
+      { fr: 'Ce plat ne figure plus à la carte.', en: 'That one’s no longer on the menu.' },
     'espace inconnu':
-      { fr: 'Cet espace n’est pas disponible.', en: 'This space is not available.' },
+      { fr: 'Cet espace n’est pas disponible.', en: 'That space isn’t available.' },
     'logement inconnu':
-      { fr: 'Ce logement n’est pas disponible.', en: 'This room is not available.' },
+      { fr: 'Ce logement n’est pas disponible.', en: 'That room isn’t available.' },
     'logement indisponible':
-      { fr: 'Ce logement n’est pas disponible.', en: 'This room is not available.' },
+      { fr: 'Ce logement n’est pas disponible.', en: 'That room isn’t available.' },
     'date passee':
-      { fr: 'Choisis une date à venir.', en: 'Pick a future date.' },
+      { fr: 'Choisis une date à venir.', en: 'Choose a date that hasn’t passed.' },
     'horizon de reservation depasse (30 jours)':
-      { fr: 'Les réservations s’ouvrent jusqu’à 30 jours à l’avance.', en: 'Bookings open up to 30 days ahead.' },
+      { fr: 'Les réservations s’ouvrent jusqu’à 30 jours à l’avance.', en: 'You can book up to 30 days ahead.' },
     'horizon de reservation depasse (365 jours)':
-      { fr: 'Les séjours s’ouvrent jusqu’à un an à l’avance.', en: 'Stays open up to a year ahead.' },
+      { fr: 'Les séjours s’ouvrent jusqu’à un an à l’avance.', en: 'You can book a stay up to a year ahead.' },
     'duree maximale de sejour depassee (30 nuits)':
-      { fr: 'Un séjour va jusqu’à 30 nuits.', en: 'A stay can last up to 30 nights.' },
+      { fr: 'Un séjour va jusqu’à 30 nuits.', en: 'Stays run to 30 nights at most.' },
     'tarif indisponible pour ce creneau':
-      { fr: 'Ce créneau n’est pas encore ouvert à la réservation.', en: 'This slot is not open for booking yet.' },
+      { fr: 'Ce créneau n’est pas encore ouvert à la réservation.', en: 'That slot isn’t open for booking yet.' },
     'espace retenu en usage exclusif sur ce creneau':
-      { fr: 'Ce créneau est privatisé. Choisis-en un autre.', en: 'This slot is booked privately. Please pick another.' },
+      { fr: 'Ce créneau est privatisé. Choisis-en un autre.', en: 'Someone has that slot privately — pick another.' },
     'cet usage se reserve aupres de l\'equipe':
       { fr: 'Cet usage se réserve auprès de l’équipe. Écris-nous et on te répond.',
-        en: 'This usage is booked with our team. Get in touch and we will reply.' },
+        en: 'For this one, talk to the team — get in touch and they’ll come back to you.' },
     'mode d\'usage non offert pour cet espace':
-      { fr: 'Cet usage n’est pas proposé pour cet espace.', en: 'This usage is not offered for this space.' },
+      { fr: 'Cet usage n’est pas proposé pour cet espace.', en: 'That isn’t on offer for this space.' },
     'version de consentement inconnue ou perimee':
       { fr: 'Recharge la page : la notice a changé depuis l’ouverture de cet onglet.',
-        en: 'Please reload: the notice changed since this tab was opened.' },
+        en: 'Please reload — the notice changed after you opened this tab.' },
     'la cle d\'idempotence doit etre un uuid tire au hasard':
-      { fr: 'Recharge la page et recommence.', en: 'Please reload the page and try again.' },
+      { fr: 'Recharge la page et recommence.', en: 'Reload the page and have another go.' },
     'cle d\'idempotence deja utilisee':
-      { fr: 'Recharge la page et recommence.', en: 'Please reload the page and try again.' },
+      { fr: 'Recharge la page et recommence.', en: 'Reload the page and have another go.' },
     'indiquez un numero de table, ou un prenom et un telephone':
-      { fr: 'Indique ton prénom et ton numéro.', en: 'Please give your first name and phone number.' }
+      { fr: 'Indique ton prénom et ton numéro.', en: 'We need your first name and phone number.' }
   };
 
   var REPLI = {
@@ -135,7 +135,7 @@ window.Roots = window.Roots || {};
       reponse = await fetch(BASE + chemin, options);
     } catch (e) {
       throw new ErreurRoots(
-        langue === 'en' ? 'No connection. Check your network.' : 'Pas de connexion. Vérifie ton réseau.',
+        langue === 'en' ? 'You’re offline. Check your connection.' : 'Pas de connexion. Vérifie ton réseau.',
         langue, 'reseau', 0
       );
     }

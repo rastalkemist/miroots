@@ -128,11 +128,54 @@
       { ico: 'i-ticket',     t: 'Retrouver',          s: 'Réservation ou commande, avec ton code', href: 'retrouver.html' }
     ],
     en: [
-      { ico: 'i-carte',      t: 'Menu',         s: 'Food for your soul',    href: 'carte.html' },
-      { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },
-      { ico: 'i-ticket',     t: 'Find it',      s: 'Booking or order, with your code', href: 'retrouver.html' }
+      { ico: 'i-carte',      t: 'Menu',         s: 'Everything we serve, in full',  href: 'carte.html' },
+      { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office',        href: 'index.html?ouvrir=reserver' },
+      { ico: 'i-ticket',     t: 'Find it',      s: 'A booking or an order — just your code', href: 'retrouver.html' }
     ]
   };
+
+  /* ------------------------------------------------------------------
+     LES LIBELLES DU CHROME QUE SEUL UN LECTEUR D'ECRAN ENTEND.
+     Un `aria-label` est un texte lu par un utilisateur, au meme titre
+     qu'un libelle visible : il suit donc la langue de l'ecran. Ecrit en
+     dur dans le balisage, il reste dans une langue quoi que fasse le
+     bouton de langue, et toute la barre s'annonce alors dans l'autre.
+     Un element se declare par `data-al-chrome` et son libelle vit ICI,
+     une seule fois pour les six ecrans.
+
+     `data-al` appartient aux ecrans et pointe leur propre table : les
+     deux attributs ne se croisent pas.
+
+     NE PORTENT PAS DE LIBELLE : Plan, Roots, Roam et Roots Radio, qui
+     sont des noms propres et ne se traduisent dans aucune langue.
+     ------------------------------------------------------------------ */
+  var LIBELLES = {
+    fr: {
+      accueil: 'Accueil', menu: 'Menu', fermer: 'Fermer', langue: 'Langue',
+      mode: 'Basculer Mi / NU', moins: 'Moins', plus: 'Plus',
+      feuille: 'Réserver ou commander', commande: 'Ma commande',
+      taille: 'Taille du texte',
+      tailleMoins: 'Réduire la taille du texte',
+      taillePlus: 'Augmenter la taille du texte'
+    },
+    en: {
+      accueil: 'Home', menu: 'Menu', fermer: 'Close', langue: 'Language',
+      mode: 'Switch between Mi and NU', moins: 'Fewer', plus: 'More',
+      feuille: 'Book or order', commande: 'Your order',
+      taille: 'Text size',
+      tailleMoins: 'Smaller text',
+      taillePlus: 'Larger text'
+    }
+  };
+
+  function poserLibelles(langue) {
+    var table = LIBELLES[langue] || LIBELLES.fr;
+    Array.prototype.forEach.call(
+      document.querySelectorAll('[data-al-chrome]'), function (el) {
+        var v = table[el.getAttribute('data-al-chrome')];
+        if (typeof v === 'string') el.setAttribute('aria-label', v);
+      });
+  }
 
   function ici() { return location.pathname.split('/').pop() || 'index.html'; }
 
@@ -218,6 +261,9 @@
     if (voile) voile.addEventListener('click', fermerMenu);
 
     function dessinerSections() {
+      /* Les libelles du chrome suivent la meme bascule que la liste : chaque
+         ecran rappelle deja cette fonction au changement de langue. */
+      poserLibelles(getLangue());
       var cont = document.getElementById('sections');
       if (!cont) return;
       var liste = getSections(getLangue()) || [];
@@ -595,6 +641,7 @@
   global.Roots.initTelRoots = initTelRoots;
   global.Roots.initChrome = initChrome;
   global.Roots.nav = nav;
+  global.Roots.poserLibelles = poserLibelles;
   global.Roots.copier = copier;
   global.Roots.cartel = cartel;
   global.Roots.modale = modale;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-2kaWjWBm6pawqZRx1lHZKDcxyzmcCA0cgjKqqiUGoU4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-E+hEiTOyvV+Q0AK7BGp2n6tIvIGlYwbKTAmEccKC20E='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -25,13 +25,13 @@
 
 <header class="chrome-haut">
   <div class="chrome-inner">
-    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
     <div class="centre">
     <div class="toggle" id="marque">
       <span class="mot" id="motMode">Mi</span>
       <span class="reste">
         <span class="sub">(solo)</span>
-        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
         <span class="sub">(social)</span>
         <span class="nu">NU</span>
       </span>
@@ -40,7 +40,7 @@
     </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -139,28 +139,28 @@
       saut: 'Skip to content',
       h1: 'My invoice',
       politique: 'Privacy Policy',
-      essai: 'Test document — issued on the DGI test platform. It has no fiscal value.',
+      essai: 'Test document, issued on the tax authority’s test platform. It has no fiscal value.',
       verifier: 'Verify this document',
       refAchat: 'Purchase ref.',
       retrouver: { commande: 'Find my order', reservation: 'Find my booking' },
       surAppareil: {
-        commande: 'The invoice is delivered on the device used to pay. Ask at the counter with your code.',
-        reservation: 'The invoice is delivered on the device used to pay. Find your booking with your code and number, or ask at the counter.'
+        commande: 'Invoices are issued to the device used for payment. Bring your code to the counter and the team will retrieve it.',
+        reservation: 'Invoices are issued to the device used for payment. Look up your booking with your code and number, or ask at the counter.'
       },
       etapes: {
         choix: {
           titre: 'Your invoice',
-          dit: 'It is issued on the invoicing platform, then delivered here. It stays available as long as you keep your code.',
+          dit: 'It is issued through the tax authority’s platform and delivered here. It remains available for as long as you keep your code.',
           action: 'Download my invoice', second: 'Find my booking'
         },
         en_cours: {
           titre: 'Your invoice is being issued',
-          dit: 'Your payment is recorded. The document is being issued — this takes a few minutes.',
+          dit: 'Your payment has been recorded. The document is being issued, which takes a few minutes.',
           action: 'Check again', second: 'Find my booking'
         },
         en_cours_long: {
           titre: 'This is taking longer than expected',
-          dit: 'Your payment is recorded and your invoice is not lost — it simply has not come back from the invoicing platform yet. Try again later, or come to the counter with your code and the team will find it.',
+          dit: 'Your payment has been recorded and your invoice is not lost. It has not yet come back from the invoicing platform. Please check again later, or bring your code to the counter and the team will retrieve it for you.',
           action: 'Check again', second: 'Find my booking'
         },
         prete: {
@@ -169,8 +169,8 @@
           action: 'Download (PDF)', second: 'Find my booking'
         },
         absente: {
-          titre: 'We can’t find your sale',
-          dit: 'The invoice is delivered on the device used to pay. Find your booking with your code and number, or ask at the counter.',
+          titre: 'We cannot find that sale',
+          dit: 'Invoices are issued to the device used for payment. Look up your booking with your code and number, or ask at the counter.',
           action: 'Back to home', second: 'Find my booking'
         }
       }

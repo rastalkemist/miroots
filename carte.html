@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZT/drf3MsqoIm9o7j1ve+NNywwNjAlVzrsEHgVBxDJ0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-BF0HUUfD9o1EQv/8hEM6BvnbwbtYYFBpRC4ZuFXJ6vY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -27,13 +27,13 @@
 <!-- ══════════════ CHROME HAUT ══════════════ -->
 <header class="chrome-haut">
   <div class="chrome-inner">
-    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
     <div class="centre">
       <div class="toggle" id="marque">
         <span class="mot" id="motMode">Mi</span>
         <span class="reste">
           <span class="sub">(solo)</span>
-          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
           <span class="sub">(social)</span>
           <span class="nu">NU</span>
         </span>
@@ -41,8 +41,8 @@
       <a class="chrome-titre" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -64,12 +64,12 @@
 
 <div class="voile" id="voile"></div>
 
-<div class="panneau" id="panneau" role="dialog" aria-modal="true" aria-label="Ma commande">
+<div class="panneau" id="panneau" role="dialog" aria-modal="true" aria-label="Ma commande" data-al-chrome="commande">
   <div class="poignee"></div>
   <div id="vueCommande">
     <div class="entete-panneau">
       <div><h2 data-t="maCommande">Ma commande</h2><p id="sousPanneau"></p></div>
-      <button class="fermer" id="btnFermer" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
+      <button class="fermer" id="btnFermer" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button>
     </div>
     <div id="lignesPanier"></div>
     <div class="total-ligne"><span data-t="total">Total</span><span class="montant" id="panneauTotal"></span></div>
@@ -121,7 +121,7 @@
 </nav>
 <div class="voile-menu" id="voileMenu"></div>
 <div class="menu-pop" id="drawer">
-  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div id="sections"></div>
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -166,35 +166,35 @@
     },
     en: {
       titre: 'Menu', voirCommande: 'View my order', maCommande: 'My order', total: 'Total',
-      refuseGarde: 'Cannot send right now. Try again in a moment.',
+      refuseGarde: 'We can’t send that just now. Give it a moment and try again.',
       tonNom: 'Your name (so we can call you)', tonTel: 'Your number', pNom: 'Your first name',
-      etPaiement: 'Payment', mentionPaiement: 'Secure payment via KkiaPay.',
+      etPaiement: 'Payment', mentionPaiement: 'Payments handled securely by KkiaPay.',
       payer: 'Pay', commander: 'Place order', onEnvoie: 'Sending…',
       momo: 'MTN MoMo', moov: 'Moov Money', carte: 'Bank card',
       cashComptoir: 'At the counter', cashTable: 'At the table',
-      sousEmporter: "Order without an account — we'll call you when it's ready.",
-      sousSurplace: "At your table · we'll bring it right to you.",
+      sousEmporter: 'No account, no queue — we’ll call you when it’s ready.',
+      sousSurplace: 'Straight to your table · stay where you are.',
       badgeEmporter: 'Takeaway', badgeTable: 'Table service',
-      sousPanneauEmporter: 'Check it, then place your order.',
-      sousPanneauSurplace: 'Table service.',
-      confTitreEmporter: 'Order placed. The kitchen is on it.',
-      confTitreSurplace: "Got it. We're taking care of you.",
-      confInstrEmporter: "Give this code at the counter. We'll call your name when it's ready.",
-      confInstrSurplace: 'Your order is on its way to your table. This code is your receipt.',
-      manqueContact: 'Please give your first name and a valid number.',
-      menuVide: 'The menu is not available right now.',
+      sousPanneauEmporter: 'Have a look, then send it through.',
+      sousPanneauSurplace: 'We’ll bring it over.',
+      confTitreEmporter: 'Order in. The kitchen’s on it.',
+      confTitreSurplace: 'Got it. Sit tight.',
+      confInstrEmporter: 'Show this code at the counter. We’ll call your name when it’s ready.',
+      confInstrSurplace: 'It’s on its way over. This code is your receipt.',
+      manqueContact: 'We need your first name and a number that works.',
+      menuVide: 'The menu isn’t loading right now.',
       rupture: 'Sold out', monnaie: 'FCFA',
-      partiel: function (l) { return 'To add at the counter: ' + l + '.'; },
-      toastVerbe: function (v) { return v + ' coming soon.'; },
-      toastNu: 'NU mode (community) coming soon.',
+      partiel: function (l) { return 'Ask for these at the counter: ' + l + '.'; },
+      toastVerbe: function (v) { return v + ' is on its way.'; },
+      toastNu: 'NU — the community side — is on its way.',
       mentions: 'Legal notices',
       politique: 'Privacy Policy',
       saut: 'Skip to content',
-      phase: 'Trial version. Some features are incomplete or unavailable.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
-      copiercmd: 'Copy the code', gardercmd: 'Save as image',
+      phase: 'Trial version — some things aren’t finished yet.',
+      fCode: 'Six characters, letters and numbers — like ABC123.',
+      copiercmd: 'Copy the code', gardercmd: 'Save as an image',
       payerMaintenant: 'Pay now', onOuvre: 'Opening payment…',
-      payerFerme: 'Online payment is not available. You can pay at the counter.'
+      payerFerme: 'Online payment isn’t available right now. You can pay at the counter.'
     }
   };
 

@@ -46,8 +46,12 @@
       n = poser(zone, n + d);
       rendre();
       if (n !== avant && etat) {
-        // L'annonce passe par aria-live : le changement doit s'entendre.
-        etat.setAttribute('aria-label', 'Taille du texte : ' + CORPS[n] + ' points');
+        /* L'annonce passe par aria-live : le changement doit s'entendre.
+           Son intitule se LIT sur le groupe, qui porte deja le sien dans la
+           langue de l'ecran. Ecrit ici, il resterait dans une seule langue
+           pendant que le reste de la barre bascule. */
+        var groupe = barre.getAttribute('aria-label');
+        etat.setAttribute('aria-label', (groupe ? groupe + ' : ' : '') + CORPS[n] + ' pt');
       }
     }
     if (moins) moins.addEventListener('click', function () { pas(-1); });

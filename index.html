@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-K/I5ZY04tADhkzJ8DJovNpBCuaiqQ9TVJ51qWr6IsHI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-lx1iEPTRHXJvotsIWpoI+i556V7M0RYz0hONsz+V+a0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -35,13 +35,13 @@
 <!-- ══════════════ CHROME HAUT ══════════════ -->
 <header class="chrome-haut">
   <div class="chrome-inner">
-    <a class="ankh-home" href="index.html" aria-label="Accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
     <div class="centre">
     <div class="toggle" id="marque">
       <span class="mot" id="motMode">Mi</span>
       <span class="reste">
         <span class="sub">(solo)</span>
-        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU"><span class="knob"></span></span>
+        <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
         <span class="sub">(social)</span>
         <span class="nu">NU</span>
       </span>
@@ -50,7 +50,7 @@
     </div>
     <div class="chrome-droite">
       <button class="lang-btn" id="btnLangue">EN</button>
-      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
 </header>
@@ -79,10 +79,10 @@
 
 <!-- ══════════════ Feuille du bas (+) : Réserver | Commander ══════════════ -->
 <div class="voile" id="voileDlg"></div>
-<div class="feuille-bas" id="dialogue" role="dialog" aria-modal="true" aria-label="Réserver ou commander">
+<div class="feuille-bas" id="dialogue" role="dialog" aria-modal="true" aria-label="Réserver ou commander" data-al-chrome="feuille">
   <div class="poignee"></div>
   <div class="tete">
-    <button class="fermer" id="fermerDlg" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button>
+    <button class="fermer" id="fermerDlg" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button>
   </div>
   <div class="onglets" id="onglets">
     <button class="actif" data-ong="reserver" data-t="ongReserver">Réserver un espace</button>
@@ -102,9 +102,9 @@
         <div class="groupe col-personnes" id="groupePersonnes" style="display:none">
           <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
           <div class="stepper">
-            <button type="button" id="moinsPersonnes" aria-label="Moins"><svg class="i"><use href="#i-minus"/></svg></button>
+            <button type="button" id="moinsPersonnes" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
             <span id="valeurPersonnes">1</span>
-            <button type="button" id="plusPersonnes" aria-label="Plus"><svg class="i"><use href="#i-plus"/></svg></button>
+            <button type="button" id="plusPersonnes" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
             <span class="max" id="maxPersonnes"></span>
           </div>
         </div>
@@ -179,7 +179,7 @@
 <div class="voile voile-doux" id="voileMenu"></div>
 <div class="menu-pop" id="drawer">
   <div class="tete" style="justify-content:flex-end">
-    <button class="fermer" id="fermerMenu" aria-label="Fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+    <button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div id="sections"></div>
 </div>
 
@@ -227,47 +227,45 @@
       politique: 'Politique de confidentialité',
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
-      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
     },
     en: {
       ongReserver: 'Book a space', ongCommander: 'Order',
       etEspace: 'Space', etJour: 'Which day?', etCreneau: 'Time slot',
       etPersonnes: 'How many of you?', etService: 'Service',
-      tel: 'Your number (to confirm)', tonNomResa: 'Your first name', pNom: 'Your first name',
-      reserver: 'Book now',
-      cestReserve: 'Booked. See you soon.',
-      instrResa: 'Show this code at the front desk. Keep it: it lets you retrieve your booking, even without an account.',
-      voirDetail: 'See full menu →', cmdTotal: 'Order total',
+      tel: 'Your number (so we can confirm)', tonNomResa: 'Your first name', pNom: 'Your first name',
+      reserver: 'Book it',
+      cestReserve: 'You’re booked. See you soon.',
+      instrResa: 'Show this code when you arrive. Hang on to it — it’s how you find your booking again, no account needed.',
+      voirDetail: 'See the full menu â', cmdTotal: 'Order total',
       tonNom: 'Your name (so we can call you)', tonTel: 'Your number',
-      commander: 'Place order', cmdMention: 'Pay at the counter. No account.',
-      cestCommande: 'Order placed. The kitchen is on it.',
-      instrCmd: 'Give this code at the counter. We call your name when ready.',
+      commander: 'Place order', cmdMention: 'Pay at the counter. No account needed.',
+      cestCommande: 'Order in. The kitchen’s on it.',
+      instrCmd: 'Show this code at the counter. We’ll call your name when it’s ready.',
       matin: 'Morning', apres_midi: 'Afternoon', journee: 'Full day',
       partage: 'shared', reunion_privee: 'private', prive: 'private',
       jusqua: function (n) { return 'up to ' + n + ' person' + (n > 1 ? 's' : ''); },
       parPers: ' / person', monnaie: 'FCFA',
-      complet: 'Fully booked — another time!', priveOccupe: 'Booked privately for this slot.',
-      surDevis: 'This usage is booked with our team.',
-      payer: 'Pay now', onOuvre: 'Opening payment…',
-      payerFerme: 'Online payment is not open yet. Please pay at the counter.',
-      refuseGarde: 'Cannot send right now. Try again in a moment.',
-      maxAtteint: 'Maximum reached', totalTitre: 'Total',
-      onRegarde: 'Checking…', onReserve: 'Booking…', onEnvoie: 'Sending…',
+      complet: 'Fully booked — try another slot.', priveOccupe: 'Someone has this slot privately.',
+      surDevis: 'For this one, talk to the team — they’ll sort out the details with you.',
+      payer: 'Pay now', onOuvre: 'Opening paymentâ¦',
+      payerFerme: 'Online payment isn’t available right now. You can pay at the counter.',
+      refuseGarde: 'We can’t send that just now. Give it a moment and try again.',
+      maxAtteint: 'That’s the maximum', totalTitre: 'Total',
+      onRegarde: 'Checkingâ¦', onReserve: 'Bookingâ¦', onEnvoie: 'Sendingâ¦',
       aujourdhui: 'Today', demain: 'Tomorrow',
       sur_place: 'Eat in', emporter: 'Takeaway',
-      cRetenue: 'Your spot is held for another', expire: 'Time is up — the spot has been released.',
-      manqueContact: 'Please give your first name and a valid number.',
-      menuVide: 'The menu is not available right now.',
-      partiel: function (l) { return 'To add at the counter: ' + l + '.'; },
+      cRetenue: 'We’re holding your spot for another', expire: 'Time’s up — your spot has gone back on the board.',
+      manqueContact: 'We need your first name and a number that works.',
+      menuVide: 'The menu isn’t loading right now.',
+      partiel: function (l) { return 'Ask for these at the counter: ' + l + '.'; },
       radio: 'Roots Radio',
-      toastVerbe: function (v) { return v + ' coming soon.'; },
-      toastNu: 'NU mode (community) coming soon.',
+      toastVerbe: function (v) { return v + ' is on its way.'; },
+      toastNu: 'NU — the community side — is on its way.',
       politique: 'Privacy Policy',
       saut: 'Skip to content',
-      phase: 'Trial version. Some features are incomplete or unavailable.',
-      fCode: 'Six characters, letters and digits — for example ABC123.',
-      fCode: 'Six characters, letters and digits — for example ABC123.'
+      phase: 'Trial version — some things aren’t finished yet.',
+      fCode: 'Six characters, letters and numbers — like ABC123.'
     }
   };
 
