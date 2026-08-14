@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-iU6RCpz5BEcwBc4JjDeFXgi6otPOgQRqCIa1V3f/k/o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZT/drf3MsqoIm9o7j1ve+NNywwNjAlVzrsEHgVBxDJ0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -98,8 +98,14 @@
     <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
     <p class="conf-titre" id="confTitre"></p>
     <div class="code" id="codeAffiche">——————</div>
+    <div class="gestes-code">
+      <button type="button" class="geste-code" data-code-copier data-code-source="codeAffiche" data-fait="Copié" data-t="copiercmd">Copier le code</button>
+      <button type="button" class="geste-code" data-code-cartel data-code-source="codeAffiche" data-titre="Ma commande" data-t="gardercmd">Garder en image</button>
+    </div>
     <p class="instructions" id="confInstr"></p>
     <p class="note-partielle" id="partielCmd" style="display:none"></p>
+    <div class="apres"><button class="bouton-confirmer cache" id="btnPayerCmd" data-t="payerMaintenant">Payer maintenant</button></div>
+    <p class="erreur" id="erreurPayerCmd" role="alert" aria-live="polite"></p>
   </div>
 </div>
 
@@ -154,7 +160,9 @@
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
+      copiercmd: 'Copier le code', gardercmd: 'Garder en image',
+      payerMaintenant: 'Payer maintenant', onOuvre: 'On ouvre le paiement…',
+      payerFerme: 'Le paiement en ligne n’est pas disponible. Tu peux régler au comptoir.'
     },
     en: {
       titre: 'Menu', voirCommande: 'View my order', maCommande: 'My order', total: 'Total',
@@ -184,7 +192,9 @@
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete or unavailable.',
       fCode: 'Six characters, letters and digits — for example ABC123.',
-      fCode: 'Six characters, letters and digits — for example ABC123.'
+      copiercmd: 'Copy the code', gardercmd: 'Save as image',
+      payerMaintenant: 'Pay now', onOuvre: 'Opening payment…',
+      payerFerme: 'Online payment is not available. You can pay at the counter.'
     }
   };
 
@@ -566,9 +576,48 @@
     }
   }
 
+  /* Le paiement d'une commande. La porte exige l'identifiant ET le jeton, que
+     seul le navigateur qui vient de passer la commande detient : la porte de
+     consultation par code ne les rend jamais. Le geste vit donc ici, et sur
+     aucun ecran ou l'on arrive avec un code seul. Le montant vient de la
+     porte, jamais du panier affiche. */
+  var commandeOuverte = null;
+  var paiementEnCours = false;
+
+  async function payerCmd() {
+    if (paiementEnCours || !commandeOuverte) return;
+    cacherErreur('erreurPayerCmd');
+    var b = $('btnPayerCmd');
+    paiementEnCours = true;
+    b.disabled = true;
+    var libelle = b.textContent;
+    b.textContent = t().onOuvre;
+    try {
+      var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
+      var pose = Roots.db.remisePaiement({
+        paiement: r.paiement, montant: r.montant, type: 'commande'
+      });
+      if (!pose) { montrerErreur('erreurPayerCmd', t().payerFerme); return; }
+      location.assign('payer.html');
+    } catch (e) {
+      montrerErreur('erreurPayerCmd', e.message);
+    } finally {
+      paiementEnCours = false;
+      b.disabled = false;
+      b.textContent = libelle;
+    }
+  }
+  $('btnPayerCmd').addEventListener('click', payerCmd);
+
   function confirmer(r, manquants) {
     $('vueCommande').style.display = 'none';
     $('codeAffiche').textContent = (r && r.code) || '——————';
+    commandeOuverte = (r && r.id && r.jeton) ? { id: r.id, jeton: r.jeton } : null;
+    /* Le bouton ne se montre pas quand la vente s'est reglee au comptoir : il
+       proposerait un second paiement, et la porte le refuserait. */
+    $('btnPayerCmd').classList.toggle('cache',
+      !commandeOuverte || moyenPaiement === 'cash' || !Roots.db.reglagePaiement().pose);
+    cacherErreur('erreurPayerCmd');
     $('confTitre').textContent = service === 'sur_place' ? t().confTitreSurplace : t().confTitreEmporter;
     $('confInstr').textContent = service === 'sur_place'
       ? t().confInstrSurplace : t().confInstrEmporter;

@@ -300,6 +300,12 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .erreur{font-weight:700;line-height:1.4;font-size:var(--t-sm);color:var(--rouge-e2);text-align:center}
 .erreur.visible{display:block}
 .mention{margin-top:10px;color:var(--encre-discrete);font-size:var(--t-note);text-align:center}
+/* Plaque legale. Elle porte un registre de voix qui n'est pas celui de
+   l'ecran : elle se met a part au lieu de se fondre, sinon le lecteur la lit
+   comme la parole du produit. Alignee a gauche parce qu'elle se lit en phrases
+   et non en libelle, et adossee a un filet qui en marque la limite. */
+.plaque-legale{margin-top:14px;padding:10px 12px;text-align:left;
+  border-left:3px solid var(--gris-service);background:var(--blanc-casse)}
 .vide-menu{color:var(--encre-discrete);font-size:var(--t-sm)}
 .conf-titre{margin:0;font-size:var(--t-body);font-weight:700}
 .code{letter-spacing:.13em;color:var(--roots-vert);font-weight:700;font-family:var(--font-chiffres);font-size:var(--t-code);margin:8px 0}
@@ -651,7 +657,10 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    ne charge aucun script, ce qui est la raison d'etre de cet ecran. */
 :where(body.p-payer){background:var(--blanc-casse)}
 :where(body.p-payer) .chrome-haut{position:static}
-:where(body.p-payer) .chrome-inner{grid-template-columns:auto 1fr;justify-items:start}
+/* Le bandeau garde les TROIS colonnes du chrome commun. Une grille a deux
+   colonnes rejette le troisieme bloc sur une seconde rangee : la barre double
+   de hauteur et le bouton de langue passe sous le logo. Ce qui distingue cet
+   ecran est l'absence de menu, pas une autre disposition. */
 :where(body.p-payer) .panneau{text-align:center}
 :where(body.p-payer) .panneau::before{background:var(--vert-e2)}
 :where(body.p-payer) .montant{display:block;font-family:var(--font-chiffres);font-size:var(--t-h1);line-height:var(--lh-38);font-weight:var(--w-bold);color:var(--encre);font-variant-numeric:tabular-nums}

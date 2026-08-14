@@ -356,6 +356,25 @@ window.Roots = window.Roots || {};
       return { id: id, jeton: tout[id].jeton, code: tout[id].code };
     },
 
+    /* Le jeton d'une commande retrouve par son code, dans la memoire de CET
+       appareil. La porte de consultation par code ne rend jamais le jeton :
+       elle est ouverte a l'anonyme, et un jeton rendu autoriserait a agir.
+       Le seul detenteur legitime est donc le navigateur qui a passe la
+       commande. Rend null ailleurs — et l'ecran doit alors offrir une autre
+       voie, jamais un bouton qui echouera. */
+    jetonDeCommandeGardee: function (code) {
+      if (!code) return null;
+      var tout = commandesGardees();
+      var ids = Object.keys(tout);
+      var vise = String(code).toUpperCase();
+      for (var i = 0; i < ids.length; i++) {
+        if (String(tout[ids[i]].code || '').toUpperCase() === vise) {
+          return { id: ids[i], jeton: tout[ids[i]].jeton, code: tout[ids[i]].code };
+        }
+      }
+      return null;
+    },
+
     remisePaiement: function (o) {
       var remise = {
         paiement: o.paiement, montant: o.montant,
@@ -455,14 +474,27 @@ window.Roots = window.Roots || {};
       return appeler('annuler_reservation_logement', { p_code: code, p_tel: telephone(tel) });
     },
 
+    /* Rend l'etat et le contenu d'une commande a qui detient son code et le
+       numero qui l'a passee. NE REND JAMAIS LE JETON : la porte est ouverte a
+       l'anonyme, et un jeton rendu autoriserait a modifier la commande.
+       Chaque appel consomme un jeton du plafond de recherche partage. */
+    consulterCommandeParCode: function (code, tel) {
+      return appeler('consulter_commande_par_code', { p_code: code, p_tel: telephone(tel) });
+    },
+
     /* Le client ne sait pas quel type de réservation il a faite : on cherche
-       l'espace, puis le logement. Une seule saisie, deux portes. */
+       l'espace, puis le logement, puis la commande. Une seule saisie, trois
+       portes. L'ordre compte : chaque tentative consomme un jeton du plafond
+       de recherche, donc la porte la plus probable passe en premier. */
     retrouver: function (code, tel) {
       var self = this;
       return self.consulterReservationEspace(code, tel).then(function (r) {
         if (r) return { type: 'espace', r: r };
         return self.consulterReservationLogement(code, tel).then(function (l) {
-          return l ? { type: 'logement', r: l } : null;
+          if (l) return { type: 'logement', r: l };
+          return self.consulterCommandeParCode(code, tel).then(function (c) {
+            return (c && c.resultat === 'trouvee') ? { type: 'commande', r: c } : null;
+          });
         });
       });
     },
@@ -470,18 +502,31 @@ window.Roots = window.Roots || {};
     /* ---------- Remise de la piece ----------
        Le choix du canal appartient au client et se pose sur sa vente ; la
        piece se lit ensuite par une capacite — le jeton rendu quand elle est
-       prete — jamais par un identifiant que l'on essaie. Un canal de
-       messagerie exige un numero et un consentement : la base refuse
-       l'ecriture sans les deux. */
+       prete — jamais par un identifiant que l'on essaie.
+
+       TROIS CANAUX, ET DEUX D'ENTRE EUX ENVOIENT. `telechargement` ne demande
+       rien. `messagerie` exige un numero ET une version de notice consentie ;
+       `courriel` exige une adresse ET la meme version. La base refuse
+       l'ecriture sans les deux, et c'est voulu : une adresse connue par
+       ailleurs n'est pas un consentement, et l'ecran ne doit jamais en tenir
+       une pour tel. La version transmise doit etre celle d'une notice servie
+       par le socle — une chaine inventee scellerait un consentement sans
+       texte. */
 
     choisirRemiseCommande: function (o) {
       return appeler('choisir_remise_commande', {
         p_commande: o.id, p_jeton: o.jeton, p_canal: o.canal,
         p_tel: o.telMessagerie ? telephone(o.telMessagerie) : null,
-        p_consentement: o.consentement || null
+        p_consentement: o.consentement || null,
+        p_courriel: o.courriel || null
       });
     },
 
+    /* ⚠ CETTE PORTE N'ACCEPTE PAS D'ADRESSE, alors que sa jumelle du parcours
+       commande, si. Ne pas ajouter `p_courriel` ici tant que la signature n'a
+       pas ete elargie : la resolution se fait sur le NOM des arguments, donc un
+       argument inconnu ne vaut pas nul — il rend la fonction introuvable, et la
+       remise cesse pour TOUTES les reservations, y compris en telechargement. */
     choisirRemiseReservation: function (o) {
       return appeler('choisir_remise_reservation', {
         p_type: o.type, p_code: o.code, p_tel_contact: telephone(o.tel),

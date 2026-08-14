@@ -125,12 +125,12 @@
     fr: [
       { ico: 'i-carte',      t: 'La carte',           s: 'Toute la carte, en détail', href: 'carte.html' },
       { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau',      href: 'index.html?ouvrir=reserver' },
-      { ico: 'i-ticket',     t: 'Ma réservation',     s: 'Retrouver avec ton code',   href: 'retrouver.html' }
+      { ico: 'i-ticket',     t: 'Retrouver',          s: 'Réservation ou commande, avec ton code', href: 'retrouver.html' }
     ],
     en: [
       { ico: 'i-carte',      t: 'Menu',         s: 'Food for your soul',    href: 'carte.html' },
       { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office', href: 'index.html?ouvrir=reserver' },
-      { ico: 'i-ticket',     t: 'My booking',   s: 'Find it with your code', href: 'retrouver.html' }
+      { ico: 'i-ticket',     t: 'Find it',      s: 'Booking or order, with your code', href: 'retrouver.html' }
     ]
   };
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-z76paxlhVPTl2secgo6sPUMLGHLPXW1FB3e2om4Su7c='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-2kaWjWBm6pawqZRx1lHZKDcxyzmcCA0cgjKqqiUGoU4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -419,14 +419,27 @@
     }
   }
 
+  /* LE CANAL DE REMISE, ET POURQUOI CE N'EST PAS ENCORE UN CHOIX.
+     Le canal se pose sur la vente, et c'est lui — jamais une adresse connue
+     par ailleurs — qui met un envoi en file au scellement de la piece. Deux
+     canaux envoient, `courriel` et `messagerie` ; tous deux exigent une
+     destination ET la version d'une notice de consentement servie par le
+     socle. Aucune notice servie ne couvre la remise de la piece : offrir l'un
+     des deux obligerait a sceller un consentement sans texte, ce qu'interdit
+     la regle liant le consentement a la version affichee.
+     `telechargement` est donc le seul canal offrable. C'est un etat, pas un
+     parti pris : les deux ponts portent deja la destination, et le choix se
+     posera ici le jour ou la notice existe. */
+  var CANAL = 'telechargement';
+
   function poserChoix() {
     if (vente.mode === 'reservation') {
       return Roots.db.choisirRemiseReservation({
-        type: vente.type, code: vente.code, tel: vente.tel, canal: 'telechargement'
+        type: vente.type, code: vente.code, tel: vente.tel, canal: CANAL
       });
     }
     return Roots.db.choisirRemiseCommande({
-      id: vente.id, jeton: vente.jeton, canal: 'telechargement'
+      id: vente.id, jeton: vente.jeton, canal: CANAL
     });
   }
 

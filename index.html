@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-7lxe7Mu4GGEfsniAayIedjfcaLKF/5VEhvYLRLIF0EI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-K/I5ZY04tADhkzJ8DJovNpBCuaiqQ9TVJ51qWr6IsHI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -169,6 +169,8 @@
       </div>
       <p class="instructions" data-t="instrCmd">Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.</p>
       <p class="note-partielle" id="partielCmd" style="display:none"></p>
+      <div class="apres"><button class="bouton-confirmer cache" id="btnPayerCmd" data-t="payer">Payer maintenant</button></div>
+      <p class="erreur" id="erreurPayerCmd" role="alert" aria-live="polite"></p>
     </div>
   </div>
 </div>
@@ -626,6 +628,37 @@
   }
   $('btnPayerResa').addEventListener('click', payerResa);
 
+  /* Le paiement d'une commande. La porte exige l'identifiant ET le jeton :
+     seul le navigateur qui a passe la commande les detient, et la porte de
+     consultation par code ne les rend jamais. Le geste vit donc ici, sur
+     l'ecran qui vient de les recevoir, et nulle part ou on arrive par un code.
+     Le montant vient de la porte, jamais du panier affiche. */
+  var commandeOuverte = null;
+  async function payerCmd() {
+    if (paiementEnCours || !commandeOuverte) return;
+    cacherErreur('erreurPayerCmd');
+    var b = $('btnPayerCmd');
+    paiementEnCours = true;
+    b.disabled = true;
+    var libelle = b.textContent;
+    b.textContent = t().onOuvre;
+    try {
+      var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
+      var pose = Roots.db.remisePaiement({
+        paiement: r.paiement, montant: r.montant, type: 'commande'
+      });
+      if (!pose) { montrerErreur('erreurPayerCmd', t().payerFerme); return; }
+      location.assign('payer.html');
+    } catch (e) {
+      montrerErreur('erreurPayerCmd', e.message);
+    } finally {
+      paiementEnCours = false;
+      b.disabled = false;
+      b.textContent = libelle;
+    }
+  }
+  $('btnPayerCmd').addEventListener('click', payerCmd);
+
   /* La somme due vit sur le geste qui l'engage : elle est exacte a cet
      endroit, et elle ne se lit pas deux fois. Quand le paiement en ligne
      n'est pas offert, elle reprend sa ligne propre — elle ne disparait jamais
@@ -821,6 +854,9 @@
     $('vueCmd').style.display = 'none';
     $('confCmd').classList.add('visible');
     $('codeCmd').textContent = (r && r.code) || '——————';
+    commandeOuverte = (r && r.id && r.jeton) ? { id: r.id, jeton: r.jeton } : null;
+    $('btnPayerCmd').classList.toggle('cache',
+      !commandeOuverte || !Roots.db.reglagePaiement().pose);
     if (manquants && manquants.length) {
       $('partielCmd').textContent = t().partiel(manquants.join(', '));
       $('partielCmd').style.display = 'block';

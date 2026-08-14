@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-pJAKOutiT/EOhmAu3HgJew6/gHz4yXyaTouuzPmlh3I='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-eEbmukGR6LdE+Wnx8Ig6ubdH1z2Dsl8+yaaRbsVl3o8='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -49,6 +49,7 @@
       <button class="principal cache" id="ouvrir"></button>
       <a class="lien-second" id="second" href="retrouver.html"></a>
     </div>
+    <p class="mention plaque-legale" id="archivage" data-t="archivage">Votre facture vous est remise après paiement. Roots en conserve une copie pendant dix ans ; vous pouvez en demander une copie à tout moment en écrivant à gerant@roots.bj.</p>
   </section>
 </div>
 
@@ -81,7 +82,10 @@
       sansRemiseDit: 'Cette page s’ouvre depuis ta réservation. Retrouve-la pour reprendre.',
       retour: 'Retrouver ma réservation',
       onVerifie: 'On vérifie ton paiement',
-      onVerifieDit: 'Un instant, on demande la réponse au serveur.'
+      onVerifieDit: 'Un instant, on demande la réponse au serveur.',
+      /* Registre LEGAL : vouvoiement, alors que le reste de l'ecran tutoie.
+         La difference est voulue et se voit — la plaque porte sa voix. */
+      archivage: 'Votre facture vous est remise après paiement. Roots en conserve une copie pendant dix ans ; vous pouvez en demander une copie à tout moment en écrivant à gerant@roots.bj.'
     },
     en: {
       saut: 'Skip to content', h1: 'Payment',
@@ -94,7 +98,8 @@
       sansRemiseDit: 'This page opens from your booking. Find it again to resume.',
       retour: 'Find my booking',
       onVerifie: 'Checking your payment',
-      onVerifieDit: 'One moment, we are asking the server.'
+      onVerifieDit: 'One moment, we are asking the server.',
+      archivage: 'Your invoice is issued after payment. Roots retains a copy for ten years; you may request a copy at any time by writing to gerant@roots.bj.'
     }
   };
 

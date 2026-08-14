@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-47kA61gfGGnsGc+ZxFSq/7XugY+bJOhJ48q9IyON6eA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-VI0/7X1I76Y/9FQFoNb9E8hIh6MQ249OUzNxTVi19aM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -126,6 +126,13 @@
           action: 'Vérifier à nouveau', second: 'Retrouver ma commande',
           jauge: false, code: true
         },
+        'sans-reponse-long': {
+          titre: 'Toujours pas de réponse',
+          dit: 'Nous continuons de vérifier de notre côté. Tu n’as rien d’autre à faire ici : garde ton code, il retrouve ta commande à tout moment.',
+          avert: 'Ne paie pas une seconde fois. Si le montant est parti, il sera constaté et ta commande sera réglée. Garde ton code.',
+          action: 'Retrouver ma commande', second: null,
+          jauge: false, code: true
+        },
         regularisation: {
           titre: 'Ton paiement est bien arrivé',
           dit: 'Il reste une vérification de notre côté avant de valider ta commande. Nous revenons vers toi — garde ton code.',
@@ -164,6 +171,13 @@
           dit: 'We have no answer from your operator yet. This can take a few more minutes.',
           avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
           action: 'Check again', second: 'Find my order',
+          jauge: false, code: true
+        },
+        'sans-reponse-long': {
+          titre: 'Still no answer',
+          dit: 'We are still checking on our side. There is nothing more for you to do here: keep your code, it finds your order at any time.',
+          avert: 'Do not pay a second time. If the amount left your account it will be recorded and your order settled. Keep your code.',
+          action: 'Find my order', second: null,
           jauge: false, code: true
         },
         regularisation: {
@@ -273,9 +287,9 @@
     var etiq = document.querySelector('#blocCode .etiquette');
     if (etiq) etiq.textContent = mots.lCode;
     if (cle === 'payee') $('dit').textContent = mots.regle;
-    if (cle === 'sans-reponse') $('avert').textContent = mots.avert;
-    if (cle === 'regularisation') {
-      $('dit').textContent = mots.enCours;
+    if (cle === 'sans-reponse' || cle === 'sans-reponse-long') $('avert').textContent = mots.avert;
+    if (cle === 'regularisation' || cle === 'sans-reponse-long') {
+      if (cle === 'regularisation') $('dit').textContent = mots.enCours;
       $('action').textContent = mots.retrouver;
     } else if (!$('second').classList.contains('cache')) {
       $('second').textContent = mots.retrouver;
@@ -297,15 +311,56 @@
 
   function agir(cle) {
     if (cle === 'sans-reponse') return sonder();
-    if (cle === 'refusee') { location.href = 'index.html'; return; }
+    if (cle === 'refusee') return reessayer();
     if (cle === 'payee') { location.href = 'facture.html'; return; }
     location.href = 'retrouver.html';
   }
 
+  /* REESSAYER, au sens ou le bouton le dit. Un echec n'est pas terminal : le
+     serveur ouvre une intention NEUVE, au montant du jour, et n'a rien a
+     defaire — un paiement refuse n'ecrit aucune ligne financiere et ne produit
+     aucune piece. Le montant vient de la porte, jamais de l'ecran.
+     Si la porte refuse — vente deja reglee, montant nul, retenue expiree — on
+     relit l'etat plutot que d'affirmer : la raison du refus se lit la, pas
+     ici. */
+  function reessayer() {
+    if (!vente) { location.href = 'index.html'; return Promise.resolve(); }
+    var ouvrir = (parcours === 'reservation')
+      ? Roots.db.initierPaiementReservation(
+          remise.type === 'reservation_logement' ? 'logement' : 'espace',
+          remise.code, remise.tel)
+      : Roots.db.initierPaiementCommande(vente.id, vente.jeton);
+
+    return Promise.resolve(ouvrir).then(function (r) {
+      var neuve = { paiement: r.paiement, montant: r.montant, type: remise ? remise.type : 'commande' };
+      if (parcours === 'reservation') { neuve.code = remise.code; neuve.tel = remise.tel; }
+      if (!Roots.db.remisePaiement(neuve)) { location.href = 'index.html'; return; }
+      location.assign('payer.html');
+    }, function () { return sonder(); });
+  }
+
   /* La verite se lit sur le serveur, jamais sur le retour du widget.
      suivrePaiement rend « indetermine » passe le delai, jamais « paye ». */
+  /* LE PLAFOND. « Verifier a nouveau » rappelle la meme lecture : sans butee,
+     l'ecran tourne sur lui-meme aussi longtemps que le visiteur appuie, en
+     promettant a chaque tour une reponse qu'il n'a pas. Au 3e passage sans
+     reponse il cesse de promettre — SANS NOMMER DE CAUSE, qu'il ignore — et
+     rend la main a l'ecran qui, lui, retrouve la vente. Le compteur ne compte
+     que les tours restes sans reponse : une reponse quelconque le remet a zero,
+     parce qu'elle prouve que la lecture aboutit.
+     LE SEUIL EST GENEREUX A DESSEIN. Il borne l'attente, il ne borne pas le
+     paiement : le geste « reessayer », lui, ouvre une intention neuve a chaque
+     appui et ne se plafonne nulle part. */
+  var SEUIL_ATTENTE = 5;
+  var sansReponse = 0;
+
+  function attente() {
+    sansReponse += 1;
+    return sansReponse >= SEUIL_ATTENTE ? 'sans-reponse-long' : 'sans-reponse';
+  }
+
   function sonder() {
-    if (!vente || !lireEtat) { montrer('sans-reponse'); return Promise.resolve(); }
+    if (!vente || !lireEtat) { montrer(attente()); return Promise.resolve(); }
     montrer('attente');
     return Roots.db.suivrePaiement(lireEtat).then(function (r) {
       var carte = {
@@ -314,8 +369,11 @@
         a_regulariser: 'regularisation',
         indetermine: 'sans-reponse'
       };
-      montrer(carte[r.statut] || 'sans-reponse');
-    }, function () { montrer('sans-reponse'); });
+      var cle = carte[r.statut];
+      if (!cle || cle === 'sans-reponse') { montrer(attente()); return; }
+      sansReponse = 0;
+      montrer(cle);
+    }, function () { montrer(attente()); });
   }
 
   function appliquerLangue() {

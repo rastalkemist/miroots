@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-50Lwb9Ntou46pR19y4L38PtRLD9KX8pOc76zvCinJ70='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Retrouver ma réservation — Roots</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-3/+0WrlXrgBsQsHR55q0ezwVPNp1qWOh8mjdRADSewA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Retrouver ma réservation ou ma commande — Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -48,12 +48,12 @@
 </header>
 
 <div id="contenu" class="corps">
-  <h1 data-t="titre">Retrouver ma réservation</h1>
-  <p class="sous" data-t="sous">Ton code et le numéro utilisé pour réserver.</p>
+  <h1 data-t="titre">Retrouver ma réservation ou ma commande</h1>
+  <p class="sous" data-t="sous">Ton code et le numéro que tu as utilisé.</p>
 
   <section class="bloc" id="recherche">
     <div class="champ">
-      <span class="etiquette" data-t="lCode">Code de réservation</span>
+      <span class="etiquette" data-t="lCode">Ton code</span>
       <input type="text" id="code" maxlength="6" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-describedby="codeFormat">
       <span class="aide-champ" id="codeFormat" data-t="fCode">Six signes, lettres et chiffres — par exemple ABC123.</span>
     </div>
@@ -70,6 +70,9 @@
     <p class="jour" id="rJour"></p>
     <div id="rLignes"></div>
     <div class="archive cache" id="rArchive" data-t="archive">Cette réservation est passée : tu peux la consulter, plus la modifier.</div>
+    <button class="principal cache" id="btnPayer" data-t="bPayer">Payer maintenant</button>
+    <p class="erreur cache" id="erreurPayer" role="alert" aria-live="polite"></p>
+    <p class="mention cache" id="mPayerComptoir" data-t="mComptoir">Le règlement en ligne de cette commande se fait depuis l’appareil qui l’a passée. Sinon, ton code suffit au comptoir.</p>
     <button class="secondaire danger cache" id="btnAnnuler"></button>
     <p class="erreur cache" id="erreur2" role="alert" aria-live="polite"></p>
     <div class="issue-annul cache" id="issueAnnul" role="status" aria-live="polite">
@@ -77,7 +80,7 @@
       <p class="issue-dit" id="issueDit"></p>
     </div>
     <button class="secondaire cache" id="btnAccueil" data-t="bAccueil">Retour à l’accueil</button>
-    <button class="secondaire" id="btnAutre" data-t="bAutre">Chercher une autre réservation</button>
+    <button class="secondaire" id="btnAutre" data-t="bAutre">Chercher autre chose</button>
   </section>
 </div>
 
@@ -105,12 +108,12 @@
 
   var T = {
     fr: {
-      titre: 'Retrouver ma réservation', sous: 'Ton code et le numéro utilisé pour réserver.',
-      lCode: 'Code de réservation', lTel: 'Numéro utilisé', bChercher: 'Retrouver',
-      bAutre: 'Chercher une autre réservation',
+      titre: 'Retrouver ma réservation ou ma commande', sous: 'Ton code et le numéro que tu as utilisé.',
+      lCode: 'Ton code', lTel: 'Numéro utilisé', bChercher: 'Retrouver',
+      bAutre: 'Chercher autre chose',
       archive: 'Cette réservation est passée : tu peux la consulter, plus la modifier.',
       manque: 'Entre le code à 6 caractères et ton numéro.',
-      introuvable: 'Aucune réservation avec ce code et ce numéro.',
+      introuvable: 'Rien ne correspond à ce code et à ce numéro.',
       onCherche: 'On cherche…',
       annuler: 'Annuler cette réservation', confirmer: 'Confirmer l’annulation',
       annulee: 'Réservation annulée.',
@@ -133,15 +136,22 @@
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
+      bPayer: 'Payer maintenant', onOuvre: 'On ouvre le paiement…',
+      payerFerme: 'Le paiement en ligne n’est pas disponible. Tu peux régler au comptoir.',
+      mComptoir: 'Le règlement en ligne de cette commande se fait depuis l’appareil qui l’a passée. Sinon, ton code suffit au comptoir.',
+      lCommande: 'Ma commande', lArticles: 'Articles', lTotal: 'Total',
+      surPlace: 'Sur place', aEmporter: 'À emporter',
+      archiveCmd: 'Une commande partie en cuisine se modifie avec l’équipe, pas depuis cet écran.',
+      etatsCmd: { en_attente: 'Reçue', en_preparation: 'En préparation', prete: 'Prête',
+                  livree: 'Servie', annulee: 'Annulée' }
     },
     en: {
-      titre: 'Find my booking', sous: 'Your code and the number you booked with.',
-      lCode: 'Booking code', lTel: 'Phone number used', bChercher: 'Find',
-      bAutre: 'Find another booking',
+      titre: 'Find my booking or order', sous: 'Your code and the number you used.',
+      lCode: 'Your code', lTel: 'Phone number used', bChercher: 'Find',
+      bAutre: 'Find something else',
       archive: 'This booking is past: you can view it, not change it.',
       manque: 'Enter the 6-character code and your number.',
-      introuvable: 'No booking matches this code and number.',
+      introuvable: 'Nothing matches this code and number.',
       onCherche: 'Searching…',
       annuler: 'Cancel this booking', confirmer: 'Confirm cancellation',
       annulee: 'Booking cancelled.',
@@ -164,7 +174,14 @@
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete or unavailable.',
       fCode: 'Six characters, letters and digits — for example ABC123.',
-      fCode: 'Six characters, letters and digits — for example ABC123.'
+      bPayer: 'Pay now', onOuvre: 'Opening payment…',
+      payerFerme: 'Online payment is not available. You can pay at the counter.',
+      mComptoir: 'This order can be paid online only from the device that placed it. Otherwise your code is enough at the counter.',
+      lCommande: 'My order', lArticles: 'Items', lTotal: 'Total',
+      surPlace: 'Table service', aEmporter: 'Takeaway',
+      archiveCmd: 'An order already in the kitchen is changed with the team, not from this screen.',
+      etatsCmd: { en_attente: 'Received', en_preparation: 'Being prepared', prete: 'Ready',
+                  livree: 'Served', annulee: 'Cancelled' }
     }
   };
 
@@ -249,6 +266,40 @@
     var r = paquet.r;
     var z = $('rLignes'); z.innerHTML = '';
 
+    /* Une COMMANDE n'est pas une reservation, et l'ecran ne les habille pas de
+       la meme facon : ses etats sont ceux de la cuisine, elle n'a ni jour ni
+       creneau, et elle NE PORTE PAS le geste d'annulation — une commande
+       partie au serveur ne se retire qu'a l'equipe. */
+    if (paquet.type === 'commande') {
+      $('rQuoi').textContent = t().lCommande;
+      $('rJour').textContent = (r.service === 'sur_place') ? t().surPlace : t().aEmporter;
+      (r.lignes || []).forEach(function (l) {
+        z.appendChild(info(l.quantite + ' × ' + l.article, prix(l.prix * l.quantite), true));
+      });
+      z.appendChild(info(t().lTotal, prix(r.total), true));
+      var pc = document.createElement('span');
+      pc.className = 'etat ' + r.statut;
+      pc.textContent = t().etatsCmd[r.statut] || r.statut;
+      z.appendChild(info(t().lEtat, pc));
+      if (r.statut_paiement) z.appendChild(info('', t().paie[r.statut_paiement] || r.statut_paiement));
+
+      var codeC = document.createElement('div');
+      codeC.className = 'leCode';
+      codeC.textContent = r.code;
+      z.appendChild(info(t().lCodeLigne, codeC));
+
+      $('rArchive').textContent = t().archiveCmd;
+      $('rArchive').classList.toggle('cache', r.statut === 'annulee');
+      $('btnAnnuler').classList.add('cache');
+      arme = false;
+      reglerPaiement(paquet);
+
+      $('recherche').classList.add('cache');
+      $('resultat').classList.remove('cache');
+      window.scrollTo(0, 0);
+      return;
+    }
+
     if (paquet.type === 'espace') {
       $('rQuoi').textContent = r.espace + ' · ' + (t()[r.creneau] || r.creneau);
       $('rJour').textContent = jourLisible(r.date_jour);
@@ -271,12 +322,17 @@
     /* La base dit elle-même si la réservation est encore modifiable :
        l'écran obéit au lieu de recalculer la règle. */
     var figee = r.lecture_seule || ['annulee', 'expiree', 'terminee', 'no_show'].indexOf(r.statut) !== -1;
+    /* Le libellé se repose ici : une commande affichée avant celle-ci y aurait
+       laissé le sien, et la relecture par `data-t` ne repasse qu'au changement
+       de langue. */
+    $('rArchive').textContent = t().archive;
     $('rArchive').classList.toggle('cache', !r.lecture_seule);
     var b = $('btnAnnuler');
     b.classList.toggle('cache', figee);
     arme = false;
     b.classList.remove('arme');
     b.textContent = t().annuler;
+    reglerPaiement(paquet);
 
     $('recherche').classList.add('cache');
     $('resultat').classList.remove('cache');
@@ -325,6 +381,85 @@
     } finally {
       b.disabled = false;
       b.textContent = t().bChercher;
+    }
+  }
+
+  /* ---------- Le règlement en ligne ----------
+     Trois conditions pour offrir le bouton, et elles ne se devinent pas : le
+     serveur dit que le paiement est en attente · une somme est due ici et
+     maintenant · le prestataire est configuré. Les refus de fond — vente
+     figée, déjà réglée, montant sur devis — restent à la porte : l'écran les
+     affiche, il ne les recalcule pas.
+
+     La COMMANDE fait exception au chemin, pas à la règle. Sa porte de paiement
+     exige un jeton, et la porte qui la retrouve par code ne le rend jamais —
+     elle est ouverte à l'anonyme. Le seul détenteur est le navigateur qui a
+     passé la commande. Ailleurs, l'écran dit où régler au lieu d'offrir un
+     bouton qui échouerait. */
+  var duPaiement = null;
+
+  function sommeDue(paquet) {
+    var r = paquet.r;
+    if (paquet.type === 'commande') return Number(r.total || 0);
+    if (paquet.type === 'logement') return Number(r.montant_acompte || 0);
+    return Number(r.montant_total || 0);
+  }
+
+  function reglerPaiement(paquet) {
+    var r = paquet.r;
+    duPaiement = null;
+    cacher('erreurPayer');
+    $('mPayerComptoir').classList.add('cache');
+
+    var ouvert = r.statut_paiement === 'en_attente'
+      && sommeDue(paquet) > 0
+      && r.statut !== 'annulee'
+      && !r.lecture_seule
+      && Roots.db.reglagePaiement().pose;
+
+    if (ouvert && paquet.type === 'commande') {
+      var garde = Roots.db.jetonDeCommandeGardee(r.code);
+      if (garde) duPaiement = { type: 'commande', id: garde.id, jeton: garde.jeton };
+      else $('mPayerComptoir').classList.remove('cache');
+    } else if (ouvert) {
+      duPaiement = { type: paquet.type, code: r.code, tel: numeroSaisi() };
+    }
+
+    var b = $('btnPayer');
+    b.classList.toggle('cache', !duPaiement);
+    b.disabled = false;
+    b.textContent = t().bPayer;
+  }
+
+  var paiementEnCours = false;
+  async function payer() {
+    if (paiementEnCours || !duPaiement) return;
+    cacher('erreurPayer');
+    var b = $('btnPayer');
+    paiementEnCours = true;
+    b.disabled = true;
+    b.textContent = t().onOuvre;
+    try {
+      var r, remise;
+      if (duPaiement.type === 'commande') {
+        r = await Roots.db.initierPaiementCommande(duPaiement.id, duPaiement.jeton);
+        remise = { paiement: r.paiement, montant: r.montant, type: 'commande' };
+      } else {
+        r = await Roots.db.initierPaiementReservation(duPaiement.type, duPaiement.code, duPaiement.tel);
+        remise = {
+          paiement: r.paiement, montant: r.montant,
+          type: 'reservation_' + duPaiement.type,
+          code: duPaiement.code, tel: duPaiement.tel
+        };
+      }
+      if (!Roots.db.remisePaiement(remise)) { erreur('erreurPayer', t().payerFerme); return; }
+      location.assign('payer.html');
+    } catch (e) {
+      erreur('erreurPayer', e.message);
+    } finally {
+      paiementEnCours = false;
+      b.disabled = false;
+      b.textContent = t().bPayer;
     }
   }
 
@@ -393,14 +528,18 @@
 
   $('code').addEventListener('input', function () { this.value = this.value.toUpperCase(); });
   $('btnChercher').addEventListener('click', chercher);
+  $('btnPayer').addEventListener('click', payer);
   $('btnAnnuler').addEventListener('click', annuler);
   $('btnAccueil').addEventListener('click', function () { location.href = 'index.html'; });
   $('btnAutre').addEventListener('click', function () {
     trouvee = null;
+    duPaiement = null;
     oublierIssue();
     $('resultat').classList.add('cache');
     $('recherche').classList.remove('cache');
-    cacher('erreur'); cacher('erreur2');
+    $('btnPayer').classList.add('cache');
+    $('mPayerComptoir').classList.add('cache');
+    cacher('erreur'); cacher('erreur2'); cacher('erreurPayer');
   });
   $('btnLangue').addEventListener('click', function () {
     langue = langue === 'fr' ? 'en' : 'fr';
