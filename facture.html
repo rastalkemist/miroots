@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-E+hEiTOyvV+Q0AK7BGp2n6tIvIGlYwbKTAmEccKC20E='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-NNjxhExKgYh0wvJeCGisIfkT8HOFo4GAL/caDku2vyk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -139,28 +139,28 @@
       saut: 'Skip to content',
       h1: 'My invoice',
       politique: 'Privacy Policy',
-      essai: 'Test document, issued on the tax authority’s test platform. It has no fiscal value.',
+      essai: 'Test document, issued on the tax authority test platform. It has no fiscal value.',
       verifier: 'Verify this document',
       refAchat: 'Purchase ref.',
       retrouver: { commande: 'Find my order', reservation: 'Find my booking' },
       surAppareil: {
-        commande: 'Invoices are issued to the device used for payment. Bring your code to the counter and the team will retrieve it.',
-        reservation: 'Invoices are issued to the device used for payment. Look up your booking with your code and number, or ask at the counter.'
+        commande: 'Invoices are issued to the device used to pay. Bring your code to the counter and the team will retrieve it.',
+        reservation: 'Invoices are issued to the device used to pay. Find your booking with your code and phone number, or ask at the counter.'
       },
       etapes: {
         choix: {
           titre: 'Your invoice',
-          dit: 'It is issued through the tax authority’s platform and delivered here. It remains available for as long as you keep your code.',
+          dit: 'Your invoice is issued through the tax authority platform and delivered here. It remains available for as long as you keep your code.',
           action: 'Download my invoice', second: 'Find my booking'
         },
         en_cours: {
           titre: 'Your invoice is being issued',
-          dit: 'Your payment has been recorded. The document is being issued, which takes a few minutes.',
+          dit: 'Your payment has been recorded. The invoice is being issued, which takes a few minutes.',
           action: 'Check again', second: 'Find my booking'
         },
         en_cours_long: {
           titre: 'This is taking longer than expected',
-          dit: 'Your payment has been recorded and your invoice is not lost. It has not yet come back from the invoicing platform. Please check again later, or bring your code to the counter and the team will retrieve it for you.',
+          dit: 'Your payment has been recorded and your invoice is not lost. It has not yet returned from the invoicing platform. Check again later, or bring your code to the counter and the team will retrieve it.',
           action: 'Check again', second: 'Find my booking'
         },
         prete: {
@@ -170,7 +170,7 @@
         },
         absente: {
           titre: 'We cannot find that sale',
-          dit: 'Invoices are issued to the device used for payment. Look up your booking with your code and number, or ask at the counter.',
+          dit: 'Invoices are issued to the device used to pay. Find your booking with your code and phone number, or ask at the counter.',
           action: 'Back to home', second: 'Find my booking'
         }
       }

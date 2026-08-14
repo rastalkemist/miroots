@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-wNAvenehakdUMCbWtvy92g1CH2R0aXyQxIakErXliSI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Cq7dfNnd6sL4GmKx40OCLZwv7TrUUjZMpBvNyy2Skug='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -143,46 +143,46 @@
     },
     en: {
       saut: 'Skip to content',
-      phase: 'Trial version — some things aren’t finished yet.',
-      fCode: 'Six characters, letters and numbers — like ABC123.',
+      phase: 'Trial version. Some features are incomplete.',
+      fCode: 'Six characters, letters and numbers. For example ABC123.',
       h1: 'Payment',
       lCode: 'Your order code',
       politique: 'Privacy Policy',
       etats: {
         attente: {
           titre: 'Checking your payment',
-          dit: 'Hang on here — this takes less than a minute. Your code is already saved, so you won’t lose it even if you close the tab.',
+          dit: 'This takes less than a minute. Your code is saved, so you will not lose it if you close this tab.',
           action: null, second: null, jauge: true, code: true
         },
         payee: {
           titre: 'Payment received',
-          dit: 'You’re all settled. Your invoice is ready whenever you are.',
+          dit: 'Your order is paid. Your invoice is ready.',
           action: 'Get my invoice', second: 'Find my order',
           jauge: false, code: true
         },
         refusee: {
-          titre: 'That payment didn’t go through',
-          dit: '<strong>Nothing was charged.</strong> Have another go, or pay at the counter.',
+          titre: 'The payment did not go through',
+          dit: '<strong>You have not been charged.</strong> Try again, or pay at the counter.',
           action: 'Try again', second: 'Find my order',
           jauge: false, code: true
         },
         'sans-reponse': {
-          titre: 'No word yet',
-          dit: 'Your provider hasn’t come back to us yet. It can take a few minutes longer than usual.',
-          avert: 'Don’t pay twice. If the money left your account, it’ll show up and your order will be settled. Just keep your code.',
+          titre: 'No answer yet',
+          dit: 'Your payment provider has not answered yet. This can take a few more minutes.',
+          avert: 'Do not pay a second time. If the amount has left your account, it will be recorded and your order paid. Keep your code.',
           action: 'Check again', second: 'Find my order',
           jauge: false, code: true
         },
         'sans-reponse-long': {
-          titre: 'Still nothing',
-          dit: 'We’re still chasing it on our side. Nothing left for you to do here — keep your code and it’ll bring your order straight back up.',
-          avert: 'Don’t pay twice. If the money left your account, it’ll show up and your order will be settled. Just keep your code.',
+          titre: 'Still no answer',
+          dit: 'We are still checking. There is nothing more to do on this screen. Keep your code: it will find your order at any time.',
+          avert: 'Do not pay a second time. If the amount has left your account, it will be recorded and your order paid. Keep your code.',
           action: 'Find my order', second: null,
           jauge: false, code: true
         },
         regularisation: {
-          titre: 'Your payment came through',
-          dit: 'One check left on our side before we can release your order. We’ll come back to you — keep your code.',
+          titre: 'Your payment has arrived',
+          dit: 'One check remains before your order is confirmed. We will contact you. Keep your code.',
           action: 'Find my order', second: null,
           jauge: false, code: true
         }
@@ -214,17 +214,17 @@
     en: {
       commande: {
         lCode: 'Your order code',
-        regle: 'You’re all settled. Your invoice is ready whenever you are.',
+        regle: 'Your order is paid. Your invoice is ready.',
         retrouver: 'Find my order',
-        avert: 'Don’t pay twice. If the money left your account, it’ll show up and your order will be settled. Just keep your code.',
-        enCours: 'One check left on our side before we can release your order. We’ll come back to you — keep your code.'
+        avert: 'Do not pay a second time. If the amount has left your account, it will be recorded and your order paid. Keep your code.',
+        enCours: 'One check remains before your order is confirmed. We will contact you. Keep your code.'
       },
       reservation: {
         lCode: 'Your booking code',
-        regle: 'You’re all settled. Your invoice is ready whenever you are.',
+        regle: 'Your booking is paid. Your invoice is ready.',
         retrouver: 'Find my booking',
-        avert: 'Don’t pay twice. If the money left your account, it’ll show up and your booking will be settled. Just keep your code.',
-        enCours: 'One check left on our side before we can confirm your booking. We’ll come back to you — keep your code.'
+        avert: 'Do not pay a second time. If the amount has left your account, it will be recorded and your booking paid. Keep your code.',
+        enCours: 'One check remains before your booking is confirmed. We will contact you. Keep your code.'
       }
     }
   };

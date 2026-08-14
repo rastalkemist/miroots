@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-lx1iEPTRHXJvotsIWpoI+i556V7M0RYz0hONsz+V+a0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-bF2GiovT8fvlfFTeoxhWf5dfmrxzX6kMq081JZcaa2s='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -232,40 +232,40 @@
     en: {
       ongReserver: 'Book a space', ongCommander: 'Order',
       etEspace: 'Space', etJour: 'Which day?', etCreneau: 'Time slot',
-      etPersonnes: 'How many of you?', etService: 'Service',
-      tel: 'Your number (so we can confirm)', tonNomResa: 'Your first name', pNom: 'Your first name',
-      reserver: 'Book it',
-      cestReserve: 'You’re booked. See you soon.',
-      instrResa: 'Show this code when you arrive. Hang on to it — it’s how you find your booking again, no account needed.',
-      voirDetail: 'See the full menu â', cmdTotal: 'Order total',
-      tonNom: 'Your name (so we can call you)', tonTel: 'Your number',
+      etPersonnes: 'How many people?', etService: 'Service',
+      tel: 'Your number', tonNomResa: 'Your first name', pNom: 'Your first name',
+      reserver: 'Book',
+      cestReserve: 'Booked. See you soon.',
+      instrResa: 'Show this code when you arrive. Keep it — you can use it to find your booking again, without an account.',
+      voirDetail: 'See the full menu →', cmdTotal: 'Order total',
+      tonNom: 'Your name', tonTel: 'Your number',
       commander: 'Place order', cmdMention: 'Pay at the counter. No account needed.',
-      cestCommande: 'Order in. The kitchen’s on it.',
-      instrCmd: 'Show this code at the counter. We’ll call your name when it’s ready.',
+      cestCommande: 'Order placed. The kitchen has it.',
+      instrCmd: 'Show this code at the counter. We will call your name when it is ready.',
       matin: 'Morning', apres_midi: 'Afternoon', journee: 'Full day',
       partage: 'shared', reunion_privee: 'private', prive: 'private',
       jusqua: function (n) { return 'up to ' + n + ' person' + (n > 1 ? 's' : ''); },
       parPers: ' / person', monnaie: 'FCFA',
-      complet: 'Fully booked — try another slot.', priveOccupe: 'Someone has this slot privately.',
-      surDevis: 'For this one, talk to the team — they’ll sort out the details with you.',
-      payer: 'Pay now', onOuvre: 'Opening paymentâ¦',
-      payerFerme: 'Online payment isn’t available right now. You can pay at the counter.',
-      refuseGarde: 'We can’t send that just now. Give it a moment and try again.',
-      maxAtteint: 'That’s the maximum', totalTitre: 'Total',
-      onRegarde: 'Checkingâ¦', onReserve: 'Bookingâ¦', onEnvoie: 'Sendingâ¦',
+      complet: 'Fully booked. Choose another slot.', priveOccupe: 'This slot is booked privately.',
+      surDevis: 'This space is booked through the team. Contact us and we will arrange it.',
+      payer: 'Pay', onOuvre: 'Opening payment…',
+      payerFerme: 'Online payment is unavailable. You can pay at the counter.',
+      refuseGarde: 'Sorry, there is a technical problem. Try again in a few moments.',
+      maxAtteint: 'Maximum reached', totalTitre: 'Total',
+      onRegarde: 'Checking…', onReserve: 'Booking…', onEnvoie: 'Sending…',
       aujourdhui: 'Today', demain: 'Tomorrow',
       sur_place: 'Eat in', emporter: 'Takeaway',
-      cRetenue: 'We’re holding your spot for another', expire: 'Time’s up — your spot has gone back on the board.',
-      manqueContact: 'We need your first name and a number that works.',
-      menuVide: 'The menu isn’t loading right now.',
-      partiel: function (l) { return 'Ask for these at the counter: ' + l + '.'; },
+      cRetenue: 'Your spot is held for another', expire: 'Time is up. Your spot has been released.',
+      manqueContact: 'Enter your first name and a valid phone number.',
+      menuVide: 'The menu is unavailable right now.',
+      partiel: function (l) { return 'Ask at the counter for: ' + l + '.'; },
       radio: 'Roots Radio',
-      toastVerbe: function (v) { return v + ' is on its way.'; },
-      toastNu: 'NU — the community side — is on its way.',
+      toastVerbe: function (v) { return v + ' is coming soon.'; },
+      toastNu: 'NU, the community side of Roots, is coming soon.',
       politique: 'Privacy Policy',
       saut: 'Skip to content',
-      phase: 'Trial version — some things aren’t finished yet.',
-      fCode: 'Six characters, letters and numbers — like ABC123.'
+      phase: 'Trial version. Some features are incomplete.',
+      fCode: 'Six characters, letters and numbers. For example ABC123.'
     }
   };
 

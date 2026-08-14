@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-IBIVynA00G0TCmw1KZZ9D/xxt4CD7m6gU6D+rjDV+sc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-lIWOue5VEB/5p+EIZws7UAwGFRFr9eIU9f+gSHwAGjU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation ou ma commande — Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -146,18 +146,18 @@
                   livree: 'Servie', annulee: 'Annulée' }
     },
     en: {
-      titre: 'Find your booking or order', sous: 'Your code, and the number you gave us.',
-      lCode: 'Your code', lTel: 'Phone number used', bChercher: 'Find it',
-      bAutre: 'Look up something else',
-      archive: 'This one’s in the past — you can look, but not change anything.',
-      manque: 'We need the 6-character code and your number.',
-      introuvable: 'Nothing matches that code and number.',
-      onCherche: 'Looking…',
-      annuler: 'Cancel this booking', confirmer: 'Yes, cancel it',
+      titre: 'Find your booking or order', sous: 'Enter your code and the phone number you used.',
+      lCode: 'Your code', lTel: 'Phone number used', bChercher: 'Find',
+      bAutre: 'Find something else',
+      archive: 'This booking has passed. You can view it, but not change it.',
+      manque: 'Enter the 6-character code and your phone number.',
+      introuvable: 'No booking or order matches that code and number. Check both and try again.',
+      onCherche: 'Searching…',
+      annuler: 'Cancel this booking', confirmer: 'Confirm cancellation',
       annulee: 'Booking cancelled.',
       issues: {
-        annulee: { titre: 'Booking cancelled', dit: 'That’s done. If you’ve already paid, the team will be in touch about the refund.' },
-        demande_transmise: { titre: 'Cancellation request sent', dit: 'Inside seven days, the team handles cancellations personally. Your booking is still live and they’ve got your request — they’ll come back to you.' }
+        annulee: { titre: 'Booking cancelled', dit: 'Your booking is cancelled. If you have already paid, the team will contact you about the refund.' },
+        demande_transmise: { titre: 'Cancellation request sent', dit: 'Within seven days of the date, cancellations are handled by the team. Your booking is still active and your request has been sent. The team will contact you.' }
       },
       bAccueil: 'Back to home',
       matin: 'Morning', apres_midi: 'Afternoon', journee: 'Full day',
@@ -168,19 +168,19 @@
                annulee: 'Cancelled', expiree: 'Expired', no_show: 'No-show', preemptee: 'Moved' },
       paie: { en_attente: 'To pay', acompte_paye: 'Deposit paid', paye: 'Paid',
               rembourse: 'Refunded', rembourse_partiellement: 'Partly refunded', echoue: 'Payment failed' },
-      toastVerbe: function (v) { return v + ' is on its way.'; },
-      toastNu: 'NU — the community side — is on its way.',
+      toastVerbe: function (v) { return v + ' is coming soon.'; },
+      toastNu: 'NU, the community side of Roots, is coming soon.',
       mentions: 'Legal notices',
       saut: 'Skip to content',
-      phase: 'Trial version — some things aren’t finished yet.',
-      fCode: 'Six characters, letters and numbers — like ABC123.',
-      bPayer: 'Pay now', onOuvre: 'Opening payment…',
-      payerFerme: 'Online payment isn’t available right now. You can pay at the counter.',
-      mComptoir: 'To pay for this online, use the device you ordered from. Otherwise, your code is all you need at the counter.',
+      phase: 'Trial version. Some features are incomplete.',
+      fCode: 'Six characters, letters and numbers. For example ABC123.',
+      bPayer: 'Pay', onOuvre: 'Opening payment…',
+      payerFerme: 'Online payment is unavailable. You can pay at the counter.',
+      mComptoir: 'To pay online, use the device you ordered from. You can also pay at the counter with your code.',
       lCommande: 'Your order', lArticles: 'Items', lTotal: 'Total',
       surPlace: 'Table service', aEmporter: 'Takeaway',
-      archiveCmd: 'Once an order reaches the kitchen, the team handles any changes — not this screen.',
-      etatsCmd: { en_attente: 'Received', en_preparation: 'Being made', prete: 'Ready',
+      archiveCmd: 'Once an order reaches the kitchen, changes are made by the team, not on this screen.',
+      etatsCmd: { en_attente: 'Received', en_preparation: 'Being prepared', prete: 'Ready',
                   livree: 'Served', annulee: 'Cancelled' }
     }
   };

@@ -128,9 +128,9 @@
       { ico: 'i-ticket',     t: 'Retrouver',          s: 'Réservation ou commande, avec ton code', href: 'retrouver.html' }
     ],
     en: [
-      { ico: 'i-carte',      t: 'Menu',         s: 'Everything we serve, in full',  href: 'carte.html' },
-      { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office',        href: 'index.html?ouvrir=reserver' },
-      { ico: 'i-ticket',     t: 'Find it',      s: 'A booking or an order — just your code', href: 'retrouver.html' }
+      { ico: 'i-carte',      t: 'Menu',         s: 'The full menu, in detail',   href: 'carte.html' },
+      { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office',     href: 'index.html?ouvrir=reserver' },
+      { ico: 'i-ticket',     t: 'Find a booking', s: 'A booking or an order, with your code', href: 'retrouver.html' }
     ]
   };
 
@@ -160,11 +160,11 @@
     },
     en: {
       accueil: 'Home', menu: 'Menu', fermer: 'Close', langue: 'Language',
-      mode: 'Switch between Mi and NU', moins: 'Fewer', plus: 'More',
+      mode: 'Switch between Mi and NU', moins: 'Fewer people', plus: 'More people',
       feuille: 'Book or order', commande: 'Your order',
       taille: 'Text size',
-      tailleMoins: 'Smaller text',
-      taillePlus: 'Larger text'
+      tailleMoins: 'Decrease text size',
+      taillePlus: 'Increase text size'
     }
   };
 

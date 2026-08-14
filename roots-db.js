@@ -30,54 +30,54 @@ window.Roots = window.Roots || {};
 
   var MESSAGES = {
     'consentement requis':
-      { fr: "Coche l'accord pour continuer.", en: 'Tick the box to carry on.' },
+      { fr: "Coche l'accord pour continuer.", en: 'Select the checkbox to continue.' },
     'commande introuvable ou jeton invalide':
-      { fr: 'On ne retrouve pas cette commande sur cet appareil.', en: "We can't find this order on this device." },
+      { fr: 'On ne retrouve pas cette commande sur cet appareil.', en: 'We cannot find this order on this device.' },
     'la commande est deja en preparation':
-      { fr: 'La cuisine a commencé — passe au comptoir pour modifier.', en: 'The kitchen has already started — ask at the counter to change it.' },
+      { fr: 'La cuisine a commencé — passe au comptoir pour modifier.', en: 'The kitchen has started this order. Ask at the counter to change it.' },
     'quantite hors bornes':
-      { fr: 'Choisis entre 1 et 50.', en: 'Choose between 1 and 50.' },
+      { fr: 'Choisis entre 1 et 50.', en: 'Choose a number between 1 and 50.' },
     'article indisponible':
-      { fr: "Ce plat n'est plus disponible aujourd'hui.", en: 'That one’s off today.' },
+      { fr: "Ce plat n'est plus disponible aujourd'hui.", en: 'This dish is unavailable today.' },
     'article inconnu':
-      { fr: 'Ce plat ne figure plus à la carte.', en: 'That one’s no longer on the menu.' },
+      { fr: 'Ce plat ne figure plus à la carte.', en: 'This dish is no longer on the menu.' },
     'espace inconnu':
-      { fr: 'Cet espace n’est pas disponible.', en: 'That space isn’t available.' },
+      { fr: 'Cet espace n’est pas disponible.', en: 'This space is not available.' },
     'logement inconnu':
-      { fr: 'Ce logement n’est pas disponible.', en: 'That room isn’t available.' },
+      { fr: 'Ce logement n’est pas disponible.', en: 'This room is not available.' },
     'logement indisponible':
-      { fr: 'Ce logement n’est pas disponible.', en: 'That room isn’t available.' },
+      { fr: 'Ce logement n’est pas disponible.', en: 'This room is not available.' },
     'date passee':
-      { fr: 'Choisis une date à venir.', en: 'Choose a date that hasn’t passed.' },
+      { fr: 'Choisis une date à venir.', en: 'Choose a date in the future.' },
     'horizon de reservation depasse (30 jours)':
-      { fr: 'Les réservations s’ouvrent jusqu’à 30 jours à l’avance.', en: 'You can book up to 30 days ahead.' },
+      { fr: 'Les réservations s’ouvrent jusqu’à 30 jours à l’avance.', en: 'Bookings open up to 30 days in advance.' },
     'horizon de reservation depasse (365 jours)':
-      { fr: 'Les séjours s’ouvrent jusqu’à un an à l’avance.', en: 'You can book a stay up to a year ahead.' },
+      { fr: 'Les séjours s’ouvrent jusqu’à un an à l’avance.', en: 'Stays open up to a year in advance.' },
     'duree maximale de sejour depassee (30 nuits)':
-      { fr: 'Un séjour va jusqu’à 30 nuits.', en: 'Stays run to 30 nights at most.' },
+      { fr: 'Un séjour va jusqu’à 30 nuits.', en: 'A stay can last up to 30 nights.' },
     'tarif indisponible pour ce creneau':
-      { fr: 'Ce créneau n’est pas encore ouvert à la réservation.', en: 'That slot isn’t open for booking yet.' },
+      { fr: 'Ce créneau n’est pas encore ouvert à la réservation.', en: 'This slot is not open for booking yet.' },
     'espace retenu en usage exclusif sur ce creneau':
-      { fr: 'Ce créneau est privatisé. Choisis-en un autre.', en: 'Someone has that slot privately — pick another.' },
+      { fr: 'Ce créneau est privatisé. Choisis-en un autre.', en: 'This slot is booked privately. Choose another.' },
     'cet usage se reserve aupres de l\'equipe':
       { fr: 'Cet usage se réserve auprès de l’équipe. Écris-nous et on te répond.',
-        en: 'For this one, talk to the team — get in touch and they’ll come back to you.' },
+        en: 'This space is booked through the team. Contact us and we will arrange it.' },
     'mode d\'usage non offert pour cet espace':
-      { fr: 'Cet usage n’est pas proposé pour cet espace.', en: 'That isn’t on offer for this space.' },
+      { fr: 'Cet usage n’est pas proposé pour cet espace.', en: 'This option is not offered for this space.' },
     'version de consentement inconnue ou perimee':
       { fr: 'Recharge la page : la notice a changé depuis l’ouverture de cet onglet.',
-        en: 'Please reload — the notice changed after you opened this tab.' },
+        en: 'Reload the page: the notice changed after you opened this tab.' },
     'la cle d\'idempotence doit etre un uuid tire au hasard':
-      { fr: 'Recharge la page et recommence.', en: 'Reload the page and have another go.' },
+      { fr: 'Recharge la page et recommence.', en: 'Reload the page and try again.' },
     'cle d\'idempotence deja utilisee':
-      { fr: 'Recharge la page et recommence.', en: 'Reload the page and have another go.' },
+      { fr: 'Recharge la page et recommence.', en: 'Reload the page and try again.' },
     'indiquez un numero de table, ou un prenom et un telephone':
-      { fr: 'Indique ton prénom et ton numéro.', en: 'We need your first name and phone number.' }
+      { fr: 'Indique ton prénom et ton numéro.', en: 'Enter your first name and phone number.' }
   };
 
   var REPLI = {
     fr: "Ça n'a pas marché. Réessaie dans un instant.",
-    en: "That didn't work. Please try again in a moment."
+    en: 'Sorry, there is a technical problem. Try again in a few moments.'
   };
 
   var inconnus = [];
@@ -92,17 +92,17 @@ window.Roots = window.Roots || {};
         var reste = brut.match(/\((\d+) places? restantes?\)/);
         var n = reste ? parseInt(reste[1], 10) : 0;
         return langue === 'en'
-          ? (n > 0 ? 'Only ' + n + ' spot(s) left for this slot.' : 'This slot is full.')
+          ? (n > 0 ? (n === 1 ? 'Only 1 space left for this slot.' : 'Only ' + n + ' spaces left for this slot.') : 'This slot is full.')
           : (n > 0 ? 'Il ne reste que ' + n + ' place(s) sur ce créneau.' : 'Ce créneau est complet.');
       }
       if (brut.indexOf('ce logement accueille au plus') === 0) {
         var m = brut.match(/(\d+)/);
         return langue === 'en'
-          ? 'This room sleeps up to ' + (m ? m[1] : '') + ' guest(s).'
+          ? 'This room sleeps up to ' + (m ? m[1] : '') + ' guests.'
           : 'Ce logement accueille jusqu’à ' + (m ? m[1] : '') + ' personne(s).';
       }
       if (brut.indexOf('telephone invalide') === 0) {
-        return langue === 'en' ? 'Please check the phone number.' : 'Vérifie le numéro de téléphone.';
+        return langue === 'en' ? 'Check the phone number.' : 'Vérifie le numéro de téléphone.';
       }
       if (brut) {
         inconnus.push(brut);
@@ -135,7 +135,7 @@ window.Roots = window.Roots || {};
       reponse = await fetch(BASE + chemin, options);
     } catch (e) {
       throw new ErreurRoots(
-        langue === 'en' ? 'You’re offline. Check your connection.' : 'Pas de connexion. Vérifie ton réseau.',
+        langue === 'en' ? 'No connection. Check your network.' : 'Pas de connexion. Vérifie ton réseau.',
         langue, 'reseau', 0
       );
     }
