@@ -522,17 +522,33 @@ window.Roots = window.Roots || {};
       });
     },
 
-    /* ⚠ CETTE PORTE N'ACCEPTE PAS D'ADRESSE, alors que sa jumelle du parcours
-       commande, si. Ne pas ajouter `p_courriel` ici tant que la signature n'a
-       pas ete elargie : la resolution se fait sur le NOM des arguments, donc un
-       argument inconnu ne vaut pas nul — il rend la fonction introuvable, et la
-       remise cesse pour TOUTES les reservations, y compris en telechargement. */
     choisirRemiseReservation: function (o) {
       return appeler('choisir_remise_reservation', {
         p_type: o.type, p_code: o.code, p_tel_contact: telephone(o.tel),
         p_canal: o.canal,
         p_tel: o.telMessagerie ? telephone(o.telMessagerie) : null,
-        p_consentement: o.consentement || null
+        p_consentement: o.consentement || null,
+        p_courriel: o.courriel || null
+      });
+    },
+
+    /* Les trois portes qui ne demandent que le code et le numero. Elles ne
+       rendent ni jeton ni contact, et n'autorisent ni modification ni
+       annulation : ce qu'elles accordent a qui devinerait un couple est de
+       payer une commande qui n'est pas la sienne, ou d'en choisir la remise.
+       Chaque appel consomme un jeton du plafond de recherche. */
+    initierPaiementCommandeParCode: function (code, tel) {
+      return appeler('initier_paiement_commande_par_code', {
+        p_code: code, p_tel: telephone(tel)
+      });
+    },
+
+    choisirRemiseCommandeParCode: function (o) {
+      return appeler('choisir_remise_commande_par_code', {
+        p_code: o.code, p_tel: telephone(o.tel), p_canal: o.canal,
+        p_tel_messagerie: o.telMessagerie ? telephone(o.telMessagerie) : null,
+        p_consentement: o.consentement || null,
+        p_courriel: o.courriel || null
       });
     },
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-KuCw2y3TXN9Un+XJeB70ApX1LgsYARJv19PEngxI510='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Sk0viiTKxGN6E+FXdQ4fRkHloV0QUphjj8A3vzV54NQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation ou ma commande — Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -73,7 +73,6 @@
     <div class="archive cache" id="rArchive" data-t="archive">Cette réservation est passée : tu peux la consulter, plus la modifier.</div>
     <button class="principal cache" id="btnPayer" data-t="bPayer">Payer maintenant</button>
     <p class="erreur cache" id="erreurPayer" role="alert" aria-live="polite"></p>
-    <p class="mention cache" id="mPayerComptoir" data-t="mComptoir">Le règlement en ligne de cette commande se fait depuis l’appareil qui l’a passée. Sinon, ton code suffit au comptoir.</p>
     <button class="secondaire danger cache" id="btnAnnuler"></button>
     <p class="erreur cache" id="erreur2" role="alert" aria-live="polite"></p>
     <div class="issue-annul cache" id="issueAnnul" role="status" aria-live="polite">
@@ -139,7 +138,6 @@
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
       bPayer: 'Payer maintenant', onOuvre: 'On ouvre le paiement…',
       payerFerme: 'Le paiement en ligne n’est pas disponible. Tu peux régler au comptoir.',
-      mComptoir: 'Le règlement en ligne de cette commande se fait depuis l’appareil qui l’a passée. Sinon, ton code suffit au comptoir.',
       lCommande: 'Ma commande', lArticles: 'Articles', lTotal: 'Total',
       surPlace: 'Sur place', aEmporter: 'À emporter',
       archiveCmd: 'Une commande partie en cuisine se modifie avec l’équipe, pas depuis cet écran.',
@@ -177,7 +175,6 @@
       fCode: 'Six characters, letters and numbers. For example ABC123.',
       bPayer: 'Pay', onOuvre: 'Opening payment…',
       payerFerme: 'Online payment is unavailable. You can pay at the counter.',
-      mComptoir: 'To pay online, use the device you ordered from. You can also pay at the counter with your code.',
       lCommande: 'Your order', lArticles: 'Items', lTotal: 'Total',
       surPlace: 'Table service', aEmporter: 'Takeaway',
       archiveCmd: 'Once an order reaches the kitchen, changes are made by the team, not on this screen.',
@@ -392,11 +389,10 @@
      figée, déjà réglée, montant sur devis — restent à la porte : l'écran les
      affiche, il ne les recalcule pas.
 
-     La COMMANDE fait exception au chemin, pas à la règle. Sa porte de paiement
-     exige un jeton, et la porte qui la retrouve par code ne le rend jamais —
-     elle est ouverte à l'anonyme. Le seul détenteur est le navigateur qui a
-     passé la commande. Ailleurs, l'écran dit où régler au lieu d'offrir un
-     bouton qui échouerait. */
+     LE CODE ET LE NUMÉRO SUFFISENT, pour la commande comme pour la
+     réservation : les deux portes d'ouverture d'intention les prennent, et
+     aucune n'exige de jeton. L'appareil qui a passé la vente n'a plus rien de
+     particulier. */
   var duPaiement = null;
 
   function sommeDue(paquet) {
@@ -410,7 +406,6 @@
     var r = paquet.r;
     duPaiement = null;
     cacher('erreurPayer');
-    $('mPayerComptoir').classList.add('cache');
 
     var ouvert = r.statut_paiement === 'en_attente'
       && sommeDue(paquet) > 0
@@ -418,11 +413,7 @@
       && !r.lecture_seule
       && Roots.db.reglagePaiement().pose;
 
-    if (ouvert && paquet.type === 'commande') {
-      var garde = Roots.db.jetonDeCommandeGardee(r.code);
-      if (garde) duPaiement = { type: 'commande', id: garde.id, jeton: garde.jeton };
-      else $('mPayerComptoir').classList.remove('cache');
-    } else if (ouvert) {
+    if (ouvert) {
       duPaiement = { type: paquet.type, code: r.code, tel: numeroSaisi() };
     }
 
@@ -443,8 +434,11 @@
     try {
       var r, remise;
       if (duPaiement.type === 'commande') {
-        r = await Roots.db.initierPaiementCommande(duPaiement.id, duPaiement.jeton);
-        remise = { paiement: r.paiement, montant: r.montant, type: 'commande' };
+        r = await Roots.db.initierPaiementCommandeParCode(duPaiement.code, duPaiement.tel);
+        /* Le code et le numero voyagent avec la remise : l'ecran d'attente en a
+           besoin pour lire l'etat sans le jeton de l'appareil d'origine. */
+        remise = { paiement: r.paiement, montant: r.montant, type: 'commande',
+                   code: duPaiement.code, tel: duPaiement.tel };
       } else {
         r = await Roots.db.initierPaiementReservation(duPaiement.type, duPaiement.code, duPaiement.tel);
         remise = {
@@ -539,7 +533,6 @@
     $('resultat').classList.add('cache');
     $('recherche').classList.remove('cache');
     $('btnPayer').classList.add('cache');
-    $('mPayerComptoir').classList.add('cache');
     cacher('erreur'); cacher('erreur2'); cacher('erreurPayer');
   });
   $('btnLangue').addEventListener('click', function () {

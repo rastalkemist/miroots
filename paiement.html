@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Cq7dfNnd6sL4GmKx40OCLZwv7TrUUjZMpBvNyy2Skug='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-5Z1CCgizg3rom3m4ofB8fKNHA3NyX8T5Jbh4XqkvMGg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -254,6 +254,12 @@
     lireEtat = (remise.type === 'reservation_logement')
       ? function () { return Roots.db.consulterReservationLogement(remise.code, remise.tel); }
       : function () { return Roots.db.consulterReservationEspace(remise.code, remise.tel); };
+  } else if (remise && remise.code && remise.tel && remise.type === 'commande') {
+    /* Commande reglee depuis un appareil qui ne detient pas son jeton : la
+       remise porte alors le code et le numero, et la lecture passe par la porte
+       qui les prend. Elle rend `statut_paiement`, ce que l'attente lit. */
+    vente = { code: remise.code };
+    lireEtat = function () { return Roots.db.consulterCommandeParCode(remise.code, remise.tel); };
   } else {
     var cmd = Roots.db.derniereCommande();
     if (cmd) {
@@ -326,15 +332,20 @@
      ici. */
   function reessayer() {
     if (!vente) { location.href = 'index.html'; return Promise.resolve(); }
-    var ouvrir = (parcours === 'reservation')
-      ? Roots.db.initierPaiementReservation(
-          remise.type === 'reservation_logement' ? 'logement' : 'espace',
-          remise.code, remise.tel)
-      : Roots.db.initierPaiementCommande(vente.id, vente.jeton);
+    var ouvrir;
+    if (parcours === 'reservation') {
+      ouvrir = Roots.db.initierPaiementReservation(
+        remise.type === 'reservation_logement' ? 'logement' : 'espace',
+        remise.code, remise.tel);
+    } else if (remise && remise.code && remise.tel) {
+      ouvrir = Roots.db.initierPaiementCommandeParCode(remise.code, remise.tel);
+    } else {
+      ouvrir = Roots.db.initierPaiementCommande(vente.id, vente.jeton);
+    }
 
     return Promise.resolve(ouvrir).then(function (r) {
       var neuve = { paiement: r.paiement, montant: r.montant, type: remise ? remise.type : 'commande' };
-      if (parcours === 'reservation') { neuve.code = remise.code; neuve.tel = remise.tel; }
+      if (remise && remise.code && remise.tel) { neuve.code = remise.code; neuve.tel = remise.tel; }
       if (!Roots.db.remisePaiement(neuve)) { location.href = 'index.html'; return; }
       location.assign('payer.html');
     }, function () { return sonder(); });

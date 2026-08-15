@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-JAx9MC79GXYosKMAbkHEC5EKJURct42BqZnO0aing9w='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-cyR+DIHQO1EmhLVpA8pGev/9RcG+MosgFZRWn57Tcq8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -137,10 +137,11 @@
       titre: 'La carte', voirCommande: 'Voir ma commande', maCommande: 'Ma commande', total: 'Total',
       refuseGarde: "Envoi impossible pour le moment. Réessaie dans un instant.",
       tonNom: "Ton nom (pour t'appeler)", tonTel: 'Ton numéro', pNom: 'Ton prénom',
-      etPaiement: 'Paiement', mentionPaiement: 'Paiement sécurisé via KkiaPay.',
+      etPaiement: 'Paiement', enLigne: 'Payer maintenant',
+      mentionPaiement: 'Paiement sécurisé via KkiaPay.',
       payer: 'Payer', commander: 'Commander', onEnvoie: 'On envoie…',
       momo: 'MTN MoMo', moov: 'Moov Money', carte: 'Carte bancaire',
-      cashComptoir: 'Au comptoir', cashTable: 'À la table',
+      cashComptoir: 'Au comptoir',
       sousEmporter: "Commande sans compte — on t'appelle quand c'est prêt.",
       sousSurplace: "À ta table · on t'apporte ça directement.",
       badgeEmporter: 'À emporter', badgeTable: 'Sur place',
@@ -169,10 +170,11 @@
       titre: 'Menu', voirCommande: 'View my order', maCommande: 'My order', total: 'Total',
       refuseGarde: 'Sorry, there is a technical problem. Try again in a few moments.',
       tonNom: 'Your name', tonTel: 'Your number', pNom: 'Your first name',
-      etPaiement: 'Payment', mentionPaiement: 'Payments are processed securely by KkiaPay.',
+      etPaiement: 'Payment', enLigne: 'Pay online',
+      mentionPaiement: 'Online payment opens in KkiaPay, where you choose MTN MoMo, Moov Money or bank card.',
       payer: 'Pay', commander: 'Place order', onEnvoie: 'Sending…',
       momo: 'MTN MoMo', moov: 'Moov Money', carte: 'Bank card',
-      cashComptoir: 'At the counter', cashTable: 'At the table',
+      cashComptoir: 'At the counter',
       sousEmporter: 'No account needed. We will call you when it is ready.',
       sousSurplace: 'Table service · we will bring it to you.',
       badgeEmporter: 'Takeaway', badgeTable: 'Table service',
@@ -225,7 +227,7 @@
   var CATEGORIES = [];
   var ARTICLES = {};
   var panier = {};
-  var moyenPaiement = jetonTable ? 'cash' : 'momo';
+  var moyenPaiement = jetonTable ? 'cash' : 'enligne';
   var notice = null;
   var iti = null;
 
@@ -290,10 +292,7 @@
       b.textContent = nomDe(cat);
       b.addEventListener('click', function () {
         activerOnglet(cat.ancre);
-        var s = $('sec-' + cat.ancre);
-        if (!s) return;
-        var calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        s.scrollIntoView({ behavior: calme ? 'auto' : 'smooth' });
+        allerALaSection(cat.ancre);
       });
       z.appendChild(b);
     });
@@ -330,6 +329,34 @@
   }, { passive: true });
 
   /* ---------- Liste du menu ---------- */
+
+  /* LE DEFILEMENT VERS UNE SECTION SE CALCULE SUR LA HAUTEUR MESUREE.
+     Deux barres restent collees en haut — le bandeau et la rangee de
+     categories — et le titre vise doit s'arreter juste sous elles.
+     `scrollIntoView` ne convient pas ici : il additionne le degagement de
+     defilement du document ET la marge de defilement de la section, deux
+     valeurs ecrites a la main contre une hauteur qu'on peut mesurer. Leur
+     somme depasse la hauteur reelle, et la section tombe trop bas — on voit
+     alors la fin de la categorie precedente.
+     La hauteur se releve au moment du geste : elle depend du contenu du
+     bandeau et de la largeur de l'ecran, jamais d'une constante. */
+  function hauteurCollante() {
+    var t = 0;
+    ['.chrome-haut', '.categories'].forEach(function (sel) {
+      var e = document.querySelector(sel);
+      if (e && getComputedStyle(e).position === 'sticky') t += e.getBoundingClientRect().height;
+    });
+    return t;
+  }
+
+  function allerALaSection(ancre) {
+    var s = $('sec-' + ancre);
+    if (!s) return;
+    var calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var haut = s.getBoundingClientRect().top + window.pageYOffset - hauteurCollante();
+    window.scrollTo({ top: Math.max(0, Math.round(haut)),
+                      behavior: calme ? 'auto' : 'smooth' });
+  }
 
   function dessinerMenu() {
     var z = $('listeMenu');
@@ -478,17 +505,21 @@
   /* ---------- Paiement ----------
      Le choix est un choix affiché : le navigateur ne décide d'aucun statut. */
 
+  /* Le moyen precis — mobile money, carte — ne se choisit pas ici : il se
+     choisit dans la fenetre du prestataire, et `ouvrir_commande` ne le recoit
+     pas. Une pastille par moyen offrirait donc un choix qui n'a lieu qu'apres
+     et que rien ne transmet. */
   function moyensDispo() {
     return {
-      momo: t().momo, moov: t().moov, carte: t().carte,
-      cash: service === 'sur_place' ? t().cashTable : t().cashComptoir
+      enligne: t().enLigne,
+      cash: t().cashComptoir
     };
   }
 
   function dessinerPaiements() {
     var z = $('paiements');
     var moyens = moyensDispo();
-    if (!moyens[moyenPaiement]) moyenPaiement = 'momo';
+    if (!moyens[moyenPaiement]) moyenPaiement = 'enligne';
     z.innerHTML = '';
     Object.keys(moyens).forEach(function (id) {
       var b = document.createElement('button');
@@ -499,6 +530,10 @@
       b.addEventListener('click', function () { moyenPaiement = id; dessinerPaiements(); });
       z.appendChild(b);
     });
+    /* La mention explique ce qu'ouvre le paiement en ligne. Elle n'a rien a
+       dire quand le client choisit de regler sur place. */
+    var mention = document.querySelector('[data-t="mentionPaiement"]');
+    if (mention) mention.classList.toggle('cache', moyenPaiement === 'cash');
     majBoutonCommander();
   }
 
