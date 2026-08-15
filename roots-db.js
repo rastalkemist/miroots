@@ -26,7 +26,10 @@ window.Roots = window.Roots || {};
   /* ---------- Messages ----------
      Clé = message rendu par la base. Valeur = ce que lit un humain.
      Un message absent de cette table est journalisé puis remplacé par le repli :
-     sans ce relevé, on ne saurait jamais que la table est incomplète. */
+     sans ce relevé, on ne saurait jamais que la table est incomplète.
+     Une seule clé n'est pas rendue par la base : « adresse masquee non
+     transmissible », levée par ce fichier. Elle figure ici pour que le relevé
+     des messages inconnus ne porte que de vraies lacunes de la table. */
 
   var MESSAGES = {
     'consentement requis':
@@ -72,7 +75,24 @@ window.Roots = window.Roots || {};
     'cle d\'idempotence deja utilisee':
       { fr: 'Recharge la page et recommence.', en: 'Reload the page and try again.' },
     'indiquez un numero de table, ou un prenom et un telephone':
-      { fr: 'Indique ton prénom et ton numéro.', en: 'Enter your first name and phone number.' }
+      { fr: 'Indique ton prénom et ton numéro.', en: 'Enter your first name and phone number.' },
+    'vente introuvable':
+      { fr: 'On ne retrouve pas cette vente avec ce code et ce numéro.',
+        en: 'We could not find a sale with that code and number.' },
+    'adresse de courriel illisible':
+      { fr: 'L’envoi par courriel n’est pas possible pour cette vente. Tu peux télécharger ta facture.',
+        en: 'We cannot email the invoice for this sale. You can download it instead.' },
+    'un envoi se consent':
+      { fr: 'Donne ton accord avant l’envoi.', en: 'Give your consent before we send it.' },
+    'aucune adresse de payeur pour cette vente':
+      { fr: 'L’envoi par courriel n’est pas possible pour cette vente. Tu peux télécharger ta facture.',
+        en: 'We cannot email the invoice for this sale. You can download it instead.' },
+    'adresse masquee refusee a l\'ecriture':
+      { fr: 'L’envoi par courriel n’est pas possible pour cette vente. Tu peux télécharger ta facture.',
+        en: 'We cannot email the invoice for this sale. You can download it instead.' },
+    'adresse masquee non transmissible':
+      { fr: 'L’envoi par courriel n’est pas possible pour cette vente. Tu peux télécharger ta facture.',
+        en: 'We cannot email the invoice for this sale. You can download it instead.' }
   };
 
   var REPLI = {
@@ -186,6 +206,26 @@ window.Roots = window.Roots || {};
     if (n.indexOf('00') === 0) return '+' + n.slice(2);
     if (n.indexOf(INDICATIF_DEFAUT) === 0 && n.length > 10) return '+' + n;
     return '+' + INDICATIF_DEFAUT + n.replace(/^0+/, '');
+  }
+
+  /* UNE ADRESSE D'ENVOI NE SE COMPOSE PAS À L'ÉCRAN. La seule adresse qu'un
+     écran public connaisse est MASQUÉE : des points de conduite remplacent la
+     partie locale. Ce masque satisfait la grammaire d'adresse que la base
+     vérifie — il serait donc accepté, scellé avec le consentement, conservé dix
+     ans dans la copie, et l'envoi partirait vers une adresse qui n'existe pas.
+     Cette barrière refuse AVANT l'appel toute valeur portant un signe de
+     masquage. Elle rend null sur l'absence : ne rien transmettre laisse la base
+     résoudre l'adresse qu'elle détient, ce qui est le chemin voulu. */
+  var SIGNES_DE_MASQUE = /[•·…*]/;
+
+  function adresseTransmissible(valeur) {
+    if (valeur === null || valeur === undefined) return null;
+    var a = String(valeur).trim();
+    if (a === '') return null;
+    if (SIGNES_DE_MASQUE.test(a)) {
+      throw new Error(traduire('adresse masquee non transmissible', langueCourante()));
+    }
+    return a;
   }
 
   /* Le jeton d'une commande vit sur l'appareil : il en est la seule clé. Il n'y
@@ -375,15 +415,36 @@ window.Roots = window.Roots || {};
       return null;
     },
 
+    /* Le numéro n'est normalisé que s'il y en a un. Sans cette garde, une vente
+       sans numéro — une commande servie à table — repartirait avec le seul
+       indicatif, qui est une valeur vraie pour un écran qui la teste et fausse
+       pour toute porte qui la reçoit. */
     remisePaiement: function (o) {
       var remise = {
         paiement: o.paiement, montant: o.montant,
         cle: PAIEMENT.cle, essai: PAIEMENT.essai,
-        type: o.type, code: o.code, tel: telephone(o.tel)
+        type: o.type, code: o.code || null, tel: o.tel ? telephone(o.tel) : null
       };
       try { sessionStorage.setItem('roots_remise_paiement', JSON.stringify(remise)); }
       catch (e) { return false; }
       return !!PAIEMENT.cle;
+    },
+
+    /* Le canal pose sur la vente, note a cote de la remise. La porte de remise
+       ECRIT LE DERNIER CHOIX RECU : un ecran suivant qui poserait le
+       telechargement effacerait un envoi consenti quelques secondes plus tot.
+       Ce qui est retenu suffit a reconduire le choix — le canal et la version
+       de la notice consentie — et rien de plus : aucune adresse. */
+    noterCanalRemis: function (canal, version) {
+      try {
+        var brut = sessionStorage.getItem('roots_remise_paiement');
+        if (!brut) return false;
+        var r = JSON.parse(brut);
+        r.canal = canal;
+        r.consentement = version || null;
+        sessionStorage.setItem('roots_remise_paiement', JSON.stringify(r));
+        return true;
+      } catch (e) { return false; }
     },
 
     reglagePaiement: function () { return { pose: !!PAIEMENT.cle, essai: PAIEMENT.essai }; },
@@ -518,7 +579,7 @@ window.Roots = window.Roots || {};
         p_commande: o.id, p_jeton: o.jeton, p_canal: o.canal,
         p_tel: o.telMessagerie ? telephone(o.telMessagerie) : null,
         p_consentement: o.consentement || null,
-        p_courriel: o.courriel || null
+        p_courriel: adresseTransmissible(o.courriel)
       });
     },
 
@@ -528,7 +589,7 @@ window.Roots = window.Roots || {};
         p_canal: o.canal,
         p_tel: o.telMessagerie ? telephone(o.telMessagerie) : null,
         p_consentement: o.consentement || null,
-        p_courriel: o.courriel || null
+        p_courriel: adresseTransmissible(o.courriel)
       });
     },
 
@@ -548,7 +609,32 @@ window.Roots = window.Roots || {};
         p_code: o.code, p_tel: telephone(o.tel), p_canal: o.canal,
         p_tel_messagerie: o.telMessagerie ? telephone(o.telMessagerie) : null,
         p_consentement: o.consentement || null,
-        p_courriel: o.courriel || null
+        p_courriel: adresseTransmissible(o.courriel)
+      });
+    },
+
+    /* Le contact que le prestataire a transmis avec le paiement, MASQUÉ. Trois
+       issues, et un écran les traite toutes : « trouve » porte
+       `courriel_masque` — de quoi RECONNAÎTRE une adresse, jamais de quoi en
+       écrire une ; « aucun_contact » dit que la vente existe et n'en porte
+       aucune, ce qui est le cas ordinaire d'un encaissement au comptoir, et
+       l'écran s'en tient alors au téléchargement ; un couple qui ne concorde
+       pas est refusé. L'adresse rendue ne se transmet à aucune porte : la
+       barrière de ce fichier la refuse. Chaque appel consomme un jeton du
+       plafond de recherche. */
+    contactDuPayeurDeLaVente: function (code, tel) {
+      return appeler('contact_du_payeur_de_la_vente', {
+        p_code: code, p_tel: telephone(tel)
+      });
+    },
+
+    /* La jumelle, pour la commande qui n'a pas de numéro — celle qui s'ouvre
+       sur un jeton de table. Elle rend la même forme masquée et n'exige aucun
+       plafond : le jeton est une capacité plus forte qu'un couple à deviner,
+       et seul le navigateur qui a passé la commande le détient. */
+    contactDuPayeurDeLaCommande: function (commande, jeton) {
+      return appeler('contact_du_payeur_de_la_commande', {
+        p_commande: commande, p_jeton: jeton
       });
     },
 
@@ -598,7 +684,7 @@ window.Roots = window.Roots || {};
         p_vente_type: o.type, p_vente_id: o.id, p_canal: o.canal,
         p_tel: o.tel ? telephone(o.tel) : null,
         p_consentement: o.consentement || null,
-        p_courriel: o.courriel || null
+        p_courriel: adresseTransmissible(o.courriel)
       });
     },
 

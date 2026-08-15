@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-NNjxhExKgYh0wvJeCGisIfkT8HOFo4GAL/caDku2vyk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-woOjUt1fi+HKF/F0zNwZOJiaCnhaLJvyvWXoVvu9e/8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Ma facture — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -420,27 +420,37 @@
     }
   }
 
-  /* LE CANAL DE REMISE, ET POURQUOI CE N'EST PAS ENCORE UN CHOIX.
+  /* LE CANAL DE REMISE, ET POURQUOI CET ECRAN N'EN OFFRE PAS LE CHOIX.
      Le canal se pose sur la vente, et c'est lui — jamais une adresse connue
-     par ailleurs — qui met un envoi en file au scellement de la piece. Deux
-     canaux envoient, `courriel` et `messagerie` ; tous deux exigent une
-     destination ET la version d'une notice de consentement servie par le
-     socle. Aucune notice servie ne couvre la remise de la piece : offrir l'un
-     des deux obligerait a sceller un consentement sans texte, ce qu'interdit
-     la regle liant le consentement a la version affichee.
-     `telechargement` est donc le seul canal offrable. C'est un etat, pas un
-     parti pris : les deux ponts portent deja la destination, et le choix se
-     posera ici le jour ou la notice existe. */
-  var CANAL = 'telechargement';
+     par ailleurs — qui met un envoi en file au scellement de la piece. Un
+     canal pose APRES le sceau ne part donc pas au premier tour d'envoi : il
+     est rattrape. Le choix appartient a l'ecran qui se tient entre le paiement
+     et le sceau ; ici, la piece est prete ou sur le point de l'etre, et cet
+     ecran la remet.
+     ⚠ CET ECRAN NE PEUT PAS NE PAS POSER DE CANAL : le jeton de la piece n'est
+     rendu que par cette porte. Et la porte ECRIT LE DERNIER CHOIX RECU. Poser
+     le telechargement sans regarder effacerait donc l'envoi consenti juste
+     avant. Le canal deja pose est repris tel quel, avec la version de sa
+     notice — la version et le texte ne bougent pas ; seule la date du
+     consentement se reecrit, et c'est pourquoi cette porte ne s'appelle pas
+     sans necessite. Le canal repris n'est cru que s'il designe la meme vente. */
+  var repris = null;
+  if (remise && remise.canal === 'courriel' && remise.consentement &&
+      (!remise.code || !vente || !vente.code || remise.code === vente.code)) {
+    repris = { canal: 'courriel', consentement: remise.consentement };
+  }
+  var CANAL = repris ? repris.canal : 'telechargement';
 
   function poserChoix() {
     if (vente.mode === 'reservation') {
       return Roots.db.choisirRemiseReservation({
-        type: vente.type, code: vente.code, tel: vente.tel, canal: CANAL
+        type: vente.type, code: vente.code, tel: vente.tel, canal: CANAL,
+        consentement: repris ? repris.consentement : null
       });
     }
     return Roots.db.choisirRemiseCommande({
-      id: vente.id, jeton: vente.jeton, canal: CANAL
+      id: vente.id, jeton: vente.jeton, canal: CANAL,
+      consentement: repris ? repris.consentement : null
     });
   }
 

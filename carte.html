@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-cyR+DIHQO1EmhLVpA8pGev/9RcG+MosgFZRWn57Tcq8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gtEfKDuGxQQpOlxNeGx6JIasRtbPNd2xRPW5kHzeEHk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -602,7 +602,7 @@
           manquants.push(a ? nomDe(a) : id);
         }
       }
-      confirmer(r, manquants);
+      confirmer(r, manquants, tel);
     } catch (e) {
       montrerErreur('erreurCmd', e.message);
     } finally {
@@ -631,7 +631,8 @@
     try {
       var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
       var pose = Roots.db.remisePaiement({
-        paiement: r.paiement, montant: r.montant, type: 'commande'
+        paiement: r.paiement, montant: r.montant, type: 'commande',
+        code: commandeOuverte.code, tel: commandeOuverte.tel
       });
       if (!pose) { montrerErreur('erreurPayerCmd', t().payerFerme); return; }
       location.assign('payer.html');
@@ -645,10 +646,17 @@
   }
   $('btnPayerCmd').addEventListener('click', payerCmd);
 
-  function confirmer(r, manquants) {
+  /* Le CODE et le NUMERO sont retenus a cote de l'identifiant et du jeton. Ils
+     ne servent pas a payer — la porte de paiement prend le jeton — mais l'ecran
+     d'attente ne connait la vente que par ce que cette page lui remet, et les
+     portes qui lisent le contact du payeur ou posent le canal de remise ne
+     prennent que ce couple. Une commande servie a table n'a pas de numero : le
+     couple reste alors incomplet, et l'attente n'offrira pas l'envoi. */
+  function confirmer(r, manquants, tel) {
     $('vueCommande').style.display = 'none';
     $('codeAffiche').textContent = (r && r.code) || '——————';
-    commandeOuverte = (r && r.id && r.jeton) ? { id: r.id, jeton: r.jeton } : null;
+    commandeOuverte = (r && r.id && r.jeton)
+      ? { id: r.id, jeton: r.jeton, code: r.code || null, tel: tel || null } : null;
     /* Le bouton ne se montre pas quand la vente s'est reglee au comptoir : il
        proposerait un second paiement, et la porte le refuserait. */
     $('btnPayerCmd').classList.toggle('cache',

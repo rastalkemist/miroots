@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-5Z1CCgizg3rom3m4ofB8fKNHA3NyX8T5Jbh4XqkvMGg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-UZ+XLEtCoj331DOsbN2/3PvJhqOFgK1ORg9WsZJq0+E='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -60,6 +60,16 @@
       <span class="code" id="code">------</span>
     </div>
     <p class="dit cache" id="montantLigne"><span class="montant" id="montant"></span></p>
+    <!-- Le choix du canal de remise. Il n'apparait que sur l'issue « payee »,
+         et seulement quand le prestataire a transmis une adresse : avant le
+         paiement il n'y a rien a offrir, et sans adresse il n'y a rien a
+         envoyer. L'adresse s'affiche MASQUEE et ne se saisit pas. -->
+    <div class="canal cache" id="blocCanal">
+      <p class="canal-dit"><span id="canalDit"></span><span class="adresse" id="adresseMasquee"></span></p>
+      <p class="consent" id="canalNotice"></p>
+      <button class="canal-bouton" id="btnCourriel"></button>
+      <p class="canal-issue cache" id="canalIssue"></p>
+    </div>
     <div class="apres">
       <button class="principal" id="action"></button>
       <a class="lien-second cache" id="second" href="retrouver.html"></a>
@@ -102,6 +112,9 @@
       h1: 'Paiement',
       lCode: 'Ton code de commande',
       politique: 'Politique de confidentialité',
+      cDit: 'Recevoir ta facture par courriel à ',
+      cEnvoyer: 'Envoyer à cette adresse',
+      cFait: 'C’est noté. Ta facture part à cette adresse dès qu’elle est prête.',
       etats: {
         attente: {
           titre: 'On vérifie ton paiement',
@@ -149,6 +162,9 @@
       h1: 'Payment',
       lCode: 'Your order code',
       politique: 'Privacy Policy',
+      cDit: 'Email your invoice to ',
+      cEnvoyer: 'Send it to this address',
+      cFait: 'Done. We will email your invoice as soon as it is ready.',
       etats: {
         attente: {
           titre: 'Checking your payment',
@@ -287,6 +303,7 @@
     $('second').classList.toggle('cache', !e.second);
     if (e.second) $('second').textContent = e.second;
     nommerLaVente(cle);
+    if (cle === 'payee') proposerCanal(); else cacherCanal();
   }
 
   function nommerLaVente(cle) {
@@ -302,6 +319,128 @@
       $('second').textContent = mots.retrouver;
     }
   }
+
+  /* ------------------------------------------------------------------
+     LE CANAL DE REMISE — l'envoi de la piece par courriel.
+
+     DEUX CONDITIONS, et l'absence d'une seule retire l'offre : le prestataire
+     doit avoir transmis une adresse, et la notice du canal doit exister en
+     base, servie et versionnee.
+
+     DEUX FACONS DE NOMMER LA VENTE, et l'ecran prend celle dont il dispose. Le
+     CODE et le NUMERO valent pour qui arrive d'un autre appareil. Le JETON de
+     commande vaut pour le navigateur qui l'a passee — une commande servie a
+     table n'a pas de numero, et le couple n'y existera jamais. Les deux portes
+     de lecture rendent la meme forme masquee.
+
+     L'ADRESSE NE SE SAISIT PAS ET NE SE TRANSMET PAS. Ce que cet ecran connait
+     est un MASQUE — de quoi reconnaitre une adresse, jamais de quoi en ecrire
+     une. L'adresse reelle ne quitte pas le serveur, et la passerelle refuse un
+     masque avant l'appel.
+
+     LE GESTE VAUT CONSENTEMENT. La notice se lit au-dessus du bouton, dans sa
+     langue, et c'est l'appui qui consent — sur la version affichee, jamais sur
+     une chaine choisie ici. Aucune case n'est prete a l'avance : une case
+     pre-cochee tiendrait pour accord ce que personne n'a donne.
+
+     LE MOMENT COMPTE. Le canal se pose apres le paiement et avant que la piece
+     ne soit scellee : c'est le seul ordre qui fait partir la piece au premier
+     tour d'envoi. Pose plus tard, l'envoi est rattrape, jamais immediat.
+     ------------------------------------------------------------------ */
+  var noticeCanal = null;
+  var canalDemande = false;
+  var canalPose = false;
+  var canalMessage = null;
+
+  /* Le couple prime sur le jeton : il vaut pour les trois parcours, la ou le
+     jeton ne nomme qu'une commande. */
+  function identite() {
+    if (remise && remise.code && remise.tel) {
+      return { par: 'code', code: remise.code, tel: remise.tel };
+    }
+    if (parcours === 'commande' && vente && vente.id && vente.jeton) {
+      return { par: 'jeton', id: vente.id, jeton: vente.jeton };
+    }
+    return null;
+  }
+
+  function cacherCanal() {
+    $('blocCanal').classList.add('cache');
+  }
+
+  function dessinerCanal() {
+    $('canalDit').textContent = t().cDit;
+    $('canalNotice').textContent = Roots.db.texteNotice(noticeCanal, langue);
+    $('btnCourriel').textContent = t().cEnvoyer;
+    $('btnCourriel').classList.toggle('cache', canalPose);
+    $('canalNotice').classList.toggle('cache', canalPose);
+    $('canalIssue').classList.toggle('cache', !canalMessage && !canalPose);
+    $('canalIssue').textContent = canalPose ? t().cFait : (canalMessage || '');
+  }
+
+  /* Une lecture qui echoue — couple qui ne concorde pas, reseau — ne dit rien :
+     l'offre disparait et le telechargement reste. Un client qui vient de payer
+     n'a pas a lire l'echec d'une lecture qu'il n'a pas demandee. */
+  function proposerCanal() {
+    var i = identite();
+    if (!i || canalDemande) { if (noticeCanal) dessinerCanal(); return; }
+    canalDemande = true;
+    Promise.all([
+      (i.par === 'code')
+        ? Roots.db.contactDuPayeurDeLaVente(i.code, i.tel)
+        : Roots.db.contactDuPayeurDeLaCommande(i.id, i.jeton),
+      Roots.db.notice('remise_courriel')
+    ]).then(function (r) {
+      var contact = r[0], texte = r[1];
+      if (!contact || contact.resultat !== 'trouve' || !contact.courriel_masque) return;
+      if (!texte || !texte.version) return;
+      noticeCanal = texte;
+      $('adresseMasquee').textContent = contact.courriel_masque;
+      dessinerCanal();
+      if (etatCourant === 'payee') $('blocCanal').classList.remove('cache');
+    }, function () { return null; });
+  }
+
+  /* AUCUNE ADRESSE N'EST TRANSMISE. La porte va chercher elle-meme celle
+     qu'elle detient, comme la porte de paiement va chercher le montant : ce que
+     l'ecran envoie est le canal et la version de la notice lue, rien d'autre. */
+  function poserCanal() {
+    var i = identite();
+    if (!noticeCanal || !i || canalPose) return Promise.resolve();
+    canalMessage = null;
+    $('btnCourriel').disabled = true;
+    var appel;
+    if (parcours === 'reservation') {
+      appel = Roots.db.choisirRemiseReservation({
+        type: remise.type === 'reservation_logement' ? 'logement' : 'espace',
+        code: i.code, tel: i.tel, canal: 'courriel',
+        consentement: noticeCanal.version });
+    } else if (i.par === 'code') {
+      appel = Roots.db.choisirRemiseCommandeParCode({
+        code: i.code, tel: i.tel, canal: 'courriel',
+        consentement: noticeCanal.version });
+    } else {
+      appel = Roots.db.choisirRemiseCommande({
+        id: i.id, jeton: i.jeton, canal: 'courriel',
+        consentement: noticeCanal.version });
+    }
+    return Promise.resolve(appel).then(function () {
+      canalPose = true;
+      /* L'ecran de la piece pose lui aussi un canal pour obtenir son jeton :
+         sans cette note, il ecraserait celui-ci par un telechargement. */
+      Roots.db.noterCanalRemis('courriel', noticeCanal.version);
+      dessinerCanal();
+    }, function (e) {
+      $('btnCourriel').disabled = false;
+      canalMessage = (e && e.message) || '';
+      dessinerCanal();
+    });
+  }
+
+  $('btnCourriel').addEventListener('click', function () {
+    if ($('btnCourriel').disabled) return;
+    poserCanal();
+  });
 
   /* Le verrou se ferme au premier appui et ne se rouvre qu'a la reponse : il
      couvre le double appui sur reseau lent. Un rechargement suivi d'un clic est

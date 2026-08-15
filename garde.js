@@ -25,7 +25,7 @@
     fr: {
       titre: 'Cette page n’a pas pu démarrer',
       dit: 'La dernière modification du site contient une erreur. Le reste du site fonctionne normalement.',
-      politique: 'Le programme de cette page a été modifié sans que sa signature suive. Lance « python3 ci/preparer.py » : il répare, ou il dit ce qui cloche.',
+      politique: 'Le programme de cette page a été modifié sans que sa signature suive.',
       faute: 'Une erreur se trouve dans le programme de cette page.',
       ligne: 'ligne',
       accueil: 'Retour à l’accueil'
@@ -33,7 +33,7 @@
     en: {
       titre: 'This page did not start',
       dit: 'The most recent change to the site contains an error. The rest of the site is working normally.',
-      politique: 'This page’s code was changed without its signature following. Run “python3 ci/preparer.py”: it repairs, or it says what is wrong.',
+      politique: 'This page’s code was changed without its signature following.',
       faute: 'There is an error in this page’s code.',
       ligne: 'line',
       accueil: 'Back to home'
@@ -88,8 +88,11 @@
   /* Refus de la politique de securite. On ne retient que le script : un refus
      de style ou d'image n'empeche pas l'ecran de repondre.
      ⚠ Ce refus MASQUE une eventuelle faute de frappe : le navigateur refuse le
-     script avant de le compiler. Le message ne nomme donc pas de cause — il
-     renvoie au seul geste qui traite les deux. */
+     script avant de le compiler. Le message nomme donc l'ecart constate, et
+     aucune cause.
+     IL S'ADRESSE A UN VISITEUR. Il ne porte ni commande, ni chemin de fichier
+     d'outillage : qui lit cet ecran n'a rien a lancer, et un ecran public ne
+     decrit pas l'atelier. */
   window.addEventListener('securitypolicyviolation', function (e) {
     if (String(e.violatedDirective || '').indexOf('script-src') !== 0) return;
     attendreLeCorps((MOTS[langue()] || MOTS.fr).politique);

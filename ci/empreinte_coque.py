@@ -8,8 +8,28 @@ sw.js ne correspond plus aux fichiers.
 import pathlib, re, hashlib, sys
 
 def fichiers(sw):
+    """Les noms servis par la coque, litteraux ET portes par une variable.
+
+    Un nom ecrit en clair se lit directement. Un nom porte par une variable — la
+    page de repli l'est — se resout sur sa declaration dans le meme fichier :
+    sans cette lecture il sort de l'empreinte, la version ne bouge jamais quand
+    ce fichier change, et le cache sert indefiniment une page perimee.
+    Un identifiant qui ne se resout pas ARRETE l'outil : une empreinte calculee
+    sur un ensemble incomplet vaut moins que pas d'empreinte.
+    """
     bloc = re.search(r"COQUE_FICHIERS = \[(.*?)\]", sw, re.S)
-    return sorted(re.findall(r"'([^']+)'", bloc.group(1))) if bloc else []
+    if not bloc:
+        return []
+    corps = bloc.group(1)
+    noms = re.findall(r"'([^']+)'", corps)
+    for ident in re.findall(r"(?<![\w'])([A-Z_][A-Z0-9_]*)(?![\w'])", corps):
+        decl = re.search(r"var\s+" + ident + r"\s*=\s*'([^']+)'", sw)
+        if not decl:
+            raise SystemExit("ARRET — " + ident + " est servi par la coque et ne se "
+                             "resout sur aucune declaration : l'empreinte porterait "
+                             "sur un ensemble incomplet.")
+        noms.append(decl.group(1))
+    return sorted(set(noms))
 
 def empreinte(racine, noms):
     h = hashlib.sha256()

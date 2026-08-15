@@ -40,6 +40,8 @@ backup/
 dumps/
 
 # ── Dépendances et build ──
+__pycache__/
+*.pyc
 node_modules/
 dist/
 build/
@@ -60,6 +62,23 @@ desktop.ini
 *.zip
 *.rar
 *.7z
+
+# ── Modes d'emploi et procedures de l'atelier ──
+# Ils decrivent comment nous fabriquons, jamais ce que le site sert. Un depot
+# public en porte la trace pour quiconque le lit, et ils s'adressent a une
+# personne, pas a un lecteur du site.
+MODIFIER-LE-SITE.md
+MODE-EMPLOI*
+PROCEDURE*
+*-atelier.md
+
+# Consignes adressees a un assistant : elles nomment nos habitudes de travail,
+# nos outils et nos garde-fous. Elles se tiennent hors du depot public.
+CLAUDE.md
+AGENTS.md
+.claude/
+.cursorrules
+.github/copilot-instructions.md
 
 # ── Fichiers de travail ──
 brouillon*

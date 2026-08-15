@@ -656,6 +656,18 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 @keyframes jauge{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
 @media (prefers-reduced-motion: reduce){:where(body.p-paiement) .jauge i{animation:none;width:100%;opacity:.45}}
 :where(body.p-paiement) .avert{background:var(--creme);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--esp-6);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre);text-align:center}
+/* Le choix du canal de remise. Deux voix y tiennent : l'ecran propose, la
+   notice engage. La notice s'aligne a gauche parce qu'elle se lit en phrases et
+   non en libelle, et se demarque ainsi de la parole du produit. Le bouton porte
+   le geste qui consent : il est cercle et non plein, la place du bouton plein
+   revenant a l'action principale de l'ecran (DS 3.1). */
+:where(body.p-paiement) .canal{background:var(--gris-aplat);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--esp-6);text-align:center}
+:where(body.p-paiement) .canal .canal-dit{margin:0;font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
+:where(body.p-paiement) .canal .adresse{display:block;margin-top:var(--esp-1);font-weight:var(--w-bold);overflow-wrap:anywhere}
+:where(body.p-paiement) .canal .consent{text-align:left;margin:var(--esp-3) 0 0;color:var(--encre)}
+:where(body.p-paiement) .canal-bouton{width:100%;min-height:var(--cible-min);margin-top:var(--esp-3);border:2px solid var(--vert-e2);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--vert-e2);font-family:var(--font-corps);font-weight:var(--w-a-h2);font-size:var(--t-body);line-height:var(--lh-16);padding:var(--esp-3) var(--esp-4);cursor:pointer}
+:where(body.p-paiement) .canal-bouton[disabled]{opacity:.35;cursor:not-allowed}
+:where(body.p-paiement) .canal-issue{margin:var(--esp-3) 0 0;font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
 /* Un seul bouton plein par ecran (DS 3.1) ; le secondaire est un lien. */
 :where(body.p-paiement, body.p-payer) .principal{width:100%;min-height:var(--cible-min);border:none;border-radius:var(--rayon-pilule);background:var(--vert-e2);color:var(--encre-bouton);font-family:var(--font-corps);font-weight:var(--w-a-h2);font-size:var(--t-body);line-height:var(--lh-16);padding:var(--esp-3) var(--esp-6);cursor:pointer}
 :where(body.p-paiement, body.p-payer) .principal[disabled]{opacity:.35;cursor:not-allowed}
