@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = 'b2a07cdb4592e498';
+var VERSION   = 'b886600621af0dde';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -34,7 +34,7 @@ var COQUE_FICHIERS = [
   'index.html', 'carte.html', 'retrouver.html', 'facture.html',
   'paiement.html', 'confidentialite.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css',
-  'roots-db.js', 'roots.js',
+  'roots-db.js', 'roots.js', 'garde.js',
   'manifest.webmanifest'
 ];
 

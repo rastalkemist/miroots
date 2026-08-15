@@ -300,6 +300,18 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .erreur{font-weight:700;line-height:1.4;font-size:var(--t-sm);color:var(--rouge-e2);text-align:center}
 .erreur.visible{display:block}
 .mention{margin-top:10px;color:var(--encre-discrete);font-size:var(--t-note);text-align:center}
+/* Bandeau du garde d'ecran. Il se pose en tete du corps quand un ecran n'a pas
+   demarre, donc au-dessus de tout ce que cet ecran aurait du dessiner. Il ne
+   depend d'aucun script de page : ses regles doivent tenir seules. */
+.garde-banniere{position:fixed;top:0;left:0;right:0;z-index:2147483647;
+  margin:0;padding:var(--esp-4);text-align:left;
+  border-bottom:4px solid var(--rouge-e2);background:var(--blanc-casse);
+  box-shadow:0 2px 12px rgba(var(--rouge-e1-rgb), .28)}
+.garde-titre{margin:0;font-size:var(--t-h3);font-weight:var(--w-bold);color:var(--rouge-e2)}
+.garde-dit{margin:var(--esp-2) 0 0;font-size:var(--t-body);color:var(--encre)}
+.garde-detail{margin:var(--esp-2) 0 0;font-size:var(--t-note);color:var(--encre-discrete)}
+.garde-lien{display:inline-flex;align-items:center;min-height:var(--cible-min);
+  margin-top:var(--esp-2);font-size:var(--t-sm);color:var(--encre)}
 /* Plaque legale. Elle porte un registre de voix qui n'est pas celui de
    l'ecran : elle se met a part au lieu de se fondre, sinon le lecteur la lit
    comme la parole du produit. Alignee a gauche parce qu'elle se lit en phrases

@@ -17,6 +17,12 @@ on:
 jobs:
   controles:
     runs-on: ubuntu-latest
+
+    # La reparation ecrit dans le depot : sans ce droit, elle ne pourrait que
+    # constater.
+    permissions:
+      contents: write
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,11 +34,52 @@ jobs:
         with:
           node-version: '20'
 
+      # LA REPARATION VIENT AVANT TOUT CONTROLE.
+      # Une signature perimee n'est pas une faute a signaler : c'est la
+      # consequence mecanique d'une modification de texte, et elle se recalcule.
+      # Ce qui reste apres cette etape merite un refus ; ce qui est repare ici
+      # n'a jamais eu a en devenir un.
+      # Une faute de frappe, elle, n'est PAS reparee : l'etape s'arrete et la
+      # nomme, parce qu'aucune machine ne devine une intention.
+      - name: Réparation
+        run: |
+          set +e
+          python ci/preparer.py | tee reparation.txt
+          code=${PIPESTATUS[0]}
+          {
+            echo '## Réparation'
+            echo '```'
+            cat reparation.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit $code
+
+      # Rien n'est republie si rien n'a bouge. Une poussee faite avec le jeton
+      # du rouage ne le reveille pas a son tour : la boucle est fermee par la
+      # plateforme, pas par une precaution ecrite ici.
+      - name: Republier si la réparation a changé quelque chose
+        if: github.event_name == 'push'
+        run: |
+          # On ne republie QUE ce que la reparation sait toucher. Les etapes de
+          # ce rouage laissent leurs comptes rendus dans le repertoire de
+          # travail : un ajout large les pousserait dans le depot public.
+          if [ -z "$(git status --porcelain -- '*.html' sw.js)" ]; then
+            echo "Rien à republier." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          git config user.name  "rouage-roots"
+          git config user.email "rouage-roots@users.noreply.github.com"
+          git add -- '*.html' sw.js
+          git commit -m "Réparation automatique des signatures"
+          git push
+          echo "Site réparé et republié." >> "$GITHUB_STEP_SUMMARY"
+
       # Le contrôle doit d'abord prouver qu'il voit ce qu'il prétend voir.
       # Un contrôle qui ne sait plus refuser passe tout en vert.
       - name: Épreuve du contrôle
         run: |
-          python ci/verifier.py --epreuve | tee epreuve.txt
+          python ci/preparer.py --epreuve | tee epreuve.txt
+          python ci/verifier.py --epreuve | tee -a epreuve.txt
           {
             echo '## Épreuve du contrôle'
             echo '```'

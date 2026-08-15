@@ -141,6 +141,22 @@ def controle_d(d, dire, mal):
 EMPREINTE = "empreinte.csv"
 SCEAU = "jeton,rang,valeur\n--encre,0,#1A1A1A\n--t-corps,0,16px\n"
 
+# --- matiere de l'epreuve du controle F -------------------------------------
+# Un script en ligne minimal, son condensat juste, et le meme condensat fausse
+# d'un caractere. Les deux pages sont autrement identiques : ce que l'epreuve
+# mesure est le seul ecart entre le script servi et ce que la politique autorise.
+_SCRIPT_F = "(function(){})();"
+_CONDENSAT_F = __import__("base64").b64encode(
+    __import__("hashlib").sha256(_SCRIPT_F.encode("utf-8")).digest()).decode()
+
+def _page_f(condensat):
+    return ('<!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" '
+            f"content=\"script-src 'self' 'sha256-{condensat}'\">"
+            f"</head><body><script>{_SCRIPT_F}</script></body></html>")
+
+PAGE = "index.html"
+
+
 DEFAUTS = [
     ("A", {FEUILLE: "a { color: var(--jeton-absent); }", JETONS: ":root{--x:1;}"}),
     ("B", {FEUILLE: "a { color: #C1502A; }", JETONS: ":root{--x:1;}"}),
@@ -153,11 +169,14 @@ DEFAUTS = [
 DEFAUTS.append(("E", {FEUILLE: "a { color: var(--encre); }",
                       JETONS: ":root { --encre: #1A1A1A; --t-corps: 21px; }",
                       EMPREINTE: SCEAU}))
+DEFAUTS.append(("F", {PAGE: _page_f("A" + _CONDENSAT_F[1:])}))
+
 
 SAIN = {FEUILLE: "/* La pilule ne descend pas sous 44 px : cible tactile. */\n"
                  "a { color: var(--encre); font-size: var(--t-corps); }",
         JETONS: ":root { --encre: #1A1A1A; --t-corps: 16px; }",
-        EMPREINTE: SCEAU}
+        EMPREINTE: SCEAU,
+        PAGE: _page_f(_CONDENSAT_F)}
 
 
 def controle_e(d, dire, mal):
@@ -219,6 +238,61 @@ def controle_e(d, dire, mal):
         dire("    en éditant, et les deux fichiers se livrent ensemble.")
 
 
+def controle_f(d, dire, mal):
+    """F — chaque script en ligne est-il autorise par la politique de sa page ?
+
+    Une politique de securite autorise un script en ligne par le condensat de
+    son contenu. Changer UN caractere du script change le condensat : le
+    navigateur refuse alors le script entier, en silence pour qui ne lit pas la
+    console. La page se charge, son style s'applique, et plus rien ne repond —
+    seuls les liens ordinaires marchent encore.
+
+    Ce controle refuse dans les deux sens :
+      · un script en ligne dont le condensat n'est declare nulle part ;
+      · un condensat declare que plus aucun script ne porte.
+    Le second n'est pas fatal a l'affichage, mais il signale une politique qui
+    a cesse de decrire sa page.
+
+    Ce controle ne dit PAS que la politique est bien conçue : il dit que ce
+    qu'elle autorise correspond a ce que la page contient.
+    """
+    import base64
+    import hashlib
+
+    pages = sorted(d.glob("*.html"))
+    if not pages:
+        mal("F · aucune page HTML lisible — le contrôle s'arrête plutôt que de verdir")
+        return
+
+    total_scripts = total_pages = 0
+    for page in pages:
+        txt = page.read_text(encoding="utf-8")
+        meta = re.search(
+            r'<meta http-equiv="Content-Security-Policy" content="([^"]*)"', txt)
+        if not meta:
+            continue
+        total_pages += 1
+        declares = set(re.findall(r"'sha256-([A-Za-z0-9+/=]+)'", meta.group(1)))
+        corps = re.findall(
+            r'<script(?![^>]*\ssrc=)[^>]*>([\s\S]*?)</script>', txt)
+        reels = {
+            base64.b64encode(hashlib.sha256(c.encode("utf-8")).digest()).decode(): c
+            for c in corps
+        }
+        total_scripts += len(corps)
+
+        orphelins = [c for h, c in reels.items() if h not in declares]
+        if orphelins:
+            mal(f"F · {page.name} — {len(orphelins)} script(s) en ligne que la "
+                f"politique n'autorise pas ; la page sera muette")
+        perimes = declares - set(reels)
+        if perimes:
+            mal(f"F · {page.name} — {len(perimes)} condensat(s) déclaré(s) que "
+                f"plus aucun script ne porte")
+
+    dire(f"F · {total_scripts} script(s) en ligne sur {total_pages} page(s) à politique")
+
+
 def epreuve():
     """Pose des defauts volontaires et verifie qu'ils sont vus."""
     import tempfile
@@ -230,7 +304,7 @@ def epreuve():
             for nom, txt in fichiers.items():
                 (d / nom).write_text(txt, encoding="utf-8")
             pris = []
-            for c in (controle_a, controle_b, controle_c, controle_d, controle_e):
+            for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f):
                 c(d, lambda _: None, pris.append)
             ok = any(p.startswith(lettre + " ") for p in pris)
             vus += ok
@@ -241,7 +315,7 @@ def epreuve():
         for nom, txt in SAIN.items():
             (d / nom).write_text(txt, encoding="utf-8")
         pris = []
-        for c in (controle_a, controle_b, controle_c, controle_d, controle_e):
+        for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f):
             c(d, lambda _: None, pris.append)
         ok = not pris
         vus += ok
@@ -263,7 +337,7 @@ def main(argv):
         refus.append(t)
 
     print(f"=== CONTRÔLES DU DÉPÔT — {d.name} ===\n")
-    for c in (controle_a, controle_b, controle_c, controle_d, controle_e):
+    for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f):
         c(d, dire, mal)
     for l in lignes:
         print(("  " + l) if not l.startswith("  ") else l)
@@ -271,7 +345,7 @@ def main(argv):
     if refus:
         print(f"REFUS — {len(refus)} écart(s). Rien ne part tant qu'ils tiennent.")
         return 1
-    print("VERT — les cinq contrôles passent.")
+    print("VERT — les six contrôles passent.")
     print("ⓘ Ces contrôles vérifient des propriétés, pas du sens. La relecture reste due.")
     return 0
 
