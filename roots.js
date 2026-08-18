@@ -139,11 +139,13 @@
     fr: [
       { ico: 'i-carte',      t: 'La carte',           s: 'Toute la carte, en détail', href: 'carte.html' },
       { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau',      href: 'index.html?ouvrir=reserver' },
+      { ico: 'i-roam',       t: 'Séjourner',          s: 'Kër Yawa — réserve tes nuits', href: 'roam.html' },
       { ico: 'i-ticket',     t: 'Retrouver',          s: 'Réservation ou commande, avec ton code', href: 'retrouver.html' }
     ],
     en: [
       { ico: 'i-carte',      t: 'Menu',         s: 'The full menu, in detail',   href: 'carte.html' },
       { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office',     href: 'index.html?ouvrir=reserver' },
+      { ico: 'i-roam',       t: 'Stay',           s: 'Kër Yawa — book your nights', href: 'roam.html' },
       { ico: 'i-ticket',     t: 'Find a booking', s: 'A booking or an order, with your code', href: 'retrouver.html' }
     ]
   };
@@ -251,6 +253,13 @@
       var v = b.dataset.verbe;
       if (onVerbe && onVerbe(v, b)) return;
       if (v === 'roots') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      /* Roam est un ecran, pas une promesse : le verbe y mene, sauf quand on y
+         est deja — le bouton porte alors aria-current et remonte la page. */
+      if (v === 'roam') {
+        if (b.getAttribute('aria-current') === 'true') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+        global.location.assign('roam.html');
+        return;
+      }
       toast(toastVerbe(getLangue(), verbes[v]));
     });
 
@@ -545,9 +554,18 @@
       });
     }
 
+    /* IL NE PARAIT QUE LA OU UN GESTE LE POSE. Sur une vente reglee au
+       comptoir, aucun bouton de cet ecran n'appelle la porte : offrir la saisie
+       serait recueillir trois champs que rien n'emporte. L'ecran qui sait s'il
+       a un geste le dit ici. */
+    function montrer(oui) {
+      enveloppe.hidden = !oui;
+      if (!oui && ouvert) basculer();
+    }
+
     dessiner();
-    return { dessiner: dessiner, poser: poser, element: enveloppe,
-             estOuvert: function () { return ouvert; } };
+    return { dessiner: dessiner, poser: poser, montrer: montrer,
+             element: enveloppe, estOuvert: function () { return ouvert; } };
   }
 
   function modale(hote, opts) {

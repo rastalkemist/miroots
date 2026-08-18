@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-CtbggNGderBzqIiz9ZetQdsoD8tonncdYhuSDoc59ws='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9+wk0wtHtXf/EFMRP0tMPfGeksaLn9mXMJ6Ify5uq7M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -75,7 +75,7 @@
 <nav class="chrome-bas" id="superNav">
   <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
-  <button class="verbe dormant" aria-disabled="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
 
 <!-- ══════════════ Feuille du bas (+) : Réserver | Commander ══════════════ -->
@@ -875,8 +875,10 @@
     $('codeCmd').textContent = (r && r.code) || '——————';
     commandeOuverte = (r && r.id && r.jeton)
       ? { id: r.id, jeton: r.jeton, code: r.code || null, tel: tel || null } : null;
-    $('btnPayerCmd').classList.toggle('cache',
-      !commandeOuverte || !Roots.db.reglagePaiement().pose);
+    var payable = !!commandeOuverte && Roots.db.reglagePaiement().pose;
+    $('btnPayerCmd').classList.toggle('cache', !payable);
+    /* Le depliant suit le bouton : sans geste qui le pose, il ne parait pas. */
+    blocFacturation.montrer(payable);
     if (manquants && manquants.length) {
       $('partielCmd').textContent = t().partiel(manquants.join(', '));
       $('partielCmd').style.display = 'block';

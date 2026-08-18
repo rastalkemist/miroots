@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-OiEijrEvQlw2luk5iAKoQ7CD1EIKd0L5uT6pRVvdeC8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-t9zdWOBlA2GiNG72+vBcA2Q2EkYST0+hmTAcjskD6UA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -123,7 +123,7 @@
 <nav class="chrome-bas" id="superNav">
   <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
-  <button class="verbe dormant" aria-disabled="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
 <div class="voile-menu" id="voileMenu"></div>
 <div class="menu-pop" id="drawer">
@@ -673,8 +673,11 @@
       ? { id: r.id, jeton: r.jeton, code: r.code || null, tel: tel || null } : null;
     /* Le bouton ne se montre pas quand la vente s'est reglee au comptoir : il
        proposerait un second paiement, et la porte le refuserait. */
-    $('btnPayerCmd').classList.toggle('cache',
-      !commandeOuverte || moyenPaiement === 'cash' || !Roots.db.reglagePaiement().pose);
+    var payable = !!commandeOuverte && moyenPaiement !== 'cash'
+      && Roots.db.reglagePaiement().pose;
+    $('btnPayerCmd').classList.toggle('cache', !payable);
+    /* Le depliant suit le bouton : sans geste qui le pose, il ne parait pas. */
+    blocFacturation.montrer(payable);
     cacherErreur('erreurPayerCmd');
     $('confTitre').textContent = service === 'sur_place' ? t().confTitreSurplace : t().confTitreEmporter;
     $('confInstr').textContent = service === 'sur_place'

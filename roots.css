@@ -336,6 +336,59 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .code{letter-spacing:.13em;color:var(--roots-vert);font-weight:700;font-family:var(--font-chiffres);font-size:var(--t-code);margin:8px 0}
 .instructions{font-size:var(--t-sm);margin:0 auto;line-height:1.55;color:var(--encre-discrete);max-width:300px}
 .note-partielle{color:var(--rouge-e2);max-width:300px;font-weight:700;line-height:1.45;font-size:var(--t-label);margin:12px auto 0}
+/* ======================================================================== UNIVERS — Mi Roam ======================================================================== */
+/* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
+   tout ce qui portait e2 vert la prend ici. La correspondance vit dans DEUX
+   alias — jamais une valeur neuve — parce que la palette garantit qu'a echelon
+   egal les familles portent le meme poids : l'univers change, aucune mesure ne
+   change. Le nav appartient a l'univers ; le super-nav du bas commute. */
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir)}
+:where(body.p-roam) .toggle{background:var(--univers);box-shadow:inset 0 0 0 1.5px var(--univers),0 3px 10px rgba(var(--univers-rgb),.30)}
+:where(body.p-roam) .chrome-titre{color:var(--univers)}
+:where(body.p-roam) .lang-btn{color:var(--univers)}
+:where(body.p-roam) .verbe.actif .ico-rond{background:var(--univers)}
+:where(body.p-roam) .champ input:focus{border-color:var(--univers)}
+:where(body.p-roam) .champ .iti:focus-within{border-color:var(--univers)}
+:where(body.p-roam) .code{color:var(--univers)}
+:where(body.p-roam) .bouton-confirmer{background:var(--univers)}
+:where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--esp-6);text-align:left}
+:where(body.p-roam) .entete-sejour h1{margin:0 0 var(--esp-2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
+:where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
+:where(body.p-roam) .bloc-sejour{margin:0 0 var(--esp-6)}
+:where(body.p-roam) .bloc-sejour > .etiquette{display:block;margin-bottom:var(--esp-2);font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
+/* Les lieux de la flotte. Un lieu ouvert est un lien qui mene au geste ; un
+   lieu a venir est une carte muette, sans etat interactif — un statut n'est
+   pas une action. Le blanc pur les detache du sol blanc casse. */
+:where(body.p-roam) .cartes-lieux{display:grid;gap:var(--esp-3)}
+:where(body.p-roam) .carte-lieu{display:block;background:var(--blanc);border:1.5px solid var(--gris-ilot);border-radius:var(--rayon-carte);padding:var(--esp-4);color:var(--encre);text-decoration:none}
+:where(body.p-roam) .carte-lieu .tete{display:flex;justify-content:space-between;align-items:baseline;gap:var(--esp-3);flex-wrap:wrap}
+:where(body.p-roam) .carte-lieu .nom{font-size:var(--t-body);line-height:var(--lh-16);font-weight:700}
+:where(body.p-roam) .carte-lieu .ou{font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+:where(body.p-roam) .carte-lieu .dit{display:block;margin-top:var(--esp-2);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+:where(body.p-roam) .carte-lieu .geste{display:inline-flex;align-items:center;min-height:var(--cible-min);margin-top:var(--esp-1);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--univers)}
+:where(body.p-roam) .carte-lieu.ouverte{border-color:var(--univers)}
+:where(body.p-roam) .carte-lieu .avenir{display:block;margin-top:var(--esp-2);font-size:var(--t-note);line-height:var(--lh-12);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--encre-discrete)}
+:where(body.p-roam) .cartes-logement{display:grid;gap:var(--esp-3)}
+:where(body.p-roam) .carte-logement{display:block;width:100%;text-align:left;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--rayon-carte);padding:var(--esp-4);cursor:pointer;font-family:var(--font-corps);color:var(--encre);min-height:var(--cible-min)}
+:where(body.p-roam) .carte-logement .nom{display:block;font-size:var(--t-body);line-height:var(--lh-16);font-weight:700}
+:where(body.p-roam) .carte-logement .infos{display:flex;justify-content:space-between;gap:var(--esp-3);margin-top:var(--esp-1)}
+:where(body.p-roam) .carte-logement .cap{font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+:where(body.p-roam) .carte-logement .nuitee{font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre);font-family:var(--font-chiffres)}
+:where(body.p-roam) .carte-logement.choisi{background:rgba(var(--univers-rgb), .07);border-color:var(--univers)}
+:where(body.p-roam) .rangee-dates{display:grid;grid-template-columns:1fr 1fr;gap:var(--esp-3)}
+:where(body.p-roam) .ligne-nuits{margin:var(--esp-2) 0 0;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--univers)}
+:where(body.p-roam) .ligne-nuits:empty{display:none}
+/* Le triptyque du prix : trois lignes, celle du jour en plus fort — c'est elle
+   que le geste engage. Le total reste le premier mot : rien ne s'ajoute apres
+   lui. Le montant s'ecrit en encre, jamais dans la couleur d'univers. */
+:where(body.p-roam) .recap-sejour{display:none;background:var(--blanc);border:1.5px solid var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-4);margin:0 0 var(--esp-4)}
+:where(body.p-roam) .recap-sejour.visible{display:block}
+:where(body.p-roam) .recap-sejour .ligne{display:flex;justify-content:space-between;gap:var(--esp-3);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete);padding:var(--esp-1) 0}
+:where(body.p-roam) .recap-sejour .ligne .montant{font-family:var(--font-chiffres);color:var(--encre)}
+:where(body.p-roam) .recap-sejour .ligne.forte{font-size:var(--t-body);line-height:var(--lh-16);font-weight:700;color:var(--encre)}
+:where(body.p-roam) .recap-sejour .ligne.forte .montant{font-size:var(--t-h3);line-height:var(--lh-chiffre);font-weight:700}
+:where(body.p-roam) .confirmation{background:var(--blanc);border-radius:var(--rayon-carte);box-shadow:var(--ombre-posee);padding:var(--esp-6);margin-top:var(--esp-6)}
+:where(body.p-roam) .pied{margin-top:var(--esp-8)}
 /* ======================================================================== ECRAN — accueil ======================================================================== */ :where(body.p-accueil) svg.brand{fill:currentColor;stroke:none}
 :where(body.p-accueil) .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1))}
 :where(body.p-accueil) .video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;background:radial-gradient(circle,rgba(var(--jaune-e3-rgb),.42),transparent 62%);animation:respirer 9s ease-in-out infinite}
@@ -405,9 +458,9 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 :where(body.p-accueil) .chip .sous{display:block;font-size:var(--t-sm);color:var(--encre-discrete);text-align:center;font-family:var(--font-chiffres)}
 :where(body.p-accueil) .chip.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
 :where(body.p-accueil) .chip.indispo{opacity:.4;cursor:not-allowed}
-:where(body.p-accueil) .stepper{gap:14px}
-:where(body.p-accueil) .stepper button{border:1.5px solid var(--gris-service)}
-:where(body.p-accueil) .stepper .max{font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);min-width:0;font-family:var(--font-chiffres)}
+:where(body.p-accueil, body.p-roam) .stepper{gap:14px}
+:where(body.p-accueil, body.p-roam) .stepper button{border:1.5px solid var(--gris-service)}
+:where(body.p-accueil, body.p-roam) .stepper .max{font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);min-width:0;font-family:var(--font-chiffres)}
 :where(body.p-accueil) .radio-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 :where(body.p-accueil) .art-compact .btn-plus::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 :where(body.p-accueil) .art-compact .stepper-c button::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:44px}
@@ -416,8 +469,8 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 :where(body.p-accueil) .groupe-prenom{margin-bottom:13px}
 :where(body.p-accueil) .groupe-service{margin-top:14px}
 :where(body.p-accueil) .iti--container{z-index:10000}
-:where(body.p-accueil) .message-ferme{background:var(--rouge-lavure);border:1.5px solid rgba(var(--rouge-e2-rgb),.25);border-radius:var(--rayon-champ);padding:10px 13px;font-size:var(--t-sm);color:var(--rouge-e2);margin-bottom:13px;display:none}
-:where(body.p-accueil) .message-ferme.visible{display:block}
+:where(body.p-accueil, body.p-roam) .message-ferme{background:var(--rouge-lavure);border:1.5px solid rgba(var(--rouge-e2-rgb),.25);border-radius:var(--rayon-champ);padding:10px 13px;font-size:var(--t-sm);color:var(--rouge-e2);margin-bottom:13px;display:none}
+:where(body.p-accueil, body.p-roam) .message-ferme.visible{display:block}
 :where(body.p-accueil) .jauge{font-size:var(--t-sm);color:var(--encre-discrete);margin:0 2px 0}
 :where(body.p-accueil) .jauge strong{color:var(--encre)}
 /* L'ilot du total suit le motif de toute donnee chiffree du site — intitule et
@@ -432,10 +485,10 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 /* L'ilot de commande n'a pas de description : ses deux elements tiennent la
    meme ligne, et s'y alignent sur le meme axe plutot que sur leur bas. */
 :where(body.p-accueil) #recapCmd .titre,:where(body.p-accueil) #recapCmd .total{grid-row:1;align-self:center}
-:where(body.p-accueil) .consent-lien{display:flex;justify-content:center;line-height:1}
-:where(body.p-accueil) .consent-lien a{line-height:1;position:relative;display:inline-block}
-:where(body.p-accueil) .consent-lien a::after{content:'';position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:44px}
-:where(body.p-accueil,body.p-carte) .erreur{display:none;margin:8px 2px 0}
+:where(body.p-accueil, body.p-roam) .consent-lien{display:flex;justify-content:center;line-height:1}
+:where(body.p-accueil, body.p-roam) .consent-lien a{line-height:1;position:relative;display:inline-block}
+:where(body.p-accueil, body.p-roam) .consent-lien a::after{content:'';position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:44px}
+:where(body.p-accueil, body.p-roam,body.p-carte) .erreur{display:none;margin:8px 2px 0}
 :where(body.p-accueil) #menuCompact{max-height:34vh;overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-bottom:1px solid var(--gris-ilot)}
 :where(body.p-accueil) #menuCompact::-webkit-scrollbar{display:none}
 :where(body.p-accueil) #menuCompact .cat-compacte:first-child{margin-top:4px}
@@ -449,18 +502,18 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 :where(body.p-accueil) .art-compact .stepper-c span{font-weight:700;font-size:var(--t-sm);min-width:14px;text-align:center}
 :where(body.p-accueil) .vide-menu{padding:12px 4px}
 :where(body.p-accueil) .lien-detail{display:block;text-align:center;margin-top:14px;padding:12px 0;font-size:var(--t-sm);color:var(--encre-chaude);font-weight:700;text-decoration:none}
-:where(body.p-accueil) .confirmation{display:none;text-align:center;padding:14px 6px 6px}
-:where(body.p-accueil) .confirmation.visible{display:block}
-:where(body.p-accueil) .confirmation .soleil-ok{height:46px;margin:0 auto 10px;display:flex;justify-content:center}
-:where(body.p-accueil) .confirmation .soleil-ok svg{height:46px;width:46px}
-:where(body.p-accueil) .quoi-conf{font-size:var(--t-sm);font-weight:700;margin:0 0 10px;line-height:1.45}
-:where(body.p-accueil) .quoi-conf .jour{display:block;font-weight:500;color:var(--encre-discrete);font-size:var(--t-sm)}
-:where(body.p-accueil) .retenue{background:var(--roots-jaune);color:var(--roots-noir);border-radius:var(--rayon-module);padding:11px 15px;font-size:var(--t-sm);font-weight:700;margin:14px auto 0;max-width:300px}
-:where(body.p-accueil) .retenue .reste{font-family:var(--font-chiffres);font-size:var(--t-body)}
-:where(body.p-accueil) .montant-conf{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-body);color:var(--encre);margin:10px 0 0}
+:where(body.p-accueil, body.p-roam) .confirmation{display:none;text-align:center;padding:14px 6px 6px}
+:where(body.p-accueil, body.p-roam) .confirmation.visible{display:block}
+:where(body.p-accueil, body.p-roam) .confirmation .soleil-ok{height:46px;margin:0 auto 10px;display:flex;justify-content:center}
+:where(body.p-accueil, body.p-roam) .confirmation .soleil-ok svg{height:46px;width:46px}
+:where(body.p-accueil, body.p-roam) .quoi-conf{font-size:var(--t-sm);font-weight:700;margin:0 0 10px;line-height:1.45}
+:where(body.p-accueil, body.p-roam) .quoi-conf .jour{display:block;font-weight:500;color:var(--encre-discrete);font-size:var(--t-sm)}
+:where(body.p-accueil, body.p-roam) .retenue{background:var(--roots-jaune);color:var(--roots-noir);border-radius:var(--rayon-module);padding:11px 15px;font-size:var(--t-sm);font-weight:700;margin:14px auto 0;max-width:300px}
+:where(body.p-accueil, body.p-roam) .retenue .reste{font-family:var(--font-chiffres);font-size:var(--t-body)}
+:where(body.p-accueil, body.p-roam) .montant-conf{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-body);color:var(--encre);margin:10px 0 0}
 /* Le geste se detache de ce qui l'explique : sans cet ecart, le bouton colle
    au texte qui le precede et rompt le rythme du bloc. */
-:where(body.p-accueil) .confirmation .apres{margin-top:var(--esp-4)}
+:where(body.p-accueil, body.p-roam) .confirmation .apres{margin-top:var(--esp-4)}
 :where(body.p-accueil) .voile-doux{background:rgba(var(--ombre-teinte),.22)}
 :where(body.p-accueil) .drawer-pied{display:flex;align-items:center;justify-content:flex-end;margin-top:16px;padding:0 6px}
 :where(body.p-accueil) .mini-btn{display:flex;align-items:center;gap:7px;background:var(--gris-ilot);border:none;border-radius:var(--rayon-pilule);padding:9px 14px;font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);color:var(--encre);cursor:pointer}

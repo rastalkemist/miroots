@@ -76,6 +76,9 @@ window.Roots = window.Roots || {};
       { fr: 'Recharge la page et recommence.', en: 'Reload the page and try again.' },
     'indiquez un numero de table, ou un prenom et un telephone':
       { fr: 'Indique ton prénom et ton numéro.', en: 'Enter your first name and phone number.' },
+    'ces dates ne sont plus disponibles':
+      { fr: 'Ces dates viennent d’être prises. Choisis d’autres dates.',
+        en: 'Those dates were just taken. Pick different dates.' },
     'vente introuvable':
       { fr: 'On ne retrouve pas cette vente avec ce code et ce numéro.',
         en: 'We could not find a sale with that code and number.' },
@@ -128,6 +131,13 @@ window.Roots = window.Roots || {};
         return langue === 'en'
           ? 'This room sleeps up to ' + (m ? m[1] : '') + ' guests.'
           : 'Ce logement accueille jusqu’à ' + (m ? m[1] : '') + ' personne(s).';
+      }
+      /* Le refus de chevauchement d'un sejour remonte sans etre rattrape par
+         la base : il arrive sous la phrase machine de la contrainte. On le
+         reconnait a son nom, et ce rattrapage devient inutile le jour ou la
+         porte leve son propre message. */
+      if (brut.indexOf('exclusivite_logement') !== -1) {
+        return (MESSAGES['ces dates ne sont plus disponibles'] || {})[langue === 'en' ? 'en' : 'fr'];
       }
       if (brut.indexOf('telephone invalide') === 0) {
         return langue === 'en' ? 'Check the phone number.' : 'Vérifie le numéro de téléphone.';
@@ -494,6 +504,18 @@ window.Roots = window.Roots || {};
     reserverEspace: function (o) {
       return appeler('reserver_espace', {
         p_espace_slug: o.espace, p_mode: o.mode, p_date: o.date, p_creneau: o.creneau,
+        p_nb: o.personnes, p_nom: o.nom, p_tel: telephone(o.tel),
+        p_cle: o.cle || cleIdempotence(), p_consentement: o.consentement
+      });
+    },
+
+    /* Le sejour. La porte calcule tout — total, acompte de moitie, echeance de
+       la retenue — et rend ce qui fait foi : l'ecran n'anticipe qu'en lecture.
+       Aucune adresse n'est transmise : une adresse sans consentement d'envoi
+       n'est pas une donnee que l'ecran collecte. */
+    reserverLogement: function (o) {
+      return appeler('reserver_logement', {
+        p_logement_slug: o.logement, p_arrivee: o.arrivee, p_depart: o.depart,
         p_nb: o.personnes, p_nom: o.nom, p_tel: telephone(o.tel),
         p_cle: o.cle || cleIdempotence(), p_consentement: o.consentement
       });

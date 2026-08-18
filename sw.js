@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '2252284b6c7b41b2';
+var VERSION   = '4d4427836690e8a4';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -31,7 +31,7 @@ var REPLI = 'hors-ligne.html';
 /* La coque : ce qui ne dit rien de personne. Aucune reponse du socle n'y
    figure, et aucune ne peut y entrer — voir le filtre du gestionnaire fetch. */
 var COQUE_FICHIERS = [
-  'index.html', 'carte.html', 'retrouver.html', 'facture.html',
+  'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'facture.html',
   'paiement.html', 'confidentialite.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css',
   'roots-db.js', 'roots.js', 'garde.js',

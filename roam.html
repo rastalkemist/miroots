@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-/DPqI/RGBZjMWY9hhqQoz8FjpzoRx01/IeOzeCUIqvk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Séjourner</title>
+<meta name="theme-color" content="#005B22">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="vendor/intlTelInput.min.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<script src="roots-db.js"></script>
+<script src="roots.js"></script>
+<script src="vendor/intlTelInput.min.js" defer></script>
+<script src="garde.js"></script>
+</head>
+<body class="p-roam" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="roam.html">Roam</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="corps">
+  <!-- L'accord fond vert / encre creme est la declinaison actee de
+       l'hebergement. Il porte un titre et une carte, jamais une lecture
+       longue : le corps de la page revient a l'encre sur fond clair. -->
+  <header class="entete-sejour">
+    <h1 data-t="titre">Séjourner</h1>
+    <p class="sous-titre" data-t="sousTitre">Kër Yawa, Interfaces, le Roots Camp — et bientôt les Roots Roamer. Sans compte : ton nom, ton numéro, un code.</p>
+  </header>
+
+  <!-- L'univers presente la flotte par LIEU. Un lieu ouvert mene a la
+       reservation ; un lieu a venir est une carte muette — jamais un bouton
+       qui echouerait. Les faits (adresses, surfaces) viennent des documents
+       de marque ; rien n'est promis qui n'y figure. -->
+  <section class="bloc-sejour" aria-labelledby="etLieux">
+    <span class="etiquette" id="etLieux" data-t="etLieux">Les lieux</span>
+    <div class="cartes-lieux">
+      <a class="carte-lieu ouverte" href="#reserver" id="lieuKerYawa">
+        <span class="tete"><span class="nom">Kër Yawa</span><span class="ou" data-t="ouKY">Sainte-Rita, Cotonou</span></span>
+        <span class="dit" data-t="ditKY">La maison d’hôtes qui a tout commencé — un jardin, des chambres, la communauté.</span>
+        <span class="geste" data-t="gesteKY">Réserver ↓</span>
+      </a>
+      <div class="carte-lieu">
+        <span class="tete"><span class="nom">Interfaces</span><span class="ou" data-t="ouIF">Calavi Arconville</span></span>
+        <span class="dit" data-t="ditIF">Le prochain point d’ancrage de la flotte.</span>
+        <span class="avenir" data-t="aVenir">À venir</span>
+      </div>
+      <div class="carte-lieu">
+        <span class="tete"><span class="nom">Roots Camp</span><span class="ou" data-t="ouRC">Plage de Djègbadji, Ouidah</span></span>
+        <span class="dit" data-t="ditRC">1 500 m² sur la plage, à dix minutes de la Porte du Non-Retour.</span>
+        <span class="avenir" data-t="aVenir2">À venir</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloc-sejour" aria-labelledby="etRoamer">
+    <span class="etiquette" id="etRoamer" data-t="etRoamer">Les Roots Roamer</span>
+    <div class="cartes-lieux deux">
+      <div class="carte-lieu">
+        <span class="tete"><span class="nom">Raven — RxR I</span></span>
+        <span class="dit" data-t="ditRaven">Un toit autonome, sur roues : le 4x4 overland aménagé.</span>
+        <span class="avenir" data-t="aVenir3">À venir</span>
+      </div>
+      <div class="carte-lieu">
+        <span class="tete"><span class="nom">Ranger — RxR II</span></span>
+        <span class="dit" data-t="ditRanger">Le second toit roulant de la flotte.</span>
+        <span class="avenir" data-t="aVenir4">À venir</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloc-sejour" id="reserver" aria-labelledby="etLogement">
+    <span class="etiquette" id="etLogement" data-t="etLogement">Le logement</span>
+    <div class="cartes-logement" id="cartesLogement" role="radiogroup" aria-labelledby="etLogement"></div>
+    <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
+  </section>
+
+  <section class="bloc-sejour">
+    <span class="etiquette" data-t="etDates">Tes dates</span>
+    <div class="rangee-dates">
+      <div class="champ"><label for="arrivee" data-t="lArrivee">Arrivée</label>
+        <input type="date" id="arrivee"></div>
+      <div class="champ"><label for="depart" data-t="lDepart">Départ</label>
+        <input type="date" id="depart"></div>
+    </div>
+    <p class="ligne-nuits" id="ligneNuits" aria-live="polite"></p>
+  </section>
+
+  <section class="bloc-sejour" id="groupePersonnes">
+    <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
+    <div class="stepper">
+      <button type="button" id="moinsPersonnes" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
+      <span id="valeurPersonnes">1</span>
+      <button type="button" id="plusPersonnes" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
+      <span class="max" id="maxPersonnes"></span>
+    </div>
+  </section>
+
+  <section class="bloc-sejour">
+    <div class="champ groupe"><label for="nomSejour" data-t="tonNom">Ton prénom</label>
+      <input id="nomSejour" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
+    <div class="champ groupe"><label for="telSejour" data-t="tonTel">Ton numéro (pour te confirmer)</label>
+      <input type="tel" inputmode="tel" id="telSejour" autocomplete="tel"></div>
+  </section>
+
+  <!-- Le triptyque du prix : le total d'abord — aucun frais ne s'ajoute
+       ensuite —, ce qui se paie aujourd'hui, ce qui attend l'arrivee. -->
+  <div class="recap-sejour" id="recapSejour" aria-live="polite">
+    <div class="ligne"><span data-t="rTotal">Total du séjour</span><span class="montant" id="rTotal"></span></div>
+    <div class="ligne forte"><span data-t="rAcompte">Aujourd’hui, l’acompte</span><span class="montant" id="rAcompte"></span></div>
+    <div class="ligne"><span data-t="rSolde">À l’arrivée</span><span class="montant" id="rSolde"></span></div>
+  </div>
+
+  <button class="bouton-confirmer" id="btnSejour" disabled data-t="reserver">Réserver</button>
+  <p class="erreur" id="erreurSejour" role="alert" aria-live="polite"></p>
+  <p class="consent" id="texteConsentSejour"></p>
+  <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
+
+  <div class="confirmation" id="confSejour">
+    <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
+    <p class="conf-titre" data-t="cestReserve">C'est réservé. On t'attend.</p>
+    <div class="code" id="codeSejour">——————</div>
+    <div class="gestes-code">
+      <button type="button" class="geste-code" data-code-copier data-code-source="codeSejour" data-fait="Copié" data-t="copier">Copier le code</button>
+      <button type="button" class="geste-code" data-code-cartel data-code-source="codeSejour" data-titre="Mon séjour" data-t="garder">Garder en image</button>
+    </div>
+    <p class="quoi-conf" id="quoiSejour"></p>
+    <p class="instructions" data-t="instr">Garde ce code : il retrouve ta réservation à tout moment, même sans compte.</p>
+    <p class="montant-conf" id="soldeConf"></p>
+    <div class="apres"><button class="bouton-confirmer cache" id="btnPayerSejour" data-t="payer">Payer l'acompte</button></div>
+    <p class="erreur" id="erreurPayerSejour" role="alert" aria-live="polite"></p>
+    <div class="retenue" id="blocRetenue"><span data-t="cRetenue">Ta place est gardée encore</span> <span class="reste" id="resteSejour">--:--</span></div>
+  </div>
+</div>
+
+<footer class="pied">
+  <a href="confidentialite.html" data-t="mentions">Mentions légales</a>
+</footer>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe dormant" aria-disabled="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe actif" aria-current="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      titre: 'Séjourner',
+      sousTitre: 'Kër Yawa, Interfaces, le Roots Camp — et bientôt les Roots Roamer. Sans compte : ton nom, ton numéro, un code.',
+      etLieux: 'Les lieux', etRoamer: 'Les Roots Roamer',
+      ouKY: 'Sainte-Rita, Cotonou', ouIF: 'Calavi Arconville', ouRC: 'Plage de Djègbadji, Ouidah',
+      ditKY: 'La maison d’hôtes qui a tout commencé — un jardin, des chambres, la communauté.',
+      ditIF: 'Le prochain point d’ancrage de la flotte.',
+      ditRC: '1 500 m² sur la plage, à dix minutes de la Porte du Non-Retour.',
+      ditRaven: 'Un toit autonome, sur roues : le 4x4 overland aménagé.',
+      ditRanger: 'Le second toit roulant de la flotte.',
+      gesteKY: 'Réserver ↓',
+      aVenir: 'À venir', aVenir2: 'À venir', aVenir3: 'À venir', aVenir4: 'À venir',
+      etLogement: 'Le logement', etDates: 'Tes dates',
+      lArrivee: 'Arrivée', lDepart: 'Départ',
+      etPersonnes: 'Combien serez-vous ?',
+      tonNom: 'Ton prénom', tonTel: 'Ton numéro (pour te confirmer)', pNom: 'Ton prénom',
+      laNuit: function (p) { return p + ' la nuit'; },
+      jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
+      nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
+      rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
+      reserver: 'Réserver', onReserve: 'On réserve…',
+      cestReserve: 'C’est réservé. On t’attend.',
+      copier: 'Copier le code', garder: 'Garder en image',
+      instr: 'Garde ce code : il retrouve ta réservation à tout moment, même sans compte.',
+      solde: function (p) { return 'Le solde, ' + p + ', se règle à l’arrivée.'; },
+      payer: 'Payer l’acompte', onOuvre: 'On ouvre le paiement…',
+      cRetenue: 'Ta place est gardée encore',
+      expire: 'Le temps est écoulé — la place a été relâchée. Réserve à nouveau.',
+      manqueContact: 'Indique ton prénom et ton numéro.',
+      manqueDates: 'Choisis ton arrivée et ton départ.',
+      manqueLogement: 'Choisis un logement.',
+      payerFerme: 'Le paiement en ligne est fermé pour le moment. Passe à l’accueil.',
+      vide: 'Aucun logement n’est ouvert à la réservation pour le moment. Écris-nous et on t’arrange ça.',
+      politique: 'Politique de confidentialité', mentions: 'Mentions légales'
+    },
+    en: {
+      saut: 'Skip to content',
+      titre: 'Stay',
+      sousTitre: 'Kër Yawa, Interfaces, the Roots Camp — and soon the Roots Roamers. No account: your name, your number, one code.',
+      etLieux: 'The places', etRoamer: 'The Roots Roamers',
+      ouKY: 'Sainte-Rita, Cotonou', ouIF: 'Calavi Arconville', ouRC: 'Djègbadji beach, Ouidah',
+      ditKY: 'The guesthouse where it all began — a garden, rooms, the community.',
+      ditIF: 'The fleet’s next anchor point.',
+      ditRC: '1,500 m² on the beach, ten minutes from the Door of No Return.',
+      ditRaven: 'A home on wheels: the fitted-out overland 4x4.',
+      ditRanger: 'The fleet’s second rolling roof.',
+      gesteKY: 'Book ↓',
+      aVenir: 'Coming soon', aVenir2: 'Coming soon', aVenir3: 'Coming soon', aVenir4: 'Coming soon',
+      etLogement: 'Your room', etDates: 'Your dates',
+      lArrivee: 'Check-in', lDepart: 'Check-out',
+      etPersonnes: 'How many of you?',
+      tonNom: 'Your first name', tonTel: 'Your number (to confirm)', pNom: 'Your first name',
+      laNuit: function (p) { return p + ' a night'; },
+      jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
+      nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
+      rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
+      reserver: 'Book', onReserve: 'Booking…',
+      cestReserve: 'Booked. We’ll be waiting.',
+      copier: 'Copy code', garder: 'Save as image',
+      instr: 'Keep this code: it finds your booking at any time, no account needed.',
+      solde: function (p) { return 'The balance, ' + p + ', is due at check-in.'; },
+      payer: 'Pay the deposit', onOuvre: 'Opening payment…',
+      cRetenue: 'Your spot is held for another',
+      expire: 'Time is up — the spot has been released. Book again.',
+      manqueContact: 'Enter your first name and phone number.',
+      manqueDates: 'Pick your check-in and check-out dates.',
+      manqueLogement: 'Choose a room.',
+      payerFerme: 'Online payment is closed for now. Ask at the front desk.',
+      vide: 'No rooms are open for booking right now. Write to us and we will arrange it.',
+      politique: 'Privacy Policy', mentions: 'Legal notices'
+    }
+  };
+
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
+  function t() { return T[langue] || T.fr; }
+  var $ = function (id) { return document.getElementById(id); };
+
+  function prix(v) {
+    return Number(v || 0).toLocaleString('fr-FR').replace(/[  ]/g, ' ') + ' FCFA';
+  }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+
+  /* Les bornes viennent des regles que la base applique : arrivee au plus tot
+     aujourd'hui, horizon d'un an, sejour d'au plus trente nuits. Les poser sur
+     les champs evite d'offrir une date que la porte refusera. */
+  var JOUR = 86400000;
+  var HORIZON_JOURS = 365, NUITS_MAX = 30;
+
+  var sejour = { logement: null, arrivee: '', depart: '', personnes: 1, notice: null };
+  var LOGEMENTS = [];
+  var itiSejour = null;
+  var reservation = null;
+
+  function carteLogement(l) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'carte-logement';
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', 'false');
+    b.dataset.slug = l.slug;
+    var tete = document.createElement('span');
+    tete.className = 'tete-logement';
+    var nom = document.createElement('span');
+    nom.className = 'nom';
+    nom.textContent = l.nom;
+    tete.appendChild(nom);
+    b.appendChild(tete);
+    var infos = document.createElement('span');
+    infos.className = 'infos';
+    var cap = document.createElement('span');
+    cap.className = 'cap';
+    cap.textContent = t().jusqua(l.capacite);
+    var p = document.createElement('span');
+    p.className = 'nuitee';
+    p.textContent = t().laNuit(prix(l.prix_nuit));
+    infos.appendChild(cap);
+    infos.appendChild(p);
+    b.appendChild(infos);
+    b.addEventListener('click', function () { choisir(l); });
+    return b;
+  }
+
+  function dessinerLogements() {
+    var z = $('cartesLogement');
+    z.innerHTML = '';
+    LOGEMENTS.forEach(function (l) { z.appendChild(carteLogement(l)); });
+    if (sejour.logement) {
+      var vise = sejour.logement.slug;
+      Array.prototype.forEach.call(z.children, function (c) {
+        var choisi = c.dataset.slug === vise;
+        c.classList.toggle('choisi', choisi);
+        c.setAttribute('aria-checked', choisi ? 'true' : 'false');
+      });
+    }
+    $('videLogements').style.display = LOGEMENTS.length ? 'none' : 'block';
+    $('videLogements').textContent = LOGEMENTS.length ? '' : t().vide;
+  }
+
+  function choisir(l) {
+    sejour.logement = l;
+    if (sejour.personnes > l.capacite) sejour.personnes = l.capacite;
+    dessinerLogements();
+    majPersonnes();
+    majRecap();
+  }
+
+  function nuits() {
+    if (!sejour.arrivee || !sejour.depart) return 0;
+    var n = Math.round((new Date(sejour.depart) - new Date(sejour.arrivee)) / JOUR);
+    return n > 0 ? n : 0;
+  }
+
+  /* Le depart suit l'arrivee sans jamais l'ecraser : une plage deja saisie ne
+     se decale pas toute seule — si elle devient invalide, elle se vide et le
+     champ reprend la main. */
+  function majDates() {
+    var a = $('arrivee'), d = $('depart');
+    var auj = new Date();
+    a.min = iso(auj);
+    a.max = iso(new Date(auj.getTime() + HORIZON_JOURS * JOUR));
+    if (sejour.arrivee) {
+      var da = new Date(sejour.arrivee);
+      d.min = iso(new Date(da.getTime() + JOUR));
+      d.max = iso(new Date(da.getTime() + NUITS_MAX * JOUR));
+      if (sejour.depart && (sejour.depart <= sejour.arrivee || nuits() > NUITS_MAX)) {
+        sejour.depart = '';
+        d.value = '';
+      }
+    } else {
+      d.min = iso(new Date(auj.getTime() + JOUR));
+      d.max = iso(new Date(auj.getTime() + (HORIZON_JOURS + NUITS_MAX) * JOUR));
+    }
+    var n = nuits();
+    $('ligneNuits').textContent = n ? t().nuits(n) : '';
+  }
+
+  function majPersonnes() {
+    var plafond = sejour.logement ? sejour.logement.capacite : 1;
+    if (sejour.personnes > plafond) sejour.personnes = plafond;
+    if (sejour.personnes < 1) sejour.personnes = 1;
+    $('valeurPersonnes').textContent = sejour.personnes;
+    $('maxPersonnes').textContent = (sejour.personnes >= plafond && plafond > 1) ? 'max' : '';
+    $('moinsPersonnes').disabled = sejour.personnes <= 1;
+    $('plusPersonnes').disabled = sejour.personnes >= plafond;
+  }
+
+  /* Le triptyque affiche par ANTICIPATION la regle que la base applique :
+     nuits x prix de la nuit, acompte de moitie arrondi au franc superieur.
+     Ce que rend la porte fait foi et remplace ces valeurs a la confirmation —
+     une promotion posee en base ne peut que faire baisser le montant. */
+  function majRecap() {
+    var n = nuits();
+    var ok = sejour.logement && n > 0;
+    $('recapSejour').classList.toggle('visible', !!ok);
+    if (ok) {
+      var total = sejour.logement.prix_nuit * n;
+      var acompte = Math.floor((total + 1) / 2);
+      $('rTotal').textContent = prix(total);
+      $('rAcompte').textContent = prix(acompte);
+      $('rSolde').textContent = prix(total - acompte);
+    }
+    majBouton();
+  }
+
+  function majBouton() {
+    $('btnSejour').disabled = !(sejour.logement && nuits() > 0 && sejour.notice);
+  }
+
+  function montrerErreur(id, msg) { var e = $(id); e.textContent = msg; e.classList.add('visible'); }
+  function cacherErreur(id) { var e = $(id); e.textContent = ''; e.classList.remove('visible'); }
+
+  function numeroDe(input, iti) {
+    if (iti && typeof iti.getNumber === 'function') {
+      var v = iti.getNumber();
+      if (v) return v;
+    }
+    return (input.value || '').trim();
+  }
+  function numeroValide(input, iti) {
+    if (iti && typeof iti.isValidNumber === 'function' && input.value.trim()) {
+      var r = iti.isValidNumber();
+      if (r !== null) return r;
+    }
+    return numeroDe(input, iti).replace(/\D/g, '').length >= 8;
+  }
+
+  var envoiEnCours = false;
+  async function reserver() {
+    if (envoiEnCours) return;
+    cacherErreur('erreurSejour');
+    if (!sejour.logement) return montrerErreur('erreurSejour', t().manqueLogement);
+    if (!nuits()) return montrerErreur('erreurSejour', t().manqueDates);
+    var nom = $('nomSejour').value.trim();
+    if (!nom || !numeroValide($('telSejour'), itiSejour)) return montrerErreur('erreurSejour', t().manqueContact);
+    if (!sejour.notice) return;
+
+    envoiEnCours = true;
+    var b = $('btnSejour');
+    b.classList.add('occupe');
+    b.disabled = true;
+    b.textContent = t().onReserve;
+    try {
+      var r = await Roots.db.reserverLogement({
+        logement: sejour.logement.slug,
+        arrivee: sejour.arrivee, depart: sejour.depart,
+        personnes: sejour.personnes,
+        nom: nom, tel: numeroDe($('telSejour'), itiSejour),
+        consentement: sejour.notice.version
+      });
+      reservation = { code: r.code, montant: r.montant, acompte: r.acompte,
+                      expire_le: r.expire_le, tel: numeroDe($('telSejour'), itiSejour) };
+      confirmer(r);
+    } catch (e) {
+      montrerErreur('erreurSejour', e.message);
+    } finally {
+      envoiEnCours = false;
+      b.classList.remove('occupe');
+      b.textContent = t().reserver;
+      majBouton();
+    }
+  }
+
+  var compteARebours = null;
+  function confirmer(r) {
+    $('confSejour').classList.add('visible');
+    $('codeSejour').textContent = r.code || '——————';
+    dessinerConfirmation();
+    /* Le bouton reste absent quand le reglage du prestataire n'est pas pose :
+       un bouton qui mene a un mur n'est pas une offre. */
+    $('btnPayerSejour').classList.toggle('cache', !Roots.db.reglagePaiement().pose || !(r.acompte > 0));
+    if (r.expire_le) {
+      var fin = new Date(r.expire_le).getTime();
+      if (compteARebours) clearInterval(compteARebours);
+      compteARebours = setInterval(function () {
+        var reste = Math.max(0, fin - Date.now());
+        var mn = Math.floor(reste / 60000), sec = Math.floor((reste % 60000) / 1000);
+        $('resteSejour').textContent = mn + ':' + (sec < 10 ? '0' : '') + sec;
+        if (reste <= 0) {
+          clearInterval(compteARebours);
+          $('blocRetenue').textContent = t().expire;
+          $('btnPayerSejour').classList.add('cache');
+        }
+      }, 250);
+    } else {
+      $('blocRetenue').style.display = 'none';
+    }
+    $('confSejour').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* Les montants affiches a la confirmation sont CEUX QUE LA PORTE A RENDUS,
+     jamais ceux que l'ecran avait anticipes. */
+  function dessinerConfirmation() {
+    if (!reservation) return;
+    var l = sejour.logement ? sejour.logement.nom : '';
+    var quoi = l + ' · ' + t().nuits(nuits()) + ' · ' + sejour.personnes + (langue === 'en'
+      ? (sejour.personnes > 1 ? ' people' : ' person')
+      : (sejour.personnes > 1 ? ' personnes' : ' personne'));
+    var jours = '';
+    if (sejour.arrivee && sejour.depart) {
+      var loc = langue === 'fr' ? 'fr-FR' : 'en-GB';
+      var o = { day: 'numeric', month: 'long' };
+      jours = new Date(sejour.arrivee + 'T12:00:00').toLocaleDateString(loc, o)
+        + ' → ' + new Date(sejour.depart + 'T12:00:00').toLocaleDateString(loc, o);
+    }
+    $('quoiSejour').textContent = quoi + (jours ? ' — ' + jours : '');
+    var solde = Math.max(0, (reservation.montant || 0) - (reservation.acompte || 0));
+    $('soldeConf').textContent = solde > 0 ? t().solde(prix(solde)) : '';
+    /* Le libelle se pose meme bouton cache : la visibilite se decide apres,
+       et un libelle pose sous condition d'etre visible reste vide au premier
+       rendu. */
+    $('btnPayerSejour').textContent = t().payer + ' · ' + prix(reservation.acompte);
+  }
+
+  var paiementEnCours = false;
+  async function payerSejour() {
+    if (paiementEnCours || !reservation) return;
+    cacherErreur('erreurPayerSejour');
+    var b = $('btnPayerSejour');
+    paiementEnCours = true;
+    b.disabled = true;
+    var libelle = b.textContent;
+    b.textContent = t().onOuvre;
+    try {
+      var r = await Roots.db.initierPaiementReservation('logement', reservation.code, reservation.tel);
+      var pose = Roots.db.remisePaiement({
+        paiement: r.paiement, montant: r.montant,
+        type: 'reservation_logement', code: reservation.code, tel: reservation.tel
+      });
+      if (!pose) { montrerErreur('erreurPayerSejour', t().payerFerme); return; }
+      location.assign('payer.html');
+    } catch (e) {
+      montrerErreur('erreurPayerSejour', e.message);
+    } finally {
+      paiementEnCours = false;
+      b.disabled = false;
+      b.textContent = libelle;
+    }
+  }
+
+  $('arrivee').addEventListener('change', function () {
+    sejour.arrivee = this.value; majDates(); majRecap();
+  });
+  $('depart').addEventListener('change', function () {
+    sejour.depart = this.value; majDates(); majRecap();
+  });
+  $('moinsPersonnes').addEventListener('click', function () { sejour.personnes--; majPersonnes(); });
+  $('plusPersonnes').addEventListener('click', function () { sejour.personnes++; majPersonnes(); });
+  $('btnSejour').addEventListener('click', reserver);
+  $('btnPayerSejour').addEventListener('click', payerSejour);
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-p]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-p')];
+      if (typeof v === 'string') el.placeholder = v;
+    });
+    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
+    if (sejour.notice) $('texteConsentSejour').textContent = Roots.db.texteNotice(sejour.notice, langue);
+    dessinerLogements();
+    majRecap();
+    dessinerConfirmation();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  }
+
+  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; }, getSections: Roots.nav });
+  $('btnLangue').addEventListener('click', function () {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    Roots.retenirLangue(langue);
+    appliquerLangue();
+  });
+
+  Roots.poserLibelles && Roots.poserLibelles();
+
+  (async function () {
+    try {
+      var charges = await Promise.all([Roots.db.logements(), Roots.db.notice('logement')]);
+      LOGEMENTS = charges[0] || [];
+      sejour.notice = charges[1];
+      if (LOGEMENTS.length === 1) sejour.logement = LOGEMENTS[0];
+      appliquerLangue();
+      itiSejour = Roots.initTelRoots($('telSejour'));
+      majDates();
+      majPersonnes();
+      majRecap();
+    } catch (e) {
+      $('videLogements').style.display = 'block';
+      $('videLogements').textContent = e.message;
+      appliquerLangue();
+    }
+  })();
+})();
+</script>
+</body>
+</html>
