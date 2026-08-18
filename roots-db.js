@@ -84,6 +84,14 @@ window.Roots = window.Roots || {};
         en: 'We cannot email the invoice for this sale. You can download it instead.' },
     'un envoi se consent':
       { fr: 'Donne ton accord avant l’envoi.', en: 'Give your consent before we send it.' },
+    'la piece existe deja : son destinataire est fige':
+      { fr: 'La facture est déjà établie : son destinataire ne peut plus changer.',
+        en: 'The invoice has been issued: who it is made out to can no longer change.' },
+    'un nom est requis':
+      { fr: 'Indiquez le nom ou la raison sociale.', en: 'Enter the name or company name.' },
+    'identifiant fiscal illisible':
+      { fr: 'L’identifiant fiscal ne contient que des chiffres, entre 8 et 20.',
+        en: 'A tax ID is 8 to 20 digits, and digits only.' },
     'aucune adresse de payeur pour cette vente':
       { fr: 'L’envoi par courriel n’est pas possible pour cette vente. Tu peux télécharger ta facture.',
         en: 'We cannot email the invoice for this sale. You can download it instead.' },
@@ -635,6 +643,20 @@ window.Roots = window.Roots || {};
     contactDuPayeurDeLaCommande: function (commande, jeton) {
       return appeler('contact_du_payeur_de_la_commande', {
         p_commande: commande, p_jeton: jeton
+      });
+    },
+
+    /* L'identite a qui la facture est adressee, quand ce n'est pas le payeur.
+       La porte REFUSE des qu'une piece existe pour cette vente : le destinataire
+       d'une facture scellee est fige, et l'identifiant de l'acheteur fait partie
+       de ce qui est declare a la plateforme fiscale. Elle ne s'appelle donc
+       qu'entre l'ouverture de la vente et l'ouverture du guichet de paiement.
+       L'adresse passe par la meme barriere que partout ailleurs : un masque
+       affiche sur le meme ecran ne doit pas pouvoir y etre recopie. */
+    poserFacturationVente: function (o) {
+      return appeler('poser_facturation_vente', {
+        p_vente_type: o.type, p_vente_id: o.id, p_nom: o.nom,
+        p_ifu: o.ifu || null, p_courriel: adresseTransmissible(o.courriel)
       });
     },
 

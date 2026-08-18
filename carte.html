@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gtEfKDuGxQQpOlxNeGx6JIasRtbPNd2xRPW5kHzeEHk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-OiEijrEvQlw2luk5iAKoQ7CD1EIKd0L5uT6pRVvdeC8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -105,6 +105,11 @@
     </div>
     <p class="instructions" id="confInstr"></p>
     <p class="note-partielle" id="partielCmd" style="display:none"></p>
+    <!-- L'identite a qui la facture est adressee. Elle se pose ICI parce que la
+         porte refuse des qu'une piece existe, et que la piece suit le paiement
+         d'une seconde : c'est la seule fenetre. Le bloc est bati par roots.js,
+         pas recopie dans cet ecran. -->
+    <div id="hoteFacturation"></div>
     <div class="apres"><button class="bouton-confirmer cache" id="btnPayerCmd" data-t="payerMaintenant">Payer maintenant</button></div>
     <p class="erreur" id="erreurPayerCmd" role="alert" aria-live="polite"></p>
   </div>
@@ -620,6 +625,11 @@
   var commandeOuverte = null;
   var paiementEnCours = false;
 
+  var blocFacturation = Roots.blocFacturation({
+    hote: $('hoteFacturation'),
+    getLangue: function () { return langue; }
+  });
+
   async function payerCmd() {
     if (paiementEnCours || !commandeOuverte) return;
     cacherErreur('erreurPayerCmd');
@@ -629,6 +639,10 @@
     var libelle = b.textContent;
     b.textContent = t().onOuvre;
     try {
+      /* L'identite de facturation se pose AVANT le guichet : une fois la piece
+         creee, la porte refuse et la saisie serait perdue sans le dire. */
+      var pretA = await blocFacturation.poser({ type: 'commande', id: commandeOuverte.id });
+      if (!pretA) return;
       var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
       var pose = Roots.db.remisePaiement({
         paiement: r.paiement, montant: r.montant, type: 'commande',
@@ -690,6 +704,7 @@
     document.title = 'Mi Roots — ' + t().titre;
     $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     if (notice) $('texteConsent').textContent = texteNotice(notice);
+    if (blocFacturation) blocFacturation.dessiner();
     appliquerContexte();
     dessinerCategories();
     dessinerMenu();

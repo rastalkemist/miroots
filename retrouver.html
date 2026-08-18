@@ -54,12 +54,12 @@
 
   <section class="bloc" id="recherche">
     <div class="champ">
-      <span class="etiquette" data-t="lCode">Ton code</span>
+      <label class="etiquette" for="code" data-t="lCode">Ton code</label>
       <input type="text" id="code" maxlength="6" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" placeholder="ABC123" aria-describedby="codeFormat">
       <span class="aide-champ" id="codeFormat" data-t="fCode">Six signes, lettres et chiffres — par exemple ABC123.</span>
     </div>
     <div class="champ">
-      <span class="etiquette" data-t="lTel">Numéro utilisé</span>
+      <label class="etiquette" for="tel" data-t="lTel">Numéro utilisé</label>
       <input type="tel" inputmode="tel" id="tel" autocomplete="tel">
     </div>
     <button class="principal" id="btnChercher" data-t="bChercher">Retrouver</button>

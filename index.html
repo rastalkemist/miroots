@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-3aWZXmb7oabSKciq17c3g/UpKVoMOdu++E3xk6mQ5KE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-CtbggNGderBzqIiz9ZetQdsoD8tonncdYhuSDoc59ws='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -170,6 +170,9 @@
       </div>
       <p class="instructions" data-t="instrCmd">Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.</p>
       <p class="note-partielle" id="partielCmd" style="display:none"></p>
+      <!-- L'identite a qui la facture est adressee. Seule fenetre : la porte
+           refuse des qu'une piece existe, et la piece suit le paiement. -->
+      <div id="hoteFacturation"></div>
       <div class="apres"><button class="bouton-confirmer cache" id="btnPayerCmd" data-t="payer">Payer maintenant</button></div>
       <p class="erreur" id="erreurPayerCmd" role="alert" aria-live="polite"></p>
     </div>
@@ -633,6 +636,11 @@
      l'ecran qui vient de les recevoir, et nulle part ou on arrive par un code.
      Le montant vient de la porte, jamais du panier affiche. */
   var commandeOuverte = null;
+  var blocFacturation = Roots.blocFacturation({
+    hote: document.getElementById('hoteFacturation'),
+    getLangue: function () { return langue; }
+  });
+
   async function payerCmd() {
     if (paiementEnCours || !commandeOuverte) return;
     cacherErreur('erreurPayerCmd');
@@ -642,9 +650,17 @@
     var libelle = b.textContent;
     b.textContent = t().onOuvre;
     try {
+      /* L'identite de facturation se pose AVANT le guichet : la porte refuse
+         des qu'une piece existe. */
+      var pretA = await blocFacturation.poser({ type: 'commande', id: commandeOuverte.id });
+      if (!pretA) return;
       var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
+      /* Le code et le numero suivent la remise : l'ecran d'attente ne connait la
+         vente que par ce que celui-ci lui laisse, et les portes de contact et de
+         remise ne prennent que ce couple. */
       var pose = Roots.db.remisePaiement({
-        paiement: r.paiement, montant: r.montant, type: 'commande'
+        paiement: r.paiement, montant: r.montant, type: 'commande',
+        code: commandeOuverte.code || null, tel: commandeOuverte.tel || null
       });
       if (!pose) { montrerErreur('erreurPayerCmd', t().payerFerme); return; }
       location.assign('payer.html');
@@ -839,7 +855,7 @@
           manquants.push(a ? (langue === 'en' ? (a.nom_en || a.nom_fr) : (a.nom_fr || a.nom_en)) : id);
         }
       }
-      confirmerCmd(r, manquants);
+      confirmerCmd(r, manquants, numeroDe($('telCmd'), itiCmd));
     } catch (e) {
       montrerErreur('erreurCmd', e.message);
     } finally {
@@ -849,11 +865,16 @@
     }
   }
 
-  function confirmerCmd(r, manquants) {
+  /* Le code et le numero sont retenus a cote de l'identifiant et du jeton : ils
+     ne servent pas a payer, mais l'ecran d'attente ne connait la vente que par
+     ce que cet ecran lui remet, et les portes de contact et de remise ne
+     prennent que ce couple. */
+  function confirmerCmd(r, manquants, tel) {
     $('vueCmd').style.display = 'none';
     $('confCmd').classList.add('visible');
     $('codeCmd').textContent = (r && r.code) || '——————';
-    commandeOuverte = (r && r.id && r.jeton) ? { id: r.id, jeton: r.jeton } : null;
+    commandeOuverte = (r && r.id && r.jeton)
+      ? { id: r.id, jeton: r.jeton, code: r.code || null, tel: tel || null } : null;
     $('btnPayerCmd').classList.toggle('cache',
       !commandeOuverte || !Roots.db.reglagePaiement().pose);
     if (manquants && manquants.length) {
@@ -881,6 +902,7 @@
       var v = t()[el.getAttribute('data-al')];
       if (typeof v === 'string') el.setAttribute('aria-label', v);
     });
+    if (blocFacturation) blocFacturation.dessiner();
     $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     $('radioQuoi').textContent = t().radio;
     if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);

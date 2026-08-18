@@ -97,6 +97,20 @@
     return iti;
   }
 
+  /* La liste des pays s'ouvre PAR-DESSUS ce qui l'a appelee et HORS de son
+     conteneur : elle est rattachee au corps du document. Elle doit donc se
+     fermer avant la couche qui la porte — sinon celle-ci se referme et laisse
+     la liste seule a l'ecran, posee sur ce qui apparait derriere.
+     L'etat et la fermeture passent par la surface publique du composant :
+     l'ouverture est portee par `aria-expanded`, et un second appui sur le meme
+     bouton referme. Rend true si une liste etait ouverte. */
+  function fermerListePays() {
+    var b = document.querySelector('.iti__selected-country[aria-expanded="true"]');
+    if (!b) return false;
+    b.click();
+    return true;
+  }
+
   /* Navigation partagée. opts :
        getLangue   : () => 'fr' | 'en'
        getSections : (langue) => [ {ico,t,s,href}, ... ]
@@ -320,6 +334,222 @@
     });
   }
 
+
+  /* ------------------------------------------------------------------
+     LE DEPLIANT DE FACTURATION — « facturer a une entreprise ».
+
+     CE QU'IL FAIT. Il recueille le nom, l'identifiant fiscal et l'adresse a qui
+     la facture doit etre adressee, quand ce n'est pas le payeur. Sans lui, la
+     piece porte le nom et l'adresse que le prestataire d'encaissement rend.
+
+     LE MOMENT EST CONTRAINT. La porte refuse des qu'une piece de vente existe,
+     et le scellement suit le paiement d'une seconde. Il n'existe donc qu'une
+     fenetre : apres l'ouverture de la vente, AVANT le guichet du prestataire.
+     Ce bloc se pose sur un ecran de confirmation, jamais sur un ecran de remise.
+
+     CE QU'IL REFUSE AVANT D'APPELER. La porte refuse deja ces quatre cas, mais
+     un refus de base remonte au visiteur en langue de machine : nom vide,
+     identifiant hors bornes ou non numerique, adresse portant un signe de
+     masquage, adresse de forme invalide.
+
+     CE QU'IL NE VERIFIE PAS, ET QU'IL DIT. La validite d'un identifiant fiscal
+     ne se verifie pas ici — aucun registre n'est consultable depuis un
+     navigateur. La plateforme fiscale, elle, refuse une piece dont
+     l'identifiant lui est inconnu, et plus rien n'est modifiable ensuite.
+
+     REPLIE PAR DEFAUT, et le bouton porte `aria-expanded`. La forme suit le
+     pattern « disclosure » : un bouton, un etat, un contenu ; Entree et Espace
+     basculent parce que c'est un bouton et rien d'autre.
+     ------------------------------------------------------------------ */
+  var MOTS_FACTURATION = {
+    fr: {
+      ouvrir: 'Facturer à une entreprise',
+      dit: 'Par défaut, la facture est établie au nom et à l’adresse enregistrés lors du paiement. Pour un achat professionnel, indiquez ci-dessous à qui elle doit être adressée.',
+      nom: 'Nom ou raison sociale',
+      ifu: 'Identifiant fiscal (IFU) — facultatif',
+      aideIfu: 'Treize chiffres. L’administration fiscale refuse une facture dont l’identifiant lui est inconnu, et il ne peut plus être corrigé après le paiement.',
+      courriel: 'Adresse de facturation — facultative',
+      pied: 'Ces informations figurent sur la facture. Après le paiement, elles ne peuvent plus être modifiées.',
+      manqueNom: 'Indiquez le nom ou la raison sociale.',
+      ifuFaux: 'L’identifiant fiscal ne contient que des chiffres, entre 8 et 20.',
+      ifuTaille: 'Un identifiant béninois porte treize chiffres. Vérifiez ce numéro avant de payer.',
+      adresseFausse: 'Vérifiez cette adresse électronique.'
+    },
+    en: {
+      ouvrir: 'Bill this to a company',
+      dit: 'By default, your invoice is made out to the name and address recorded at payment. For a business purchase, enter below who it should be billed to.',
+      nom: 'Name or company name',
+      ifu: 'Tax ID (IFU) — optional',
+      aideIfu: 'Thirteen digits. The tax authority rejects an invoice carrying an ID it does not know, and it cannot be corrected after payment.',
+      courriel: 'Billing address — optional',
+      pied: 'These details appear on your invoice. They cannot be changed after payment.',
+      manqueNom: 'Enter the name or company name.',
+      ifuFaux: 'A tax ID is 8 to 20 digits, and digits only.',
+      ifuTaille: 'A Beninese tax ID has thirteen digits. Check this number before you pay.',
+      adresseFausse: 'Check this email address.'
+    }
+  };
+
+  /* Meme grammaire d'adresse que la base, et memes signes de masquage : un
+     ecran qui accepterait ce que la porte refuse promettrait pour rien. */
+  var ADRESSE_LISIBLE = /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i;
+  var MASQUE_FACTURATION = /[•·…*]/;
+  var IFU_ATTENDU = 13;
+
+  function blocFacturation(opts) {
+    var hote = opts.hote;
+    if (!hote) return null;
+    var langue = function () { return (opts.getLangue && opts.getLangue()) || 'fr'; };
+    var mots = function () { return MOTS_FACTURATION[langue()] || MOTS_FACTURATION.fr; };
+    var suffixe = opts.suffixe || '';
+    var ouvert = false;
+
+    function el(balise, classe, texte) {
+      var e = document.createElement(balise);
+      if (classe) e.className = classe;
+      if (texte) e.textContent = texte;
+      return e;
+    }
+
+    function champ(id, avecAide) {
+      var enveloppe = el('div', 'champ');
+      var etiquette = document.createElement('label');
+      etiquette.setAttribute('for', id);
+      enveloppe.appendChild(etiquette);
+      var saisie = document.createElement('input');
+      saisie.id = id;
+      enveloppe.appendChild(saisie);
+      var aide = null;
+      if (avecAide) {
+        aide = el('span', 'aide-champ');
+        aide.id = id + '-aide';
+        saisie.setAttribute('aria-describedby', aide.id);
+        enveloppe.appendChild(aide);
+      }
+      return { enveloppe: enveloppe, etiquette: etiquette, saisie: saisie, aide: aide };
+    }
+
+    var bouton = document.createElement('button');
+    bouton.type = 'button';
+    bouton.className = 'depliant-bouton';
+    bouton.id = 'depliantFacturation' + suffixe;
+    bouton.setAttribute('aria-expanded', 'false');
+
+    var corps = el('div', 'depliant-corps');
+    corps.id = 'corpsFacturation' + suffixe;
+    corps.hidden = true;
+    bouton.setAttribute('aria-controls', corps.id);
+
+    var dit = el('p', 'depliant-dit');
+    var cNom = champ('factNom' + suffixe, false);
+    var cIfu = champ('factIfu' + suffixe, true);
+    var cCourriel = champ('factCourriel' + suffixe, false);
+
+    /* Le jeton d'autocompletion nomme la nature du champ pour l'assistance et
+       pour le navigateur. `organization` et `email` existent ; l'identifiant
+       fiscal n'a aucun jeton, et l'inventer serait pire que l'omettre. */
+    cNom.saisie.setAttribute('autocomplete', 'organization');
+    cIfu.saisie.setAttribute('inputmode', 'numeric');
+    cIfu.saisie.setAttribute('autocomplete', 'off');
+    cCourriel.saisie.setAttribute('type', 'email');
+    cCourriel.saisie.setAttribute('autocomplete', 'email');
+
+    var pied = el('p', 'depliant-pied');
+    var erreur = el('p', 'erreur');
+    erreur.id = 'erreurFacturation' + suffixe;
+    erreur.setAttribute('role', 'alert');
+    erreur.setAttribute('aria-live', 'polite');
+    erreur.classList.add('cache');
+
+    corps.appendChild(dit);
+    corps.appendChild(cNom.enveloppe);
+    corps.appendChild(cIfu.enveloppe);
+    corps.appendChild(cCourriel.enveloppe);
+    corps.appendChild(pied);
+    corps.appendChild(erreur);
+
+    var enveloppe = el('div', 'depliant');
+    enveloppe.appendChild(bouton);
+    enveloppe.appendChild(corps);
+    hote.appendChild(enveloppe);
+
+    function dessiner() {
+      var m = mots();
+      bouton.textContent = m.ouvrir;
+      dit.textContent = m.dit;
+      cNom.etiquette.textContent = m.nom;
+      cIfu.etiquette.textContent = m.ifu;
+      cIfu.aide.textContent = m.aideIfu;
+      cCourriel.etiquette.textContent = m.courriel;
+      pied.textContent = m.pied;
+    }
+
+    /* LE FOCUS NE BOUGE PAS A L'OUVERTURE. Le contenu paraît juste sous le
+       bouton et devient le point de tabulation suivant ; le deplacer ferait
+       perdre le bouton a qui vient de l'actionner, et la barre d'espace — qui
+       doit basculer — irait alors dans un champ de saisie. */
+    function basculer() {
+      ouvert = !ouvert;
+      bouton.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+      corps.hidden = !ouvert;
+    }
+    bouton.addEventListener('click', basculer);
+
+    function montrerErreur(texte, ou) {
+      erreur.textContent = texte;
+      erreur.classList.remove('cache');
+      if (ou) ou.focus();
+    }
+
+    /* Rend `null` quand il n'y a rien a poser — depliant ferme, ou trois champs
+       vides —, une erreur quand la saisie est refusee, et l'objet a transmettre
+       sinon. Un depliant ouvert mais vide n'est pas une saisie. */
+    function lire() {
+      erreur.classList.add('cache');
+      var m = mots();
+      var nom = cNom.saisie.value.trim();
+      var ifu = cIfu.saisie.value.trim();
+      var courriel = cCourriel.saisie.value.trim();
+      if (!nom && !ifu && !courriel) return { vide: true };
+      if (!nom) { montrerErreur(m.manqueNom, cNom.saisie); return { refus: true }; }
+      if (ifu) {
+        if (!/^[0-9]{8,20}$/.test(ifu)) { montrerErreur(m.ifuFaux, cIfu.saisie); return { refus: true }; }
+        /* Un ecart de longueur ne bloque pas : la base accepte de 8 a 20, et un
+           ecran plus strict que la porte refuserait ce qu'elle accepte. Il se
+           dit, une fois, et la saisie repasse. */
+        if (ifu.length !== IFU_ATTENDU && !erreur.dataset.taillePassee) {
+          erreur.dataset.taillePassee = '1';
+          montrerErreur(m.ifuTaille, cIfu.saisie);
+          return { refus: true };
+        }
+      }
+      if (courriel) {
+        if (MASQUE_FACTURATION.test(courriel) || !ADRESSE_LISIBLE.test(courriel)) {
+          montrerErreur(m.adresseFausse, cCourriel.saisie); return { refus: true };
+        }
+      }
+      return { nom: nom, ifu: ifu || null, courriel: courriel || null };
+    }
+
+    /* Pose l'identite sur la vente, ou ne fait rien. Rend une promesse qui vaut
+       true quand l'ecran peut continuer vers le paiement. */
+    function poser(vente) {
+      var v = lire();
+      if (v.refus) return Promise.resolve(false);
+      if (v.vide || !vente || !vente.type || !vente.id) return Promise.resolve(true);
+      return Roots.db.poserFacturationVente({
+        type: vente.type, id: vente.id, nom: v.nom, ifu: v.ifu, courriel: v.courriel
+      }).then(function () { return true; }, function (e) {
+        montrerErreur(Roots.db.traduire(e && e.brut ? e.brut : (e && e.message), langue()), cNom.saisie);
+        return false;
+      });
+    }
+
+    dessiner();
+    return { dessiner: dessiner, poser: poser, element: enveloppe,
+             estOuvert: function () { return ouvert; } };
+  }
+
   function modale(hote, opts) {
     opts = opts || {};
     var cle = opts.cle || (hote.id || 'modale');
@@ -352,9 +582,27 @@
       if (precedent && precedent.focus) { try { precedent.focus(); } catch (e) {} }
     }
 
+    /* UNE COUCHE OUVERTE PAR-DESSUS SE FERME AVANT LA MODALE. Le geste
+       « retour » et la touche d'echappement s'adressent a ce qui est au-dessus,
+       et une seule chose est au-dessus a la fois. Sans cette regle, ils
+       ferment la modale et laissent la couche seule a l'ecran, puis le geste
+       suivant quitte la page.
+       La liste des pays est traitee ICI, une fois, plutot que dans chaque
+       ecran qui porte un champ telephone : un ecran peut oublier, cette
+       fonction non. `opts.sousCouche` ajoute les couches propres a un ecran et
+       suit le meme contrat — fermer, et rendre true si elle a ferme.
+       La lecture se fait en phase de CAPTURE pour que la decision soit prise
+       avant que la couche ne se ferme d'elle-meme : lue apres, elle ne serait
+       plus ouverte, et la modale se fermerait a tort. */
+    function couchesFermees() {
+      var ferme = fermerListePays();
+      if (typeof opts.sousCouche === 'function' && opts.sousCouche() === true) ferme = true;
+      return ferme;
+    }
+
     document.addEventListener('keydown', function (e) {
       if (!ouverte) return;
-      if (e.key === 'Escape') { e.preventDefault(); fermer(); return; }
+      if (e.key === 'Escape') { e.preventDefault(); if (!couchesFermees()) fermer(); return; }
       if (e.key !== 'Tab') return;
       var l = visibles(hote);
       if (!l.length) return;
@@ -362,9 +610,19 @@
       if (!hote.contains(document.activeElement)) { e.preventDefault(); premierEl.focus(); return; }
       if (e.shiftKey && document.activeElement === premierEl) { e.preventDefault(); dernier.focus(); }
       else if (!e.shiftKey && document.activeElement === dernier) { e.preventDefault(); premierEl.focus(); }
-    });
+    }, true);
 
-    window.addEventListener('popstate', function () { if (ouverte) fermer(true); });
+    window.addEventListener('popstate', function () {
+      if (!ouverte) return;
+      /* Le navigateur a deja consomme l'entree. Si le geste s'adressait a une
+         couche au-dessus, l'entree se repose : la modale garde son propre pas
+         d'historique, et le geste suivant la ferme, elle. */
+      if (couchesFermees()) {
+        if (pousse) { try { history.pushState({ rootsModale: cle }, ''); } catch (e) {} }
+        return;
+      }
+      fermer(true);
+    });
 
     return { ouvrir: ouvrir, fermer: fermer, estOuverte: function () { return ouverte; } };
   }
@@ -639,12 +897,14 @@
 
   global.Roots.garde = garde;
   global.Roots.initTelRoots = initTelRoots;
+  global.Roots.fermerListePays = fermerListePays;
   global.Roots.initChrome = initChrome;
   global.Roots.nav = nav;
   global.Roots.poserLibelles = poserLibelles;
   global.Roots.copier = copier;
   global.Roots.cartel = cartel;
   global.Roots.modale = modale;
+  global.Roots.blocFacturation = blocFacturation;
   global.Roots.langueRetenue = langueRetenue;
   global.Roots.retenirLangue = retenirLangue;
   global.Roots.langueParDefaut = langueParDefaut;
