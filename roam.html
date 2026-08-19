@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-/DPqI/RGBZjMWY9hhqQoz8FjpzoRx01/IeOzeCUIqvk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-l83xWFu22Ni8Vt8t8A+tZfOxFTASuzz0TWRo6oKzwts='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -155,6 +155,10 @@
     <p class="quoi-conf" id="quoiSejour"></p>
     <p class="instructions" data-t="instr">Garde ce code : il retrouve ta réservation à tout moment, même sans compte.</p>
     <p class="montant-conf" id="soldeConf"></p>
+    <!-- L'identite a qui la facture est adressee. La porte prend le couple
+         code + numero, que cette confirmation detient ; elle refuse des qu'une
+         piece existe, donc le geste se pose avant le guichet. -->
+    <div id="hoteFacturationSejour"></div>
     <div class="apres"><button class="bouton-confirmer cache" id="btnPayerSejour" data-t="payer">Payer l'acompte</button></div>
     <p class="erreur" id="erreurPayerSejour" role="alert" aria-live="polite"></p>
     <div class="retenue" id="blocRetenue"><span data-t="cRetenue">Ta place est gardée encore</span> <span class="reste" id="resteSejour">--:--</span></div>
@@ -452,7 +456,9 @@
     dessinerConfirmation();
     /* Le bouton reste absent quand le reglage du prestataire n'est pas pose :
        un bouton qui mene a un mur n'est pas une offre. */
-    $('btnPayerSejour').classList.toggle('cache', !Roots.db.reglagePaiement().pose || !(r.acompte > 0));
+    var payable = Roots.db.reglagePaiement().pose && r.acompte > 0;
+    $('btnPayerSejour').classList.toggle('cache', !payable);
+    blocFacturationSejour.montrer(payable);
     if (r.expire_le) {
       var fin = new Date(r.expire_le).getTime();
       if (compteARebours) clearInterval(compteARebours);
@@ -497,6 +503,12 @@
   }
 
   var paiementEnCours = false;
+  var blocFacturationSejour = Roots.blocFacturation({
+    hote: document.getElementById('hoteFacturationSejour'),
+    getLangue: function () { return langue; },
+    suffixe: 'Sejour'
+  });
+
   async function payerSejour() {
     if (paiementEnCours || !reservation) return;
     cacherErreur('erreurPayerSejour');
@@ -506,6 +518,12 @@
     var libelle = b.textContent;
     b.textContent = t().onOuvre;
     try {
+      /* L'identite de facturation se pose AVANT le guichet : la piece nait au
+         constat du paiement, et une identite posee apres ne l'atteint plus. */
+      var pretS = await blocFacturationSejour.poser({
+        par: 'reservation', type: 'logement',
+        code: reservation.code, tel: reservation.tel });
+      if (!pretS) return;
       var r = await Roots.db.initierPaiementReservation('logement', reservation.code, reservation.tel);
       var pose = Roots.db.remisePaiement({
         paiement: r.paiement, montant: r.montant,

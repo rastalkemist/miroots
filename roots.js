@@ -541,14 +541,32 @@
     }
 
     /* Pose l'identite sur la vente, ou ne fait rien. Rend une promesse qui vaut
-       true quand l'ecran peut continuer vers le paiement. */
-    function poser(vente) {
+       true quand l'ecran peut continuer vers le paiement.
+       La cible porte sa PREUVE, et la porte se choisit par elle : le jeton de
+       session pour la commande qui vient d'etre passee — { par:'jeton', id,
+       jeton } — ou le couple code + numero — { par:'code', code, tel } pour une
+       commande, { par:'reservation', type:'espace'|'logement', code, tel } pour
+       une reservation. Chaque porte demande la meme preuve que le bouton
+       « Payer » pose a cote d'elle, et rien de plus. */
+    function poser(cible) {
       var v = lire();
       if (v.refus) return Promise.resolve(false);
-      if (v.vide || !vente || !vente.type || !vente.id) return Promise.resolve(true);
-      return Roots.db.poserFacturationVente({
-        type: vente.type, id: vente.id, nom: v.nom, ifu: v.ifu, courriel: v.courriel
-      }).then(function () { return true; }, function (e) {
+      if (v.vide || !cible) return Promise.resolve(true);
+      var champs = { nom: v.nom, ifu: v.ifu, courriel: v.courriel };
+      var appel;
+      if (cible.par === 'jeton') {
+        appel = Roots.db.poserFacturationCommande(
+          Object.assign({ id: cible.id, jeton: cible.jeton }, champs));
+      } else if (cible.par === 'reservation') {
+        appel = Roots.db.poserFacturationReservation(
+          Object.assign({ type: cible.type, code: cible.code, tel: cible.tel }, champs));
+      } else if (cible.par === 'code') {
+        appel = Roots.db.poserFacturationCommandeParCode(
+          Object.assign({ code: cible.code, tel: cible.tel }, champs));
+      } else {
+        return Promise.resolve(true);
+      }
+      return Promise.resolve(appel).then(function () { return true; }, function (e) {
         montrerErreur(Roots.db.traduire(e && e.brut ? e.brut : (e && e.message), langue()), cNom.saisie);
         return false;
       });

@@ -669,15 +669,30 @@ window.Roots = window.Roots || {};
     },
 
     /* L'identite a qui la facture est adressee, quand ce n'est pas le payeur.
-       La porte REFUSE des qu'une piece existe pour cette vente : le destinataire
-       d'une facture scellee est fige, et l'identifiant de l'acheteur fait partie
-       de ce qui est declare a la plateforme fiscale. Elle ne s'appelle donc
-       qu'entre l'ouverture de la vente et l'ouverture du guichet de paiement.
-       L'adresse passe par la meme barriere que partout ailleurs : un masque
-       affiche sur le meme ecran ne doit pas pouvoir y etre recopie. */
-    poserFacturationVente: function (o) {
-      return appeler('poser_facturation_vente', {
-        p_vente_type: o.type, p_vente_id: o.id, p_nom: o.nom,
+       Trois portes, une par preuve — le jeton de session pour la commande qui
+       vient d'etre passee, le couple code + numero pour la commande retrouvee
+       et pour la reservation : chacune demande exactement ce que demande le
+       bouton « Payer » pose a cote d'elle. Toutes REFUSENT des qu'une piece
+       existe : le destinataire d'une facture scellee est fige, et ce refus est
+       un etat final, pas une erreur a reessayer. L'adresse passe par la meme
+       barriere que partout : un masque affiche ne doit pas pouvoir y entrer. */
+    poserFacturationCommande: function (o) {
+      return appeler('poser_facturation_commande', {
+        p_commande: o.id, p_jeton: o.jeton, p_nom: o.nom,
+        p_ifu: o.ifu || null, p_courriel: adresseTransmissible(o.courriel)
+      });
+    },
+
+    poserFacturationCommandeParCode: function (o) {
+      return appeler('poser_facturation_commande_par_code', {
+        p_code: o.code, p_tel: telephone(o.tel), p_nom: o.nom,
+        p_ifu: o.ifu || null, p_courriel: adresseTransmissible(o.courriel)
+      });
+    },
+
+    poserFacturationReservation: function (o) {
+      return appeler('poser_facturation_reservation', {
+        p_type: o.type, p_code: o.code, p_tel: telephone(o.tel), p_nom: o.nom,
         p_ifu: o.ifu || null, p_courriel: adresseTransmissible(o.courriel)
       });
     },

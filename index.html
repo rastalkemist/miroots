@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9+wk0wtHtXf/EFMRP0tMPfGeksaLn9mXMJ6Ify5uq7M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-echi+nNYt7YwT+nixSeO7tl7ItQTcNGrq4yTibEOJGo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -136,6 +136,10 @@
       <p class="quoi-conf" id="quoiResa"></p>
       <p class="instructions" data-t="instrResa">Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.</p>
       <p class="montant-conf" id="montantResa"></p>
+      <!-- L'identite a qui la facture est adressee. La porte prend le couple
+           code + numero, que cette confirmation detient ; elle refuse des
+           qu'une piece existe, donc le geste se pose avant le guichet. -->
+      <div id="hoteFacturationResa"></div>
       <div class="apres"><button class="bouton-confirmer cache" id="btnPayerResa" data-t="payer">Payer maintenant</button></div>
       <p class="erreur" id="erreurPayer" role="alert" aria-live="polite"></p>
       <div class="retenue" id="blocRetenue"><span data-t="cRetenue">Ta place est gardée encore</span> <span class="reste" id="resteResa">--:--</span></div>
@@ -613,6 +617,10 @@
     try {
       var code = $('codeResa').textContent.trim();
       var tel = numeroDe($('telResa'), itiResa);
+      /* L'identite de facturation se pose AVANT le guichet : la piece nait au
+         constat du paiement, et une identite posee apres ne l'atteint plus. */
+      var pretR = await blocFacturationResa.poser({ par: 'reservation', type: 'espace', code: code, tel: tel });
+      if (!pretR) return;
       var r = await Roots.db.initierPaiementReservation('espace', code, tel);
       var pose = Roots.db.remisePaiement({
         paiement: r.paiement, montant: r.montant,
@@ -641,6 +649,12 @@
     getLangue: function () { return langue; }
   });
 
+  var blocFacturationResa = Roots.blocFacturation({
+    hote: document.getElementById('hoteFacturationResa'),
+    getLangue: function () { return langue; },
+    suffixe: 'Resa'
+  });
+
   async function payerCmd() {
     if (paiementEnCours || !commandeOuverte) return;
     cacherErreur('erreurPayerCmd');
@@ -652,7 +666,7 @@
     try {
       /* L'identite de facturation se pose AVANT le guichet : la porte refuse
          des qu'une piece existe. */
-      var pretA = await blocFacturation.poser({ type: 'commande', id: commandeOuverte.id });
+      var pretA = await blocFacturation.poser({ par: 'jeton', id: commandeOuverte.id, jeton: commandeOuverte.jeton });
       if (!pretA) return;
       var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
       /* Le code et le numero suivent la remise : l'ecran d'attente ne connait la
@@ -685,6 +699,7 @@
     var du = (typeof montantDu === 'number') && montantDu > 0;
     var offert = du && Roots.db.reglagePaiement().pose;
     $('btnPayerResa').classList.toggle('cache', !offert);
+    blocFacturationResa.montrer(offert);
     if (offert) $('btnPayerResa').textContent = t().payer + ' · ' + prix(montantDu);
     $('montantResa').classList.toggle('cache', !(du && !offert));
     $('montantResa').textContent = (du && !offert) ? prix(montantDu) : '';
@@ -905,6 +920,7 @@
       if (typeof v === 'string') el.setAttribute('aria-label', v);
     });
     if (blocFacturation) blocFacturation.dessiner();
+    if (blocFacturationResa) blocFacturationResa.dessiner();
     $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     $('radioQuoi').textContent = t().radio;
     if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);

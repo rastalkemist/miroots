@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-t9zdWOBlA2GiNG72+vBcA2Q2EkYST0+hmTAcjskD6UA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-vV1wiGkkQvaxf6TPqS0lJ+Ox8c7qZQcGUPbDhhgeIKc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -641,7 +641,7 @@
     try {
       /* L'identite de facturation se pose AVANT le guichet : une fois la piece
          creee, la porte refuse et la saisie serait perdue sans le dire. */
-      var pretA = await blocFacturation.poser({ type: 'commande', id: commandeOuverte.id });
+      var pretA = await blocFacturation.poser({ par: 'jeton', id: commandeOuverte.id, jeton: commandeOuverte.jeton });
       if (!pretA) return;
       var r = await Roots.db.initierPaiementCommande(commandeOuverte.id, commandeOuverte.jeton);
       var pose = Roots.db.remisePaiement({
