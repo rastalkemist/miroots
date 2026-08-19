@@ -295,16 +295,35 @@
     }
 
     /* Pastille Mi/NU : elle s'étire à l'ouverture et la barre passe en
-       « deploie », ce qui efface le reste du chrome le temps du choix. */
+       « deploie », ce qui efface le reste du chrome le temps du choix.
+       À la fermeture, le reste du chrome ne revient qu'une fois la pastille
+       repliée — rendu ensemble, les deux se chevauchent le temps de la
+       transition. */
     var marque = document.getElementById('marque');
     if (marque) {
       var inner = marque.closest('.chrome-inner');
       var sw = document.getElementById('switchMode');
       var nu = marque.querySelector('.nu');
+      var repli = null;
+      var calme = window.matchMedia
+        && matchMedia('(prefers-reduced-motion: reduce)').matches;
       var ouvrir = function (v) {
         marque.classList.toggle('ouvert', v);
-        if (inner) inner.classList.toggle('deploie', marque.classList.contains('ouvert'));
+        if (!inner) return;
+        clearTimeout(repli);
+        if (v || calme) {
+          inner.classList.toggle('deploie', v);
+          return;
+        }
+        repli = setTimeout(function () {
+          if (!marque.classList.contains('ouvert')) inner.classList.remove('deploie');
+        }, 380);
       };
+      marque.addEventListener('transitionend', function (e) {
+        if (e.propertyName !== 'max-width') return;
+        clearTimeout(repli);
+        if (inner && !marque.classList.contains('ouvert')) inner.classList.remove('deploie');
+      });
       marque.addEventListener('click', function (e) {
         e.stopPropagation();
         var surSwitch = sw && sw.contains(e.target);
@@ -803,19 +822,39 @@
     if (!f) return;
     var fermer = f.querySelector('.fermer');
     if (!fermer) return;
-    var y0 = null, dy = 0, transition = f.style.transition;
+    var y0 = null, dy = 0, cible = null, transition = f.style.transition;
     var doux = !window.matchMedia || !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    /* La feuille porte des zones qui defilent pour leur propre compte (la
+       liste du menu, la feuille elle-meme). Tant que l'une d'elles, sur le
+       chemin du doigt, n'est pas a son bord haut, le geste lui appartient :
+       tirer vers le bas doit la faire remonter, jamais fermer la feuille. */
+    function defileEncore(depart) {
+      for (var n = depart; n; n = n.parentElement) {
+        if (n.scrollTop > 0) return true;
+        if (n === f) break;
+      }
+      return false;
+    }
+
     function debut(e) {
-      if (f.scrollTop > 0) return;
       var c = e.target;
       if (c && c.closest && c.closest('input, textarea, select, button, a')) return;
+      if (c && defileEncore(c)) return;
+      if (f.scrollTop > 0) return;
+      cible = c;
       y0 = e.touches ? e.touches[0].clientY : e.clientY;
       dy = 0;
       f.style.transition = 'none';
     }
     function bouge(e) {
       if (y0 === null) return;
+      if (cible && defileEncore(cible)) {
+        y0 = null;
+        f.style.transition = doux ? transition : 'none';
+        f.style.transform = '';
+        return;
+      }
       var y = e.touches ? e.touches[0].clientY : e.clientY;
       dy = Math.max(0, y - y0);
       if (dy > 4 && e.cancelable) e.preventDefault();

@@ -135,6 +135,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 
 @media(max-width:639px){.chrome-inner.deploie{grid-template-columns:minmax(58px,1fr) auto minmax(0,1fr)}
 .chrome-inner.deploie .centre{gap:0}
+.chrome-inner .chrome-titre,.chrome-inner .chrome-droite{transition:opacity var(--mvt-apparition) var(--courbe-sortie)}
 .chrome-inner.deploie .chrome-titre{opacity:0;pointer-events:none;transform:translateX(-12px);width:0;min-width:0;margin:0;overflow:hidden}
 .chrome-inner.deploie .chrome-droite{opacity:0;pointer-events:none;transform:translateX(-12px);width:0;min-width:0;margin:0;overflow:hidden}
 
@@ -440,7 +441,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .ligne-code .code{margin:0;line-height:var(--lh-33)}
 .geste-code-ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--cible-min);min-height:var(--cible-min);padding:0;border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-size:var(--t-note);font-weight:var(--w-bold);white-space:nowrap;cursor:pointer}
 .geste-code-ico svg.i{width:calc(var(--t-code) * .715);height:calc(var(--t-code) * .715)}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-28);font-weight:var(--w-medium);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-21);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 @media(min-width:640px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}

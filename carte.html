@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9+iZkp70nciuc5jhwUDHQNQ1qgnJPMWfkYY1IXzAPa8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-K0aYYrJo7h9k0B2vlhV1GsH9liU5N0nGfywq8JGc78c='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -312,12 +312,26 @@
     });
   }
 
+  /* Pendant un defilement commande par un clic, la categorie cliquee reste
+     la categorie active : l'espion, qui lit les positions en vol, designerait
+     la precedente. Il reprend la main a l'arrivee, ou des que la personne
+     defile elle-meme. */
+  var ancreVisee = null, viseeExpire = 0;
+
   function majOngletActif() {
     if (!CATEGORIES.length) return;
     /* Sous la pile collante : ce qui passe au-dessus de cette ligne est
-       cache par l'en-tete et la bande de categories. */
+       cache par l'en-tete et la bande de categories. La tolerance de 4 px
+       absorbe l'arrondi du defilement et les bordures : une section posee
+       par le geste atterrit 2 a 3 px sous la bande, mesure sur rendu. */
     var bande = $('categories');
-    var ligne = bande ? bande.getBoundingClientRect().bottom + 1 : 0;
+    var ligne = bande ? bande.getBoundingClientRect().bottom + 4 : 0;
+    if (ancreVisee) {
+      var vise = $('sec-' + ancreVisee);
+      var arrive = vise && Math.abs(vise.getBoundingClientRect().top - ligne) <= 6;
+      if (!arrive && Date.now() < viseeExpire) { activerOnglet(ancreVisee); return; }
+      ancreVisee = null;
+    }
     var courant = CATEGORIES[0].ancre;
     var sections = document.querySelectorAll('.section-menu');
     Array.prototype.forEach.call(sections, function (s) {
@@ -332,6 +346,9 @@
     defilementPrevu = true;
     requestAnimationFrame(function () { majOngletActif(); defilementPrevu = false; });
   }, { passive: true });
+  ['touchstart', 'wheel'].forEach(function (ev) {
+    window.addEventListener(ev, function () { ancreVisee = null; }, { passive: true });
+  });
 
   /* ---------- Liste du menu ---------- */
 
@@ -357,6 +374,8 @@
   function allerALaSection(ancre) {
     var s = $('sec-' + ancre);
     if (!s) return;
+    ancreVisee = ancre;
+    viseeExpire = Date.now() + 1500;
     var calme = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var haut = s.getBoundingClientRect().top + window.pageYOffset - hauteurCollante();
     window.scrollTo({ top: Math.max(0, Math.round(haut)),
