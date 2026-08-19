@@ -293,6 +293,13 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .champ label{margin-bottom:5px;display:block;font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
 .champ input{padding:12px 13px;border:1.5px solid transparent;font-size:var(--t-16);border-radius:var(--rayon-champ);color:var(--encre);font-family:var(--font-corps);width:100%;background:var(--gris-ilot);min-height:44px}
 .champ input:focus{border-color:var(--roots-vert);outline:none;background:var(--blanc)}
+/* La zone de texte suit la grammaire du champ : meme ilot, meme focus. Sa
+   hauteur se tire a la main, jamais en largeur — la colonne est la colonne. */
+.champ textarea{padding:12px 13px;border:1.5px solid transparent;font-size:var(--t-16);border-radius:var(--rayon-champ);color:var(--encre);font-family:var(--font-corps);width:100%;background:var(--gris-ilot);min-height:76px;resize:vertical}
+.champ textarea:focus{border-color:var(--roots-vert);outline:none;background:var(--blanc)}
+/* Un lien habille en bouton plein reste un lien : le style est celui du
+   bouton, la semantique celle de la navigation — il mene ailleurs. */
+a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
 .champ input:focus-visible{outline:var(--focus-ep) solid var(--focus-trait);outline-offset:var(--focus-retrait)}
 .iti--fullscreen-popup{z-index:10000}
 /* Le bloc de confidentialite ferme le panneau, sous l'action : la notice puis

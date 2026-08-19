@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-echi+nNYt7YwT+nixSeO7tl7ItQTcNGrq4yTibEOJGo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ym4QTryk1gVE1BqXigCimQbM+bctGM67Uvmm3si8DB8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -88,6 +88,7 @@
   <div class="onglets" id="onglets">
     <button class="actif" data-ong="reserver" data-t="ongReserver">Réserver un espace</button>
     <button data-ong="commander" data-t="ongCommander">Commander</button>
+    <button data-ong="evenement" data-t="ongEvenement">Événement</button>
   </div>
 
   <!-- Onglet Réserver -->
@@ -147,6 +148,45 @@
   </div>
 
   <!-- Onglet Commander -->
+  <!-- Onglet Evenement. Une DEMANDE, pas une reservation : l'usage exclusif se
+       pose sur devis, par l'echange. Deux champs obligatoires — nom, numero —
+       le reste est facultatif ; la porte refuse sans consentement, et la
+       notice annonce la poursuite de l'echange sur WhatsApp. -->
+  <div class="contenu" id="ct-evenement">
+    <div id="vueEvt">
+      <div class="groupe"><span class="etiquette" id="etNature" data-t="etNature">Quelle occasion ?</span>
+        <div class="rangee-chips" role="group" aria-labelledby="etNature">
+          <button type="button" class="chip actif" data-nature="evenement" data-t="natEvenement">Événement au jardin</button>
+          <button type="button" class="chip" data-nature="soiree" data-t="natSoiree">Soirée à la maison</button>
+          <button type="button" class="chip" data-nature="autre" data-t="natAutre">Autre</button>
+        </div></div>
+      <div class="rangee-choix">
+        <div class="groupe"><label class="etiquette" for="dateEvt" data-t="etDateEvt">Date souhaitée — facultative</label>
+          <div class="champ" style="margin-bottom:0"><input type="date" id="dateEvt"></div></div>
+        <div class="groupe"><label class="etiquette" for="nbEvt" data-t="etNbEvt">Combien environ ? — facultatif</label>
+          <div class="champ" style="margin-bottom:0"><input id="nbEvt" inputmode="numeric" placeholder="30"></div></div>
+      </div>
+      <div class="champ groupe" style="margin-bottom:13px"><label for="nomEvt" data-t="tonNomEvt">Ton prénom</label>
+        <input id="nomEvt" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
+      <div class="champ groupe" style="margin-bottom:13px"><label for="telEvt" data-t="telEvt">Ton numéro (pour te répondre)</label>
+        <input type="tel" inputmode="tel" id="telEvt" autocomplete="tel"></div>
+      <div class="champ groupe" style="margin-bottom:13px"><label for="emailEvt" data-t="emailEvt">Ton e-mail — facultatif</label>
+        <input type="email" id="emailEvt" autocomplete="email"></div>
+      <div class="champ groupe"><label for="msgEvt" data-t="msgEvt">Dis-nous en plus — facultatif</label>
+        <textarea id="msgEvt" rows="3"></textarea></div>
+      <button class="bouton-confirmer" id="btnEvt" disabled data-t="envoyerDemande">Envoyer la demande</button>
+      <p class="erreur" id="erreurEvt" role="alert" aria-live="polite"></p>
+      <p class="consent" id="consentEvt"></p>
+      <p class="consent-lien"><a href="confidentialite.html" data-t="politique2">Politique de confidentialité</a></p>
+    </div>
+    <div class="confirmation" id="confEvt">
+      <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
+      <p class="conf-titre" id="confEvtTitre"></p>
+      <p class="instructions" id="confEvtDit"></p>
+      <div class="apres"><a class="bouton-confirmer" id="btnWhatsApp" target="_blank" rel="noopener">Poursuivre sur WhatsApp</a></div>
+    </div>
+  </div>
+
   <div class="contenu" id="ct-commander">
     <div id="vueCmd">
       <div id="menuCompact"></div>
@@ -201,6 +241,22 @@
   var T = {
     fr: {
       ongReserver: 'Réserver un espace', ongCommander: 'Commander',
+      ongEvenement: 'Événement',
+      etNature: 'Quelle occasion ?',
+      natEvenement: 'Événement au jardin', natSoiree: 'Soirée à la maison', natAutre: 'Autre',
+      etDateEvt: 'Date souhaitée — facultative', etNbEvt: 'Combien environ ? — facultatif',
+      tonNomEvt: 'Ton prénom', telEvt: 'Ton numéro (pour te répondre)',
+      emailEvt: 'Ton e-mail — facultatif', msgEvt: 'Dis-nous en plus — facultatif',
+      envoyerDemande: 'Envoyer la demande',
+      politique2: 'Politique de confidentialité',
+      evtManque: 'Indique ton prénom et ton numéro.',
+      evtNbFaux: 'Un nombre entre 1 et 500, ou laisse vide.',
+      evtEmailFaux: 'Vérifie cette adresse e-mail, ou laisse le champ vide.',
+      evtDateFausse: 'Choisis une date à venir.',
+      confEvtTitre: 'C’est envoyé. L’équipe te répond vite.',
+      confEvtDit: 'Ta demande est sur le bureau du responsable événementiel. Poursuis sur WhatsApp si tu veux — sinon, on t’appelle.',
+      btnWhatsApp: 'Poursuivre sur WhatsApp',
+      msgWhatsApp: 'Bonjour Roots ! Je viens d’envoyer une demande d’événement au nom de ',
       etEspace: 'Espace', etJour: 'Quel jour ?', etCreneau: 'Créneau',
       etPersonnes: 'Combien serez-vous ?', etService: 'Service',
       tel: 'Ton numéro (pour te confirmer)', tonNomResa: 'Ton prénom', pNom: 'Ton prénom',
@@ -239,6 +295,22 @@
     },
     en: {
       ongReserver: 'Book a space', ongCommander: 'Order',
+      ongEvenement: 'Events',
+      etNature: 'What’s the occasion?',
+      natEvenement: 'Garden event', natSoiree: 'House party', natAutre: 'Something else',
+      etDateEvt: 'Preferred date — optional', etNbEvt: 'Roughly how many? — optional',
+      tonNomEvt: 'Your first name', telEvt: 'Your number (so we can get back to you)',
+      emailEvt: 'Your email — optional', msgEvt: 'Tell us more — optional',
+      envoyerDemande: 'Send my request',
+      politique2: 'Privacy Policy',
+      evtManque: 'Enter your first name and phone number.',
+      evtNbFaux: 'A number from 1 to 500, or leave it empty.',
+      evtEmailFaux: 'Check this email address, or leave the field empty.',
+      evtDateFausse: 'Choose a date in the future.',
+      confEvtTitre: 'Sent. The team will get back to you shortly.',
+      confEvtDit: 'Your request has landed with our events lead. Carry on over WhatsApp if you like — otherwise we’ll call you.',
+      btnWhatsApp: 'Continue on WhatsApp',
+      msgWhatsApp: 'Hello Roots! I just sent an event request under the name ',
       etEspace: 'Space', etJour: 'Which day?', etCreneau: 'Time slot',
       etPersonnes: 'How many people?', etService: 'Service',
       tel: 'Your number', tonNomResa: 'Your first name', pNom: 'Your first name',
@@ -329,7 +401,93 @@
     document.querySelectorAll('#onglets button').forEach(function (x) { x.classList.toggle('actif', x === b); });
     $('ct-reserver').classList.toggle('actif', b.dataset.ong === 'reserver');
     $('ct-commander').classList.toggle('actif', b.dataset.ong === 'commander');
+    $('ct-evenement').classList.toggle('actif', b.dataset.ong === 'evenement');
   });
+
+  /* ---------- Onglet Evenement ----------
+     Une DEMANDE sur devis. Deux obligatoires — nom, numero — le reste
+     facultatif ; la cle d'idempotence est tiree une fois par saisie, pour que
+     le reessai d'un envoi tombe sur la meme demande au lieu d'en creer deux.
+     Le numero du lien WhatsApp est le standard, en chiffres seuls comme
+     l'exige le format wa.me. */
+  var NUMERO_WHATSAPP = '2290146755575';
+  var evt = { nature: 'evenement', notice: null, cle: null, enCours: false };
+  var itiEvt = null;
+
+  document.querySelectorAll('#ct-evenement .chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      document.querySelectorAll('#ct-evenement .chip').forEach(function (x) {
+        x.classList.toggle('actif', x === c);
+      });
+      evt.nature = c.dataset.nature;
+    });
+  });
+
+  function majEvt() {
+    $('btnEvt').disabled = !($('nomEvt').value.trim().length >= 2
+      && numeroValide($('telEvt'), itiEvt) && evt.notice);
+  }
+  ['nomEvt', 'telEvt'].forEach(function (id) {
+    $(id).addEventListener('input', majEvt);
+  });
+
+  /* Ce que la porte refuserait se dit ICI, pres du champ, avant le reseau. */
+  function lireDemandeEvt() {
+    var m = t();
+    var nom = $('nomEvt').value.trim();
+    if (nom.length < 2 || !numeroValide($('telEvt'), itiEvt)) {
+      montrerErreur('erreurEvt', m.evtManque); return null;
+    }
+    var nb = $('nbEvt').value.trim(), n = null;
+    if (nb) {
+      n = parseInt(nb, 10);
+      if (!(n >= 1 && n <= 500)) { montrerErreur('erreurEvt', m.evtNbFaux); $('nbEvt').focus(); return null; }
+    }
+    var email = $('emailEvt').value.trim();
+    if (email && !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email)) {
+      montrerErreur('erreurEvt', m.evtEmailFaux); $('emailEvt').focus(); return null;
+    }
+    var date = $('dateEvt').value || null;
+    if (date && date < new Date().toISOString().slice(0, 10)) {
+      montrerErreur('erreurEvt', m.evtDateFausse); $('dateEvt').focus(); return null;
+    }
+    return { nature: evt.nature, nom: nom, tel: numeroDe($('telEvt'), itiEvt),
+             email: email || null, date: date, personnes: n,
+             message: $('msgEvt').value.trim() || null };
+  }
+
+  async function envoyerEvt() {
+    if (evt.enCours || !evt.notice) return;
+    cacherErreur('erreurEvt');
+    var d = lireDemandeEvt();
+    if (!d) return;
+    evt.enCours = true;
+    var b = $('btnEvt');
+    b.disabled = true;
+    var libelle = b.textContent;
+    b.textContent = t().onEnvoie || '…';
+    if (!evt.cle) evt.cle = Roots.db.cleIdempotence();
+    d.cle = evt.cle;
+    d.consentement = evt.notice.version;
+    try {
+      await Roots.db.demanderEvenement(d);
+      $('vueEvt').style.display = 'none';
+      $('confEvt').classList.add('visible');
+      $('confEvtTitre').textContent = t().confEvtTitre;
+      $('confEvtDit').textContent = t().confEvtDit;
+      $('btnWhatsApp').textContent = t().btnWhatsApp;
+      $('btnWhatsApp').href = 'https://wa.me/' + NUMERO_WHATSAPP
+        + '?text=' + encodeURIComponent(t().msgWhatsApp + d.nom + '.');
+      evt.cle = null;
+    } catch (e) {
+      montrerErreur('erreurEvt', e.message);
+    } finally {
+      evt.enCours = false;
+      b.textContent = libelle;
+      majEvt();
+    }
+  }
+  $('btnEvt').addEventListener('click', envoyerEvt);
 
   /* ---------- Messages inline ---------- */
 
@@ -996,6 +1154,14 @@
     }
 
     try {
+      evt.notice = await Roots.db.notice('evenement');
+      if (evt.notice) $('consentEvt').textContent = texteNotice(evt.notice);
+      majEvt();
+    } catch (e) {
+      montrerErreur('erreurEvt', e.message);
+    }
+
+    try {
       await chargerCarte();
       cmd.notice = await Roots.db.notice('commande');
       if (cmd.notice) $('texteConsentCmd').textContent = texteNotice(cmd.notice);
@@ -1033,6 +1199,7 @@
 
   window.addEventListener('load', function () {
     itiResa = Roots.initTelRoots($('telResa'));
+    itiEvt = Roots.initTelRoots($('telEvt'));
     itiCmd = Roots.initTelRoots($('telCmd'));
   });
 })();
