@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ym4QTryk1gVE1BqXigCimQbM+bctGM67Uvmm3si8DB8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-KWL5Wiwd81gfTcfEjiHhCdyK7dXxNA2ffS5yXTJNMSM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -86,8 +86,8 @@
     <button class="fermer" id="fermerDlg" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button>
   </div>
   <div class="onglets" id="onglets">
-    <button class="actif" data-ong="reserver" data-t="ongReserver">Réserver un espace</button>
-    <button data-ong="commander" data-t="ongCommander">Commander</button>
+    <button class="actif" data-ong="reserver" data-t="ongReserver">Coworking</button>
+    <button data-ong="commander" data-t="ongCommander">Menu</button>
     <button data-ong="evenement" data-t="ongEvenement">Événement</button>
   </div>
 
@@ -129,13 +129,14 @@
     <div class="confirmation" id="confResa">
       <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
       <p class="conf-titre" data-t="cestReserve">C'est réservé. On t'attend.</p>
-      <div class="code" id="codeResa">——————</div>
-      <div class="gestes-code">
-        <button type="button" class="geste-code" data-code-copier data-code-source="codeResa" data-fait="Copié" data-t="copierresa">Copier le code</button>
-        <button type="button" class="geste-code" data-code-cartel data-code-source="codeResa" data-titre="Ma réservation" data-t="garderresa">Garder en image</button>
+      <div class="ligne-code">
+        <div class="code" id="codeResa">——————</div>
+        <button type="button" class="geste-code-ico" data-code-copier data-code-source="codeResa" data-fait="Copié" data-al="alCopier" aria-label="Copier le code"><svg class="i" aria-hidden="true"><use href="#i-copie"/></svg></button>
+        <button type="button" class="geste-code-ico" data-code-cartel data-code-source="codeResa" data-titre="Ma réservation" data-al="alTelecharger" aria-label="Télécharger le code"><svg class="i" aria-hidden="true"><use href="#i-telecharger"/></svg></button>
       </div>
-      <p class="quoi-conf" id="quoiResa"></p>
-      <p class="instructions" data-t="instrResa">Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.</p>
+      <!-- La somme due ne parait ici QUE si le paiement en ligne n'est pas
+           offert : sinon elle vit sur le bouton qui l'engage, et ne se lit
+           pas deux fois. -->
       <p class="montant-conf" id="montantResa"></p>
       <!-- L'identite a qui la facture est adressee. La porte prend le couple
            code + numero, que cette confirmation detient ; elle refuse des
@@ -149,9 +150,10 @@
 
   <!-- Onglet Commander -->
   <!-- Onglet Evenement. Une DEMANDE, pas une reservation : l'usage exclusif se
-       pose sur devis, par l'echange. Deux champs obligatoires — nom, numero —
-       le reste est facultatif ; la porte refuse sans consentement, et la
-       notice annonce la poursuite de l'echange sur WhatsApp. -->
+       pose sur devis, par l'echange. Champs obligatoires — nom, numero, date,
+       nombre — le courriel et le message sont facultatifs ; la porte refuse
+       sans consentement, et la notice annonce la poursuite de l'echange sur
+       WhatsApp. -->
   <div class="contenu" id="ct-evenement">
     <div id="vueEvt">
       <div class="groupe"><span class="etiquette" id="etNature" data-t="etNature">Quelle occasion ?</span>
@@ -161,9 +163,9 @@
           <button type="button" class="chip" data-nature="autre" data-t="natAutre">Autre</button>
         </div></div>
       <div class="rangee-choix">
-        <div class="groupe"><label class="etiquette" for="dateEvt" data-t="etDateEvt">Date souhaitée — facultative</label>
+        <div class="groupe"><label class="etiquette" for="dateEvt" data-t="etDateEvt">Date souhaitée</label>
           <div class="champ" style="margin-bottom:0"><input type="date" id="dateEvt"></div></div>
-        <div class="groupe"><label class="etiquette" for="nbEvt" data-t="etNbEvt">Combien environ ? — facultatif</label>
+        <div class="groupe"><label class="etiquette" for="nbEvt" data-t="etNbEvt">Combien environ ?</label>
           <div class="champ" style="margin-bottom:0"><input id="nbEvt" inputmode="numeric" placeholder="30"></div></div>
       </div>
       <div class="champ groupe" style="margin-bottom:13px"><label for="nomEvt" data-t="tonNomEvt">Ton prénom</label>
@@ -207,10 +209,10 @@
     <div class="confirmation" id="confCmd">
       <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
       <p class="conf-titre" data-t="cestCommande">C'est commandé. La cuisine s'y met.</p>
-      <div class="code" id="codeCmd">——————</div>
-      <div class="gestes-code">
-        <button type="button" class="geste-code" data-code-copier data-code-source="codeCmd" data-fait="Copié" data-t="copiercmd">Copier le code</button>
-        <button type="button" class="geste-code" data-code-cartel data-code-source="codeCmd" data-titre="Ma commande" data-t="gardercmd">Garder en image</button>
+      <div class="ligne-code">
+        <div class="code" id="codeCmd">——————</div>
+        <button type="button" class="geste-code-ico" data-code-copier data-code-source="codeCmd" data-fait="Copié" data-al="alCopier" aria-label="Copier le code"><svg class="i" aria-hidden="true"><use href="#i-copie"/></svg></button>
+        <button type="button" class="geste-code-ico" data-code-cartel data-code-source="codeCmd" data-titre="Ma commande" data-al="alTelecharger" aria-label="Télécharger le code"><svg class="i" aria-hidden="true"><use href="#i-telecharger"/></svg></button>
       </div>
       <p class="instructions" data-t="instrCmd">Donne ce code au comptoir. On t'appelle par ton prénom dès que c'est prêt.</p>
       <p class="note-partielle" id="partielCmd" style="display:none"></p>
@@ -240,17 +242,17 @@
 
   var T = {
     fr: {
-      ongReserver: 'Réserver un espace', ongCommander: 'Commander',
+      ongReserver: 'Coworking', ongCommander: 'Menu',
       ongEvenement: 'Événement',
       etNature: 'Quelle occasion ?',
       natEvenement: 'Événement au jardin', natSoiree: 'Soirée à la maison', natAutre: 'Autre',
-      etDateEvt: 'Date souhaitée — facultative', etNbEvt: 'Combien environ ? — facultatif',
+      etDateEvt: 'Date souhaitée', etNbEvt: 'Combien environ ?',
       tonNomEvt: 'Ton prénom', telEvt: 'Ton numéro (pour te répondre)',
       emailEvt: 'Ton e-mail — facultatif', msgEvt: 'Dis-nous en plus — facultatif',
       envoyerDemande: 'Envoyer la demande',
       politique2: 'Politique de confidentialité',
       evtManque: 'Indique ton prénom et ton numéro.',
-      evtNbFaux: 'Un nombre entre 1 et 500, ou laisse vide.',
+      evtNbFaux: 'Un nombre entre 1 et 500.',
       evtEmailFaux: 'Vérifie cette adresse e-mail, ou laisse le champ vide.',
       evtDateFausse: 'Choisis une date à venir.',
       confEvtTitre: 'C’est envoyé. L’équipe te répond vite.',
@@ -262,7 +264,7 @@
       tel: 'Ton numéro (pour te confirmer)', tonNomResa: 'Ton prénom', pNom: 'Ton prénom',
       reserver: 'Réserver',
       cestReserve: "C'est réservé. On t'attend.",
-      instrResa: "Montre ce code à l'accueil en arrivant. Garde-le : il te permet de retrouver ta réservation, même sans compte.",
+      alCopier: 'Copier le code', alTelecharger: 'Télécharger le code',
       voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
       tonNom: "Ton nom (pour t'appeler)", tonTel: 'Ton numéro',
       commander: 'Commander', cmdMention: 'Sans compte. Tu peux payer en ligne juste après, ou au comptoir.',
@@ -294,17 +296,17 @@
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
     },
     en: {
-      ongReserver: 'Book a space', ongCommander: 'Order',
-      ongEvenement: 'Events',
+      ongReserver: 'Coworking', ongCommander: 'Menu',
+      ongEvenement: 'Event',
       etNature: 'What’s the occasion?',
       natEvenement: 'Garden event', natSoiree: 'House party', natAutre: 'Something else',
-      etDateEvt: 'Preferred date — optional', etNbEvt: 'Roughly how many? — optional',
+      etDateEvt: 'Preferred date', etNbEvt: 'Roughly how many?',
       tonNomEvt: 'Your first name', telEvt: 'Your number (so we can get back to you)',
       emailEvt: 'Your email — optional', msgEvt: 'Tell us more — optional',
       envoyerDemande: 'Send my request',
       politique2: 'Privacy Policy',
       evtManque: 'Enter your first name and phone number.',
-      evtNbFaux: 'A number from 1 to 500, or leave it empty.',
+      evtNbFaux: 'A number from 1 to 500.',
       evtEmailFaux: 'Check this email address, or leave the field empty.',
       evtDateFausse: 'Choose a date in the future.',
       confEvtTitre: 'Sent. The team will get back to you shortly.',
@@ -316,7 +318,7 @@
       tel: 'Your number', tonNomResa: 'Your first name', pNom: 'Your first name',
       reserver: 'Book now',
       cestReserve: 'Booked. See you soon.',
-      instrResa: 'Show this code when you arrive. Keep it — you can use it to find your booking again, without an account.',
+      alCopier: 'Copy the code', alTelecharger: 'Download the code',
       voirDetail: 'See the full menu →', cmdTotal: 'Order total',
       tonNom: 'Your name', tonTel: 'Your number',
       commander: 'Place order', cmdMention: 'No account needed. You can pay online right after, or at the counter.',
@@ -405,11 +407,12 @@
   });
 
   /* ---------- Onglet Evenement ----------
-     Une DEMANDE sur devis. Deux obligatoires — nom, numero — le reste
-     facultatif ; la cle d'idempotence est tiree une fois par saisie, pour que
-     le reessai d'un envoi tombe sur la meme demande au lieu d'en creer deux.
-     Le numero du lien WhatsApp est le standard, en chiffres seuls comme
-     l'exige le format wa.me. */
+     Une DEMANDE sur devis. Obligatoires : nom, numero, date a venir, nombre
+     de personnes ; le courriel et le message sont facultatifs. La cle
+     d'idempotence est tiree une fois par saisie, pour que le reessai d'un
+     envoi tombe sur la meme demande au lieu d'en creer deux. Le numero du
+     lien WhatsApp est le standard, en chiffres seuls comme l'exige le format
+     wa.me. */
   var NUMERO_WHATSAPP = '2290146755575';
   var evt = { nature: 'evenement', notice: null, cle: null, enCours: false };
   var itiEvt = null;
@@ -423,11 +426,24 @@
     });
   });
 
+  function nbEvtValide() {
+    var n = parseInt($('nbEvt').value.trim(), 10);
+    return n >= 1 && n <= 500;
+  }
+  function emailEvtValide() {
+    var v = $('emailEvt').value.trim();
+    return !v || /^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v);
+  }
+  function dateEvtValide() {
+    var d = $('dateEvt').value;
+    return !!d && d >= new Date().toISOString().slice(0, 10);
+  }
   function majEvt() {
     $('btnEvt').disabled = !($('nomEvt').value.trim().length >= 2
-      && numeroValide($('telEvt'), itiEvt) && evt.notice);
+      && numeroValide($('telEvt'), itiEvt) && dateEvtValide()
+      && nbEvtValide() && emailEvtValide() && evt.notice);
   }
-  ['nomEvt', 'telEvt'].forEach(function (id) {
+  ['nomEvt', 'telEvt', 'dateEvt', 'nbEvt', 'emailEvt'].forEach(function (id) {
     $(id).addEventListener('input', majEvt);
   });
 
@@ -438,21 +454,19 @@
     if (nom.length < 2 || !numeroValide($('telEvt'), itiEvt)) {
       montrerErreur('erreurEvt', m.evtManque); return null;
     }
-    var nb = $('nbEvt').value.trim(), n = null;
-    if (nb) {
-      n = parseInt(nb, 10);
-      if (!(n >= 1 && n <= 500)) { montrerErreur('erreurEvt', m.evtNbFaux); $('nbEvt').focus(); return null; }
-    }
-    var email = $('emailEvt').value.trim();
-    if (email && !/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(email)) {
-      montrerErreur('erreurEvt', m.evtEmailFaux); $('emailEvt').focus(); return null;
-    }
-    var date = $('dateEvt').value || null;
-    if (date && date < new Date().toISOString().slice(0, 10)) {
+    if (!dateEvtValide()) {
       montrerErreur('erreurEvt', m.evtDateFausse); $('dateEvt').focus(); return null;
     }
+    if (!nbEvtValide()) {
+      montrerErreur('erreurEvt', m.evtNbFaux); $('nbEvt').focus(); return null;
+    }
+    if (!emailEvtValide()) {
+      montrerErreur('erreurEvt', m.evtEmailFaux); $('emailEvt').focus(); return null;
+    }
     return { nature: evt.nature, nom: nom, tel: numeroDe($('telEvt'), itiEvt),
-             email: email || null, date: date, personnes: n,
+             email: $('emailEvt').value.trim() || null,
+             date: $('dateEvt').value,
+             personnes: parseInt($('nbEvt').value.trim(), 10),
              message: $('msgEvt').value.trim() || null };
   }
 
@@ -868,15 +882,6 @@
     $('vueResa').style.display = 'none';
     $('confResa').classList.add('visible');
     $('codeResa').textContent = (r && r.code) || '——————';
-    var pers = resa.personnes + ' ' + (langue === 'en'
-      ? (resa.personnes > 1 ? 'people' : 'person')
-      : (resa.personnes > 1 ? 'personnes' : 'personne'));
-    $('quoiResa').innerHTML = '<span class="q"></span><span class="jour"></span>';
-    $('quoiResa').querySelector('.q').textContent =
-      libelleOffre(resa.offre) + ' · ' + libelleCreneau(resa.creneau) + ' · ' + pers;
-    $('quoiResa').querySelector('.jour').textContent =
-      new Date(resa.date + 'T12:00:00').toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB',
-        { weekday: 'long', day: 'numeric', month: 'long' });
     /* Rien a payer, rien a proposer. Et si le reglage du prestataire n'est pas
        pose, le bouton reste absent plutot que de mener a un mur. */
     montantDu = (r && typeof r.montant === 'number') ? r.montant : null;

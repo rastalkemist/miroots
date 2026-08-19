@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-vV1wiGkkQvaxf6TPqS0lJ+Ox8c7qZQcGUPbDhhgeIKc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9+iZkp70nciuc5jhwUDHQNQ1qgnJPMWfkYY1IXzAPa8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -98,10 +98,10 @@
   <div class="ecran-confirmation" id="ecranConfirmation">
     <div class="soleil-ok"><svg viewBox="0 0 191 178" aria-hidden="true"><use href="#i-soleil"/></svg></div>
     <p class="conf-titre" id="confTitre"></p>
-    <div class="code" id="codeAffiche">——————</div>
-    <div class="gestes-code">
-      <button type="button" class="geste-code" data-code-copier data-code-source="codeAffiche" data-fait="Copié" data-t="copiercmd">Copier le code</button>
-      <button type="button" class="geste-code" data-code-cartel data-code-source="codeAffiche" data-titre="Ma commande" data-t="gardercmd">Garder en image</button>
+    <div class="ligne-code">
+      <div class="code" id="codeAffiche">——————</div>
+      <button type="button" class="geste-code-ico" data-code-copier data-code-source="codeAffiche" data-fait="Copié" data-al="copiercmd" aria-label="Copier le code"><svg class="i" aria-hidden="true"><use href="#i-copie"/></svg></button>
+      <button type="button" class="geste-code-ico" data-code-cartel data-code-source="codeAffiche" data-titre="Ma commande" data-al="gardercmd" aria-label="Télécharger le code"><svg class="i" aria-hidden="true"><use href="#i-telecharger"/></svg></button>
     </div>
     <p class="instructions" id="confInstr"></p>
     <p class="note-partielle" id="partielCmd" style="display:none"></p>
@@ -167,7 +167,7 @@
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
-      copiercmd: 'Copier le code', gardercmd: 'Garder en image',
+      copiercmd: 'Copier le code', gardercmd: 'Télécharger le code',
       payerMaintenant: 'Payer maintenant', onOuvre: 'On ouvre le paiement…',
       payerFerme: 'Le paiement en ligne n’est pas disponible. Tu peux régler au comptoir.'
     },
@@ -200,7 +200,7 @@
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete.',
       fCode: 'Six characters, letters and numbers. For example ABC123.',
-      copiercmd: 'Copy code', gardercmd: 'Save as image',
+      copiercmd: 'Copy the code', gardercmd: 'Download the code',
       payerMaintenant: 'Pay', onOuvre: 'Opening payment…',
       payerFerme: 'Online payment is unavailable. You can pay at the counter.'
     }
@@ -703,6 +703,10 @@
     document.querySelectorAll('[data-p]').forEach(function (el) {
       var v = t()[el.getAttribute('data-p')];
       if (typeof v === 'string') el.placeholder = v;
+    });
+    document.querySelectorAll('[data-al]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-al')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
     });
     document.title = 'Mi Roots — ' + t().titre;
     $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';

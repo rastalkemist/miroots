@@ -109,7 +109,7 @@ body{margin:0;min-height:100vh;background:var(--blanc);color:var(--encre);font-f
 svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .corps{width:var(--site-w);max-width:var(--col);margin:0 auto;padding:16px 0 0}
 .champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--rayon-champ);height:48px}
-.champ .iti:focus-within{border-color:var(--roots-vert);background:var(--blanc)}
+.champ .iti:focus-within{border-color:var(--univers);background:var(--blanc)}
 .iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-16);padding:0 13px}
 .iti input[type=tel]:focus{outline:none}
 .iti input[type=tel]:focus-visible{outline:var(--focus-ep) solid var(--focus-trait);outline-offset:var(--focus-retrait)}
@@ -119,7 +119,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .iti__dropdown-content{background:var(--blanc);color:var(--roots-noir)}
 .iti__country-name{color:var(--roots-noir)}
 .iti__dial-code{color:var(--gris-500)}
-.iti__country.iti__highlight{background:rgba(var(--vert-e2-rgb),.10)}
+.iti__country.iti__highlight{background:rgba(var(--univers-rgb),.10)}
 .chrome-haut{position:sticky;top:0;z-index:20;background:rgba(var(--blanc-rgb),.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--gris-service);padding:11px 0}
 .chrome-inner{width:var(--site-w);max-width:var(--col);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
 .chrome-inner>.ankh-home{justify-self:start}
@@ -160,7 +160,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
    44 px, sinon la regle des cibles tombe des que le logotype maigrit. */
 .toggle{--pastille-d:calc(2 * var(--t-chrome-titre))}
 .toggle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;min-width:var(--cible-min);height:var(--cible-min)}
-.toggle{position:relative;display:flex;align-items:center;height:var(--pastille-d);max-width:var(--pastille-d);overflow:hidden;cursor:pointer;background:var(--roots-vert);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--roots-vert),0 3px 10px rgba(var(--vert-e2-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
+.toggle{position:relative;display:flex;align-items:center;height:var(--pastille-d);max-width:var(--pastille-d);overflow:hidden;cursor:pointer;background:var(--univers);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--univers),0 3px 10px rgba(var(--univers-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
 /* Deplie, le logotype etait colle a son bord gauche pendant que NU respirait
    du sien : le retrait de la piste equilibre les deux extremites. Replie, il
    n'existe pas — le disque doit rester un disque. */
@@ -172,9 +172,9 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .switch{width:42px;height:22px;border-radius:var(--rayon-pilule);background:rgba(var(--blanc-casse-rgb),.20);border:1px solid rgba(var(--blanc-casse-rgb),.3);position:relative;cursor:pointer;flex-shrink:0}
 .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--blanc);transition:left var(--mvt-etat) var(--courbe-etat)}
 .reste .nu{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-body);color:var(--blanc)}
-.chrome-titre{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--roots-vert);letter-spacing:.01em}
+.chrome-titre{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--univers);letter-spacing:.01em}
 .chrome-droite{display:flex;align-items:center;gap:8px}
-.lang-btn{height:44px;min-width:44px;padding:0 4px;border:none;background:none;color:var(--roots-vert);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer}
+.lang-btn{height:44px;min-width:44px;padding:0 4px;border:none;background:none;color:var(--univers);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer}
 .chrome-burger{width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--encre)}
 .chrome-burger svg{width:30px;height:30px}
 .chrome-titre{position:relative;text-decoration:none;cursor:pointer}
@@ -183,23 +183,23 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
    repetee doit garder la meme forme sur chaque ecran. Le marquage est
    double — la couleur seule ne porte jamais une information. */
 .lien-section.courant{background:var(--vert-lavure)}
-.lien-section.courant .t{color:var(--roots-vert);font-weight:var(--w-bold)}
+.lien-section.courant .t{color:var(--univers);font-weight:var(--w-bold)}
 .lien-section.courant .fleche{opacity:.35}
-.mentions a.courant{font-weight:var(--w-bold);color:var(--roots-vert)}
+.mentions a.courant{font-weight:var(--w-bold);color:var(--univers)}
 .mentions{margin-top:14px;padding:12px 6px 4px;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .mentions a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 8px}
 .pied{width:var(--site-w);max-width:var(--col);margin:26px auto 0;padding:16px 0 4px;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .pied a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 8px}
 :root{--barre-h:72px}
-.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:2px solid var(--roots-vert);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14)}
+.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:2px solid var(--univers);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14)}
 .verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;color:var(--gris-500);display:flex;align-items:center;justify-content:center}
 .ico-rond{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .ico-rond svg{width:44px;height:44px;stroke-width:2}
-.verbe.actif .ico-rond{background:var(--roots-vert);color:var(--blanc)}
+.verbe.actif .ico-rond{background:var(--univers);color:var(--blanc)}
 .verbe.dormant{opacity:.55}
 .verbe.dormant::after{content:'';position:absolute;top:9px;right:calc(50% - 28px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
 
-@media(min-width:640px){.chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));width:auto;min-height:0;height:auto;padding:6px;border:1.5px solid var(--roots-vert);border-radius:var(--rayon-pilule);box-shadow:0 12px 30px rgba(var(--ombre-teinte),.28)}
+@media(min-width:640px){.chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));width:auto;min-height:0;height:auto;padding:6px;border:1.5px solid var(--univers);border-radius:var(--rayon-pilule);box-shadow:0 12px 30px rgba(var(--ombre-teinte),.28)}
 .verbe{flex:0 0 auto;padding:4px 6px}
 .ico-rond{width:56px;height:56px}
 
@@ -212,7 +212,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .menu-pop .fermer{background:none;border:none;color:var(--encre-discrete);cursor:pointer;line-height:1;padding:2px 6px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
 .lien-section{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--encre);padding:14px 8px;min-height:44px;border-bottom:1px solid var(--gris-ilot);font-size:var(--t-body);font-weight:700;cursor:pointer}
 .lien-section:last-child{border-bottom:none}
-.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--vert-selection);color:var(--roots-vert);display:flex;align-items:center;justify-content:center}
+.lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--univers-selection);color:var(--univers);display:flex;align-items:center;justify-content:center}
 .lien-section .ico svg{width:19px;height:19px}
 .lien-section .txt{flex:1}
 .lien-section .txt small{display:block;font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);margin-top:1px}
@@ -231,10 +231,10 @@ body[data-surface="ambiante"]{--entete-h-ambiante:calc(2 * 12px + 44px)}
 body[data-surface="ambiante"] .chrome-haut{position:fixed;left:0;right:0;z-index:6;padding:12px 0;background:initial;backdrop-filter:initial;border-bottom:initial}
 body[data-surface="ambiante"] .ankh-home{filter:drop-shadow(0 1px 3px rgba(var(--ombre-teinte),.4));text-decoration:initial}
 body[data-surface="ambiante"] .toggle{background:rgba(var(--blanc-casse-rgb),.95);backdrop-filter:blur(6px);box-shadow:0 3px 12px rgba(var(--ombre-teinte),.2)}
-body[data-surface="ambiante"] .toggle .mot{color:var(--roots-vert)}
+body[data-surface="ambiante"] .toggle .mot{color:var(--univers)}
 body[data-surface="ambiante"] .reste .sub{color:var(--encre-discrete)}
 body[data-surface="ambiante"] .switch{background:var(--gris-ilot);border:1px solid var(--gris-service)}
-body[data-surface="ambiante"] .switch .knob{background:var(--roots-vert)}
+body[data-surface="ambiante"] .switch .knob{background:var(--univers)}
 body[data-surface="ambiante"] .reste .nu{color:var(--gris-500)}
 body[data-surface="ambiante"] .lang-btn{color:var(--blanc-casse);text-shadow:0 1px 4px rgba(var(--ombre-teinte),.4)}
 body[data-surface="ambiante"] .chrome-burger{color:var(--blanc-casse);filter:drop-shadow(0 1px 4px rgba(var(--ombre-teinte),.4))}
@@ -252,7 +252,7 @@ body[data-surface="ambiante"] .toast{bottom:calc(156px + var(--safe-bas));z-inde
    ici, une fois. Une section d'ecran qui suit peut toujours les surcharger :
    :where() ne pese rien, et c'est l'ordre qui tranche a specificite egale. */
 .hors-ecran{white-space:nowrap;padding:0;width:1px;position:absolute;clip:rect(0 0 0 0);overflow:hidden;height:1px;border:0;margin:-1px}
-.saut-contenu{min-height:44px;display:flex;left:-9999px;text-decoration:none;padding:12px 18px;align-items:center;position:absolute;background:var(--roots-vert);font-weight:700;border-radius:0 0 var(--rayon-champ) 0;font-family:var(--font-corps);color:var(--blanc);top:0;font-size:var(--t-sm);z-index:100}
+.saut-contenu{min-height:44px;display:flex;left:-9999px;text-decoration:none;padding:12px 18px;align-items:center;position:absolute;background:var(--univers);font-weight:700;border-radius:0 0 var(--rayon-champ) 0;font-family:var(--font-corps);color:var(--blanc);top:0;font-size:var(--t-sm);z-index:100}
 .saut-contenu:focus{left:0}
 /* Bandeau de phase. Il dit ce que la page est, en tete, avant tout le reste.
    Un dispositif que l'on croit operationnel sans qu'il le soit est plus
@@ -267,13 +267,11 @@ body[data-surface="ambiante"] .toast{bottom:calc(156px + var(--safe-bas));z-inde
    libelle dit donc a qui il s'adresse, et la fleche suit l'etat que le bouton
    declare. Aligne a gauche : ce qu'il contient se lit en phrases et en champs,
    pas en libelles centres. */
-.depliant{margin:var(--esp-4) 0 0;text-align:left}
-.depliant-bouton{display:flex;align-items:center;gap:var(--esp-2);width:100%;min-height:var(--cible-min);background:none;border:none;padding:var(--esp-2) 0;font-family:var(--font-corps);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold);color:var(--roots-vert);cursor:pointer;text-align:left}
+.depliant{margin:var(--esp-6) 0 0;text-align:left}
+.depliant-bouton{display:flex;align-items:center;gap:var(--esp-2);width:100%;min-height:var(--cible-min);background:none;border:none;padding:var(--esp-2) 0;font-family:var(--font-corps);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold);color:var(--univers);cursor:pointer;text-align:left}
 .depliant-bouton::before{content:'';flex:none;width:0;height:0;border-left:7px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .18s var(--courbe-a)}
 .depliant-bouton[aria-expanded="true"]::before{transform:rotate(90deg)}
-.depliant-corps{padding:var(--esp-3) 0 var(--esp-4)}
-.depliant-dit{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);margin:0 0 var(--esp-4)}
-.depliant-pied{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);margin:var(--esp-3) 0 0}
+.depliant-corps{padding:var(--esp-3) 0 var(--esp-6)}
 @media (prefers-reduced-motion: reduce){.depliant-bouton::before{transition:none}}
 /* Sur la surface ambiante, et la seule, l'en-tete quitte le flux : le bandeau
    passerait dessous et l'effacerait. L'ecart se DERIVE de la hauteur d'en-tete
@@ -292,11 +290,11 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .stepper button::after{top:50%;height:44px;width:44px;left:50%;content:'';position:absolute;transform:translate(-50%,-50%)}
 .champ label{margin-bottom:5px;display:block;font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
 .champ input{padding:12px 13px;border:1.5px solid transparent;font-size:var(--t-16);border-radius:var(--rayon-champ);color:var(--encre);font-family:var(--font-corps);width:100%;background:var(--gris-ilot);min-height:44px}
-.champ input:focus{border-color:var(--roots-vert);outline:none;background:var(--blanc)}
+.champ input:focus{border-color:var(--univers);outline:none;background:var(--blanc)}
 /* La zone de texte suit la grammaire du champ : meme ilot, meme focus. Sa
    hauteur se tire a la main, jamais en largeur — la colonne est la colonne. */
 .champ textarea{padding:12px 13px;border:1.5px solid transparent;font-size:var(--t-16);border-radius:var(--rayon-champ);color:var(--encre);font-family:var(--font-corps);width:100%;background:var(--gris-ilot);min-height:76px;resize:vertical}
-.champ textarea:focus{border-color:var(--roots-vert);outline:none;background:var(--blanc)}
+.champ textarea:focus{border-color:var(--univers);outline:none;background:var(--blanc)}
 /* Un lien habille en bouton plein reste un lien : le style est celui du
    bouton, la semantique celle de la navigation — il mene ailleurs. */
 a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
@@ -311,7 +309,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .consent:empty{display:none}
 .consent-lien{margin:8px 2px;text-align:center}
 .consent-lien a{text-underline-offset:3px;text-decoration:underline;padding:0 8px;color:var(--encre-discrete);font-size:var(--t-note)}
-.bouton-confirmer{border:none;border-radius:var(--rayon-pilule);min-height:52px;cursor:pointer;background:var(--roots-vert);padding:16px;font-size:var(--t-body);font-weight:var(--w-medium);font-family:var(--font-eclat);width:100%;color:var(--blanc)}
+.bouton-confirmer{border:none;border-radius:var(--rayon-pilule);min-height:52px;cursor:pointer;background:var(--univers);padding:16px;font-size:var(--t-body);font-weight:var(--w-medium);font-family:var(--font-eclat);width:100%;color:var(--blanc)}
 .bouton-confirmer:disabled{cursor:not-allowed;opacity:.35}
 .bouton-confirmer.occupe{cursor:progress;opacity:.7}
 /* Retirer du flux sans retirer du document. Le JS qui revele pose toujours
@@ -340,24 +338,25 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
   border-left:3px solid var(--gris-service);background:var(--blanc-casse)}
 .vide-menu{color:var(--encre-discrete);font-size:var(--t-sm)}
 .conf-titre{margin:0;font-size:var(--t-body);font-weight:700}
-.code{letter-spacing:.13em;color:var(--roots-vert);font-weight:700;font-family:var(--font-chiffres);font-size:var(--t-code);margin:8px 0}
+.code{letter-spacing:.13em;color:var(--univers);font-weight:700;font-family:var(--font-chiffres);font-size:var(--t-code);margin:8px 0}
 .instructions{font-size:var(--t-sm);margin:0 auto;line-height:1.55;color:var(--encre-discrete);max-width:300px}
 .note-partielle{color:var(--rouge-e2);max-width:300px;font-weight:700;line-height:1.45;font-size:var(--t-label);margin:12px auto 0}
-/* ======================================================================== UNIVERS — Mi Roam ======================================================================== */
+/* ======================================================================== UNIVERS ======================================================================== */
+/* UN POINT DE REFERENCE, TROIS ALIAS. Chaque ecran declare son univers sur
+   <body>, et toute l'interface derive de trois alias — jamais une valeur
+   neuve — parce que la palette garantit qu'a echelon egal les familles
+   portent le meme poids : l'univers change, aucune mesure ne change.
+   Traversent seuls, hors alias : la semantique de statut et l'anneau de
+   focus, qui sont les memes dans tous les univers. */
+:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08)}
+
+/* ------------------------------------------------------------------------ Univers Mi Roam ------------------------------------------------------------------------ */
 /* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
    tout ce qui portait e2 vert la prend ici. La correspondance vit dans DEUX
    alias — jamais une valeur neuve — parce que la palette garantit qu'a echelon
    egal les familles portent le meme poids : l'univers change, aucune mesure ne
    change. Le nav appartient a l'univers ; le super-nav du bas commute. */
 :where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir)}
-:where(body.p-roam) .toggle{background:var(--univers);box-shadow:inset 0 0 0 1.5px var(--univers),0 3px 10px rgba(var(--univers-rgb),.30)}
-:where(body.p-roam) .chrome-titre{color:var(--univers)}
-:where(body.p-roam) .lang-btn{color:var(--univers)}
-:where(body.p-roam) .verbe.actif .ico-rond{background:var(--univers)}
-:where(body.p-roam) .champ input:focus{border-color:var(--univers)}
-:where(body.p-roam) .champ .iti:focus-within{border-color:var(--univers)}
-:where(body.p-roam) .code{color:var(--univers)}
-:where(body.p-roam) .bouton-confirmer{background:var(--univers)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--esp-6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--esp-2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
@@ -419,7 +418,16 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--esp-3);flex-wrap:wrap}
 .geste-code{min-height:var(--cible-min);padding:0 var(--esp-4);border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:var(--w-bold);cursor:pointer}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--roots-vert);font-family:var(--font-eclat);font-size:var(--t-28);font-weight:var(--w-medium);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* Le code et ses deux gestes sur UNE ligne : les icones tiennent 80 % de la
+   hauteur de ligne du code et se centrent sur son axe horizontal ; la cible
+   du bouton — invisible — tient le plancher de 44. Le retour « Copié »
+   s'ecrit a la place de l'icone, le temps d'un souffle. */
+.ligne-code{display:flex;align-items:center;justify-content:center;gap:var(--esp-1);margin:var(--esp-2) 0}
+.ligne-code .code{margin:0;line-height:var(--lh-33)}
+.geste-code-ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--cible-min);min-height:var(--cible-min);padding:0;border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-size:var(--t-note);font-weight:var(--w-bold);white-space:nowrap;cursor:pointer}
+.geste-code-ico svg.i{width:calc(var(--t-code) * var(--lh-33) * .8);height:calc(var(--t-code) * var(--lh-33) * .8)}
+:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-28);font-weight:var(--w-medium);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 @media(min-width:640px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}
@@ -441,7 +449,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .feuille-bas .iti input[type=tel]{font-size:var(--t-16)}
 :where(body.p-accueil) .onglets{display:flex;background:var(--gris-ilot);border-radius:var(--rayon-pilule);padding:3px;margin-bottom:16px}
 :where(body.p-accueil) .onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:10px;min-height:44px;border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;cursor:pointer}
-:where(body.p-accueil) .onglets button.actif{background:var(--roots-vert);color:var(--blanc)}
+:where(body.p-accueil) .onglets button.actif{background:var(--univers);color:var(--blanc)}
 :where(body.p-accueil) .contenu{display:none}
 :where(body.p-accueil) .contenu.actif{display:block}
 :where(body.p-accueil) .groupe{margin-bottom:16px}
@@ -450,7 +458,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .option-espace .ico{display:block;height:34px;margin-bottom:6px}
 :where(body.p-accueil) .option-espace .ico svg{height:34px;width:100%}
 :where(body.p-accueil) .option-espace .nom{font-size:var(--t-sm);font-weight:700;color:var(--encre);line-height:1.25}
-:where(body.p-accueil) .option-espace.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
+:where(body.p-accueil) .option-espace.actif{border-color:var(--univers);background:var(--univers-selection)}
 :where(body.p-accueil) .rangee-chips{display:flex;gap:8px;flex-wrap:wrap}
 :where(body.p-accueil) .rangee-choix{display:flex;gap:12px;align-items:flex-start}
 :where(body.p-accueil) .rangee-choix .col-creneaux{flex:0 0 65%;min-width:0}
@@ -463,7 +471,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 
 }:where(body.p-accueil) .chip{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--rayon-pilule);padding:9px 15px;min-height:44px;font-family:var(--font-corps);font-size:var(--t-sm);color:var(--encre);cursor:pointer;line-height:1.25}
 :where(body.p-accueil) .chip .sous{display:block;font-size:var(--t-sm);color:var(--encre-discrete);text-align:center;font-family:var(--font-chiffres)}
-:where(body.p-accueil) .chip.actif{border-color:var(--roots-vert);background:var(--vert-selection)}
+:where(body.p-accueil) .chip.actif{border-color:var(--univers);background:var(--univers-selection)}
 :where(body.p-accueil) .chip.indispo{opacity:.4;cursor:not-allowed}
 :where(body.p-accueil, body.p-roam) .stepper{gap:14px}
 :where(body.p-accueil, body.p-roam) .stepper button{border:1.5px solid var(--gris-service)}
@@ -484,9 +492,9 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    description a gauche, montant a droite, sur une seule pastille. L'ilot
    retablit trois paliers de l'echelle d'interface que la feuille basse rabaisse
    pour son propre chrome. */
-:where(body.p-accueil) .recap{background:var(--blanc);border:1.5px solid var(--roots-vert);border-radius:15px;padding:11px 15px;margin-bottom:16px;display:none;grid-template-columns:1fr auto;align-items:end;column-gap:12px;row-gap:var(--esp-1)}
+:where(body.p-accueil) .recap{background:var(--blanc);border:1.5px solid var(--univers);border-radius:15px;padding:11px 15px;margin-bottom:16px;display:none;grid-template-columns:1fr auto;align-items:end;column-gap:12px;row-gap:var(--esp-1)}
 :where(body.p-accueil) .recap.visible{display:grid}
-:where(body.p-accueil) .recap .titre{grid-column:1;grid-row:2;align-self:end;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--roots-vert)}
+:where(body.p-accueil) .recap .titre{grid-column:1;grid-row:2;align-self:end;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--univers)}
 :where(body.p-accueil) .recap #recapTexte{grid-column:1 / -1;grid-row:1;font-size:var(--t-label);color:var(--encre-discrete);line-height:var(--lh-12)}
 :where(body.p-accueil) .recap .total{grid-column:2;grid-row:1 / span 2;justify-self:end;align-self:end;font-size:var(--t-h3);line-height:var(--lh-chiffre);font-weight:700;color:var(--encre);font-family:var(--font-chiffres);white-space:nowrap}
 /* L'ilot de commande n'a pas de description : ses deux elements tiennent la
@@ -503,24 +511,24 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .art-compact{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--gris-ilot)}
 :where(body.p-accueil) .art-compact .n{font-size:var(--t-sm);font-weight:700}
 :where(body.p-accueil) .art-compact .p{font-size:var(--t-sm);color:var(--encre-discrete);font-family:var(--font-chiffres)}
-:where(body.p-accueil) .art-compact .btn-plus{width:32px;height:32px;border-radius:50%;border:none;background:var(--roots-vert);color:var(--blanc);font-size:var(--t-body);cursor:pointer;flex-shrink:0;position:relative}
-:where(body.p-accueil) .art-compact .stepper-c{display:flex;align-items:center;gap:9px;background:var(--vert-selection);border:2px solid var(--roots-vert);border-radius:var(--rayon-pilule);padding:2px;flex-shrink:0}
+:where(body.p-accueil) .art-compact .btn-plus{width:32px;height:32px;border-radius:50%;border:none;background:var(--univers);color:var(--blanc);font-size:var(--t-body);cursor:pointer;flex-shrink:0;position:relative}
+:where(body.p-accueil) .art-compact .stepper-c{display:flex;align-items:center;gap:9px;background:var(--univers-selection);border:2px solid var(--univers);border-radius:var(--rayon-pilule);padding:2px;flex-shrink:0}
 :where(body.p-accueil) .art-compact .stepper-c button{width:27px;height:27px;border-radius:50%;border:none;background:var(--blanc);color:var(--encre);font-size:var(--t-sm);cursor:pointer;position:relative}
 :where(body.p-accueil) .art-compact .stepper-c span{font-weight:700;font-size:var(--t-sm);min-width:14px;text-align:center}
 :where(body.p-accueil) .vide-menu{padding:12px 4px}
-:where(body.p-accueil) .lien-detail{display:block;text-align:center;margin-top:14px;padding:12px 0;font-size:var(--t-sm);color:var(--encre-chaude);font-weight:700;text-decoration:none}
-:where(body.p-accueil, body.p-roam) .confirmation{display:none;text-align:center;padding:14px 6px 6px}
+:where(body.p-accueil) .lien-detail{display:block;text-align:center;margin-top:14px;padding:12px 0;font-size:var(--t-sm);color:var(--univers);font-weight:700;text-decoration:none}
+:where(body.p-accueil, body.p-roam) .confirmation{display:none;text-align:center;padding:var(--esp-3) var(--esp-2) var(--esp-2)}
 :where(body.p-accueil, body.p-roam) .confirmation.visible{display:block}
-:where(body.p-accueil, body.p-roam) .confirmation .soleil-ok{height:46px;margin:0 auto 10px;display:flex;justify-content:center}
+:where(body.p-accueil, body.p-roam) .confirmation .soleil-ok{height:46px;margin:0 auto var(--esp-2);display:flex;justify-content:center}
 :where(body.p-accueil, body.p-roam) .confirmation .soleil-ok svg{height:46px;width:46px}
-:where(body.p-accueil, body.p-roam) .quoi-conf{font-size:var(--t-sm);font-weight:700;margin:0 0 10px;line-height:1.45}
+:where(body.p-accueil, body.p-roam) .quoi-conf{font-size:var(--t-sm);font-weight:700;margin:0 0 var(--esp-2);line-height:1.45}
 :where(body.p-accueil, body.p-roam) .quoi-conf .jour{display:block;font-weight:500;color:var(--encre-discrete);font-size:var(--t-sm)}
-:where(body.p-accueil, body.p-roam) .retenue{background:var(--roots-jaune);color:var(--roots-noir);border-radius:var(--rayon-module);padding:11px 15px;font-size:var(--t-sm);font-weight:700;margin:14px auto 0;max-width:300px}
+:where(body.p-accueil, body.p-roam) .retenue{background:var(--roots-jaune);color:var(--roots-noir);border-radius:var(--rayon-module);padding:var(--esp-3) var(--esp-4);font-size:var(--t-sm);font-weight:700;margin:var(--esp-6) auto 0;max-width:300px}
 :where(body.p-accueil, body.p-roam) .retenue .reste{font-family:var(--font-chiffres);font-size:var(--t-body)}
-:where(body.p-accueil, body.p-roam) .montant-conf{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-body);color:var(--encre);margin:10px 0 0}
+:where(body.p-accueil, body.p-roam) .montant-conf{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-body);color:var(--encre);margin:var(--esp-3) 0 0}
 /* Le geste se detache de ce qui l'explique : sans cet ecart, le bouton colle
    au texte qui le precede et rompt le rythme du bloc. */
-:where(body.p-accueil, body.p-roam) .confirmation .apres{margin-top:var(--esp-4)}
+:where(body.p-accueil, body.p-roam) .confirmation .apres{margin-top:var(--esp-6)}
 :where(body.p-accueil) .voile-doux{background:rgba(var(--ombre-teinte),.22)}
 :where(body.p-accueil) .drawer-pied{display:flex;align-items:center;justify-content:flex-end;margin-top:16px;padding:0 6px}
 :where(body.p-accueil) .mini-btn{display:flex;align-items:center;gap:7px;background:var(--gris-ilot);border:none;border-radius:var(--rayon-pilule);padding:9px 14px;font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);color:var(--encre);cursor:pointer}
@@ -528,7 +536,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-accueil) .marque-wrap{display:flex;align-items:center;gap:9px}
 /* ======================================================================== ECRAN — carte ======================================================================== */ :where(body.p-carte) .iti--container{z-index:10000}
-:where(body.p-carte) .badge-table{display:inline-flex;align-items:center;gap:6px;background:var(--vert-selection);border:1.5px solid var(--roots-vert);color:var(--roots-vert);font-size:var(--t-label);font-weight:700;padding:5px 12px;border-radius:var(--rayon-pilule);margin-bottom:10px}
+:where(body.p-carte) .badge-table{display:inline-flex;align-items:center;gap:6px;background:var(--univers-selection);border:1.5px solid var(--univers);color:var(--univers);font-size:var(--t-label);font-weight:700;padding:5px 12px;border-radius:var(--rayon-pilule);margin-bottom:10px}
 :where(body.p-carte) .badge-table svg{width:14px;height:14px}
 :where(body.p-carte) .badge-emporter{display:inline-flex;align-items:center;gap:6px;background:var(--gris-ilot);color:var(--encre-discrete);font-size:var(--t-label);font-weight:700;padding:5px 12px;border-radius:var(--rayon-pilule);margin-bottom:10px}
 :where(body.p-carte) .badge-emporter svg{width:14px;height:14px}
@@ -541,7 +549,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .categories.glisse{cursor:grabbing}
 :where(body.p-carte) .categories::-webkit-scrollbar{display:none}
 :where(body.p-carte) .cat{flex-shrink:0;background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--rayon-pilule);padding:9px 15px;min-height:44px;font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;color:var(--encre);cursor:pointer;white-space:nowrap}
-:where(body.p-carte) .cat.actif{background:var(--vert-selection);border-color:var(--roots-vert)}
+:where(body.p-carte) .cat.actif{background:var(--univers-selection);border-color:var(--univers)}
 /* Le saut vers une section la depose sous la pile collante, pas dessous. */
 :where(body.p-carte) .section-menu{scroll-margin-top:calc(var(--entete-h) + var(--cat-h) + var(--esp-3))}
 :where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--esp-8) 0 var(--esp-3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}
@@ -554,16 +562,16 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .article.rupture{box-shadow:none;background:transparent;border:1px dashed var(--gris-service)}
 :where(body.p-carte) .article.rupture .infos{opacity:.55}
 :where(body.p-carte) .etiquette-rupture{flex-shrink:0;background:var(--gris-ilot);color:var(--encre-discrete);font-size:var(--t-label);font-weight:700;padding:7px 12px;border-radius:var(--rayon-pilule);white-space:nowrap}
-:where(body.p-carte) .btn-plus{width:38px;height:38px;border-radius:50%;border:none;background:var(--roots-vert);color:var(--blanc);font-size:var(--t-body);cursor:pointer;line-height:1;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
+:where(body.p-carte) .btn-plus{width:38px;height:38px;border-radius:50%;border:none;background:var(--univers);color:var(--blanc);font-size:var(--t-body);cursor:pointer;line-height:1;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
 :where(body.p-carte) .btn-plus svg{width:17px;height:17px;stroke-width:2}
-:where(body.p-carte) .stepper{gap:14px;background:var(--vert-selection);border:2px solid var(--roots-vert);border-radius:var(--rayon-pilule);padding:3px;flex-shrink:0}
+:where(body.p-carte) .stepper{gap:14px;background:var(--univers-selection);border:2px solid var(--univers);border-radius:var(--rayon-pilule);padding:3px;flex-shrink:0}
 :where(body.p-carte) .stepper button{border:none}
 :where(body.p-carte) .stepper button svg{stroke-width:2}
 :where(body.p-carte) .btn-plus::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 :where(body.p-carte) .vide-menu{padding:14px 2px}
-:where(body.p-carte) .barre-panier{position:fixed;z-index:16;bottom:calc(78px + var(--safe-bas));left:50%;transform:translateX(-50%);width:min(400px,calc(100% - 32px));background:var(--roots-vert);color:var(--blanc);border:none;border-radius:var(--rayon-pilule);padding:16px 22px;font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;display:flex;justify-content:space-between;align-items:center;box-shadow:0 10px 30px rgba(var(--vert-e1-rgb),.35);transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree)}
+:where(body.p-carte) .barre-panier{position:fixed;z-index:16;bottom:calc(78px + var(--safe-bas));left:50%;transform:translateX(-50%);width:min(400px,calc(100% - 32px));background:var(--univers);color:var(--blanc);border:none;border-radius:var(--rayon-pilule);padding:16px 22px;font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;display:flex;justify-content:space-between;align-items:center;box-shadow:0 10px 30px rgba(var(--vert-e1-rgb),.35);transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree)}
 :where(body.p-carte) .barre-panier.cachee{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(12px)}
-:where(body.p-carte) .barre-panier .badge{background:var(--blanc);color:var(--roots-vert);border-radius:var(--rayon-pilule);padding:2px 10px;font-size:var(--t-label);margin-right:8px}
+:where(body.p-carte) .barre-panier .badge{background:var(--blanc);color:var(--univers);border-radius:var(--rayon-pilule);padding:2px 10px;font-size:var(--t-label);margin-right:8px}
 
 @media(min-width:640px){:where(body.p-carte) .barre-panier{bottom:calc(98px + var(--safe-bas))}
 
@@ -589,7 +597,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .etiquette-paiement{display:block;font-size:var(--t-label);color:var(--encre-discrete);font-weight:700;margin-bottom:5px}
 :where(body.p-carte) .paiements{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}
 :where(body.p-carte) .paiements .chip-p{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--rayon-pilule);padding:9px 14px;min-height:44px;font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;color:var(--encre);cursor:pointer}
-:where(body.p-carte) .paiements .chip-p.actif{background:var(--vert-selection);border-color:var(--roots-vert)}
+:where(body.p-carte) .paiements .chip-p.actif{background:var(--univers-selection);border-color:var(--univers)}
 :where(body.p-carte) .consent-lien{text-align:center}
 :where(body.p-carte) .consent-lien a{display:inline-flex;align-items:center;min-height:44px}
 :where(body.p-carte) .ecran-confirmation{display:none;text-align:center;padding:18px 6px 6px}
@@ -607,7 +615,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    se lisait de travers. On ne centre que sur cet ecran — .aide-champ est
    partagee et reste alignee a gauche partout ailleurs. */
 :where(body.p-retrouver) #codeFormat{text-align:center}
-:where(body.p-retrouver) .principal{width:100%;min-height:52px;border:none;border-radius:var(--rayon-pilule);background:var(--roots-vert);color:var(--blanc);font-family:var(--font-corps);font-weight:700;font-size:var(--t-body);cursor:pointer;margin-top:16px}
+:where(body.p-retrouver) .principal{width:100%;min-height:52px;border:none;border-radius:var(--rayon-pilule);background:var(--univers);color:var(--blanc);font-family:var(--font-corps);font-weight:700;font-size:var(--t-body);cursor:pointer;margin-top:16px}
 :where(body.p-retrouver) .principal[disabled]{opacity:.35;cursor:not-allowed}
 :where(body.p-retrouver) .secondaire{width:100%;min-height:44px;border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;margin-top:10px}
 :where(body.p-retrouver) .danger{border-color:var(--rouge-e2);color:var(--rouge-e2)}
@@ -634,7 +642,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-retrouver) .issue-annul{margin-top:16px;padding:14px;border-radius:var(--rayon-module);background:var(--creme);border-left:4px solid var(--vert-e3)}
 :where(body.p-retrouver) .issue-annul .issue-titre{margin:0 0 4px;font-size:var(--t-body);font-weight:700;color:var(--encre)}
 :where(body.p-retrouver) .issue-annul .issue-dit{margin:0;font-size:var(--t-sm);line-height:1.5;color:var(--encre)}
-:where(body.p-retrouver) .leCode{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-code);letter-spacing:.13em;color:var(--roots-vert)}
+:where(body.p-retrouver) .leCode{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-code);letter-spacing:.13em;color:var(--univers)}
 :where(body.p-retrouver) .champ .iti{background:var(--gris-ilot)}
 :where(body.p-retrouver) .champ .iti:focus-within{background:var(--blanc)}
 /* ======================================================================== ECRAN — confidentialite ======================================================================== */ :where(body.p-confidentialite) .hors-ecran{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
@@ -659,7 +667,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-confidentialite) .lecture li{font-family:var(--font-lecture);font-weight:300;line-height:var(--lh-prose);color:var(--encre);margin:0 0 var(--air-lie);text-wrap:pretty}
 :where(body.p-confidentialite) .lecture li:last-child{margin-bottom:0}
 :where(body.p-confidentialite) .lecture strong{font-weight:700}
-:where(body.p-confidentialite) .lecture a{color:var(--roots-vert);text-underline-offset:3px}
+:where(body.p-confidentialite) .lecture a{color:var(--univers);text-underline-offset:3px}
 :where(body.p-confidentialite) .texte[hidden]{display:none}
 
 /* Seuls l'amplitude des titres et le retrait de tete suivent la place. */
@@ -685,8 +693,8 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    ========================================================================== */
 @media (hover:hover){
   :where(.bouton-confirmer,.principal,.barre-panier,.btn-plus,.saut-contenu):hover{background:var(--vert-garvey)}
-  :where(.cat):hover{background:var(--vert-selection)}
-  :where(.cat.actif):hover{border-color:var(--roots-vert)}
+  :where(.cat):hover{background:var(--univers-selection)}
+  :where(.cat.actif):hover{border-color:var(--univers)}
   :where(a):hover{text-decoration-thickness:2px}
 }
 

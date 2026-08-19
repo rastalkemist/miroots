@@ -94,7 +94,29 @@
       loadUtils: function () { return import('./vendor/utils.js'); }
     });
     prefixeBenin(input, iti);
+    reconnaitreInternational(input, iti);
     return iti;
+  }
+
+  /* Un numero COMPLET — indicatif compris — arrive par la suggestion du
+     clavier, un collage ou une frappe. Avec l'indicatif affiche a part, le
+     laisser tel quel double l'indicatif a l'ecran. Des qu'une valeur commence
+     par « + » ou « 00 », le composant la relit en entier : il pose le pays et
+     ne garde dans le champ que la part nationale. Le garde-fou evite la
+     boucle : la relecture declenche elle-meme une saisie. */
+  function reconnaitreInternational(input, iti) {
+    if (!iti || typeof iti.setNumber !== 'function') return;
+    var enCours = false;
+    input.addEventListener('input', function () {
+      if (enCours) return;
+      var v = input.value.trim();
+      if (!/^(\+|00)/.test(v)) return;
+      var complet = v.replace(/^00/, '+');
+      if (!/^\+\d{6,}/.test(complet.replace(/[\s.-]/g, ''))) return;
+      enCours = true;
+      try { iti.setNumber(complet.replace(/[\s.-]/g, '')); } catch (e) {}
+      enCours = false;
+    });
   }
 
   /* La liste des pays s'ouvre PAR-DESSUS ce qui l'a appelee et HORS de son
@@ -109,6 +131,52 @@
     if (!b) return false;
     b.click();
     return true;
+  }
+
+  /* La liste des pays recoit SA PROPRE entree d'historique, poussee au moment
+     ou le geste l'ouvre : le premier retour la referme, le suivant s'adresse a
+     la couche d'en dessous. Pousser l'entree ailleurs qu'au geste ne tient
+     pas — un navigateur mobile ecarte du bouton retour toute entree posee sans
+     geste de l'utilisateur.
+     Quand la liste se ferme par un choix ou un appui, son entree se consomme
+     par un retour programme, que le gestionnaire d'historique doit ignorer :
+     c'est le sens des deux drapeaux. */
+  var couchePays = { poussee: false, popAttendu: false, parHistorique: false };
+
+  document.addEventListener('open:countrydropdown', function () {
+    couchePays.poussee = false;
+    try {
+      history.pushState({ rootsCouche: 'pays' }, '');
+      couchePays.poussee = true;
+    } catch (e) {}
+  }, true);
+
+  document.addEventListener('close:countrydropdown', function () {
+    if (!couchePays.poussee) return;
+    couchePays.poussee = false;
+    if (couchePays.parHistorique) { couchePays.parHistorique = false; return; }
+    couchePays.popAttendu = true;
+    try { history.back(); } catch (e) { couchePays.popAttendu = false; }
+  }, true);
+
+  /* Enregistre AVANT tout gestionnaire d'ecran : les ecrans lisent
+     `popConsommeParCouche` pour savoir si ce retour etait celui de la liste. */
+  window.addEventListener('popstate', function () {
+    if (couchePays.popAttendu) { couchePays.popAttendu = false; couchePays.consomme = true; return; }
+    if (couchePays.poussee) {
+      couchePays.parHistorique = true;
+      couchePays.poussee = false;
+      fermerListePays();
+      couchePays.consomme = true;
+      return;
+    }
+    couchePays.consomme = false;
+  });
+
+  function popConsommeParCouche() {
+    var c = !!couchePays.consomme;
+    couchePays.consomme = false;
+    return c;
   }
 
   /* Navigation partagée. opts :
@@ -373,28 +441,24 @@
   var MOTS_FACTURATION = {
     fr: {
       ouvrir: 'Facturer à une entreprise',
-      dit: 'Par défaut, la facture est établie au nom et à l’adresse enregistrés lors du paiement. Pour un achat professionnel, indiquez ci-dessous à qui elle doit être adressée.',
       nom: 'Nom ou raison sociale',
-      ifu: 'Identifiant fiscal (IFU) — facultatif',
-      aideIfu: 'Treize chiffres. L’administration fiscale refuse une facture dont l’identifiant lui est inconnu, et il ne peut plus être corrigé après le paiement.',
-      courriel: 'Adresse de facturation — facultative',
-      pied: 'Ces informations figurent sur la facture. Après le paiement, elles ne peuvent plus être modifiées.',
+      ifu: 'Identifiant fiscal (IFU)',
+      courriel: 'Adresse de facturation',
       manqueNom: 'Indiquez le nom ou la raison sociale.',
-      ifuFaux: 'L’identifiant fiscal ne contient que des chiffres, entre 8 et 20.',
-      ifuTaille: 'Un identifiant béninois porte treize chiffres. Vérifiez ce numéro avant de payer.',
+      manqueIfu: 'Indiquez l’identifiant fiscal (IFU).',
+      manqueAdresse: 'Indiquez l’adresse de facturation.',
+      ifuFaux: 'L’identifiant fiscal porte treize chiffres.',
       adresseFausse: 'Vérifiez cette adresse électronique.'
     },
     en: {
       ouvrir: 'Bill this to a company',
-      dit: 'By default, your invoice is made out to the name and address recorded at payment. For a business purchase, enter below who it should be billed to.',
       nom: 'Name or company name',
-      ifu: 'Tax ID (IFU) — optional',
-      aideIfu: 'Thirteen digits. The tax authority rejects an invoice carrying an ID it does not know, and it cannot be corrected after payment.',
-      courriel: 'Billing address — optional',
-      pied: 'These details appear on your invoice. They cannot be changed after payment.',
+      ifu: 'Tax ID (IFU)',
+      courriel: 'Billing address',
       manqueNom: 'Enter the name or company name.',
-      ifuFaux: 'A tax ID is 8 to 20 digits, and digits only.',
-      ifuTaille: 'A Beninese tax ID has thirteen digits. Check this number before you pay.',
+      manqueIfu: 'Enter the tax ID (IFU).',
+      manqueAdresse: 'Enter the billing address.',
+      ifuFaux: 'A tax ID is thirteen digits.',
       adresseFausse: 'Check this email address.'
     }
   };
@@ -449,9 +513,8 @@
     corps.hidden = true;
     bouton.setAttribute('aria-controls', corps.id);
 
-    var dit = el('p', 'depliant-dit');
     var cNom = champ('factNom' + suffixe, false);
-    var cIfu = champ('factIfu' + suffixe, true);
+    var cIfu = champ('factIfu' + suffixe, false);
     var cCourriel = champ('factCourriel' + suffixe, false);
 
     /* Le jeton d'autocompletion nomme la nature du champ pour l'assistance et
@@ -460,21 +523,19 @@
     cNom.saisie.setAttribute('autocomplete', 'organization');
     cIfu.saisie.setAttribute('inputmode', 'numeric');
     cIfu.saisie.setAttribute('autocomplete', 'off');
+    cIfu.saisie.setAttribute('maxlength', String(IFU_ATTENDU));
     cCourriel.saisie.setAttribute('type', 'email');
     cCourriel.saisie.setAttribute('autocomplete', 'email');
 
-    var pied = el('p', 'depliant-pied');
     var erreur = el('p', 'erreur');
     erreur.id = 'erreurFacturation' + suffixe;
     erreur.setAttribute('role', 'alert');
     erreur.setAttribute('aria-live', 'polite');
     erreur.classList.add('cache');
 
-    corps.appendChild(dit);
     corps.appendChild(cNom.enveloppe);
     corps.appendChild(cIfu.enveloppe);
     corps.appendChild(cCourriel.enveloppe);
-    corps.appendChild(pied);
     corps.appendChild(erreur);
 
     var enveloppe = el('div', 'depliant');
@@ -485,12 +546,9 @@
     function dessiner() {
       var m = mots();
       bouton.textContent = m.ouvrir;
-      dit.textContent = m.dit;
       cNom.etiquette.textContent = m.nom;
       cIfu.etiquette.textContent = m.ifu;
-      cIfu.aide.textContent = m.aideIfu;
       cCourriel.etiquette.textContent = m.courriel;
-      pied.textContent = m.pied;
     }
 
     /* LE FOCUS NE BOUGE PAS A L'OUVERTURE. Le contenu paraît juste sous le
@@ -510,9 +568,11 @@
       if (ou) ou.focus();
     }
 
-    /* Rend `null` quand il n'y a rien a poser — depliant ferme, ou trois champs
-       vides —, une erreur quand la saisie est refusee, et l'objet a transmettre
-       sinon. Un depliant ouvert mais vide n'est pas une saisie. */
+    /* Rend `vide` quand il n'y a rien a poser — trois champs vides : un
+       depliant ouvert mais vide n'est pas une saisie —, `refus` quand la
+       saisie est incomplete ou illisible, et l'objet a transmettre sinon.
+       Des qu'un champ est rempli, LES TROIS SONT REQUIS : une facture
+       d'entreprise se compose entiere ou pas du tout. */
     function lire() {
       erreur.classList.add('cache');
       var m = mots();
@@ -521,23 +581,15 @@
       var courriel = cCourriel.saisie.value.trim();
       if (!nom && !ifu && !courriel) return { vide: true };
       if (!nom) { montrerErreur(m.manqueNom, cNom.saisie); return { refus: true }; }
-      if (ifu) {
-        if (!/^[0-9]{8,20}$/.test(ifu)) { montrerErreur(m.ifuFaux, cIfu.saisie); return { refus: true }; }
-        /* Un ecart de longueur ne bloque pas : la base accepte de 8 a 20, et un
-           ecran plus strict que la porte refuserait ce qu'elle accepte. Il se
-           dit, une fois, et la saisie repasse. */
-        if (ifu.length !== IFU_ATTENDU && !erreur.dataset.taillePassee) {
-          erreur.dataset.taillePassee = '1';
-          montrerErreur(m.ifuTaille, cIfu.saisie);
-          return { refus: true };
-        }
+      if (!ifu) { montrerErreur(m.manqueIfu, cIfu.saisie); return { refus: true }; }
+      if (!new RegExp('^[0-9]{' + IFU_ATTENDU + '}$').test(ifu)) {
+        montrerErreur(m.ifuFaux, cIfu.saisie); return { refus: true };
       }
-      if (courriel) {
-        if (MASQUE_FACTURATION.test(courriel) || !ADRESSE_LISIBLE.test(courriel)) {
-          montrerErreur(m.adresseFausse, cCourriel.saisie); return { refus: true };
-        }
+      if (!courriel) { montrerErreur(m.manqueAdresse, cCourriel.saisie); return { refus: true }; }
+      if (MASQUE_FACTURATION.test(courriel) || !ADRESSE_LISIBLE.test(courriel)) {
+        montrerErreur(m.adresseFausse, cCourriel.saisie); return { refus: true };
       }
-      return { nom: nom, ifu: ifu || null, courriel: courriel || null };
+      return { nom: nom, ifu: ifu, courriel: courriel };
     }
 
     /* Pose l'identite sur la vente, ou ne fait rien. Rend une promesse qui vaut
@@ -618,27 +670,14 @@
       if (precedent && precedent.focus) { try { precedent.focus(); } catch (e) {} }
     }
 
-    /* UNE COUCHE OUVERTE PAR-DESSUS SE FERME AVANT LA MODALE. Le geste
-       « retour » et la touche d'echappement s'adressent a ce qui est au-dessus,
-       et une seule chose est au-dessus a la fois. Sans cette regle, ils
-       ferment la modale et laissent la couche seule a l'ecran, puis le geste
-       suivant quitte la page.
-       La liste des pays est traitee ICI, une fois, plutot que dans chaque
-       ecran qui porte un champ telephone : un ecran peut oublier, cette
-       fonction non. `opts.sousCouche` ajoute les couches propres a un ecran et
-       suit le meme contrat — fermer, et rendre true si elle a ferme.
-       La lecture se fait en phase de CAPTURE pour que la decision soit prise
-       avant que la couche ne se ferme d'elle-meme : lue apres, elle ne serait
-       plus ouverte, et la modale se fermerait a tort. */
-    function couchesFermees() {
-      var ferme = fermerListePays();
-      if (typeof opts.sousCouche === 'function' && opts.sousCouche() === true) ferme = true;
-      return ferme;
-    }
-
+    /* UNE COUCHE OUVERTE PAR-DESSUS SE FERME AVANT LA MODALE. La liste des
+       pays porte sa propre entree d'historique : le retour qui la ferme est
+       consomme par elle, et la modale n'a qu'a l'ignorer — c'est ce que dit
+       `popConsommeParCouche`. L'echappement ferme la liste par son canal
+       propre, qui range aussi son entree d'historique. */
     document.addEventListener('keydown', function (e) {
       if (!ouverte) return;
-      if (e.key === 'Escape') { e.preventDefault(); if (!couchesFermees()) fermer(); return; }
+      if (e.key === 'Escape') { e.preventDefault(); if (!fermerListePays()) fermer(); return; }
       if (e.key !== 'Tab') return;
       var l = visibles(hote);
       if (!l.length) return;
@@ -650,13 +689,7 @@
 
     window.addEventListener('popstate', function () {
       if (!ouverte) return;
-      /* Le navigateur a deja consomme l'entree. Si le geste s'adressait a une
-         couche au-dessus, l'entree se repose : la modale garde son propre pas
-         d'historique, et le geste suivant la ferme, elle. */
-      if (couchesFermees()) {
-        if (pousse) { try { history.pushState({ rootsModale: cle }, ''); } catch (e) {} }
-        return;
-      }
+      if (popConsommeParCouche()) return;
       fermer(true);
     });
 
@@ -820,11 +853,18 @@
       var src = document.getElementById(b.getAttribute('data-code-source'));
       return src ? (src.textContent || '').trim() : '';
     }
+    /* Le retour visuel remplace le contenu — texte ou icone — puis le
+       restitue tel quel : le meme mecanisme sert les deux formes du bouton. */
     function dire(b, mot) {
-      var avant = b.getAttribute('data-libelle') || b.textContent;
-      b.setAttribute('data-libelle', avant);
+      if (b.dataset.ditEnCours) return;
+      b.dataset.ditEnCours = '1';
+      var enfants = Array.prototype.slice.call(b.childNodes);
       b.textContent = mot;
-      setTimeout(function () { b.textContent = avant; }, 1800);
+      setTimeout(function () {
+        b.textContent = '';
+        enfants.forEach(function (n) { b.appendChild(n); });
+        delete b.dataset.ditEnCours;
+      }, 1800);
     }
     Array.prototype.forEach.call(document.querySelectorAll('[data-code-copier]'), function (b) {
       b.addEventListener('click', function () {
@@ -970,6 +1010,8 @@
     '<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>',
     '<symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>',
     '<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>',
+    '<symbol id="i-copie" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>',
+    '<symbol id="i-telecharger" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>',
     '<symbol id="i-plan" viewBox="0 0 24 24"><path d="M15 5.5 9 3 3 5.5v15L9 18l6 2.5 6-2.5v-15L15 5.5z"/><path d="M9 3v15M15 5.5v15"/></symbol>',
     '<symbol id="i-roots" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol>',
     '<symbol id="i-roam" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9z"/></symbol>',
