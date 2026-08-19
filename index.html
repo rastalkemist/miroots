@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-KWL5Wiwd81gfTcfEjiHhCdyK7dXxNA2ffS5yXTJNMSM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-+V/MnEpRJM1UzgDcQcMnFIvDpQnkaFAOt+g9sWfEv+g='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -158,10 +158,16 @@
     <div id="vueEvt">
       <div class="groupe"><span class="etiquette" id="etNature" data-t="etNature">Quelle occasion ?</span>
         <div class="rangee-chips" role="group" aria-labelledby="etNature">
-          <button type="button" class="chip actif" data-nature="evenement" data-t="natEvenement">Événement au jardin</button>
-          <button type="button" class="chip" data-nature="soiree" data-t="natSoiree">Soirée à la maison</button>
+          <button type="button" class="chip actif" data-nature="evenement" data-t="natEvenement">Événement privé</button>
+          <button type="button" class="chip" data-nature="soiree" data-t="natSoiree">Soirée / Chill</button>
+          <button type="button" class="chip" data-nature="atelier" data-t="natAtelier">Atelier art / artisanat</button>
           <button type="button" class="chip" data-nature="autre" data-t="natAutre">Autre</button>
         </div></div>
+      <!-- Le recit vient tout de suite apres l'occasion. Facultatif, sauf sur
+           « Autre » : ce choix ne dit rien par lui-meme, le message est alors
+           la demande. -->
+      <div class="champ groupe"><label for="msgEvt" data-t="msgEvt">Dis-nous en plus — facultatif</label>
+        <textarea id="msgEvt" rows="3"></textarea></div>
       <div class="rangee-choix">
         <div class="groupe"><label class="etiquette" for="dateEvt" data-t="etDateEvt">Date souhaitée</label>
           <div class="champ" style="margin-bottom:0"><input type="date" id="dateEvt"></div></div>
@@ -174,8 +180,6 @@
         <input type="tel" inputmode="tel" id="telEvt" autocomplete="tel"></div>
       <div class="champ groupe" style="margin-bottom:13px"><label for="emailEvt" data-t="emailEvt">Ton e-mail — facultatif</label>
         <input type="email" id="emailEvt" autocomplete="email"></div>
-      <div class="champ groupe"><label for="msgEvt" data-t="msgEvt">Dis-nous en plus — facultatif</label>
-        <textarea id="msgEvt" rows="3"></textarea></div>
       <button class="bouton-confirmer" id="btnEvt" disabled data-t="envoyerDemande">Envoyer la demande</button>
       <p class="erreur" id="erreurEvt" role="alert" aria-live="polite"></p>
       <p class="consent" id="consentEvt"></p>
@@ -245,10 +249,13 @@
       ongReserver: 'Coworking', ongCommander: 'Menu',
       ongEvenement: 'Événement',
       etNature: 'Quelle occasion ?',
-      natEvenement: 'Événement au jardin', natSoiree: 'Soirée à la maison', natAutre: 'Autre',
+      natEvenement: 'Événement privé', natSoiree: 'Soirée / Chill',
+      natAtelier: 'Atelier art / artisanat', natAutre: 'Autre',
       etDateEvt: 'Date souhaitée', etNbEvt: 'Combien environ ?',
       tonNomEvt: 'Ton prénom', telEvt: 'Ton numéro (pour te répondre)',
-      emailEvt: 'Ton e-mail — facultatif', msgEvt: 'Dis-nous en plus — facultatif',
+      emailEvt: 'Ton courriel — facultatif', msgEvt: 'Dis-nous en plus — facultatif',
+      msgEvtRequis: 'Dis-nous en plus',
+      evtMsgManque: 'Dis-nous en quelques mots ce que tu prépares.',
       envoyerDemande: 'Envoyer la demande',
       politique2: 'Politique de confidentialité',
       evtManque: 'Indique ton prénom et ton numéro.',
@@ -299,10 +306,13 @@
       ongReserver: 'Coworking', ongCommander: 'Menu',
       ongEvenement: 'Event',
       etNature: 'What’s the occasion?',
-      natEvenement: 'Garden event', natSoiree: 'House party', natAutre: 'Something else',
+      natEvenement: 'Private Event', natSoiree: 'House Party / Rave',
+      natAtelier: 'Arts & Crafts Workshop', natAutre: 'Something else',
       etDateEvt: 'Preferred date', etNbEvt: 'Roughly how many?',
       tonNomEvt: 'Your first name', telEvt: 'Your number (so we can get back to you)',
       emailEvt: 'Your email — optional', msgEvt: 'Tell us more — optional',
+      msgEvtRequis: 'Tell us more',
+      evtMsgManque: 'Tell us in a few words what you have in mind.',
       envoyerDemande: 'Send my request',
       politique2: 'Privacy Policy',
       evtManque: 'Enter your first name and phone number.',
@@ -417,15 +427,29 @@
   var evt = { nature: 'evenement', notice: null, cle: null, enCours: false };
   var itiEvt = null;
 
+  /* Sur « Autre », le message EST la demande : son libelle perd le
+     « facultatif » et le bouton l'attend. */
+  function majLibelleMsg() {
+    var l = document.querySelector('label[for="msgEvt"]');
+    var cle = evt.nature === 'autre' ? 'msgEvtRequis' : 'msgEvt';
+    l.setAttribute('data-t', cle);
+    l.textContent = t()[cle];
+  }
+
   document.querySelectorAll('#ct-evenement .chip').forEach(function (c) {
     c.addEventListener('click', function () {
       document.querySelectorAll('#ct-evenement .chip').forEach(function (x) {
         x.classList.toggle('actif', x === c);
       });
       evt.nature = c.dataset.nature;
+      majLibelleMsg();
+      majEvt();
     });
   });
 
+  function msgEvtValide() {
+    return evt.nature !== 'autre' || $('msgEvt').value.trim().length >= 2;
+  }
   function nbEvtValide() {
     var n = parseInt($('nbEvt').value.trim(), 10);
     return n >= 1 && n <= 500;
@@ -441,9 +465,9 @@
   function majEvt() {
     $('btnEvt').disabled = !($('nomEvt').value.trim().length >= 2
       && numeroValide($('telEvt'), itiEvt) && dateEvtValide()
-      && nbEvtValide() && emailEvtValide() && evt.notice);
+      && nbEvtValide() && emailEvtValide() && msgEvtValide() && evt.notice);
   }
-  ['nomEvt', 'telEvt', 'dateEvt', 'nbEvt', 'emailEvt'].forEach(function (id) {
+  ['nomEvt', 'telEvt', 'dateEvt', 'nbEvt', 'emailEvt', 'msgEvt'].forEach(function (id) {
     $(id).addEventListener('input', majEvt);
   });
 
@@ -463,11 +487,24 @@
     if (!emailEvtValide()) {
       montrerErreur('erreurEvt', m.evtEmailFaux); $('emailEvt').focus(); return null;
     }
-    return { nature: evt.nature, nom: nom, tel: numeroDe($('telEvt'), itiEvt),
+    if (!msgEvtValide()) {
+      montrerErreur('erreurEvt', m.evtMsgManque); $('msgEvt').focus(); return null;
+    }
+    /* La base ne connait que trois natures — evenement, soiree, autre.
+       L'atelier s'enregistre en `autre` et se nomme en tete du message,
+       pour que la demande arrive entiere sans que la porte la refuse. */
+    var nature = evt.nature;
+    var message = $('msgEvt').value.trim() || null;
+    if (nature === 'atelier') {
+      nature = 'autre';
+      message = message ? 'Atelier art / artisanat — ' + message
+                        : 'Atelier art / artisanat';
+    }
+    return { nature: nature, nom: nom, tel: numeroDe($('telEvt'), itiEvt),
              email: $('emailEvt').value.trim() || null,
              date: $('dateEvt').value,
              personnes: parseInt($('nbEvt').value.trim(), 10),
-             message: $('msgEvt').value.trim() || null };
+             message: message };
   }
 
   async function envoyerEvt() {

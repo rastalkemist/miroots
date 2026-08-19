@@ -419,14 +419,18 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--esp-3);flex-wrap:wrap}
 .geste-code{min-height:var(--cible-min);padding:0 var(--esp-4);border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:var(--w-bold);cursor:pointer}
 
-/* Le code et ses deux gestes sur UNE ligne : les icones tiennent 80 % de la
-   hauteur de ligne du code et se centrent sur son axe horizontal ; la cible
-   du bouton — invisible — tient le plancher de 44. Le retour « Copié »
-   s'ecrit a la place de l'icone, le temps d'un souffle. */
+/* Le code et ses deux gestes sur UNE ligne : le trait des icones se lit a
+   80 % de la hauteur VISIBLE des signes du code, centre sur leur axe ; la
+   cible du bouton — invisible — tient le plancher de 44. Le retour
+   « Copié » s'ecrit a la place de l'icone, le temps d'un souffle.
+   0.715 = hauteur d'encre des capitales et chiffres de la fonte des codes,
+   mesuree sur ses metriques ; le trait des icones occupant ~80 % de leur
+   boite, une boite a cette hauteur rend un trait a 80 % des signes.
+   Changer la fonte des codes exige de remesurer ce rapport. */
 .ligne-code{display:flex;align-items:center;justify-content:center;gap:var(--esp-1);margin:var(--esp-2) 0}
 .ligne-code .code{margin:0;line-height:var(--lh-33)}
 .geste-code-ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--cible-min);min-height:var(--cible-min);padding:0;border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-size:var(--t-note);font-weight:var(--w-bold);white-space:nowrap;cursor:pointer}
-.geste-code-ico svg.i{width:calc(var(--t-code) * var(--lh-33) * .8);height:calc(var(--t-code) * var(--lh-33) * .8)}
+.geste-code-ico svg.i{width:calc(var(--t-code) * .715);height:calc(var(--t-code) * .715)}
 :where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 30px;border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-28);font-weight:var(--w-medium);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 

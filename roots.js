@@ -203,17 +203,17 @@
      ferait changer la forme du menu d'un ecran a l'autre, ce qui desoriente
      et prive le lecteur d'ecran de sa position.
      ------------------------------------------------------------------ */
+  /* Le tiroir ne liste que les ecrans de l'univers courant : changer
+     d'univers passe par le super-nav, jamais par le tiroir. */
   var NAV = {
     fr: [
       { ico: 'i-carte',      t: 'La carte',           s: 'Toute la carte, en détail', href: 'carte.html' },
       { ico: 'i-calendrier', t: 'Réserver un espace', s: 'Le jardin, le bureau',      href: 'index.html?ouvrir=reserver' },
-      { ico: 'i-roam',       t: 'Séjourner',          s: 'Kër Yawa — réserve tes nuits', href: 'roam.html' },
       { ico: 'i-ticket',     t: 'Retrouver',          s: 'Réservation ou commande, avec ton code', href: 'retrouver.html' }
     ],
     en: [
       { ico: 'i-carte',      t: 'Menu',         s: 'The full menu, in detail',   href: 'carte.html' },
       { ico: 'i-calendrier', t: 'Book a space', s: 'The garden, the office',     href: 'index.html?ouvrir=reserver' },
-      { ico: 'i-roam',       t: 'Stay',           s: 'Kër Yawa — book your nights', href: 'roam.html' },
       { ico: 'i-ticket',     t: 'Find a booking', s: 'A booking or an order, with your code', href: 'retrouver.html' }
     ]
   };
