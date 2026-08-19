@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-+V/MnEpRJM1UzgDcQcMnFIvDpQnkaFAOt+g9sWfEv+g='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-4h3TQ7a7yq5kE3o6SNQwKnfNWMZ3NpABkTjLSUc696w='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -113,7 +113,7 @@
       </div>
       <div class="message-ferme" id="messageFerme" role="status" aria-live="polite"></div>
       <p class="jauge" id="jauge" aria-live="polite" style="margin-top:0"></p>
-      <div class="champ groupe" style="margin-bottom:13px"><label for="nomResa" data-t="tonNomResa">Ton prénom</label>
+      <div class="champ groupe" style="margin-bottom:var(--air-i3)"><label for="nomResa" data-t="tonNomResa">Ton prénom</label>
         <input id="nomResa" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
       <div class="champ groupe"><label for="telResa" data-t="tel">Ton numéro (pour te confirmer)</label>
         <input type="tel" inputmode="tel" id="telResa" autocomplete="tel"></div>
@@ -174,11 +174,11 @@
         <div class="groupe"><label class="etiquette" for="nbEvt" data-t="etNbEvt">Combien environ ?</label>
           <div class="champ" style="margin-bottom:0"><input id="nbEvt" inputmode="numeric" placeholder="30"></div></div>
       </div>
-      <div class="champ groupe" style="margin-bottom:13px"><label for="nomEvt" data-t="tonNomEvt">Ton prénom</label>
+      <div class="champ groupe" style="margin-bottom:var(--air-i3)"><label for="nomEvt" data-t="tonNomEvt">Ton prénom</label>
         <input id="nomEvt" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
-      <div class="champ groupe" style="margin-bottom:13px"><label for="telEvt" data-t="telEvt">Ton numéro (pour te répondre)</label>
+      <div class="champ groupe" style="margin-bottom:var(--air-i3)"><label for="telEvt" data-t="telEvt">Ton numéro (pour te répondre)</label>
         <input type="tel" inputmode="tel" id="telEvt" autocomplete="tel"></div>
-      <div class="champ groupe" style="margin-bottom:13px"><label for="emailEvt" data-t="emailEvt">Ton e-mail — facultatif</label>
+      <div class="champ groupe" style="margin-bottom:var(--air-i3)"><label for="emailEvt" data-t="emailEvt">Ton e-mail — facultatif</label>
         <input type="email" id="emailEvt" autocomplete="email"></div>
       <button class="bouton-confirmer" id="btnEvt" disabled data-t="envoyerDemande">Envoyer la demande</button>
       <p class="erreur" id="erreurEvt" role="alert" aria-live="polite"></p>
@@ -197,7 +197,7 @@
     <div id="vueCmd">
       <div id="menuCompact"></div>
       <a class="lien-detail" href="carte.html" data-t="voirDetail">Voir la carte détaillée →</a>
-      <div class="groupe" style="margin-top:14px"><span class="etiquette" data-t="etService">Service</span>
+      <div class="groupe" style="margin-top:var(--air-i3)"><span class="etiquette" data-t="etService">Service</span>
         <div class="rangee-chips" id="chipsService"></div></div>
       <div class="recap" id="recapCmd"><span class="titre" data-t="cmdTotal">Total commande</span>
         <span class="total" id="cmdTotal"></span></div>
@@ -253,7 +253,7 @@
       natAtelier: 'Atelier art / artisanat', natAutre: 'Autre',
       etDateEvt: 'Date souhaitée', etNbEvt: 'Combien environ ?',
       tonNomEvt: 'Ton prénom', telEvt: 'Ton numéro (pour te répondre)',
-      emailEvt: 'Ton courriel — facultatif', msgEvt: 'Dis-nous en plus — facultatif',
+      emailEvt: 'Ton e-mail — facultatif', msgEvt: 'Dis-nous en plus — facultatif',
       msgEvtRequis: 'Dis-nous en plus',
       evtMsgManque: 'Dis-nous en quelques mots ce que tu prépares.',
       envoyerDemande: 'Envoyer la demande',
@@ -306,8 +306,8 @@
       ongReserver: 'Coworking', ongCommander: 'Menu',
       ongEvenement: 'Event',
       etNature: 'What’s the occasion?',
-      natEvenement: 'Private Event', natSoiree: 'House Party / Rave',
-      natAtelier: 'Arts & Crafts Workshop', natAutre: 'Something else',
+      natEvenement: 'Private event', natSoiree: 'Rave / House Party',
+      natAtelier: 'Arts & crafts Workshop', natAutre: 'Something else',
       etDateEvt: 'Preferred date', etNbEvt: 'Roughly how many?',
       tonNomEvt: 'Your first name', telEvt: 'Your number (so we can get back to you)',
       emailEvt: 'Your email — optional', msgEvt: 'Tell us more — optional',

@@ -24,11 +24,47 @@
     if (!barre) return;
     /* La commande n'est pas servie sur tous les jeux d'ecran. La ou elle ne
        l'est pas, un cran retenu d'une autre visite s'appliquerait sans que
-       personne puisse le defaire : le facteur revient a 1 et rien ne s'accroche. */
-    if (barre.offsetParent === null) {
+       personne puisse le defaire : le facteur revient a 1 et rien ne s'accroche.
+       `offsetParent` ne sert pas ici : il est nul pour tout element fixe. */
+    if (getComputedStyle(barre).display === 'none') {
       zone.style.setProperty('--zoom-lecture', 1);
       return;
     }
+
+    /* La commande est fixe : elle partage le bord haut du h1 a l'ouverture,
+       s'efface quand on descend, reparait des qu'on remonte. Le h1 se cherche
+       parmi les VISIBLES : la page porte un bloc de texte par langue, et le
+       h1 d'un bloc masque mesure zero. */
+    function titreVisible() {
+      var ts = zone.querySelectorAll('h1');
+      for (var i = 0; i < ts.length; i++) {
+        if (ts[i].getClientRects().length) return ts[i];
+      }
+      return null;
+    }
+    function caler() {
+      var titre = titreVisible();
+      if (!titre) return;
+      var haut = titre.getBoundingClientRect().top + window.scrollY;
+      barre.style.top = haut + 'px';
+    }
+    caler();
+    window.addEventListener('resize', caler);
+    window.addEventListener('load', caler);
+
+    var dernierY = window.scrollY, enAttente = false;
+    window.addEventListener('scroll', function () {
+      if (enAttente) return;
+      enAttente = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY;
+        if (y > dernierY + 4) barre.classList.add('efface');
+        else if (y < dernierY - 4) barre.classList.remove('efface');
+        dernierY = y;
+        enAttente = false;
+      });
+    }, { passive: true });
+
     var moins = barre.querySelector('[data-taille="moins"]');
     var plus = barre.querySelector('[data-taille="plus"]');
     var etat = barre.querySelector('.etat');

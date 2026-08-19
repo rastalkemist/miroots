@@ -640,21 +640,28 @@
    des lignes. `--lh-item` reste pour ce qui tient sur une seule ligne. */
 .lecture-longue li { line-height: var(--lh-prose); }
 
-/* Ne pas coller cette commande au bord haut : un en-tete colle y occupe deja le
-   meme bord avec un rang d'empilement superieur, et la commande passe derriere
-   lui, inatteignable au defilement. */
-.regle-taille { display: flex; align-items: center; gap: var(--esp-1);
-                width: max-content; margin-inline: auto;
-                font-size: var(--t-label); padding: var(--air-lie) 0;
-                background: var(--blanc-casse); }
+/* Deux glyphes nus et un filet : l'empreinte minimale d'une commande qui doit
+   rester trouvable sans concurrencer le titre. Elle se fixe a droite de
+   l'ecran, alignee sur le bord haut du h1 (position posee par le script de
+   lecture), s'efface au defilement vers le bas et reparait vers le haut. La
+   plaque sous les glyphes prend la couleur du fond de page : invisible sur
+   fond nu, elle ne sert qu'a separer le texte qui defile des glyphes. */
+.regle-taille { position: fixed; right: var(--esp-3); z-index: 6;
+                display: flex; align-items: center; gap: 0;
+                width: max-content; font-size: var(--t-label);
+                opacity: 1; transition: opacity 200ms var(--courbe-a); }
+.regle-taille::before { content: ''; position: absolute; left: 0; right: 0;
+                        top: 50%; height: 28px; transform: translateY(-50%);
+                        background: var(--blanc);
+                        border-radius: var(--rayon-pilule); z-index: -1; }
+.regle-taille.efface { opacity: 0; pointer-events: none; }
 .regle-taille button { min-width: var(--cible-min); min-height: var(--cible-min);
-                       border: 0; border-radius: var(--rayon-pilule);
-                       background: var(--gris-ilot); color: var(--encre);
+                       border: 0; background: none; color: var(--encre);
                        font-family: var(--font-corps); font-size: var(--t-h4);
-                       font-weight: 700; cursor: pointer; }
-.regle-taille button[disabled] { opacity: .4; cursor: default; }
-.regle-taille .etat { font-size: var(--t-label); color: var(--encre-discrete);
-                      min-width: 8ch; text-align: right; }
+                       font-weight: 700; cursor: pointer; padding: 0; }
+.regle-taille button[disabled] { opacity: .35; cursor: default; }
+.regle-taille .sep { width: 1px; height: 14px; background: var(--gris-ilot); }
+@media (prefers-reduced-motion: reduce) { .regle-taille { transition: none; } }
 /* La commande ne sert que la ou le corps n'est pas deja a sa taille eprouvee.
    Au-dessus du plus petit jeu d'ecran le corps vaut deja le dernier cran : il
    n'y a plus rien a regler vers le haut, et une commande sans course est un
