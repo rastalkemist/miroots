@@ -339,13 +339,13 @@
       var b = e.target.closest('.verbe'); if (!b) return;
       var v = b.dataset.verbe;
       if (onVerbe && onVerbe(v, b)) return;
-      if (v === 'roots') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+
       /* Un univers qui a son ecran est une destination, pas une promesse : le
          verbe y mene, sauf quand on y est deja — le bouton porte alors
          aria-current et remonte la page. Un bouton marque dormant reste une
          annonce : c'est le balisage de la page, et lui seul, qui decide si la
          destination existe pour elle. */
-      var DESTINATION = { roam: 'roam.html', plan: 'plan.html' };
+      var DESTINATION = { roots: 'index.html', roam: 'roam.html', plan: 'plan.html' };
       if (DESTINATION[v] && b.getAttribute('aria-disabled') !== 'true') {
         if (b.getAttribute('aria-current') === 'true') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
         global.location.assign(DESTINATION[v]);
@@ -1057,8 +1057,8 @@
     '<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>',
     '<symbol id="i-copie" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>',
     '<symbol id="i-telecharger" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></symbol>',
-    '<symbol id="i-plan" viewBox="0 0 24 24"><path d="M15 5.5 9 3 3 5.5v15L9 18l6 2.5 6-2.5v-15L15 5.5z"/><path d="M9 3v15M15 5.5v15"/></symbol>',
-    '<symbol id="i-roots" viewBox="0 0 24 24"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol>',
+    '<symbol id="i-plan" viewBox="-3.759 -4.009 31.519 31.519" stroke-width="2.627"><path d="M15 5.5 9 3 3 5.5v15L9 18l6 2.5 6-2.5v-15L15 5.5z"/><path d="M9 3v15M15 5.5v15"/></symbol>',
+    '<symbol id="i-roots" viewBox="-2.230 -1.730 27.460 27.460" stroke-width="2.288"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></symbol>',
     '<symbol id="i-roam" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M16.2 7.8 14.1 14.1 7.8 16.2 9.9 9.9z"/></symbol>',
     '<symbol id="i-carte" viewBox="0 0 24 24"><path d="M3 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3z"/></symbol>',
     '<symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"/><path d="M13 5v2M13 11v2M13 17v2"/></symbol>',

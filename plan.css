@@ -30,6 +30,7 @@
  */
 :where(body.p-plan){
   --univers: var(--roots-noir);
+  --univers-e1: var(--roots-noir);
   --univers-rgb: var(--noir-rgb);
   --encre: var(--roots-noir);
   --accent-plan: var(--terre-e3);
@@ -215,18 +216,6 @@
   font-size: var(--t-sm);
   line-height: var(--lh-14);
   color: var(--encre-discrete);
-}
-
-/* ---- Cible du logotype de chrome ----------------------------------------
- * Le mot de l'univers est court : rendu tel quel, il occupe 35 px de large,
- * sous le seuil de 44 que ce systeme s'impose. Le remplissage lateral porte
- * la cible sans changer ni la taille ni la graisse du mot.
- */
-:where(body.p-plan) .chrome-titre{
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--cible-min);
-  padding: 0 var(--esp-2);
 }
 
 /* ---- Saisie dans la section financiere ----------------------------------

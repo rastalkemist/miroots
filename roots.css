@@ -176,10 +176,10 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .chrome-titre{font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--univers);letter-spacing:.01em}
 .chrome-droite{display:flex;align-items:center;gap:var(--esp-2)}
 .lang-btn{height:44px;min-width:44px;padding:0 var(--esp-1);border:none;background:none;color:var(--univers);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer}
-.chrome-burger{width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--encre)}
+.chrome-burger{width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--univers-e1)}
 .chrome-burger svg{width:30px;height:30px}
 .chrome-titre{position:relative;text-decoration:none;cursor:pointer}
-.chrome-titre::after{content:'';position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);height:44px}
+.chrome-titre::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;min-width:var(--cible-min);height:var(--cible-min)}
 /* La page courante reste dans le menu et s'y marque : une navigation
    repetee doit garder la meme forme sur chaque ecran. Le marquage est
    double — la couleur seule ne porte jamais une information. */
@@ -349,7 +349,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    portent le meme poids : l'univers change, aucune mesure ne change.
    Traversent seuls, hors alias : la semantique de statut et l'anneau de
    focus, qui sont les memes dans tous les univers. */
-:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08)}
+:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1)}
 
 /* ------------------------------------------------------------------------ Univers Mi Roam ------------------------------------------------------------------------ */
 /* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
@@ -357,7 +357,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    alias — jamais une valeur neuve — parce que la palette garantit qu'a echelon
    egal les familles portent le meme poids : l'univers change, aucune mesure ne
    change. Le nav appartient a l'univers ; le super-nav du bas commute. */
-:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir)}
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
