@@ -438,17 +438,29 @@
   }
 }
 
-/* ---------- 2 ter. LE RYTHME VERTICAL — CINQ CRANS ----------
+/* ---------- 2 ter. LE RYTHME VERTICAL — DEUX RAMPES, UNE PAR REGISTRE ----------
    L'air dit l'appartenance : plus deux blocs sont liés, moins il y a
    d'air entre eux. Il ne prend jamais une valeur neuve — il se prend
-   sur l'échelle d'espacement. */
+   en fractions de la ligne de son registre.
+   PORTÉE : l'air VERTICAL entre blocs empilés. Ni les gouttières entre
+   éléments côte à côte, ni les remplissages de boîtes. */
 :root {
+  /* ÉDITORIAL — fractions de la ligne de lecture longue */
   --air-soude: 0px;         /* 0 — la ligne vaut 18.38 px (corps 13 x 1.414) — terme et sa definition · chiffre et son libelle · citation et son texte */
   --air-colle: 4.6px;       /* 1/4 de ligne — la ligne vaut 18.38 px (corps 13 x 1.414) — appartient a ce qui precede — items d'une liste · sous-liste · attribution d'une citatio */
   --air-lie: 9.19px;        /* 1/2 ligne — la ligne vaut 18.38 px (corps 13 x 1.414) — suit immediatement — texte sous son titre · second titre sous le premier · aide et erreu */
   --air-separe: 13.79px;    /* 3/4 de ligne — la ligne vaut 18.38 px (corps 13 x 1.414) — deux blocs de meme rang — deux paragraphes · deux couples de definition · apres une list */
   --air-rompu-h2: 36.77px;  /* 2 lignes — la ligne vaut 18.38 px (corps 13 x 1.414) — on change de section — au-dessus d'un h2 · avant une mention legale */
   --air-rompu-h3: 27.58px;  /* 1 ligne 1/2 — la ligne vaut 18.38 px (corps 13 x 1.414) — on change de section — au-dessus d'un h3 · autour d'une citation en bloc */
+
+  /* INTERFACE — dérivation de l'échelle, jamais une valeur nue :
+     la ligne d'interface est le corps par son interligne, et chaque
+     cran en est une fraction. Poser un nombre ici couperait le lien. */
+  --air-i1: calc(var(--t-body) * 1.5 * 0.25); /* 1/4 de ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
+  --air-i2: calc(var(--t-body) * 1.5 * 0.5);  /* 1/2 ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
+  --air-i3: calc(var(--t-body) * 1.5 * 0.75); /* 3/4 de ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
+  --air-i6: calc(var(--t-body) * 1.5 * 1);    /* 1 ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
+  --air-i8: calc(var(--t-body) * 1.5 * 1.5);  /* 1 ligne 1/2 — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
 }
 
 /* ---------- 2 quater. L'INTERLETTRAGE — fonction de la CASSE ----------
@@ -642,10 +654,12 @@
 
 /* Deux glyphes nus et un filet : l'empreinte minimale d'une commande qui doit
    rester trouvable sans concurrencer le titre. Elle se fixe a droite de
-   l'ecran, alignee sur le bord haut du h1 (position posee par le script de
-   lecture), s'efface au defilement vers le bas et reparait vers le haut. La
-   plaque sous les glyphes prend la couleur du fond de page : invisible sur
-   fond nu, elle ne sert qu'a separer le texte qui defile des glyphes. */
+   l'ecran, alignee sur le bord haut du h1 — cette position est posee par le
+   script de lecture — s'efface au defilement vers le bas et reparait vers le
+   haut. La plaque sous les glyphes prend la couleur du fond de page :
+   invisible sur fond nu, elle ne sert qu'a separer le texte qui defile des
+   glyphes. Les deux cibles tiennent le plancher de 44 px ; les reduire fait
+   tomber le critere de taille de cible. */
 .regle-taille { position: fixed; right: var(--esp-3); z-index: 6;
                 display: flex; align-items: center; gap: 0;
                 width: max-content; font-size: var(--t-label);

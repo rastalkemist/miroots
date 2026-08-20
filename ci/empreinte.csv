@@ -5,6 +5,11 @@
 # refuser le depot, ce qui est exactement son role.
 jeton,rang,valeur
 --air-colle,0,4.6px
+--air-i1,0,calc(var(--t-body) * 1.5 * 0.25)
+--air-i2,0,calc(var(--t-body) * 1.5 * 0.5)
+--air-i3,0,calc(var(--t-body) * 1.5 * 0.75)
+--air-i6,0,calc(var(--t-body) * 1.5 * 1)
+--air-i8,0,calc(var(--t-body) * 1.5 * 1.5)
 --air-lie,0,9.19px
 --air-rompu-h2,0,36.77px
 --air-rompu-h3,0,27.58px

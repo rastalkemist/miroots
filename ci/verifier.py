@@ -304,7 +304,8 @@ def epreuve():
             for nom, txt in fichiers.items():
                 (d / nom).write_text(txt, encoding="utf-8")
             pris = []
-            for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f):
+            for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f,
+                      controle_g):
                 c(d, lambda _: None, pris.append)
             ok = any(p.startswith(lettre + " ") for p in pris)
             vus += ok
@@ -315,7 +316,8 @@ def epreuve():
         for nom, txt in SAIN.items():
             (d / nom).write_text(txt, encoding="utf-8")
         pris = []
-        for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f):
+        for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f,
+                      controle_g):
             c(d, lambda _: None, pris.append)
         ok = not pris
         vus += ok
@@ -323,6 +325,47 @@ def epreuve():
               f"{'aucun refus' if ok else 'FAUX REFUS : ' + ' | '.join(pris)}")
     print(f"\n=== {vus} / {len(DEFAUTS) + 1} ===")
     return 0 if vus == len(DEFAUTS) + 1 else 1
+
+
+RE_REGLE = re.compile(r"([^{}]+)\{([^{}]*)\}")
+AIR_EDITORIAL = re.compile(r"var\(\s*--air-(?:soude|colle|lie|separe|rompu-h[23])\s*\)")
+AIR_INTERFACE = re.compile(r"var\(\s*--air-i\d\s*\)")
+
+
+def controle_g(d, dire, mal):
+    """Chaque rampe d'air reste dans son registre.
+
+    Deux rampes coexistent : l'editoriale en fractions de 18,38 px, celle
+    d'interface en fractions de 24 px. Un cran de l'une employe dans l'autre
+    pose un blanc qui ne retombe sur aucune ligne, et le rythme se defait sans
+    qu'aucune valeur soit fausse. La colonne de lecture longue porte
+    l'editorial ; tout le reste porte l'interface.
+
+    Ce que ce controle ne voit pas : l'air pose en attribut de style sur un
+    element, et l'air pose par un script. Il lit la feuille, pas le rendu.
+    """
+    f = d / "roots.css"
+    if not f.exists():
+        dire("G · roots.css absent — contrôle non applicable")
+        return
+    texte = re.sub(r"/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
+    croises = []
+    for sel, corps in RE_REGLE.findall(texte):
+        s = " ".join(sel.split())
+        if not s or s.startswith("@"):
+            continue
+        # La colonne editoriale est la classe `.lecture`, pas toute classe dont
+        # le nom contient ce mot : `.total-lecture` est une tuile de console.
+        editorial = re.search(r"\.lecture(-longue)?\b", s) is not None
+        if editorial and AIR_INTERFACE.search(corps):
+            croises.append(f"« {s[:58]} » emploie un cran d'interface")
+        if not editorial and AIR_EDITORIAL.search(corps):
+            croises.append(f"« {s[:58]} » emploie un cran éditorial")
+    dire(f"G · crans d'air employés hors de leur registre : {len(croises)}")
+    for c in croises[:6]:
+        mal("G · " + c)
+    if len(croises) > 6:
+        mal(f"G · et {len(croises) - 6} autre(s)")
 
 
 def main(argv):
@@ -337,7 +380,8 @@ def main(argv):
         refus.append(t)
 
     print(f"=== CONTRÔLES DU DÉPÔT — {d.name} ===\n")
-    for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f):
+    for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f,
+                      controle_g):
         c(d, dire, mal)
     for l in lignes:
         print(("  " + l) if not l.startswith("  ") else l)
@@ -345,7 +389,7 @@ def main(argv):
     if refus:
         print(f"REFUS — {len(refus)} écart(s). Rien ne part tant qu'ils tiennent.")
         return 1
-    print("VERT — les six contrôles passent.")
+    print("VERT — les sept contrôles passent.")
     print("ⓘ Ces contrôles vérifient des propriétés, pas du sens. La relecture reste due.")
     return 0
 
