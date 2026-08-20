@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-amv4TIqSsUuVbpbRKwE+ofIrsVk1rtUKVkO4lruo8JQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-5lTR8846JQZaE6bYMQdgdq38qU//T+hoZn36jyhSqK8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — La carte</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -230,6 +230,13 @@
   /* ---------- État ---------- */
 
   var CATEGORIES = [];
+  /* Trois moments qui ne se confondent jamais : la carte n'a pas encore
+     repondu, elle a repondu vide, elle a echoue. Le message du vide
+     n'appartient qu'au deuxieme. L'afficher pendant l'attente affirme au
+     client qu'il n'y a pas de carte, au moment precis ou il decide de rester
+     ou de partir ; l'afficher apres un echec double le message d'erreur.
+     Ce drapeau ne passe a vrai que lorsque la carte a ete servie. */
+  var carteServie = false;
   var ARTICLES = {};
   var panier = {};
   var moyenPaiement = jetonTable ? 'cash' : 'enligne';
@@ -386,6 +393,7 @@
     var z = $('listeMenu');
     z.innerHTML = '';
     if (!CATEGORIES.length) {
+      if (!carteServie) return;
       var vide = document.createElement('p');
       vide.className = 'vide-menu';
       vide.textContent = t().menuVide;
@@ -759,6 +767,7 @@
       })
       /* Une catégorie sans article visible ne s'affiche pas. */
       .filter(function (c) { return c.articles.length > 0; });
+    carteServie = true;
     dessinerCategories();
     dessinerMenu();
   }

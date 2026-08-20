@@ -340,11 +340,15 @@
       var v = b.dataset.verbe;
       if (onVerbe && onVerbe(v, b)) return;
       if (v === 'roots') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-      /* Roam est un ecran, pas une promesse : le verbe y mene, sauf quand on y
-         est deja — le bouton porte alors aria-current et remonte la page. */
-      if (v === 'roam') {
+      /* Un univers qui a son ecran est une destination, pas une promesse : le
+         verbe y mene, sauf quand on y est deja — le bouton porte alors
+         aria-current et remonte la page. Un bouton marque dormant reste une
+         annonce : c'est le balisage de la page, et lui seul, qui decide si la
+         destination existe pour elle. */
+      var DESTINATION = { roam: 'roam.html', plan: 'plan.html' };
+      if (DESTINATION[v] && b.getAttribute('aria-disabled') !== 'true') {
         if (b.getAttribute('aria-current') === 'true') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-        global.location.assign('roam.html');
+        global.location.assign(DESTINATION[v]);
         return;
       }
       toast(toastVerbe(getLangue(), verbes[v]));

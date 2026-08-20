@@ -20,9 +20,24 @@ import pathlib
 import re
 import sys
 
-# La feuille qui EMPLOIE les jetons, et celle qui les DECLARE.
-FEUILLE = "roots.css"
+# La piece qui DECLARE les jetons. Elle est la seule ou une valeur nue est
+# legitime : porter les nombres et les encres est son role.
 JETONS = "roots-tokens.css"
+
+# Nom de feuille employe par les jeux d'essai de l'epreuve, plus bas. Les
+# controles, eux, ne connaissent aucun nom de feuille : ils lisent le dossier.
+FEUILLE = "roots.css"
+
+
+def feuilles(d):
+    """Toute feuille de style du dossier SAUF la piece des jetons.
+
+    La portee est le dossier, jamais un nom en dur : un ecran qui livre sa
+    propre feuille entre dans le champ des controles sans qu'on y touche. Une
+    liste nommee laisserait une feuille neuve hors mesure, et un controle qui
+    ne lit rien rend le meme verdict qu'un controle qui n'a rien a redire.
+    """
+    return sorted(f for f in d.glob("*.css") if f.name != JETONS)
 
 # Ce qu'un commentaire ne doit pas porter. Categories generiques : aucune
 # valeur propre au projet n'est inscrite ici.
@@ -73,17 +88,17 @@ def commentaires(txt, suffixe):
 
 def controle_a(d, dire, mal):
     """Tout jeton employe est declare."""
-    css = "".join((d / f).read_text(encoding="utf-8")
-                  for f in (FEUILLE, JETONS) if (d / f).exists())
+    lus = feuilles(d) + ([d / JETONS] if (d / JETONS).exists() else [])
+    css = "".join(f.read_text(encoding="utf-8") for f in lus)
     if not css:
-        return mal(f"A · ni {FEUILLE} ni {JETONS} ne sont lisibles.")
+        return mal("A · aucune feuille de style lisible dans le dossier.")
     # Un jeton cite en exemple dans un commentaire n'est pas un jeton employe.
     css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
     employes = set(re.findall(r"var\(\s*(--[\w-]+)", css))
     declares = set(re.findall(r"(--[\w-]+)\s*:", css))
     manque = sorted(employes - declares)
-    dire(f"A · jetons employés {len(employes)} · déclarés {len(declares)} · "
-         f"manquants {len(manque)}")
+    dire(f"A · {len(lus)} feuille(s) · jetons employés {len(employes)} · "
+         f"déclarés {len(declares)} · manquants {len(manque)}")
     for j in manque[:12]:
         mal(f"A · `{j}` est employé et n'est déclaré nulle part.")
     if len(manque) > 12:
@@ -92,17 +107,18 @@ def controle_a(d, dire, mal):
 
 def controle_b(d, dire, mal):
     """La feuille de style n'ecrit aucune couleur."""
-    f = d / FEUILLE
-    if not f.exists():
+    lues = feuilles(d)
+    if not lues:
         return
-    txt = re.sub(r"/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
+    txt = re.sub(r"/\*.*?\*/", "",
+                 "".join(f.read_text(encoding="utf-8") for f in lues), flags=re.S)
     # L'hexadecimal ne suffit PAS : une couleur employee sous transparence
     # s'ecrit `rgba(10, 51, 46, .06)` et echappe alors a toute recherche de `#`.
     # Une valeur retiree survit ainsi indefiniment. La forme admise sous
     # transparence est `rgba(var(--jeton-rgb), alpha)`.
     durs = sorted(set(re.findall(r"#[0-9A-Fa-f]{3,8}\b", txt)))
     durs += sorted(set(re.findall(r"(?:rgba?|hsla?)\(\s*[\d.]+[\s,]", txt)))
-    dire(f"B · couleurs écrites en dur dans {FEUILLE} : {len(durs)}")
+    dire(f"B · couleurs écrites en dur, {len(lues)} feuille(s) : {len(durs)}")
     for c in durs:
         mal(f"B · `{c.strip()}` est écrit en dur. Une couleur passe par son jeton — "
             f"sous transparence, `rgba(var(--jeton-rgb), alpha)`.")
@@ -110,12 +126,13 @@ def controle_b(d, dire, mal):
 
 def controle_c(d, dire, mal):
     """La feuille de style n'ecrit aucune taille de police."""
-    f = d / FEUILLE
-    if not f.exists():
+    lues = feuilles(d)
+    if not lues:
         return
-    txt = re.sub(r"/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
+    txt = re.sub(r"/\*.*?\*/", "",
+                 "".join(f.read_text(encoding="utf-8") for f in lues), flags=re.S)
     durs = re.findall(r"font-size:\s*([0-9.]+)px", txt)
-    dire(f"C · tailles de police écrites en dur dans {FEUILLE} : {len(durs)}")
+    dire(f"C · tailles de police écrites en dur, {len(lues)} feuille(s) : {len(durs)}")
     for t in sorted(set(durs)):
         mal(f"C · `font-size: {t}px` est écrit en dur. Une taille prend un jeton.")
 
@@ -344,11 +361,11 @@ def controle_g(d, dire, mal):
     Ce que ce controle ne voit pas : l'air pose en attribut de style sur un
     element, et l'air pose par un script. Il lit la feuille, pas le rendu.
     """
-    f = d / "roots.css"
-    if not f.exists():
-        dire("G · roots.css absent — contrôle non applicable")
-        return
-    texte = re.sub(r"/\*.*?\*/", "", f.read_text(encoding="utf-8"), flags=re.S)
+    lues = feuilles(d)
+    if not lues:
+        return mal("G · aucune feuille de style lisible dans le dossier.")
+    texte = re.sub(r"/\*.*?\*/", "",
+                   "".join(f.read_text(encoding="utf-8") for f in lues), flags=re.S)
     croises = []
     for sel, corps in RE_REGLE.findall(texte):
         s = " ".join(sel.split())
@@ -361,7 +378,7 @@ def controle_g(d, dire, mal):
             croises.append(f"« {s[:58]} » emploie un cran d'interface")
         if not editorial and AIR_EDITORIAL.search(corps):
             croises.append(f"« {s[:58]} » emploie un cran éditorial")
-    dire(f"G · crans d'air employés hors de leur registre : {len(croises)}")
+    dire(f"G · crans d'air hors registre, {len(lues)} feuille(s) : {len(croises)}")
     for c in croises[:6]:
         mal("G · " + c)
     if len(croises) > 6:
