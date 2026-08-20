@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-4h3TQ7a7yq5kE3o6SNQwKnfNWMZ3NpABkTjLSUc696w='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kVoqU38NhjSLXAZ5aVbQu7VGEGDcbc4nXz+iiAblUQw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -144,7 +144,6 @@
       <div id="hoteFacturationResa"></div>
       <div class="apres"><button class="bouton-confirmer cache" id="btnPayerResa" data-t="payer">Payer maintenant</button></div>
       <p class="erreur" id="erreurPayer" role="alert" aria-live="polite"></p>
-      <div class="retenue" id="blocRetenue"><span data-t="cRetenue">Ta place est gardée encore</span> <span class="reste" id="resteResa">--:--</span></div>
     </div>
   </div>
 
@@ -290,7 +289,7 @@
       onRegarde: 'On regarde…', onReserve: 'On réserve…', onEnvoie: 'On envoie…',
       aujourdhui: "Aujourd'hui", demain: 'Demain',
       sur_place: 'Sur place', emporter: 'À emporter',
-      cRetenue: 'Ta place est gardée encore', expire: 'Le temps est écoulé — la place a été relâchée.',
+      expire: 'Le temps est écoulé — la place a été relâchée. Réserve à nouveau.',
       manqueContact: 'Indique ton prénom et un numéro valide.',
       menuVide: "La carte n'est pas disponible pour le moment.",
       partiel: function (l) { return 'À ajouter au comptoir : ' + l + '.'; },
@@ -347,7 +346,7 @@
       onRegarde: 'Checking…', onReserve: 'Booking…', onEnvoie: 'Sending…',
       aujourdhui: 'Today', demain: 'Tomorrow',
       sur_place: 'Eat in', emporter: 'Takeaway',
-      cRetenue: 'Your spot is held for another', expire: 'Time is up. Your spot has been released.',
+      expire: 'Time is up — your spot has been released. Please book again.',
       manqueContact: 'Enter your first name and a valid phone number.',
       menuVide: 'The menu is unavailable right now.',
       partiel: function (l) { return 'Ask at the counter for: ' + l + '.'; },
@@ -914,7 +913,28 @@
     $('montantResa').textContent = (du && !offert) ? prix(montantDu) : '';
   }
 
+  /* LA RETENUE NE SE COMPTE PAS A VOIX HAUTE. Un decompte presse un geste qui
+     n'a pas besoin d'etre presse, et il occupe l'ecran d'une pastille de plus.
+     Le delai court quand meme : a son terme la place est relachee, l'ecran
+     revient au formulaire, et la personne repart d'une reservation neuve.
+     L'echeance qui fait foi est celle de la porte, pas une duree ecrite ici :
+     l'ecran lit `expire_le` et n'en decide pas. */
   var minuteur = null;
+
+  function relacherLaPlace() {
+    clearTimeout(minuteur);
+    minuteur = null;
+    montantDu = null;
+    blocFacturationResa.montrer(false);
+    cacherErreur('erreurPayer');
+    $('confResa').classList.remove('visible');
+    $('codeResa').textContent = '——————';
+    $('vueResa').style.display = '';
+    chromeUI.toast(t().expire);
+    interroger();
+    dialogue.scrollTop = 0;
+  }
+
   function confirmerResa(r) {
     $('vueResa').style.display = 'none';
     $('confResa').classList.add('visible');
@@ -925,25 +945,11 @@
     majBoutonPayer();
     dialogue.scrollTop = 0;
 
+    clearTimeout(minuteur);
+    minuteur = null;
     if (r && r.expire_le) {
-      var fin = new Date(r.expire_le).getTime();
-      var tic = function () {
-        var reste = Math.max(0, Math.floor((fin - Date.now()) / 1000));
-        var mm = String(Math.floor(reste / 60));
-        var ss = String(reste % 60);
-        if (mm.length < 2) mm = '0' + mm;
-        if (ss.length < 2) ss = '0' + ss;
-        $('resteResa').textContent = mm + ':' + ss;
-        if (reste === 0) {
-          clearInterval(minuteur);
-          $('blocRetenue').textContent = t().expire;
-        }
-      };
-      clearInterval(minuteur);
-      tic();
-      minuteur = setInterval(tic, 1000);
-    } else {
-      $('blocRetenue').style.display = 'none';
+      var reste = new Date(r.expire_le).getTime() - Date.now();
+      minuteur = setTimeout(relacherLaPlace, Math.max(0, reste));
     }
   }
 

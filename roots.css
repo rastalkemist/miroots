@@ -272,7 +272,7 @@ body[data-surface="ambiante"] .toast{bottom:calc(156px + var(--safe-bas));z-inde
 .depliant-bouton{display:flex;align-items:center;justify-content:center;gap:var(--esp-2);width:100%;min-height:var(--cible-min);background:none;border:none;padding:var(--esp-2) 0;font-family:var(--font-corps);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold);color:var(--univers);cursor:pointer}
 .depliant-bouton::before{content:'';flex:none;width:0;height:0;border-left:7px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .18s var(--courbe-a)}
 .depliant-bouton[aria-expanded="true"]::before{transform:rotate(90deg)}
-.depliant-corps{padding:var(--esp-3) 0 var(--esp-6)}
+.depliant-corps{padding:var(--esp-3) 0}
 @media (prefers-reduced-motion: reduce){.depliant-bouton::before{transition:none}}
 /* Sur la surface ambiante, et la seule, l'en-tete quitte le flux : le bandeau
    passerait dessous et l'effacerait. L'ecart se DERIVE de la hauteur d'en-tete
@@ -537,12 +537,11 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil, body.p-roam) .confirmation .soleil-ok svg{height:46px;width:46px}
 :where(body.p-accueil, body.p-roam) .quoi-conf{font-size:var(--t-sm);font-weight:700;margin:0 0 var(--air-i2);line-height:1.45}
 :where(body.p-accueil, body.p-roam) .quoi-conf .jour{display:block;font-weight:500;color:var(--encre-discrete);font-size:var(--t-sm)}
-:where(body.p-accueil, body.p-roam) .retenue{background:var(--roots-jaune);color:var(--roots-noir);border-radius:var(--rayon-module);padding:var(--esp-3) var(--esp-4);font-size:var(--t-sm);font-weight:700;margin:var(--air-i6) auto 0;max-width:300px}
-:where(body.p-accueil, body.p-roam) .retenue .reste{font-family:var(--font-chiffres);font-size:var(--t-body)}
 :where(body.p-accueil, body.p-roam) .montant-conf{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-body);color:var(--encre);margin:var(--air-i3) 0 0}
-/* Le geste se detache de ce qui l'explique : sans cet ecart, le bouton colle
-   au texte qui le precede et rompt le rythme du bloc. */
-:where(body.p-accueil, body.p-roam) .confirmation .apres{margin-top:var(--air-i6)}
+/* A qui la facture s'adresse et le geste qui la declenche font UN bloc : le
+   depliant se pose a une demi-ligne du bouton, l'ensemble se detache d'une
+   ligne de ce qui precede. */
+:where(body.p-accueil, body.p-roam) .confirmation .apres{margin-top:var(--air-i2)}
 :where(body.p-accueil) .voile-doux{background:rgba(var(--ombre-teinte),.22)}
 :where(body.p-accueil) .drawer-pied{display:flex;align-items:center;justify-content:flex-end;margin-top:var(--air-i3);padding:0 var(--esp-1)}
 :where(body.p-accueil) .mini-btn{display:flex;align-items:center;gap:var(--esp-2);background:var(--gris-ilot);border:none;border-radius:var(--rayon-pilule);padding:var(--esp-2) var(--esp-3);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);color:var(--encre);cursor:pointer}

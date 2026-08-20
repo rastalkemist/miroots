@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-l83xWFu22Ni8Vt8t8A+tZfOxFTASuzz0TWRo6oKzwts='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-nrBlrIJnOOxRx0kusb8W7YzN4OfqdjSvmb4kUnLzT1U='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -161,7 +161,6 @@
     <div id="hoteFacturationSejour"></div>
     <div class="apres"><button class="bouton-confirmer cache" id="btnPayerSejour" data-t="payer">Payer l'acompte</button></div>
     <p class="erreur" id="erreurPayerSejour" role="alert" aria-live="polite"></p>
-    <div class="retenue" id="blocRetenue"><span data-t="cRetenue">Ta place est gardée encore</span> <span class="reste" id="resteSejour">--:--</span></div>
   </div>
 </div>
 
@@ -213,7 +212,6 @@
       instr: 'Garde ce code : il retrouve ta réservation à tout moment, même sans compte.',
       solde: function (p) { return 'Le solde, ' + p + ', se règle à l’arrivée.'; },
       payer: 'Payer l’acompte', onOuvre: 'On ouvre le paiement…',
-      cRetenue: 'Ta place est gardée encore',
       expire: 'Le temps est écoulé — la place a été relâchée. Réserve à nouveau.',
       manqueContact: 'Indique ton prénom et ton numéro.',
       manqueDates: 'Choisis ton arrivée et ton départ.',
@@ -249,7 +247,6 @@
       instr: 'Keep this code: it finds your booking at any time, no account needed.',
       solde: function (p) { return 'The balance, ' + p + ', is due at check-in.'; },
       payer: 'Pay the deposit', onOuvre: 'Opening payment…',
-      cRetenue: 'Your spot is held for another',
       expire: 'Time is up — the spot has been released. Book again.',
       manqueContact: 'Enter your first name and phone number.',
       manqueDates: 'Pick your check-in and check-out dates.',
@@ -449,7 +446,22 @@
     }
   }
 
+  /* LA RETENUE NE SE COMPTE PAS A VOIX HAUTE. Le delai court, mais sans
+     decompte affiche : a son terme la place est relachee et l'ecran revient au
+     choix, la demande se refait. L'echeance qui fait foi est celle de la
+     porte. */
   var compteARebours = null;
+
+  function relacherLaPlace() {
+    clearTimeout(compteARebours);
+    compteARebours = null;
+    $('confSejour').classList.remove('visible');
+    $('codeSejour').textContent = '——————';
+    $('btnPayerSejour').classList.add('cache');
+    blocFacturationSejour.montrer(false);
+    chrome.toast(t().expire);
+  }
+
   function confirmer(r) {
     $('confSejour').classList.add('visible');
     $('codeSejour').textContent = r.code || '——————';
@@ -459,21 +471,11 @@
     var payable = Roots.db.reglagePaiement().pose && r.acompte > 0;
     $('btnPayerSejour').classList.toggle('cache', !payable);
     blocFacturationSejour.montrer(payable);
+    clearTimeout(compteARebours);
+    compteARebours = null;
     if (r.expire_le) {
-      var fin = new Date(r.expire_le).getTime();
-      if (compteARebours) clearInterval(compteARebours);
-      compteARebours = setInterval(function () {
-        var reste = Math.max(0, fin - Date.now());
-        var mn = Math.floor(reste / 60000), sec = Math.floor((reste % 60000) / 1000);
-        $('resteSejour').textContent = mn + ':' + (sec < 10 ? '0' : '') + sec;
-        if (reste <= 0) {
-          clearInterval(compteARebours);
-          $('blocRetenue').textContent = t().expire;
-          $('btnPayerSejour').classList.add('cache');
-        }
-      }, 250);
-    } else {
-      $('blocRetenue').style.display = 'none';
+      var reste = new Date(r.expire_le).getTime() - Date.now();
+      compteARebours = setTimeout(relacherLaPlace, Math.max(0, reste));
     }
     $('confSejour').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
