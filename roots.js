@@ -187,7 +187,7 @@
        verbes      : { plan:'Plan', roots:'Roots', roam:'Roam' }
        onVerbe     : (verbe, bouton) => true si la page a géré le verbe
      Retourne { toast, dessinerSections, fermerMenu }. */
-  var MENTIONS = { fr: 'Mentions légales', en: 'Legal notices' };
+  var POLITIQUE = { fr: 'Politique de confidentialité', en: 'Privacy policy' };
 
   /* ------------------------------------------------------------------
      LA NAVIGATION, DECLAREE UNE SEULE FOIS.
@@ -390,13 +390,15 @@
         if (s.courant) { a.classList.add('courant'); a.setAttribute('aria-current', 'page'); }
         cont.appendChild(a);
       });
-      /* Les mentions légales ferment le menu, en second niveau : une ligne
-         soulignée, pas une entrée de navigation. */
+      /* La politique ferme le menu, en second niveau : une ligne soulignee,
+         pas une entree de navigation. Son etiquette reprend mot pour mot celle
+         que les notices de consentement emploient pour la designer ; s'en
+         ecarter casse le renvoi que la notice vient de faire. */
       var pied = document.createElement('div');
-      pied.className = 'mentions';
+      pied.className = 'pied-politique';
       var lien = document.createElement('a');
       lien.href = 'confidentialite.html';
-      lien.textContent = MENTIONS[getLangue()] || MENTIONS.fr;
+      lien.textContent = POLITIQUE[getLangue()] || POLITIQUE.fr;
       if (ici() === 'confidentialite.html') {
         lien.classList.add('courant');
         lien.setAttribute('aria-current', 'page');

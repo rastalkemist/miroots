@@ -186,9 +186,9 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .lien-section.courant{background:var(--vert-lavure)}
 .lien-section.courant .t{color:var(--univers);font-weight:var(--w-bold)}
 .lien-section.courant .fleche{opacity:.35}
-.mentions a.courant{font-weight:var(--w-bold);color:var(--univers)}
-.mentions{margin-top:var(--air-i3);padding:var(--esp-3) var(--esp-1) var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
-.mentions a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
+.pied-politique a.courant{font-weight:var(--w-bold);color:var(--univers)}
+.pied-politique{margin-top:var(--air-i3);padding:var(--esp-3) var(--esp-1) var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
+.pied-politique a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
 .pied{width:var(--site-w);max-width:var(--col);margin:var(--air-i6) auto 0;padding:var(--esp-4) 0 var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .pied a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
 :root{--barre-h:72px}

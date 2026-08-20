@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kVoqU38NhjSLXAZ5aVbQu7VGEGDcbc4nXz+iiAblUQw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-XlfyGwYmgnTJ6O+NywbfIrPasr1dfbkWo/5jiGPVsjs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -313,7 +313,7 @@
       msgEvtRequis: 'Tell us more',
       evtMsgManque: 'Tell us in a few words what you have in mind.',
       envoyerDemande: 'Send my request',
-      politique2: 'Privacy Policy',
+      politique2: 'Privacy policy',
       evtManque: 'Enter your first name and phone number.',
       evtNbFaux: 'A number from 1 to 500.',
       evtEmailFaux: 'Check this email address, or leave the field empty.',
@@ -353,7 +353,7 @@
       radio: 'Roots Radio',
       toastVerbe: function (v) { return v + ' is coming soon.'; },
       toastNu: 'NU, the community side of Roots, is coming soon.',
-      politique: 'Privacy Policy',
+      politique: 'Privacy policy',
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete.',
       fCode: 'Six characters, letters and numbers. For example ABC123.'
@@ -489,21 +489,14 @@
     if (!msgEvtValide()) {
       montrerErreur('erreurEvt', m.evtMsgManque); $('msgEvt').focus(); return null;
     }
-    /* La base ne connait que trois natures — evenement, soiree, autre.
-       L'atelier s'enregistre en `autre` et se nomme en tete du message,
-       pour que la demande arrive entiere sans que la porte la refuse. */
-    var nature = evt.nature;
-    var message = $('msgEvt').value.trim() || null;
-    if (nature === 'atelier') {
-      nature = 'autre';
-      message = message ? 'Atelier art / artisanat — ' + message
-                        : 'Atelier art / artisanat';
-    }
-    return { nature: nature, nom: nom, tel: numeroDe($('telEvt'), itiEvt),
+    /* La nature part telle que la pastille l'a posee : l'enumeration de la
+       porte porte les quatre valeurs. Une valeur hors enumeration fait
+       refuser la demande entiere, pastille comprise. */
+    return { nature: evt.nature, nom: nom, tel: numeroDe($('telEvt'), itiEvt),
              email: $('emailEvt').value.trim() || null,
              date: $('dateEvt').value,
              personnes: parseInt($('nbEvt').value.trim(), 10),
-             message: message };
+             message: $('msgEvt').value.trim() || null };
   }
 
   async function envoyerEvt() {
