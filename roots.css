@@ -223,7 +223,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .lien-section .txt{flex:1}
 .lien-section .txt small{display:block;font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);margin-top:1px}
 .lien-section .fleche{width:16px;height:16px;color:var(--encre-discrete);flex-shrink:0}
-.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--vert-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree);max-width:80vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--univers-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree);max-width:80vw;text-align:center}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}
@@ -354,7 +354,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    portent le meme poids : l'univers change, aucune mesure ne change.
    Traversent seuls, hors alias : la semantique de statut et l'anneau de
    focus, qui sont les memes dans tous les univers. */
-:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1)}
+:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb)}
 
 /* ------------------------------------------------------------------------ Univers Mi Roam ------------------------------------------------------------------------ */
 /* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
@@ -362,7 +362,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    alias — jamais une valeur neuve — parce que la palette garantit qu'a echelon
    egal les familles portent le meme poids : l'univers change, aucune mesure ne
    change. Le nav appartient a l'univers ; le super-nav du bas commute. */
-:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1)}
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}

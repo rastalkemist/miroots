@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-J/WYEahn23xwjA6ubZvk7QOHUnnDjBVZV/qRDTaGQ54='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ytm6fuolpJHkQB3lgfhVW6mZLr3ZlHkdu48PJAWG1bg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Plan</title>
 <meta name="theme-color" content="#1A1A1A">
 <link rel="manifest" href="manifest.webmanifest">
@@ -186,6 +186,7 @@
       sansRevenu: 'Rien de noté cette semaine.',
       vide: 'Rien de posé pour l’instant. Écris un engagement là-haut — un seul suffit pour commencer.',
       piedPolitique: 'Politique de confidentialité',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.',
       jours: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
       joursLongs: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
       sansJour: 'Cette semaine',
@@ -216,6 +217,7 @@
       sansRevenu: 'Nothing recorded this week.',
       vide: 'Nothing set yet. Write one commitment above — one is enough to start.',
       piedPolitique: 'Privacy policy',
+      toastNu: 'NU, the community side of Roots, is coming soon.',
       jours: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       joursLongs: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       sansJour: 'This week',
@@ -387,7 +389,8 @@
   var chrome = Roots.initChrome({
     toastId: 'toast',
     getLangue: function () { return langue; },
-    getSections: Roots.nav
+    getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; }
   });
 
   $('btnLangue').addEventListener('click', function () {

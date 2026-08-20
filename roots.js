@@ -288,6 +288,11 @@
     function toast(msg) {
       var el = document.getElementById('toast');
       if (!el) return;
+      /* Une annonce sans texte n'est pas une annonce : elle rend une pastille
+         vide, que le lecteur voit apparaitre sans rien pouvoir en lire. Un
+         ecran qui n'a pas fourni sa phrase ne dit rien du tout. */
+      msg = (msg == null) ? '' : String(msg).trim();
+      if (!msg) return;
       el.textContent = msg;
       el.classList.add('visible');
       clearTimeout(toastTimer);
