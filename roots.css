@@ -161,12 +161,17 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
    44 px, sinon la regle des cibles tombe des que le logotype maigrit. */
 .toggle{--pastille-d:calc(2 * var(--t-chrome-titre))}
 .toggle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;min-width:var(--cible-min);height:var(--cible-min)}
-.toggle{position:relative;display:flex;align-items:center;height:var(--pastille-d);max-width:var(--pastille-d);overflow:hidden;cursor:pointer;background:var(--univers);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--univers),0 3px 10px rgba(var(--univers-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie)}
+/* Depliee, la pastille est plus large que le plancher de cible et porte des
+   commandes propres : le calque n'a plus rien a agrandir, et s'il subsistait
+   il recevrait les clics a leur place — la piste et le mot NU deviendraient
+   inatteignables sans que rien ne le signale. */
+.toggle.ouvert::after{content:none}
+.toggle{position:relative;display:flex;align-items:center;height:var(--pastille-d);max-width:var(--pastille-d);overflow:hidden;cursor:pointer;background:var(--univers);border:none;border-radius:var(--rayon-pilule);box-shadow:inset 0 0 0 1.5px var(--univers),0 3px 10px rgba(var(--univers-rgb),.30);transition:max-width var(--mvt-apparition) var(--courbe-sortie),padding-left var(--mvt-apparition) var(--courbe-sortie)}
 /* Deplie, le logotype etait colle a son bord gauche pendant que NU respirait
    du sien : le retrait de la piste equilibre les deux extremites. Replie, il
    n'existe pas — le disque doit rester un disque. */
 .toggle.ouvert{padding-left:var(--esp-3)}
-.toggle.ouvert{max-width:300px;transition:max-width var(--mvt-parcours) var(--courbe-entree)}
+.toggle.ouvert{max-width:300px;transition:max-width var(--mvt-parcours) var(--courbe-entree),padding-left var(--mvt-parcours) var(--courbe-entree)}
 .toggle .mot{width:var(--pastille-d);height:var(--pastille-d);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-eclat);font-weight:700;font-size:var(--t-chrome-titre);color:var(--blanc);line-height:1}
 .toggle .reste{display:flex;align-items:center;gap:var(--esp-2);padding-right:var(--esp-3);flex-shrink:0}
 .reste .sub{font-size:var(--t-label);color:var(--blanc);font-style:italic}
