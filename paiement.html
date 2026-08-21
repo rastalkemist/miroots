@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-pNPVkrZey2b9lF2oOWgA6sIQ3cGI52AZk1gdJNkBIvo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Bdpk1l/4bnaF/1VKsn8DOkKtAybz8KTclCtes6ci8gM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Paiement — Mi Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -39,7 +39,6 @@
     <a class="chrome-titre" id="titreExp" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -536,14 +535,16 @@
     montrer(etatCourant);
   }
 
-  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; }, getSections: Roots.nav });
-  $('btnLangue').addEventListener('click', function () {
+  var chrome = Roots.initChrome({ toastId: 'toast', getLangue: function () { return langue; }, getSections: Roots.nav,
+    radio: true,
+    onLangue: function () { basculerLangue(); }
+  });
+  function basculerLangue() {
     langue = (langue === 'fr') ? 'en' : 'fr';
     Roots.retenirLangue(langue);
-    $('btnLangue').textContent = (langue === 'fr') ? 'EN' : 'FR';
     appliquerLangue();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
-  });
+  }
 
   /* Revue : ?etat=payee|refusee|sans-reponse|regularisation|attente
      Sans parametre, l'ecran sonde reellement le serveur. */

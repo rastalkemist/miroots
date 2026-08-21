@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-EvdNSIpH5VQ1uNZMxgNacmlo5zUq+5u4AbCAIdjAxlc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kMeGNNzMgdEsNaCJbqUKxMNx6p7mlajOa1xJr4CVAts='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -52,12 +52,7 @@
     <a class="chrome-titre" id="titreExp" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
-      <button type="button" class="radio-pastille" id="btnRadio" aria-label="Roots Radio" data-al="alRadio" aria-expanded="false" aria-controls="languetteRadio"><svg class="i" aria-hidden="true"><use href="#i-radio"/></svg></button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
-      <div class="languette-radio cache" id="languetteRadio" role="group" aria-label="Roots Radio">
-        <button type="button" class="lecteur-btn" id="btnRadioLecture" aria-pressed="false" data-al="alRadioLire"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>
-        <span class="lecteur-texte"><b data-t="radio">Roots Radio</b><small id="radioEtat"></small></span>
-      </div>
     </div>
   </div>
 </header>
@@ -270,9 +265,6 @@
       cestReserve: "C'est réservé. On t'attend.",
       alCopier: 'Copier le code', alTelecharger: 'Télécharger le code',
       alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
-      alRadio: 'Roots Radio — allumer ou éteindre, appui long pour le lecteur',
-      alRadioLire: 'Allumer la radio', alRadioArret: 'Éteindre la radio',
-      radioAntenne: 'À l’antenne', radioEteinte: 'Hors antenne',
       voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
       tonNom: "Ton nom (pour t'appeler)", tonTel: 'Ton numéro',
       commander: 'Commander', cmdMention: 'Sans compte. Tu peux payer en ligne juste après, ou au comptoir.',
@@ -331,9 +323,6 @@
       cestReserve: 'Booked. See you soon.',
       alCopier: 'Copy the code', alTelecharger: 'Download the code',
       alPause: 'Pause the video', alLire: 'Play the video',
-      alRadio: 'Roots Radio — switch on or off, press and hold for the player',
-      alRadioLire: 'Switch the radio on', alRadioArret: 'Switch the radio off',
-      radioAntenne: 'On air', radioEteinte: 'Off air',
       voirDetail: 'See the full menu →', cmdTotal: 'Order total',
       tonNom: 'Your name', tonTel: 'Your number',
       commander: 'Place order', cmdMention: 'No account needed. You can pay online right after, or at the counter.',
@@ -396,87 +385,9 @@
     toastNu: function (l) { return T[l].toastNu; },
     toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
     verbes: VERBES,
+    radio: true,
     onLangue: function () { basculerLangue(); }
   });
-
-  /* ---------- Roots Radio ---------- */
-  /* L'antenne porte deux gestes : un appui bref allume ou eteint, un appui
-     long ouvre le lecteur, et un second le referme : une fois ouvert il tient,
-     et aucun appui ailleurs ne le replie. L'appui long n'appartient qu'au
-     pointeur ; la fleche bas, sur le bouton au foyer, ouvre le meme lecteur et
-     l'echappement le ferme. Retirer ces deux touches laisserait le lecteur au
-     seul appui long, qu'aucun clavier ne produit. */
-
-  var FLUX_RADIO = '';   /* Adresse du flux. Vide, les commandes ne pilotent
-                            que l'etat affiche ; renseignee, elle doit aussi
-                            figurer dans media-src de la politique de la page. */
-  var APPUI_LONG = 500;
-
-  var btnRadio = $('btnRadio');
-  var languetteRadio = $('languetteRadio');
-  var btnRadioLecture = $('btnRadioLecture');
-  var radioEtat = $('radioEtat');
-  var sonRadio = null, minuteurAppui = null, appuiLongFait = false;
-
-  function antenneOuverte() { return btnRadioLecture.getAttribute('aria-pressed') === 'true'; }
-
-  function direAntenne() {
-    var ouverte = antenneOuverte();
-    btnRadio.classList.toggle('antenne', ouverte);
-    btnRadioLecture.querySelector('use').setAttribute('href', ouverte ? '#i-pause' : '#i-play');
-    btnRadioLecture.setAttribute('data-al', ouverte ? 'alRadioArret' : 'alRadioLire');
-    btnRadioLecture.setAttribute('aria-label', t()[ouverte ? 'alRadioArret' : 'alRadioLire']);
-    radioEtat.textContent = t()[ouverte ? 'radioAntenne' : 'radioEteinte'];
-  }
-
-  function basculerAntenne() {
-    var ouvrir = !antenneOuverte();
-    if (FLUX_RADIO) {
-      if (!sonRadio) { sonRadio = new Audio(FLUX_RADIO); sonRadio.preload = 'none'; }
-      if (ouvrir) { var r = sonRadio.play(); if (r && r['catch']) r['catch'](function () {}); }
-      else { sonRadio.pause(); }
-    }
-    btnRadioLecture.setAttribute('aria-pressed', ouvrir ? 'true' : 'false');
-    direAntenne();
-  }
-
-  function montrerLanguette(ouvrir) {
-    languetteRadio.classList.toggle('cache', !ouvrir);
-    btnRadio.setAttribute('aria-expanded', ouvrir ? 'true' : 'false');
-  }
-
-  btnRadio.addEventListener('pointerdown', function () {
-    appuiLongFait = false;
-    clearTimeout(minuteurAppui);
-    minuteurAppui = setTimeout(function () {
-      appuiLongFait = true;
-      montrerLanguette(languetteRadio.classList.contains('cache'));
-    }, APPUI_LONG);
-  });
-  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (nom) {
-    btnRadio.addEventListener(nom, function () { clearTimeout(minuteurAppui); });
-  });
-  /* Un appui maintenu ouvre le menu du systeme sur mobile : il avalerait le
-     geste long. */
-  btnRadio.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-  btnRadio.addEventListener('click', function () {
-    if (appuiLongFait) { appuiLongFait = false; return; }
-    basculerAntenne();
-  });
-  btnRadio.addEventListener('keydown', function (e) {
-    if (e.key !== 'ArrowDown') return;
-    e.preventDefault();
-    montrerLanguette(true);
-    btnRadioLecture.focus();
-  });
-  btnRadioLecture.addEventListener('click', basculerAntenne);
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !languetteRadio.classList.contains('cache')) {
-      montrerLanguette(false);
-      btnRadio.focus();
-    }
-  });
-  direAntenne();
 
   /* ---------- Feuille du bas ---------- */
 
@@ -1245,7 +1156,6 @@
     });
     if (blocFacturation) blocFacturation.dessiner();
     if (blocFacturationResa) blocFacturationResa.dessiner();
-    direAntenne();
     if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);
     if (cmd.notice) $('texteConsentCmd').textContent = texteNotice(cmd.notice);
     dessinerOffres(); dessinerCreneaux(); majPersonnes(); majRecap();

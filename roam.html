@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-f7eNowX1YTAm9hjRiHhF2YKw+YG4rDWBR4d3numhO6w='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-67Ta4oJ+h/nHSbGWuAiF42gPutyy0mA0QulsevAH7dA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="theme-color" content="#9C1218">
 <link rel="manifest" href="manifest.webmanifest">
@@ -41,7 +41,6 @@
       <a class="chrome-titre" href="roam.html">Roam</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -565,7 +564,6 @@
       var v = t()[el.getAttribute('data-p')];
       if (typeof v === 'string') el.placeholder = v;
     });
-    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     if (sejour.notice) $('texteConsentSejour').textContent = Roots.db.texteNotice(sejour.notice, langue);
     dessinerLogements();
     majRecap();
@@ -575,12 +573,14 @@
 
   var chrome = Roots.initChrome({ toastId: 'toast',
     getLangue: function () { return langue; }, getSections: Roots.nav,
-    toastNu: function (l) { return T[l].toastNu; } });
-  $('btnLangue').addEventListener('click', function () {
+    toastNu: function (l) { return T[l].toastNu; },
+    onLangue: function () { basculerLangue(); }
+  });
+  function basculerLangue() {
     langue = (langue === 'fr') ? 'en' : 'fr';
     Roots.retenirLangue(langue);
     appliquerLangue();
-  });
+  }
 
   Roots.poserLibelles && Roots.poserLibelles();
 

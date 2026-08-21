@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ytm6fuolpJHkQB3lgfhVW6mZLr3ZlHkdu48PJAWG1bg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-dXRO4WiamEZ5bSzD6WfDiY8kTvves1v9aNlithqB1CQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Plan</title>
 <meta name="theme-color" content="#1A1A1A">
 <link rel="manifest" href="manifest.webmanifest">
@@ -39,7 +39,6 @@
       <a class="chrome-titre" href="plan.html">Plan</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -377,7 +376,6 @@
       var v = t()[el.getAttribute('data-p')];
       if (typeof v === 'string') el.placeholder = v;
     });
-    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     $('sousTitre').textContent = t().cadre(bref(jourDe(0)), bref(jourDe(6)));
     dessinerJours();
     dessinerSemaine();
@@ -390,14 +388,15 @@
     toastId: 'toast',
     getLangue: function () { return langue; },
     getSections: Roots.nav,
-    toastNu: function (l) { return T[l].toastNu; }
+    toastNu: function (l) { return T[l].toastNu; },
+    onLangue: function () { basculerLangue(); }
   });
 
-  $('btnLangue').addEventListener('click', function () {
+  function basculerLangue() {
     langue = (langue === 'fr') ? 'en' : 'fr';
     if (Roots.retenirLangue) Roots.retenirLangue(langue);
     appliquerLangue();
-  });
+  }
 
   $('jours').addEventListener('click', function (e) {
     var b = e.target.closest('.jour');

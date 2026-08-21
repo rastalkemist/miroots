@@ -406,6 +406,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    un element video ne prend qu'une seule affiche, et il en faut deux —
    une par orientation. Le degrade reste dessous : il tient l'ecran tant
    que l'image n'est pas arrivee, et quand aucune n'est servie. */
+:where(body.p-accueil){--voile-palier:8.5%}
 :where(body.p-accueil) .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1));background-image:url(media/hero.jpg),linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1));background-size:cover;background-position:center}
 @media(orientation:portrait){:where(body.p-accueil) .video-fond{background-image:url(media/hero-portrait.jpg),linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1))}}
 /* La video occupe le fond entier, recadree par le centre. Le degrade et les
@@ -449,7 +450,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    s'eteint des le premier pixel, ramene le texte du chrome sous le seuil
    des qu'une image claire passe. Un controle relit ce palier contre le
    fichier servi et refuse s'il ne suffit plus. */
-:where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.60) 0,rgba(var(--voile-video-teinte),.60) 12%,transparent 34%)}
+:where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.60) 0,rgba(var(--voile-video-teinte),.60) var(--voile-palier),transparent calc(var(--voile-palier) * 1.9))}
 /* Les deux gestes du code. Ce sont des actions secondaires : un seul bouton
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--air-i3);flex-wrap:wrap}
@@ -953,25 +954,30 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-caisse) .moyens{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--tuile-pas),1fr));gap:var(--tuile-gouttiere);margin-bottom:var(--air-i3)}
 :where(body.p-caisse) .action-large{width:100%;margin-top:var(--air-i6)}
 :where(body.p-caisse) .cache{display:none}
-/* Roots Radio. L'antenne se tient seule dans le chrome, sans disque : c'est le
-   palier haut du voile qui la detache du fond, comme il detache le reste du
-   chrome. Alleger ce palier la ramene sous le seuil en meme temps que le texte.
-   Elle refuse la selection et le menu contextuel, sans quoi l'appui maintenu
-   ouvre le menu du systeme au lieu d'ouvrir le lecteur. Le lecteur est ancre
-   sous elle : la droite du chrome porte donc une position relative, et la
-   retirer detacherait le lecteur de son bouton. */
-:where(body.p-accueil) .chrome-droite{position:relative}
-:where(body.p-accueil) .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-:where(body.p-accueil) .radio-pastille svg{width:24px;height:24px}
-:where(body.p-accueil) .radio-pastille.antenne{color:var(--roots-jaune)}
-:where(body.p-accueil) .languette-radio{position:absolute;top:100%;right:0;margin-top:var(--esp-2);z-index:9;display:flex;align-items:center;gap:var(--esp-3);padding:var(--esp-2) var(--esp-3);background:rgba(var(--vert-e1-rgb),.92);backdrop-filter:blur(8px);border-radius:var(--rayon-pilule);color:var(--creme);white-space:nowrap}
-:where(body.p-accueil) .languette-radio.cache{display:none}
-:where(body.p-accueil) .lecteur-btn{width:var(--cible-min);height:var(--cible-min);border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-:where(body.p-accueil) .lecteur-btn[aria-pressed="true"]{background:var(--roots-jaune);color:var(--roots-noir)}
-:where(body.p-accueil) .lecteur-btn svg{width:18px;height:18px}
-:where(body.p-accueil) .lecteur-texte{display:flex;flex-direction:column;line-height:1.3}
-:where(body.p-accueil) .lecteur-texte b{font-size:var(--t-sm);font-weight:700}
-:where(body.p-accueil) .lecteur-texte small{font-size:var(--t-note);color:var(--blanc-casse)}
+/* Roots Radio. L'antenne se tient seule, sans disque : sur la surface ambiante
+   c'est le palier haut du voile qui la detache du fond, comme il detache le
+   reste du chrome. Alleger ce palier la ramene sous le seuil en meme temps que
+   le texte. Elle refuse la selection et le menu contextuel, sans quoi l'appui
+   maintenu ouvre le menu du systeme au lieu d'ouvrir le lecteur.
+
+   Le lecteur est ancre sur SON bouton, pas sur la droite du chrome : son bord
+   droit tombe donc sur celui de l'antenne, et le hamburger reste en dehors.
+   C'est le bloc qui porte la position relative ; la retirer rendrait le lecteur
+   au chrome entier. Il tient sur UNE ligne et s'etire vers la gauche autant que
+   le corps de page le permet, l'etat cedant en premier. */
+.radio-bloc{position:relative;display:flex;align-items:center}
+.radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.radio-pastille svg{width:24px;height:24px}
+.radio-pastille.antenne{color:var(--jaune-e1)}
+body[data-surface="ambiante"] .radio-pastille{color:var(--blanc-casse)}
+body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--roots-jaune)}
+.languette-radio{position:absolute;top:100%;right:0;margin-top:var(--esp-2);z-index:9;display:flex;align-items:center;gap:var(--esp-2);padding:var(--esp-1) var(--esp-2);background:rgba(var(--vert-e1-rgb),.92);backdrop-filter:blur(8px);border-radius:var(--rayon-pilule);color:var(--creme);width:max-content;max-width:calc(100vw - var(--esp-4) * 2)}
+.languette-radio.cache{display:none}
+.lecteur-btn{width:var(--cible-min);height:var(--cible-min);border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.lecteur-btn svg{width:18px;height:18px}
+.lecteur-texte{display:flex;align-items:center;gap:var(--esp-2);min-width:0;font-size:var(--t-sm);white-space:nowrap;overflow:hidden}
+.lecteur-titre{font-weight:700;flex-shrink:0}
+.lecteur-etat{color:var(--blanc-casse);overflow:hidden;text-overflow:ellipsis}
 
 /* La bascule de langue se pose a gauche de la ligne de politique, dans le
    meme pied et avec la meme encre. */

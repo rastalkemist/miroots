@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZJZCmzUCsxkcjHp4hGVPKyTB0BQU+KOjaZQAjNAKlWM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-6iPN7pSrtF09IStJjsfDx5t5/bEvfityHfJOBS0bH5M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation ou ma commande — Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -42,7 +42,6 @@
       <a class="chrome-titre" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -212,7 +211,9 @@
     getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
     toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
-    verbes: VERBES
+    verbes: VERBES,
+    radio: true,
+    onLangue: function () { basculerLangue(); }
   });
 
   /* ---------- Langue ---------- */
@@ -224,7 +225,6 @@
       if (typeof v === 'string') el.textContent = v;
     });
     document.title = t().titre + ' — Roots';
-    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     chromeUI.dessinerSections();
     if (trouvee) afficher(trouvee);
     if (issueCourante) montrerIssue(issueCourante);
@@ -568,11 +568,11 @@
     $('btnPayer').classList.add('cache');
     cacher('erreur'); cacher('erreur2'); cacher('erreurPayer');
   });
-  $('btnLangue').addEventListener('click', function () {
+  function basculerLangue() {
     langue = langue === 'fr' ? 'en' : 'fr';
     Roots.retenirLangue(langue);
     appliquerLangue();
-  });
+  }
 
   appliquerLangue();
 

@@ -179,6 +179,121 @@
     return c;
   }
 
+  /* ------------------------------------------------------------------
+     ROOTS RADIO. Deux choix, un geste chacun : l'appui bref allume ou eteint
+     l'antenne, l'appui long ouvre ou referme le lecteur. Seul un nouvel appui
+     long replie le lecteur, et il reste deplie d'un ecran a l'autre : son etat
+     est retenu par le navigateur, comme la langue.
+
+     L'appui long n'appartient qu'au pointeur. La fleche bas, sur le bouton au
+     foyer, ouvre le meme lecteur, et l'echappement le referme : retirer ces
+     deux touches laisserait le lecteur inatteignable au clavier.
+
+     L'adresse du flux est declaree ici. Vide, les commandes ne pilotent que
+     l'etat affiche ; renseignee, elle doit aussi figurer dans le media-src de
+     la politique de chaque page qui pose la radio.
+     ------------------------------------------------------------------ */
+  var FLUX_RADIO = '';
+  var APPUI_LONG = 500;
+  var CLE_RADIO = 'roots.radio';
+
+  function lecteurRetenu() {
+    try { return localStorage.getItem(CLE_RADIO) === 'ouvert'; } catch (e) { return false; }
+  }
+  function retenirLecteur(ouvert) {
+    try { localStorage.setItem(CLE_RADIO, ouvert ? 'ouvert' : 'ferme'); } catch (e) {}
+  }
+
+  function poserRadio(getLangue) {
+    var droite = document.querySelector('.chrome-droite');
+    if (!droite || document.getElementById('btnRadio')) return null;
+
+    var bloc = document.createElement('div');
+    bloc.className = 'radio-bloc';
+    bloc.innerHTML =
+      '<button type="button" class="radio-pastille" id="btnRadio" aria-pressed="false"' +
+      ' aria-expanded="false" aria-controls="languetteRadio" data-al-chrome="radio">' +
+      '<svg class="i" aria-hidden="true"><use href="#i-radio"/></svg></button>' +
+      '<div class="languette-radio cache" id="languetteRadio" role="group" aria-label="Roots Radio">' +
+      '<button type="button" class="lecteur-btn" id="btnRadioLecture" data-al-chrome="radioLire">' +
+      '<svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>' +
+      '<span class="lecteur-texte"><b class="lecteur-titre">Roots Radio</b>' +
+      '<span class="point-pied" aria-hidden="true">\u00b7</span>' +
+      '<small class="lecteur-etat"></small></span></div>';
+    droite.insertBefore(bloc, droite.firstChild);
+
+    var pastille = bloc.querySelector('#btnRadio');
+    var languette = bloc.querySelector('#languetteRadio');
+    var lecture = bloc.querySelector('#btnRadioLecture');
+    var etat = bloc.querySelector('.lecteur-etat');
+    var son = null, minuteur = null, longFait = false;
+
+    function alAntenne() { return pastille.getAttribute('aria-pressed') === 'true'; }
+
+    function direAntenne() {
+      var table = LIBELLES[getLangue()] || LIBELLES.fr;
+      var ouverte = alAntenne();
+      pastille.classList.toggle('antenne', ouverte);
+      pastille.setAttribute('aria-label', table.radio);
+      lecture.querySelector('use').setAttribute('href', ouverte ? '#i-pause' : '#i-play');
+      lecture.setAttribute('data-al-chrome', ouverte ? 'radioArret' : 'radioLire');
+      lecture.setAttribute('aria-label', ouverte ? table.radioArret : table.radioLire);
+      etat.textContent = ouverte ? table.radioAntenne : table.radioEteinte;
+    }
+
+    function basculerAntenne() {
+      var ouvrir = !alAntenne();
+      if (FLUX_RADIO) {
+        if (!son) { son = new Audio(FLUX_RADIO); son.preload = 'none'; }
+        if (ouvrir) { var r = son.play(); if (r && r['catch']) r['catch'](function () {}); }
+        else { son.pause(); }
+      }
+      pastille.setAttribute('aria-pressed', ouvrir ? 'true' : 'false');
+      direAntenne();
+    }
+
+    function montrerLecteur(ouvrir, retenir) {
+      languette.classList.toggle('cache', !ouvrir);
+      pastille.setAttribute('aria-expanded', ouvrir ? 'true' : 'false');
+      if (retenir !== false) retenirLecteur(ouvrir);
+    }
+
+    pastille.addEventListener('pointerdown', function () {
+      longFait = false;
+      clearTimeout(minuteur);
+      minuteur = setTimeout(function () {
+        longFait = true;
+        montrerLecteur(languette.classList.contains('cache'));
+      }, APPUI_LONG);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (nom) {
+      pastille.addEventListener(nom, function () { clearTimeout(minuteur); });
+    });
+    /* Un appui maintenu ouvre le menu du systeme sur mobile : il avalerait le
+       geste long. */
+    pastille.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    pastille.addEventListener('click', function () {
+      if (longFait) { longFait = false; return; }
+      basculerAntenne();
+    });
+    pastille.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowDown') return;
+      e.preventDefault();
+      montrerLecteur(true);
+      lecture.focus();
+    });
+    lecture.addEventListener('click', basculerAntenne);
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || languette.classList.contains('cache')) return;
+      montrerLecteur(false);
+      pastille.focus();
+    });
+
+    montrerLecteur(lecteurRetenu(), false);
+    direAntenne();
+    return { dire: direAntenne };
+  }
+
   /* Navigation partagée. opts :
        getLangue   : () => 'fr' | 'en'
        getSections : (langue) => [ {ico,t,s,href}, ... ]
@@ -237,6 +352,9 @@
   var LIBELLES = {
     fr: {
       accueil: 'Accueil', menu: 'Menu', fermer: 'Fermer', langue: 'Langue',
+      radio: 'Roots Radio — allumer ou éteindre, appui long pour le lecteur',
+      radioLire: 'Allumer la radio', radioArret: 'Éteindre la radio',
+      radioAntenne: 'À l’antenne', radioEteinte: 'Hors antenne',
       mode: 'Basculer Mi / NU', moins: 'Moins', plus: 'Plus',
       feuille: 'Réserver ou commander', commande: 'Ma commande',
       taille: 'Taille du texte',
@@ -245,6 +363,9 @@
     },
     en: {
       accueil: 'Home', menu: 'Menu', fermer: 'Close', langue: 'Language',
+      radio: 'Roots Radio — switch on or off, press and hold for the player',
+      radioLire: 'Switch the radio on', radioArret: 'Switch the radio off',
+      radioAntenne: 'On air', radioEteinte: 'Off air',
       mode: 'Switch between Mi and NU', moins: 'Fewer people', plus: 'More people',
       feuille: 'Book or order', commande: 'Your order',
       taille: 'Text size',
@@ -380,10 +501,13 @@
     if (btnFermer) btnFermer.addEventListener('click', fermerMenu);
     if (voile) voile.addEventListener('click', fermerMenu);
 
+    var radio = opts.radio ? poserRadio(getLangue) : null;
+
     function dessinerSections() {
       /* Les libelles du chrome suivent la meme bascule que la liste : chaque
          ecran rappelle deja cette fonction au changement de langue. */
       poserLibelles(getLangue());
+      if (radio) radio.dire();
       var cont = document.getElementById('sections');
       if (!cont) return;
       var liste = getSections(getLangue()) || [];
