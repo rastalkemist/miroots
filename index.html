@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-XlfyGwYmgnTJ6O+NywbfIrPasr1dfbkWo/5jiGPVsjs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-nX+l5KAvIE0la76DWCWUsgp/aoKvKjrtN7XPBPI3aV0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le jardin, où que tu sois</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -913,20 +913,60 @@
      L'echeance qui fait foi est celle de la porte, pas une duree ecrite ici :
      l'ecran lit `expire_le` et n'en decide pas. */
   var minuteur = null;
+  var echeance = null;
+  var TENIR_LE_MOT = 4000;
 
+  /* Deux temps, et l'ordre compte. D'abord la confirmation cesse de mentir :
+     le code, la somme et le geste de paiement disparaissent a l'instant meme,
+     parce que la place n'est plus tenue et que rien ne doit plus donner a
+     croire le contraire. Le mot reste seul a l'ecran le temps d'etre lu.
+     Ensuite seulement la feuille repart, vide, sur une reservation neuve. */
   function relacherLaPlace() {
     clearTimeout(minuteur);
     minuteur = null;
+    echeance = null;
     montantDu = null;
     blocFacturationResa.montrer(false);
     cacherErreur('erreurPayer');
-    $('confResa').classList.remove('visible');
+    var conf = $('confResa');
+    conf.querySelector('.soleil-ok').style.display = 'none';
+    conf.querySelector('.ligne-code').style.display = 'none';
+    conf.querySelector('.apres').style.display = 'none';
+    $('montantResa').style.display = 'none';
+    $('hoteFacturationResa').style.display = 'none';
+    conf.querySelector('.conf-titre').textContent = t().expire;
+    dialogue.scrollTop = 0;
+    minuteur = setTimeout(rouvrirLaFeuille, TENIR_LE_MOT);
+  }
+
+  function rouvrirLaFeuille() {
+    clearTimeout(minuteur);
+    minuteur = null;
+    var conf = $('confResa');
+    conf.classList.remove('visible');
+    conf.querySelector('.soleil-ok').style.display = '';
+    conf.querySelector('.ligne-code').style.display = '';
+    conf.querySelector('.apres').style.display = '';
+    $('montantResa').style.display = '';
+    $('hoteFacturationResa').style.display = '';
+    conf.querySelector('.conf-titre').textContent = t().cestReserve;
     $('codeResa').textContent = '——————';
     $('vueResa').style.display = '';
-    chromeUI.toast(t().expire);
     interroger();
     dialogue.scrollTop = 0;
   }
+
+  /* Une minuterie ne survit ni au sommeil de l'appareil, ni au gel d'un onglet
+     laisse en arriere-plan : au retour, elle peut n'avoir jamais tire. On
+     compare donc l'echeance a l'heure courante chaque fois que la page
+     redevient visible — c'est le seul controle qui ne depende pas de nous. */
+  function verifierEcheance() {
+    if (echeance && Date.now() >= echeance) relacherLaPlace();
+  }
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) verifierEcheance();
+  });
+  window.addEventListener('pageshow', verifierEcheance);
 
   function confirmerResa(r) {
     $('vueResa').style.display = 'none';
@@ -940,9 +980,10 @@
 
     clearTimeout(minuteur);
     minuteur = null;
+    echeance = null;
     if (r && r.expire_le) {
-      var reste = new Date(r.expire_le).getTime() - Date.now();
-      minuteur = setTimeout(relacherLaPlace, Math.max(0, reste));
+      echeance = new Date(r.expire_le).getTime();
+      minuteur = setTimeout(relacherLaPlace, Math.max(0, echeance - Date.now()));
     }
   }
 

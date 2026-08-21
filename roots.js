@@ -473,10 +473,10 @@
       ouvrir: 'Facturer à une entreprise',
       nom: 'Nom ou raison sociale',
       ifu: 'Identifiant fiscal (IFU)',
-      courriel: 'Adresse de facturation',
+      courriel: 'Courriel de facturation',
       manqueNom: 'Indiquez le nom ou la raison sociale.',
       manqueIfu: 'Indiquez l’identifiant fiscal (IFU).',
-      manqueAdresse: 'Indiquez l’adresse de facturation.',
+      manqueAdresse: 'Indiquez le courriel de facturation.',
       ifuFaux: 'L’identifiant fiscal porte treize chiffres.',
       adresseFausse: 'Vérifiez cette adresse électronique.'
     },
@@ -484,10 +484,10 @@
       ouvrir: 'Bill this to a company',
       nom: 'Name or company name',
       ifu: 'Tax ID (IFU)',
-      courriel: 'Billing address',
+      courriel: 'Billing email',
       manqueNom: 'Enter the name or company name.',
       manqueIfu: 'Enter the tax ID (IFU).',
-      manqueAdresse: 'Enter the billing address.',
+      manqueAdresse: 'Enter the billing email.',
       ifuFaux: 'A tax ID is thirteen digits.',
       adresseFausse: 'Check this email address.'
     }
