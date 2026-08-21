@@ -192,7 +192,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .lien-section.courant .t{color:var(--univers);font-weight:var(--w-bold)}
 .lien-section.courant .fleche{opacity:.35}
 .pied-politique a.courant{font-weight:var(--w-bold);color:var(--univers)}
-.pied-politique{margin-top:var(--air-i3);padding:var(--esp-3) var(--esp-1) var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
+.pied-politique{margin-top:var(--air-i3);padding:var(--esp-3) var(--esp-1) var(--esp-1);border-top:1px solid var(--gris-service);display:flex;align-items:center;justify-content:center;gap:var(--esp-3)}
 .pied-politique a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
 .pied{width:var(--site-w);max-width:var(--col);margin:var(--air-i6) auto 0;padding:var(--esp-4) 0 var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .pied a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
@@ -402,7 +402,12 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .confirmation{background:var(--blanc);border-radius:var(--rayon-carte);box-shadow:var(--ombre-posee);padding:var(--esp-6);margin-top:var(--air-i6)}
 :where(body.p-roam) .pied{margin-top:var(--air-i8)}
 /* ======================================================================== ECRAN — accueil ======================================================================== */ :where(body.p-accueil) svg.brand{fill:currentColor;stroke:none}
-:where(body.p-accueil) .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1))}
+/* L'image d'attente est portee par la feuille, pas par l'element video :
+   un element video ne prend qu'une seule affiche, et il en faut deux —
+   une par orientation. Le degrade reste dessous : il tient l'ecran tant
+   que l'image n'est pas arrivee, et quand aucune n'est servie. */
+:where(body.p-accueil) .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1));background-image:url(media/hero.jpg),linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1));background-size:cover;background-position:center}
+@media(orientation:portrait){:where(body.p-accueil) .video-fond{background-image:url(media/hero-portrait.jpg),linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1))}}
 /* La video occupe le fond entier, recadree par le centre. Le degrade et les
    feuilles restent DESSOUS : ils reparaissent seuls si la video ne se pose
    pas — connexion econome, mouvement reduit, format refuse. Rien ne se
@@ -444,14 +449,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    des qu'une image claire passe. Un controle relit ce palier contre le
    fichier servi et refuse s'il ne suffit plus. */
 :where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.60) 0,rgba(var(--voile-video-teinte),.60) 12%,transparent 34%,transparent 62%,rgba(var(--ombre-teinte),.5))}
-:where(body.p-accueil) .radio-wrap{position:fixed;bottom:40vh;left:0;right:0;z-index:5;pointer-events:none}
-:where(body.p-accueil) .radio-inner{width:var(--site-w);margin:0 auto;display:flex;justify-content:flex-end}
-:where(body.p-accueil) .radio-ligne{pointer-events:auto;display:inline-flex;align-items:center;gap:var(--esp-2);max-width:100%;background:rgba(var(--vert-e1-rgb),.55);backdrop-filter:blur(6px);border-radius:var(--rayon-pilule);padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-3)}
-:where(body.p-accueil) .radio-ligne .quoi{font-size:var(--t-sm);color:var(--creme);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-:where(body.p-accueil) .radio-ligne .quoi b{font-weight:700}
-:where(body.p-accueil) .radio-btn{width:28px;height:28px;border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
-:where(body.p-accueil) .radio-btn.actif{background:var(--roots-jaune);color:var(--roots-noir)}
-:where(body.p-accueil) .radio-btn svg{width:15px;height:15px}
 /* Les deux gestes du code. Ce sont des actions secondaires : un seul bouton
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--air-i3);flex-wrap:wrap}
@@ -518,7 +515,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil, body.p-roam) .stepper{gap:var(--esp-3)}
 :where(body.p-accueil, body.p-roam) .stepper button{border:1.5px solid var(--gris-service)}
 :where(body.p-accueil, body.p-roam) .stepper .max{font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);min-width:0;font-family:var(--font-chiffres)}
-:where(body.p-accueil) .radio-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 :where(body.p-accueil) .art-compact .btn-plus::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 :where(body.p-accueil) .art-compact .stepper-c button::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:44px}
 :where(body.p-accueil) .champ{margin-bottom:var(--air-i3)}
@@ -956,3 +952,25 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-caisse) .moyens{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--tuile-pas),1fr));gap:var(--tuile-gouttiere);margin-bottom:var(--air-i3)}
 :where(body.p-caisse) .action-large{width:100%;margin-top:var(--air-i6)}
 :where(body.p-caisse) .cache{display:none}
+/* Roots Radio. La pastille remplace la bascule de langue dans le chrome et
+   porte deux gestes : appui bref pour la languette, appui long pour l'antenne.
+   Elle refuse la selection et le menu contextuel, sans quoi l'appui long
+   maintenu ouvre le menu du systeme au lieu de basculer. La languette est
+   ancree sous la pastille : la droite du chrome porte donc une position
+   relative, et la retirer detacherait la languette de son bouton. */
+:where(body.p-accueil) .chrome-droite{position:relative}
+:where(body.p-accueil) .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;border-radius:50%;background:rgba(var(--vert-e1-rgb),.55);backdrop-filter:blur(6px);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+:where(body.p-accueil) .radio-pastille svg{width:20px;height:20px}
+:where(body.p-accueil) .radio-pastille.antenne{background:var(--roots-jaune);color:var(--roots-noir)}
+:where(body.p-accueil) .languette-radio{position:absolute;top:100%;right:0;margin-top:var(--esp-2);z-index:9;display:flex;align-items:center;gap:var(--esp-3);padding:var(--esp-2) var(--esp-3);background:rgba(var(--vert-e1-rgb),.92);backdrop-filter:blur(8px);border-radius:var(--rayon-pilule);color:var(--creme);white-space:nowrap}
+:where(body.p-accueil) .languette-radio.cache{display:none}
+:where(body.p-accueil) .lecteur-btn{width:var(--cible-min);height:var(--cible-min);border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+:where(body.p-accueil) .lecteur-btn[aria-pressed="true"]{background:var(--roots-jaune);color:var(--roots-noir)}
+:where(body.p-accueil) .lecteur-btn svg{width:18px;height:18px}
+:where(body.p-accueil) .lecteur-texte{display:flex;flex-direction:column;line-height:1.3}
+:where(body.p-accueil) .lecteur-texte b{font-size:var(--t-sm);font-weight:700}
+:where(body.p-accueil) .lecteur-texte small{font-size:var(--t-note);color:var(--blanc-casse)}
+
+/* La bascule de langue se pose a gauche de la ligne de politique, dans le
+   meme pied et avec la meme encre. */
+.pied-politique .lien-langue{min-height:var(--cible-min);min-width:var(--cible-min);border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;text-decoration:underline;text-underline-offset:3px}

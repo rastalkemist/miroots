@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-X0tdAfTXeKRcQiK/CiG4dsbogCzGgbbPF5CkNULFSoY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-hlATKiZxATcOqZ4bVBta34f26d82QRTw3GcUm2m62mg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -24,7 +24,7 @@
 <script>Roots.sprite()</script>
 
 <div class="video-fond" id="fondAccueil" aria-hidden="true">
-  <video id="videoAccueil" muted loop playsinline preload="none" poster="media/hero.jpg"></video>
+  <video id="videoAccueil" muted loop playsinline preload="none"></video>
   <div class="halo"></div>
   <div class="feuille" style="width:38vmax;height:52vmax;right:-14vmax;top:-8vmax;"></div>
   <div class="feuille" style="width:30vmax;height:44vmax;left:-10vmax;bottom:-16vmax;animation-delay:3s;"></div>
@@ -52,19 +52,15 @@
     <a class="chrome-titre" id="titreExp" href="index.html">Roots</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue">EN</button>
+      <button type="button" class="radio-pastille" id="btnRadio" aria-label="Roots Radio" data-al="alRadio" aria-expanded="false" aria-controls="languetteRadio"><svg class="i" aria-hidden="true"><use href="#i-radio"/></svg></button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+      <div class="languette-radio cache" id="languetteRadio" role="group" aria-label="Roots Radio">
+        <button type="button" class="lecteur-btn" id="btnRadioLecture" aria-pressed="false" data-al="alRadioLire"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>
+        <span class="lecteur-texte"><b data-t="radio">Roots Radio</b><small id="radioEtat"></small></span>
+      </div>
     </div>
   </div>
 </header>
-
-<!-- Roots Radio : ligne haut-droite sous le nav -->
-<div class="radio-wrap"><div class="radio-inner">
-  <div class="radio-ligne">
-    <span class="quoi" id="radioQuoi"></span>
-    <button class="radio-btn" id="btnRadio" aria-label="Roots Radio"><svg class="i"><use href="#i-play"/></svg></button>
-  </div>
-</div></div>
 
 <!-- Contenu : le jardin seul -->
 <h1 class="hors-ecran">Mi Roots — le jardin, où que tu sois</h1>
@@ -274,6 +270,9 @@
       cestReserve: "C'est réservé. On t'attend.",
       alCopier: 'Copier le code', alTelecharger: 'Télécharger le code',
       alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
+      alRadio: 'Roots Radio — ouvrir le lecteur, appui long pour allumer',
+      alRadioLire: 'Allumer la radio', alRadioArret: 'Éteindre la radio',
+      radioAntenne: 'À l’antenne', radioEteinte: 'Hors antenne',
       voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
       tonNom: "Ton nom (pour t'appeler)", tonTel: 'Ton numéro',
       commander: 'Commander', cmdMention: 'Sans compte. Tu peux payer en ligne juste après, ou au comptoir.',
@@ -332,6 +331,9 @@
       cestReserve: 'Booked. See you soon.',
       alCopier: 'Copy the code', alTelecharger: 'Download the code',
       alPause: 'Pause the video', alLire: 'Play the video',
+      alRadio: 'Roots Radio — open the player, press and hold to switch on',
+      alRadioLire: 'Switch the radio on', alRadioArret: 'Switch the radio off',
+      radioAntenne: 'On air', radioEteinte: 'Off air',
       voirDetail: 'See the full menu →', cmdTotal: 'Order total',
       tonNom: 'Your name', tonTel: 'Your number',
       commander: 'Place order', cmdMention: 'No account needed. You can pay online right after, or at the counter.',
@@ -393,10 +395,83 @@
     getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
     toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
-    verbes: VERBES
+    verbes: VERBES,
+    onLangue: function () { basculerLangue(); }
   });
 
-  $('btnRadio').addEventListener('click', function (e) { e.currentTarget.classList.toggle('actif'); });
+  /* ---------- Roots Radio ---------- */
+  /* La pastille porte deux gestes : un appui bref ouvre la languette, un appui
+     long bascule l'antenne sans l'ouvrir. L'appui long n'appartient qu'au
+     pointeur ; la meme bascule vit dans la languette, atteignable au clavier
+     en deux gestes. Retirer la commande de la languette laisserait l'allumage
+     au seul appui long, qu'aucun clavier ne produit. */
+
+  var FLUX_RADIO = '';   /* Adresse du flux. Vide, les commandes ne pilotent
+                            que l'etat affiche ; renseignee, elle doit aussi
+                            figurer dans media-src de la politique de la page. */
+  var APPUI_LONG = 500;
+
+  var btnRadio = $('btnRadio');
+  var languetteRadio = $('languetteRadio');
+  var btnRadioLecture = $('btnRadioLecture');
+  var radioEtat = $('radioEtat');
+  var sonRadio = null, minuteurAppui = null, appuiLongFait = false;
+
+  function antenneOuverte() { return btnRadioLecture.getAttribute('aria-pressed') === 'true'; }
+
+  function direAntenne() {
+    var ouverte = antenneOuverte();
+    btnRadio.classList.toggle('antenne', ouverte);
+    btnRadioLecture.querySelector('use').setAttribute('href', ouverte ? '#i-pause' : '#i-play');
+    btnRadioLecture.setAttribute('data-al', ouverte ? 'alRadioArret' : 'alRadioLire');
+    btnRadioLecture.setAttribute('aria-label', t()[ouverte ? 'alRadioArret' : 'alRadioLire']);
+    radioEtat.textContent = t()[ouverte ? 'radioAntenne' : 'radioEteinte'];
+  }
+
+  function basculerAntenne() {
+    var ouvrir = !antenneOuverte();
+    if (FLUX_RADIO) {
+      if (!sonRadio) { sonRadio = new Audio(FLUX_RADIO); sonRadio.preload = 'none'; }
+      if (ouvrir) { var r = sonRadio.play(); if (r && r['catch']) r['catch'](function () {}); }
+      else { sonRadio.pause(); }
+    }
+    btnRadioLecture.setAttribute('aria-pressed', ouvrir ? 'true' : 'false');
+    direAntenne();
+  }
+
+  function montrerLanguette(ouvrir) {
+    languetteRadio.classList.toggle('cache', !ouvrir);
+    btnRadio.setAttribute('aria-expanded', ouvrir ? 'true' : 'false');
+  }
+
+  btnRadio.addEventListener('pointerdown', function () {
+    appuiLongFait = false;
+    clearTimeout(minuteurAppui);
+    minuteurAppui = setTimeout(function () { appuiLongFait = true; basculerAntenne(); }, APPUI_LONG);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (nom) {
+    btnRadio.addEventListener(nom, function () { clearTimeout(minuteurAppui); });
+  });
+  /* Un appui maintenu ouvre le menu du systeme sur mobile : il avalerait le
+     geste long. */
+  btnRadio.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  btnRadio.addEventListener('click', function () {
+    if (appuiLongFait) { appuiLongFait = false; return; }
+    montrerLanguette(languetteRadio.classList.contains('cache'));
+  });
+  btnRadioLecture.addEventListener('click', basculerAntenne);
+  document.addEventListener('click', function (e) {
+    if (languetteRadio.classList.contains('cache')) return;
+    if (btnRadio.contains(e.target) || languetteRadio.contains(e.target)) return;
+    montrerLanguette(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !languetteRadio.classList.contains('cache')) {
+      montrerLanguette(false);
+      btnRadio.focus();
+    }
+  });
+  direAntenne();
 
   /* ---------- Feuille du bas ---------- */
 
@@ -1165,8 +1240,7 @@
     });
     if (blocFacturation) blocFacturation.dessiner();
     if (blocFacturationResa) blocFacturationResa.dessiner();
-    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
-    $('radioQuoi').textContent = t().radio;
+    direAntenne();
     if (resa.notice) $('texteConsentResa').textContent = texteNotice(resa.notice);
     if (cmd.notice) $('texteConsentCmd').textContent = texteNotice(cmd.notice);
     dessinerOffres(); dessinerCreneaux(); majPersonnes(); majRecap();
@@ -1264,11 +1338,11 @@
   $('plusPersonnes').addEventListener('click', function () { resa.personnes++; majPersonnes(); });
   $('btnResa').addEventListener('click', reserver);
   $('btnCmd').addEventListener('click', commander);
-  $('btnLangue').addEventListener('click', function () {
+  function basculerLangue() {
     langue = langue === 'fr' ? 'en' : 'fr';
     Roots.retenirLangue(langue);
     appliquerLangue();
-  });
+  }
 
   /* Un lien profond ouvre la feuille sur l'onglet demandé. */
   function ouvrirDepuisLien() {
@@ -1288,7 +1362,17 @@
   var fondAccueil = $('fondAccueil');
   var videoAccueil = $('videoAccueil');
   var cmdVideo = $('cmdVideo');
-  var SOURCE_FOND = 'media/hero.mp4';
+  /* Deux tirages du meme film : l'un cadre pour un ecran debout, l'autre
+     pour un ecran couche. Servir le paysage a un telephone n'y montre qu'une
+     bande centrale etiree. L'image d'attente suit la meme bascule, mais par
+     la feuille de style : un element video ne porte qu'une seule affiche. */
+  var SOURCE_FOND = { debout: 'media/hero-portrait.mp4', couche: 'media/hero.mp4' };
+
+  function ecranDebout() {
+    return !!(window.matchMedia && window.matchMedia('(orientation: portrait)').matches);
+  }
+
+  function sourceFond() { return ecranDebout() ? SOURCE_FOND.debout : SOURCE_FOND.couche; }
 
   function economieDeDonnees() {
     var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -1307,9 +1391,10 @@
   }
 
   function lancerFond() {
-    if (!videoAccueil.getAttribute('src')) videoAccueil.setAttribute('src', SOURCE_FOND);
+    var voulue = sourceFond();
+    if (videoAccueil.getAttribute('src') !== voulue) videoAccueil.setAttribute('src', voulue);
     var r = videoAccueil.play();
-    if (r && r.catch) r.catch(function () { marquerCommandeVideo(false); });
+    if (r && r['catch']) r['catch'](function () { marquerCommandeVideo(false); });
   }
 
   function demarrerFond() {
@@ -1330,6 +1415,19 @@
     videoAccueil.addEventListener('click', basculerFond);
     cmdVideo.addEventListener('click', basculerFond);
     cmdVideo.classList.remove('cache');
+
+    if (window.matchMedia) {
+      var mq = window.matchMedia('(orientation: portrait)');
+      var suivre = function () {
+        if (!videoAccueil.getAttribute('src')) return;
+        if (videoAccueil.getAttribute('src') === sourceFond()) return;
+        var jouait = !videoAccueil.paused;
+        videoAccueil.setAttribute('src', sourceFond());
+        if (jouait) lancerFond();
+      };
+      if (mq.addEventListener) mq.addEventListener('change', suivre);
+      else if (mq.addListener) mq.addListener(suivre);
+    }
 
     if (mouvementReduit()) { marquerCommandeVideo(false); return; }
     lancerFond();

@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '7e6715c960a146a4';
+var VERSION   = 'cea9a7456def08ea';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -35,7 +35,7 @@ var COQUE_FICHIERS = [
   'facture.html', 'paiement.html', 'confidentialite.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'plan.css',
   'roots-db.js', 'roots.js', 'garde.js',
-  'manifest.webmanifest', 'media/hero.jpg'
+  'manifest.webmanifest', 'media/hero.jpg', 'media/hero-portrait.jpg'
 ];
 
 /* payer.html ne charge aucun script de l'application, ne detient ni jeton ni
