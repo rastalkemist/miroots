@@ -354,7 +354,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    portent le meme poids : l'univers change, aucune mesure ne change.
    Traversent seuls, hors alias : la semantique de statut et l'anneau de
    focus, qui sont les memes dans tous les univers. */
-:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb)}
+:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb);--univers-e3:var(--vert-e3)}
 
 /* ------------------------------------------------------------------------ Univers Mi Roam ------------------------------------------------------------------------ */
 /* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
@@ -362,7 +362,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    alias — jamais une valeur neuve — parce que la palette garantit qu'a echelon
    egal les familles portent le meme poids : l'univers change, aucune mesure ne
    change. Le nav appartient a l'univers ; le super-nav du bas commute. */
-:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb)}
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
@@ -968,11 +968,11 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    meme sur les trois. Il tient sur UNE ligne et s'etire vers la gauche autant que
    le corps de page le permet, l'etat cedant en premier. */
 .radio-bloc{position:relative;display:flex;align-items:center}
-.radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--univers-e1);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .radio-pastille svg{width:24px;height:24px}
-.radio-pastille.antenne{color:var(--jaune-e1)}
-body[data-surface="ambiante"] .radio-pastille{color:var(--blanc-casse)}
-body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--roots-jaune)}
+.radio-pastille.antenne{color:var(--univers-e3)}
+body[data-surface="ambiante"] .radio-pastille{color:var(--univers-e3)}
+body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--univers-e1)}
 .languette-radio{position:absolute;top:100%;right:0;margin-top:var(--esp-2);z-index:9;display:flex;align-items:center;gap:var(--esp-2);padding:var(--esp-1) var(--esp-2);background:rgba(var(--univers-e1-rgb),.92);backdrop-filter:blur(8px);border-radius:var(--rayon-pilule);color:var(--creme);width:max-content;max-width:calc(100vw - var(--esp-4) * 2)}
 .languette-radio.cache{display:none}
 .lecteur-btn{width:var(--cible-min);height:var(--cible-min);border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}

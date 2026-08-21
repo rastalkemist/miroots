@@ -31,6 +31,7 @@
 :where(body.p-plan){
   --univers: var(--roots-noir);
   --univers-e1: var(--roots-noir);
+  --univers-e3: var(--terre-e3);
   --univers-e1-rgb: var(--noir-rgb);
   --univers-rgb: var(--noir-rgb);
   --encre: var(--roots-noir);
