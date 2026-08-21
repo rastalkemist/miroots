@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-2xVg+WFg3A+EMBWl6H8nrXMeldKka57NyC4SWga+nWk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-X0tdAfTXeKRcQiK/CiG4dsbogCzGgbbPF5CkNULFSoY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -1321,9 +1321,14 @@
       marquerCommandeVideo(true);
     });
     videoAccueil.addEventListener('pause', function () { marquerCommandeVideo(false); });
-    cmdVideo.addEventListener('click', function () {
+    /* Le geste ordinaire est l'appui sur l'image. La commande porte le meme
+       geste pour qui navigue au clavier, et ne quitte le hors-ecran qu'au
+       foyer : sans elle, la mise en pause n'appartiendrait qu'au pointeur. */
+    function basculerFond() {
       if (videoAccueil.paused) lancerFond(); else videoAccueil.pause();
-    });
+    }
+    videoAccueil.addEventListener('click', basculerFond);
+    cmdVideo.addEventListener('click', basculerFond);
     cmdVideo.classList.remove('cache');
 
     if (mouvementReduit()) { marquerCommandeVideo(false); return; }

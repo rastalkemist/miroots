@@ -413,12 +413,18 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 /* La commande d'arret est VISIBLE et permanente : une image qui part seule
    doit pouvoir s'arreter sans chercher. Sa plaque porte l'encre d'univers a
    forte opacite pour tenir sur n'importe quelle image dessous. */
-/* La commande se pose sur une image que rien ne contraint : aucune couleur
+/* Le fond se met en pause d'un appui sur l'image elle-meme. Cette commande
+   est le meme geste rendu au clavier : elle vit hors de l'ecran et ne
+   revient qu'au foyer. La retirer laisserait la mise en pause au seul
+   pointeur, ce qu'aucun usager au clavier ne peut atteindre.
+   Elle se pose alors sur une image que rien ne contraint : aucune couleur
    unique ne s'en detache a coup sur. Le disque plein et l'anneau clair
    forment donc une paire — pour toute luminosite d'image, l'un des deux
    passe le seuil de 3:1. Rendre le disque translucide ou retirer
    l'anneau supprime cette garantie. */
-:where(body.p-accueil) .commande-video{position:fixed;left:var(--esp-3);bottom:calc(90px + var(--safe-bas));z-index:7;width:var(--cible-min);height:var(--cible-min);border:2px solid var(--creme);border-radius:50%;background:var(--univers-e1);color:var(--creme);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .commande-video{position:fixed;left:-9999px;bottom:calc(90px + var(--safe-bas));z-index:7;width:var(--cible-min);height:var(--cible-min);border:2px solid var(--creme);border-radius:50%;background:var(--univers-e1);color:var(--creme);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .commande-video:focus-visible,
+:where(body.p-accueil) .commande-video:focus{left:var(--esp-3)}
 :where(body.p-accueil) .commande-video svg{width:20px;height:20px}
 @media(min-width:640px){:where(body.p-accueil) .commande-video{bottom:calc(138px + var(--safe-bas))}}
 :where(body.p-accueil) .video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;background:radial-gradient(circle,rgba(var(--jaune-e3-rgb),.42),transparent 62%);animation:respirer 9s ease-in-out infinite}
@@ -429,7 +435,15 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .video-fond .feuille{position:absolute;border-radius:0 55% 0 55%;background:rgba(var(--vert-e1-rgb),.5);animation:bercer 12s ease-in-out infinite;transform-origin:bottom center}
 @keyframes bercer{0%,100%{transform:rotate(-4deg)}
 50%{transform:rotate(5deg)}
-}:where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.5),transparent 26%,transparent 62%,rgba(var(--ombre-teinte),.5))}
+}/* Le chrome pose son texte blanc a meme le fond : sur l'ecran ambiant la
+   barre n'a pas de fond a elle. Le voile tient donc SA PLEINE VALEUR sur
+   toute la bande qu'occupe le chrome, et ne commence a s'eteindre qu'au
+   dessous. Le palier haut est un plancher mesure sur les images du fond
+   servi, pas un reglage : l'alleger, ou le remplacer par un degrade qui
+   s'eteint des le premier pixel, ramene le texte du chrome sous le seuil
+   des qu'une image claire passe. Un controle relit ce palier contre le
+   fichier servi et refuse s'il ne suffit plus. */
+:where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.60) 0,rgba(var(--voile-video-teinte),.60) 12%,transparent 34%,transparent 62%,rgba(var(--ombre-teinte),.5))}
 :where(body.p-accueil) .radio-wrap{position:fixed;bottom:40vh;left:0;right:0;z-index:5;pointer-events:none}
 :where(body.p-accueil) .radio-inner{width:var(--site-w);margin:0 auto;display:flex;justify-content:flex-end}
 :where(body.p-accueil) .radio-ligne{pointer-events:auto;display:inline-flex;align-items:center;gap:var(--esp-2);max-width:100%;background:rgba(var(--vert-e1-rgb),.55);backdrop-filter:blur(6px);border-radius:var(--rayon-pilule);padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-3)}
