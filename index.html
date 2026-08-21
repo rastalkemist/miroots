@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-nX+l5KAvIE0la76DWCWUsgp/aoKvKjrtN7XPBPI3aV0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Le jardin, où que tu sois</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-2xVg+WFg3A+EMBWl6H8nrXMeldKka57NyC4SWga+nWk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots - l’app pour NU</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -23,13 +23,15 @@
 
 <script>Roots.sprite()</script>
 
-<div class="video-fond" aria-hidden="true">
+<div class="video-fond" id="fondAccueil" aria-hidden="true">
+  <video id="videoAccueil" muted loop playsinline preload="none" poster="media/hero.jpg"></video>
   <div class="halo"></div>
   <div class="feuille" style="width:38vmax;height:52vmax;right:-14vmax;top:-8vmax;"></div>
   <div class="feuille" style="width:30vmax;height:44vmax;left:-10vmax;bottom:-16vmax;animation-delay:3s;"></div>
   <div class="feuille" style="width:20vmax;height:30vmax;right:8vmax;bottom:-10vmax;animation-delay:6s;opacity:.7;"></div>
 </div>
 <div class="voile-lisibilite"></div>
+<button type="button" class="commande-video cache" id="cmdVideo" data-al="alPause" aria-label="Mettre la vidéo en pause"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
 
 <a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
 
@@ -271,6 +273,7 @@
       reserver: 'Réserver',
       cestReserve: "C'est réservé. On t'attend.",
       alCopier: 'Copier le code', alTelecharger: 'Télécharger le code',
+      alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
       voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
       tonNom: "Ton nom (pour t'appeler)", tonTel: 'Ton numéro',
       commander: 'Commander', cmdMention: 'Sans compte. Tu peux payer en ligne juste après, ou au comptoir.',
@@ -328,6 +331,7 @@
       reserver: 'Book now',
       cestReserve: 'Booked. See you soon.',
       alCopier: 'Copy the code', alTelecharger: 'Download the code',
+      alPause: 'Pause the video', alLire: 'Play the video',
       voirDetail: 'See the full menu →', cmdTotal: 'Order total',
       tonNom: 'Your name', tonTel: 'Your number',
       commander: 'Place order', cmdMention: 'No account needed. You can pay online right after, or at the counter.',
@@ -1275,9 +1279,61 @@
     ouvrirDlg();
   }
 
+  /* ---------- Fond animé ---------- */
+  /* La source n'est posée qu'au moment où la lecture est décidée : sans ce
+     report, chaque visite paie le poids du fichier. Le mode économie de
+     données retire l'élément, image d'attente comprise, et laisse le fond
+     peint. Le mouvement réduit garde la vidéo offerte sans la lancer. */
+
+  var fondAccueil = $('fondAccueil');
+  var videoAccueil = $('videoAccueil');
+  var cmdVideo = $('cmdVideo');
+  var SOURCE_FOND = 'media/hero.mp4';
+
+  function economieDeDonnees() {
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return !!(c && c.saveData);
+  }
+
+  function mouvementReduit() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
+  function marquerCommandeVideo(enLecture) {
+    var cle = enLecture ? 'alPause' : 'alLire';
+    cmdVideo.setAttribute('data-al', cle);
+    cmdVideo.setAttribute('aria-label', t()[cle]);
+    cmdVideo.querySelector('use').setAttribute('href', enLecture ? '#i-pause' : '#i-lecture');
+  }
+
+  function lancerFond() {
+    if (!videoAccueil.getAttribute('src')) videoAccueil.setAttribute('src', SOURCE_FOND);
+    var r = videoAccueil.play();
+    if (r && r.catch) r.catch(function () { marquerCommandeVideo(false); });
+  }
+
+  function demarrerFond() {
+    if (!fondAccueil || !videoAccueil || !cmdVideo) return;
+    if (economieDeDonnees()) { videoAccueil.remove(); return; }
+
+    videoAccueil.addEventListener('play', function () {
+      fondAccueil.classList.add('avec-video');
+      marquerCommandeVideo(true);
+    });
+    videoAccueil.addEventListener('pause', function () { marquerCommandeVideo(false); });
+    cmdVideo.addEventListener('click', function () {
+      if (videoAccueil.paused) lancerFond(); else videoAccueil.pause();
+    });
+    cmdVideo.classList.remove('cache');
+
+    if (mouvementReduit()) { marquerCommandeVideo(false); return; }
+    lancerFond();
+  }
+
   appliquerLangue();
   demarrer();
   ouvrirDepuisLien();
+  demarrerFond();
 
   window.addEventListener('load', function () {
     itiResa = Roots.initTelRoots($('telResa'));

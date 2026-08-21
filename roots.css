@@ -403,6 +403,24 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .pied{margin-top:var(--air-i8)}
 /* ======================================================================== ECRAN — accueil ======================================================================== */ :where(body.p-accueil) svg.brand{fill:currentColor;stroke:none}
 :where(body.p-accueil) .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1))}
+/* La video occupe le fond entier, recadree par le centre. Le degrade et les
+   feuilles restent DESSOUS : ils reparaissent seuls si la video ne se pose
+   pas — connexion econome, mouvement reduit, format refuse. Rien ne se
+   dessine deux fois : la classe posee par l'ecran retire l'un ou l'autre. */
+:where(body.p-accueil) .video-fond video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+:where(body.p-accueil) .video-fond.avec-video .halo,
+:where(body.p-accueil) .video-fond.avec-video .feuille{display:none}
+/* La commande d'arret est VISIBLE et permanente : une image qui part seule
+   doit pouvoir s'arreter sans chercher. Sa plaque porte l'encre d'univers a
+   forte opacite pour tenir sur n'importe quelle image dessous. */
+/* La commande se pose sur une image que rien ne contraint : aucune couleur
+   unique ne s'en detache a coup sur. Le disque plein et l'anneau clair
+   forment donc une paire — pour toute luminosite d'image, l'un des deux
+   passe le seuil de 3:1. Rendre le disque translucide ou retirer
+   l'anneau supprime cette garantie. */
+:where(body.p-accueil) .commande-video{position:fixed;left:var(--esp-3);bottom:calc(90px + var(--safe-bas));z-index:7;width:var(--cible-min);height:var(--cible-min);border:2px solid var(--creme);border-radius:50%;background:var(--univers-e1);color:var(--creme);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .commande-video svg{width:20px;height:20px}
+@media(min-width:640px){:where(body.p-accueil) .commande-video{bottom:calc(138px + var(--safe-bas))}}
 :where(body.p-accueil) .video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;background:radial-gradient(circle,rgba(var(--jaune-e3-rgb),.42),transparent 62%);animation:respirer 9s ease-in-out infinite}
 @keyframes respirer{0%,100%{transform:scale(1);opacity:1}
 }:where(body.p-accueil) .video-fond .feuille-1{width:38vmax;height:52vmax;right:-14vmax;top:-8vmax}

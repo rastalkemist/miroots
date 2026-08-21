@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '6c55ecbde8ed359b';
+var VERSION   = 'de6efe7f1010a7c8';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -35,7 +35,7 @@ var COQUE_FICHIERS = [
   'facture.html', 'paiement.html', 'confidentialite.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'plan.css',
   'roots-db.js', 'roots.js', 'garde.js',
-  'manifest.webmanifest'
+  'manifest.webmanifest', 'media/hero.jpg'
 ];
 
 /* payer.html ne charge aucun script de l'application, ne detient ni jeton ni
@@ -44,9 +44,16 @@ var COQUE_FICHIERS = [
    lettres, et c'est une barriere mecanique. */
 var ECARTE = /\/payer\.html$/;
 
+/* La video se sert par plages : la reponse est un 206, le fichier pese
+   plusieurs megaoctets, et le relayer depuis un worker casse la lecture
+   progressive sur certains navigateurs. Elle passe donc en direct, sans
+   interception et sans jamais entrer en cache. Retirer cette ligne remet
+   un fichier lourd dans la coque et rend la lecture dependante du worker. */
+var MEDIA_CONTINU = /\/media\/[^\/]+\.(mp4|webm|ogv|m4v)$/;
+
 /* Ce qui ne change pas : on peut le servir depuis le cache sans risque de
    servir du code perime. Les polices coutent cher sur un reseau lent. */
-var EST_IMMUABLE = /\/(fonts|icones|vendor)\//;
+var EST_IMMUABLE = /\/(fonts|icones|vendor|media)\//;
 
 function estBonneReponse(r) {
   return r && r.status === 200 && r.type === 'basic';
@@ -88,6 +95,7 @@ self.addEventListener('fetch', function (e) {
 
   if (url.origin !== self.location.origin) return;        /* hors-origine  */
   if (ECARTE.test(url.pathname)) return;                  /* payer.html    */
+  if (MEDIA_CONTINU.test(url.pathname)) return;            /* lecture par plages */
 
   if (EST_IMMUABLE.test(url.pathname)) { e.respondWith(cacheDabord(req)); return; }
 
