@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-UYE7HxvS4br+4in61Q4m4oe2j0jNyhco3MIxWvZYu0k='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZJZCmzUCsxkcjHp4hGVPKyTB0BQU+KOjaZQAjNAKlWM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Retrouver ma réservation ou ma commande — Roots</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -64,6 +64,11 @@
     </div>
     <button class="principal" id="btnChercher" data-t="bChercher">Retrouver</button>
     <p class="erreur cache" id="erreur" role="alert" aria-live="polite"></p>
+    <div class="issue cache" id="issueExpiree" role="status" aria-live="polite">
+      <p class="issue-titre" id="expireTitre"></p>
+      <p class="issue-dit" id="expireDit"></p>
+    </div>
+    <a class="secondaire cache" id="lienReserver" data-t="bReserverEncore" href="index.html?ouvrir=reserver">Réserver à nouveau</a>
   </section>
 
   <section class="bloc resu cache" id="resultat">
@@ -114,6 +119,9 @@
       archive: 'Cette réservation est passée : tu peux la consulter, plus la modifier.',
       manque: 'Entre le code à 6 caractères et ton numéro.',
       introuvable: 'Rien ne correspond à ce code et à ce numéro.',
+      expireTitre: 'La place a été relâchée.',
+      expireDit: 'Elle n’a pas été réglée à temps, alors elle est repartie. Il n’y a rien à annuler : tu peux réserver à nouveau.',
+      bReserverEncore: 'Réserver à nouveau',
       onCherche: 'On cherche…',
       annuler: 'Annuler cette réservation', confirmer: 'Confirmer l’annulation',
       annulee: 'Réservation annulée.',
@@ -151,6 +159,9 @@
       archive: 'This booking has passed. You can view it, but not change it.',
       manque: 'Enter the 6-character code and your phone number.',
       introuvable: 'No booking or order matches that code and number. Check both and try again.',
+      expireTitre: 'The slot was released.',
+      expireDit: 'It was not paid in time, so it went back. There is nothing to cancel — you can book again.',
+      bReserverEncore: 'Book again',
       onCherche: 'Searching…',
       annuler: 'Cancel this booking', confirmer: 'Confirm cancellation',
       annulee: 'Booking cancelled.',
@@ -372,8 +383,15 @@
     b.textContent = t().onCherche;
     try {
       var p = await Roots.db.retrouver(code, tel);
-      if (!p) erreur('erreur', t().introuvable);
-      else afficher(p);
+      if (p) afficher(p);
+      else {
+        /* Rien trouve ne veut pas dire code faux. Une place relachee est
+           exclue par les portes de consultation : on demande alors POURQUOI,
+           et l'ecran dit ce qui s'est passe plutot que d'accuser la saisie. */
+        var q = await Roots.db.pourquoiRien(code, tel);
+        if (q) montrerExpiree(q.type);
+        else erreur('erreur', t().introuvable);
+      }
     } catch (e) {
       erreur('erreur', e.message);
     } finally {
@@ -517,6 +535,21 @@
     issueCourante = null;
     $('issueAnnul').classList.add('cache');
     $('btnAccueil').classList.add('cache');
+    $('issueExpiree').classList.add('cache');
+    $('lienReserver').classList.add('cache');
+  }
+
+  /* La place relachee se dit ici, et le geste mene la ou l'on refait la meme
+     chose : un espace se reprend sur l'accueil, un sejour sur son univers.
+     Aucune donnee de la reservation n'est affichee — la porte n'en rend
+     aucune, et il n'y a rien a montrer d'une place qui n'est plus tenue. */
+  function montrerExpiree(type) {
+    $('expireTitre').textContent = t().expireTitre;
+    $('expireDit').textContent = t().expireDit;
+    var lien = $('lienReserver');
+    lien.href = (type === 'logement') ? 'roam.html' : 'index.html?ouvrir=reserver';
+    $('issueExpiree').classList.remove('cache');
+    lien.classList.remove('cache');
   }
 
   /* ---------- Câblage des gestes ---------- */

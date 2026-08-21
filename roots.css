@@ -626,7 +626,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-retrouver) #codeFormat{text-align:center}
 :where(body.p-retrouver) .principal{width:100%;min-height:52px;border:none;border-radius:var(--rayon-pilule);background:var(--univers);color:var(--blanc);font-family:var(--font-corps);font-weight:700;font-size:var(--t-body);cursor:pointer;margin-top:var(--air-i3)}
 :where(body.p-retrouver) .principal[disabled]{opacity:.35;cursor:not-allowed}
-:where(body.p-retrouver) .secondaire{width:100%;min-height:44px;border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;margin-top:var(--air-i2)}
+:where(body.p-retrouver) .secondaire{width:100%;min-height:var(--cible-min);display:flex;align-items:center;justify-content:center;text-decoration:none;border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;margin-top:var(--air-i2)}
 :where(body.p-retrouver) .danger{border-color:var(--rouge-e2);color:var(--rouge-e2)}
 :where(body.p-retrouver) .danger.arme{background:var(--roots-rouge);color:var(--blanc);border-color:var(--rouge-e2)}
 :where(body.p-retrouver) .erreur{margin-top:var(--air-i2)}
@@ -648,9 +648,9 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 /* L'issue d'une annulation n'est ni une erreur ni un statut : c'est une reponse
    qu'on recoit une fois. Le filet dit la famille, le mot dit le sens — jamais la
    couleur seule (SC 1.4.1). */
-:where(body.p-retrouver) .issue-annul{margin-top:var(--air-i3);padding:var(--esp-3);border-radius:var(--rayon-module);background:var(--creme);border-left:4px solid var(--vert-e3)}
-:where(body.p-retrouver) .issue-annul .issue-titre{margin:0 0 var(--air-i1);font-size:var(--t-body);font-weight:700;color:var(--encre)}
-:where(body.p-retrouver) .issue-annul .issue-dit{margin:0;font-size:var(--t-sm);line-height:1.5;color:var(--encre)}
+:where(body.p-retrouver) .issue{margin-top:var(--air-i3);padding:var(--esp-3);border-radius:var(--rayon-module);background:var(--creme);border-left:4px solid var(--vert-e3)}
+:where(body.p-retrouver) .issue .issue-titre{margin:0 0 var(--air-i1);font-size:var(--t-body);font-weight:700;color:var(--encre)}
+:where(body.p-retrouver) .issue .issue-dit{margin:0;font-size:var(--t-sm);line-height:1.5;color:var(--encre)}
 :where(body.p-retrouver) .leCode{font-family:var(--font-chiffres);font-weight:700;font-size:var(--t-code);letter-spacing:.13em;color:var(--univers)}
 :where(body.p-retrouver) .champ .iti{background:var(--gris-ilot)}
 :where(body.p-retrouver) .champ .iti:focus-within{background:var(--blanc)}

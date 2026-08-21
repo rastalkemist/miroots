@@ -590,6 +590,34 @@ window.Roots = window.Roots || {};
       });
     },
 
+    /* POURQUOI la recherche n'a rien rendu. Les portes de consultation
+       excluent une place relachee : elles rendent le vide, exactement comme un
+       couple code + numero faux. Cette porte-ci nomme le cas, sans rien rendre
+       de la reservation — ni date, ni montant, ni contact — et seulement
+       pendant la fenetre de visibilite fixee par la base ; au-dela, une place
+       relachee redevient introuvable.
+
+       Elle ne s'appelle QUE lorsque la recherche a echoue : chaque appel
+       consomme un jeton du plafond de recherche, et une tentative qui trouve
+       n'a rien a expliquer. L'espace passe en premier, comme dans `retrouver`,
+       parce que c'est le cas le plus frequent. */
+    pourquoiRien: function (code, tel) {
+      var self = this;
+      return self.etatReservation('espace', code, tel).then(function (e) {
+        if (e && e.resultat === 'expiree') return { type: 'espace', etat: 'expiree' };
+        return self.etatReservation('logement', code, tel).then(function (l) {
+          return (l && l.resultat === 'expiree')
+            ? { type: 'logement', etat: 'expiree' } : null;
+        });
+      });
+    },
+
+    etatReservation: function (type, code, tel) {
+      return appeler('etat_reservation', {
+        p_type: type, p_code: code, p_tel: telephone(tel)
+      });
+    },
+
     /* ---------- Remise de la piece ----------
        Le choix du canal appartient au client et se pose sur sa vente ; la
        piece se lit ensuite par une capacite — le jeton rendu quand elle est
