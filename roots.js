@@ -414,10 +414,18 @@
         var bl = document.createElement('button');
         bl.type = 'button';
         bl.className = 'lien-langue';
-        bl.textContent = getLangue() === 'fr' ? 'EN' : 'FR';
+        /* La langue se nomme dans sa propre langue : « EN » ne dit pas s'il
+           s'agit de la langue courante ou de celle vers laquelle on bascule. */
+        bl.textContent = getLangue() === 'fr' ? 'English' : 'Français';
+        bl.setAttribute('lang', getLangue() === 'fr' ? 'en' : 'fr');
         bl.setAttribute('aria-label', LIBELLES[getLangue()].langue || 'Langue');
         bl.addEventListener('click', function () { opts.onLangue(); });
         pied.appendChild(bl);
+        var point = document.createElement('span');
+        point.className = 'point-pied';
+        point.setAttribute('aria-hidden', 'true');
+        point.textContent = '\u00b7';
+        pied.appendChild(point);
       }
       var lien = document.createElement('a');
       lien.href = 'confidentialite.html';

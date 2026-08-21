@@ -440,15 +440,16 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .video-fond .feuille{position:absolute;border-radius:0 55% 0 55%;background:rgba(var(--vert-e1-rgb),.5);animation:bercer 12s ease-in-out infinite;transform-origin:bottom center}
 @keyframes bercer{0%,100%{transform:rotate(-4deg)}
 50%{transform:rotate(5deg)}
-}/* Le chrome pose son texte blanc a meme le fond : sur l'ecran ambiant la
-   barre n'a pas de fond a elle. Le voile tient donc SA PLEINE VALEUR sur
-   toute la bande qu'occupe le chrome, et ne commence a s'eteindre qu'au
-   dessous. Le palier haut est un plancher mesure sur les images du fond
+}/* Le chrome pose son texte blanc et son antenne a meme le fond : sur l'ecran
+   ambiant la barre n'a pas de fond a elle. Le voile tient donc SA PLEINE
+   VALEUR sur toute la bande qu'occupe le chrome, et ne commence a s'eteindre
+   qu'au dessous. Le bas de l'ecran n'en porte pas : tout ce qui s'y pose —
+   geste focal, super-nav — porte son propre aplat et se mesure dessus. Le palier haut est un plancher mesure sur les images du fond
    servi, pas un reglage : l'alleger, ou le remplacer par un degrade qui
    s'eteint des le premier pixel, ramene le texte du chrome sous le seuil
    des qu'une image claire passe. Un controle relit ce palier contre le
    fichier servi et refuse s'il ne suffit plus. */
-:where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.60) 0,rgba(var(--voile-video-teinte),.60) 12%,transparent 34%,transparent 62%,rgba(var(--ombre-teinte),.5))}
+:where(body.p-accueil) .voile-lisibilite{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(var(--voile-video-teinte),.60) 0,rgba(var(--voile-video-teinte),.60) 12%,transparent 34%)}
 /* Les deux gestes du code. Ce sont des actions secondaires : un seul bouton
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--air-i3);flex-wrap:wrap}
@@ -952,16 +953,17 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-caisse) .moyens{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--tuile-pas),1fr));gap:var(--tuile-gouttiere);margin-bottom:var(--air-i3)}
 :where(body.p-caisse) .action-large{width:100%;margin-top:var(--air-i6)}
 :where(body.p-caisse) .cache{display:none}
-/* Roots Radio. La pastille remplace la bascule de langue dans le chrome et
-   porte deux gestes : appui bref pour la languette, appui long pour l'antenne.
-   Elle refuse la selection et le menu contextuel, sans quoi l'appui long
-   maintenu ouvre le menu du systeme au lieu de basculer. La languette est
-   ancree sous la pastille : la droite du chrome porte donc une position
-   relative, et la retirer detacherait la languette de son bouton. */
+/* Roots Radio. L'antenne se tient seule dans le chrome, sans disque : c'est le
+   palier haut du voile qui la detache du fond, comme il detache le reste du
+   chrome. Alleger ce palier la ramene sous le seuil en meme temps que le texte.
+   Elle refuse la selection et le menu contextuel, sans quoi l'appui maintenu
+   ouvre le menu du systeme au lieu d'ouvrir le lecteur. Le lecteur est ancre
+   sous elle : la droite du chrome porte donc une position relative, et la
+   retirer detacherait le lecteur de son bouton. */
 :where(body.p-accueil) .chrome-droite{position:relative}
-:where(body.p-accueil) .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;border-radius:50%;background:rgba(var(--vert-e1-rgb),.55);backdrop-filter:blur(6px);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-:where(body.p-accueil) .radio-pastille svg{width:20px;height:20px}
-:where(body.p-accueil) .radio-pastille.antenne{background:var(--roots-jaune);color:var(--roots-noir)}
+:where(body.p-accueil) .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+:where(body.p-accueil) .radio-pastille svg{width:24px;height:24px}
+:where(body.p-accueil) .radio-pastille.antenne{color:var(--roots-jaune)}
 :where(body.p-accueil) .languette-radio{position:absolute;top:100%;right:0;margin-top:var(--esp-2);z-index:9;display:flex;align-items:center;gap:var(--esp-3);padding:var(--esp-2) var(--esp-3);background:rgba(var(--vert-e1-rgb),.92);backdrop-filter:blur(8px);border-radius:var(--rayon-pilule);color:var(--creme);white-space:nowrap}
 :where(body.p-accueil) .languette-radio.cache{display:none}
 :where(body.p-accueil) .lecteur-btn{width:var(--cible-min);height:var(--cible-min);border-radius:50%;border:none;background:rgba(var(--blanc-casse-rgb),.2);color:var(--blanc-casse);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
@@ -973,4 +975,5 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 
 /* La bascule de langue se pose a gauche de la ligne de politique, dans le
    meme pied et avec la meme encre. */
+.pied-politique .point-pied{color:var(--encre-discrete);font-size:var(--t-sm)}
 .pied-politique .lien-langue{min-height:var(--cible-min);min-width:var(--cible-min);border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;text-decoration:underline;text-underline-offset:3px}

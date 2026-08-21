@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-hlATKiZxATcOqZ4bVBta34f26d82QRTw3GcUm2m62mg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-EvdNSIpH5VQ1uNZMxgNacmlo5zUq+5u4AbCAIdjAxlc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -270,7 +270,7 @@
       cestReserve: "C'est réservé. On t'attend.",
       alCopier: 'Copier le code', alTelecharger: 'Télécharger le code',
       alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
-      alRadio: 'Roots Radio — ouvrir le lecteur, appui long pour allumer',
+      alRadio: 'Roots Radio — allumer ou éteindre, appui long pour le lecteur',
       alRadioLire: 'Allumer la radio', alRadioArret: 'Éteindre la radio',
       radioAntenne: 'À l’antenne', radioEteinte: 'Hors antenne',
       voirDetail: 'Voir la carte détaillée →', cmdTotal: 'Total commande',
@@ -331,7 +331,7 @@
       cestReserve: 'Booked. See you soon.',
       alCopier: 'Copy the code', alTelecharger: 'Download the code',
       alPause: 'Pause the video', alLire: 'Play the video',
-      alRadio: 'Roots Radio — open the player, press and hold to switch on',
+      alRadio: 'Roots Radio — switch on or off, press and hold for the player',
       alRadioLire: 'Switch the radio on', alRadioArret: 'Switch the radio off',
       radioAntenne: 'On air', radioEteinte: 'Off air',
       voirDetail: 'See the full menu →', cmdTotal: 'Order total',
@@ -400,11 +400,12 @@
   });
 
   /* ---------- Roots Radio ---------- */
-  /* La pastille porte deux gestes : un appui bref ouvre la languette, un appui
-     long bascule l'antenne sans l'ouvrir. L'appui long n'appartient qu'au
-     pointeur ; la meme bascule vit dans la languette, atteignable au clavier
-     en deux gestes. Retirer la commande de la languette laisserait l'allumage
-     au seul appui long, qu'aucun clavier ne produit. */
+  /* L'antenne porte deux gestes : un appui bref allume ou eteint, un appui
+     long ouvre le lecteur, et un second le referme : une fois ouvert il tient,
+     et aucun appui ailleurs ne le replie. L'appui long n'appartient qu'au
+     pointeur ; la fleche bas, sur le bouton au foyer, ouvre le meme lecteur et
+     l'echappement le ferme. Retirer ces deux touches laisserait le lecteur au
+     seul appui long, qu'aucun clavier ne produit. */
 
   var FLUX_RADIO = '';   /* Adresse du flux. Vide, les commandes ne pilotent
                             que l'etat affiche ; renseignee, elle doit aussi
@@ -447,7 +448,10 @@
   btnRadio.addEventListener('pointerdown', function () {
     appuiLongFait = false;
     clearTimeout(minuteurAppui);
-    minuteurAppui = setTimeout(function () { appuiLongFait = true; basculerAntenne(); }, APPUI_LONG);
+    minuteurAppui = setTimeout(function () {
+      appuiLongFait = true;
+      montrerLanguette(languetteRadio.classList.contains('cache'));
+    }, APPUI_LONG);
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (nom) {
     btnRadio.addEventListener(nom, function () { clearTimeout(minuteurAppui); });
@@ -457,14 +461,15 @@
   btnRadio.addEventListener('contextmenu', function (e) { e.preventDefault(); });
   btnRadio.addEventListener('click', function () {
     if (appuiLongFait) { appuiLongFait = false; return; }
-    montrerLanguette(languetteRadio.classList.contains('cache'));
+    basculerAntenne();
+  });
+  btnRadio.addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowDown') return;
+    e.preventDefault();
+    montrerLanguette(true);
+    btnRadioLecture.focus();
   });
   btnRadioLecture.addEventListener('click', basculerAntenne);
-  document.addEventListener('click', function (e) {
-    if (languetteRadio.classList.contains('cache')) return;
-    if (btnRadio.contains(e.target) || languetteRadio.contains(e.target)) return;
-    montrerLanguette(false);
-  });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && !languetteRadio.classList.contains('cache')) {
       montrerLanguette(false);
