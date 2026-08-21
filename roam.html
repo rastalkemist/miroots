@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-67Ta4oJ+h/nHSbGWuAiF42gPutyy0mA0QulsevAH7dA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-6psu79BvMYNnbVZSTYnMnjWZE7Jm4MZm92EDSNZFGgw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="theme-color" content="#9C1218">
 <link rel="manifest" href="manifest.webmanifest">
@@ -574,6 +574,7 @@
   var chrome = Roots.initChrome({ toastId: 'toast',
     getLangue: function () { return langue; }, getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
+    radio: true,
     onLangue: function () { basculerLangue(); }
   });
   function basculerLangue() {

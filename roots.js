@@ -538,9 +538,10 @@
         var bl = document.createElement('button');
         bl.type = 'button';
         bl.className = 'lien-langue';
-        /* La langue se nomme dans sa propre langue : « EN » ne dit pas s'il
-           s'agit de la langue courante ou de celle vers laquelle on bascule. */
-        bl.textContent = getLangue() === 'fr' ? 'English' : 'Français';
+        /* Deux lettres, et l'attribut de langue avec : une synthese vocale qui
+           lit « EN » a la francaise ne dit rien. Le nom accessible porte le
+           mot entier, que les lettres seules ne donnent pas. */
+        bl.textContent = getLangue() === 'fr' ? 'EN' : 'FR';
         bl.setAttribute('lang', getLangue() === 'fr' ? 'en' : 'fr');
         bl.setAttribute('aria-label', LIBELLES[getLangue()].langue || 'Langue');
         bl.addEventListener('click', function () { opts.onLangue(); });
