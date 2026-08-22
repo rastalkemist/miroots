@@ -424,7 +424,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .carte-lieu.ouverte{border-color:var(--univers)}
 :where(body.p-roam) .carte-lieu .avenir{display:block;margin-top:var(--air-i2);font-size:var(--t-note);line-height:var(--lh-12);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--encre-discrete)}
 :where(body.p-roam) .cartes-logement{display:grid;gap:var(--esp-3)}
-:where(body.p-roam) .carte-logement{display:block;width:100%;text-align:left;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--rayon-carte);padding:var(--esp-4);cursor:pointer;font-family:var(--font-corps);color:var(--encre);min-height:var(--cible-min)}
+:where(body.p-roam) .carte-logement{display:block;width:100%;text-align:left;background:var(--gris-ilot);border:1.5px solid var(--limite-controle);border-radius:var(--rayon-carte);padding:var(--esp-4);cursor:pointer;font-family:var(--font-corps);color:var(--encre);min-height:var(--cible-min)}
 :where(body.p-roam) .carte-logement .nom{display:block;font-size:var(--t-body);line-height:var(--lh-16);font-weight:700}
 :where(body.p-roam) .carte-logement .infos{display:flex;justify-content:space-between;gap:var(--esp-3);margin-top:var(--air-i1)}
 :where(body.p-roam) .carte-logement .cap{font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
@@ -620,11 +620,26 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-accueil, body.p-paiement, body.p-payer, body.p-facture) h1{font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-carte) h1{font-size:var(--t-h2);margin:0 0 var(--air-i1);line-height:1.15}
 :where(body.p-carte) .sous-titre{font-size:var(--t-sm);color:var(--encre-discrete);margin:0 0 var(--air-i3);line-height:1.5}
-:where(body.p-carte) .categories{position:sticky;top:var(--entete-h);z-index:9;background:var(--voile-page);backdrop-filter:blur(8px);display:flex;gap:var(--esp-2);overflow-x:auto;overscroll-behavior-x:contain;-webkit-user-select:none;user-select:none;padding:var(--esp-2) 0 var(--esp-3);margin-bottom:var(--air-i1);scrollbar-width:none;cursor:grab}
-:where(body.p-carte) .categories.glisse{cursor:grabbing}
-:where(body.p-carte) .categories::-webkit-scrollbar{display:none}
-:where(body.p-carte) .cat{flex-shrink:0;background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--rayon-pilule);padding:var(--esp-2) var(--esp-4);min-height:44px;font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;color:var(--encre);cursor:pointer;white-space:nowrap}
-:where(body.p-carte) .cat.actif{background:var(--univers-selection);border-color:var(--univers)}
+/* LE RAIL ET SES DEUX COMMANDES — grammaire, employee par trois familles
+   d'ecrans : les categories de la carte, les rails d'offres, la bande des
+   metiers. Les commandes vivent DANS le rail, jamais dessous, et prennent le
+   plancher de cible. En bout de course elles sont REFUSEES, pas retirees :
+   elles restent perceptibles et focalisables sous le doigt qui les cherche.
+   Le rail ne se voit que si la bande deborde ; sinon les commandes se cachent
+   et le rail n'est plus qu'une boite. */
+.rail{position:relative;display:flex;align-items:center;gap:var(--esp-2)}
+.rail > .categories,.rail > .rail-piste{flex:1 1 auto;min-width:0}
+.rail-cmd{flex:0 0 auto;width:var(--cible-min);height:var(--cible-min);border:var(--limite-ep) solid var(--limite-controle);border-radius:50%;background:var(--blanc);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.rail-cmd svg.i{width:20px;height:20px}
+.rail-cmd.prec svg.i{transform:rotate(180deg)}
+.rail-cmd[aria-disabled="true"]{opacity:.4;cursor:default}
+.rail-piste{display:flex;gap:var(--esp-3);overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;list-style:none;margin:0;padding:0}
+.rail-piste::-webkit-scrollbar{display:none}
+.categories{position:sticky;top:var(--entete-h-rendue);z-index:9;background:var(--voile-page);backdrop-filter:blur(8px);display:flex;gap:var(--esp-2);overflow-x:auto;overscroll-behavior-x:contain;-webkit-user-select:none;user-select:none;padding:var(--esp-2) 0 var(--esp-3);margin-bottom:var(--air-i1);scrollbar-width:none;cursor:grab}
+.categories.glisse{cursor:grabbing}
+.categories::-webkit-scrollbar{display:none}
+.cat{flex-shrink:0;background:var(--gris-ilot);border:2px solid var(--limite-controle);border-radius:var(--rayon-pilule);padding:var(--esp-2) var(--esp-4);min-height:44px;font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;color:var(--encre);cursor:pointer;white-space:nowrap}
+.cat.actif{background:var(--univers-selection);border-color:var(--univers)}
 /* Le saut vers une section la depose sous la pile collante, pas dessous. */
 :where(body.p-carte) .section-menu{scroll-margin-top:calc(var(--entete-h) + var(--cat-h) + var(--esp-3))}
 :where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--air-i8) 0 var(--air-i3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}

@@ -1546,14 +1546,133 @@
   }
 
 
-  /* Une bande qui defile a l'horizontale doit pouvoir s'attraper. Au doigt, le
-     navigateur s'en charge ; a la souris, rien ne l'attrape et la molette
-     verticale ne la concerne pas. On rend les deux gestes disponibles, et un
-     glissement ne se termine jamais en clic sur l'element survole. */
+  /* ------------------------------------------------------------------
+     LE RAIL HORIZONTAL — grammaire, pas ecran.
+     Une bande qui defile a l'horizontale doit s'atteindre par TROIS chemins,
+     et chacun sert un usager que les deux autres laissent dehors :
+
+       le DOIGT      — le navigateur s'en charge ;
+       le POINTEUR   — rien ne l'attrape par defaut, et la molette verticale
+                       ne concerne pas une bande horizontale ; on rend donc le
+                       glissement et la molette disponibles, et un glissement
+                       ne se termine jamais en clic sur l'element survole ;
+       UN SEUL APPUI — deux commandes, sans glisser. La barre de defilement
+                       est masquee, or c'est sur elle que s'appuie l'exigence
+                       de mouvement sans glissement. Sans ces commandes, il
+                       n'existe AUCUN chemin vers une carte hors ecran qui ne
+                       demande pas de faire glisser.
+
+     LE CLAVIER. Une bande dont les enfants sont focalisables est deja
+     parcourue par la tabulation, et le navigateur ramene dans la vue ce qui
+     prend le foyer : lui ajouter un arret de tabulation en creerait un de
+     trop. Une bande dont les enfants ne le sont PAS n'a aucun chemin : elle
+     devient alors une zone de defilement focalisable, ou les fleches agissent
+     nativement. Le choix se fait sur ce que la bande contient, jamais par
+     declaration.
+
+     LES COMMANDES ne prennent jamais le foyer quand on les presse, elles
+     restent perceptibles et focalisables en bout de course — refusees, pas
+     retirees — et le defilement suit le reglage de mouvement de l'appareil.
+     ------------------------------------------------------------------ */
+  var FOCALISABLE = 'a[href],button,input,select,textarea,[tabindex]';
+  var railSeq = 0;
+  /* Les deux libelles vivent ICI et non dans la table du chrome : ce module
+     est charge separement et n'en voit pas la portee. Deux mots recopies
+     coutent moins qu'une dependance entre deux modules. */
+  var MOTS_RAIL = { fr: { prec: 'Précédent', suiv: 'Suivant' },
+                    en: { prec: 'Previous', suiv: 'Next' } };
+
+  function nommerRail(bande) {
+    if (bande.hasAttribute('aria-label') || bande.hasAttribute('aria-labelledby')) return;
+    if (bande.dataset.railNom) { bande.setAttribute('aria-label', bande.dataset.railNom); return; }
+    /* Le nom se prend au titre qui precede, jamais invente : un rail sans
+       titre reste sans nom, et cela se voit. */
+    var t = bande.previousElementSibling;
+    while (t && !/^H[1-6]$/.test(t.tagName)) t = t.previousElementSibling;
+    if (!t) return;
+    if (!t.id) t.id = 'rail-t-' + (++railSeq);
+    bande.setAttribute('aria-labelledby', t.id);
+  }
+
+  function poserCommandes(bande) {
+    if (bande.parentNode && bande.parentNode.classList.contains('rail')) return null;
+    var rail = document.createElement('div');
+    rail.className = 'rail';
+    bande.parentNode.insertBefore(rail, bande);
+    var prec = document.createElement('button');
+    var suiv = document.createElement('button');
+    [prec, suiv].forEach(function (b, i) {
+      b.type = 'button';
+      b.className = 'rail-cmd ' + (i ? 'suiv' : 'prec');
+      b.setAttribute('aria-label', (MOTS_RAIL[langueRail()] || MOTS_RAIL.fr)[i ? 'suiv' : 'prec']);
+      b.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-chevron"/></svg>';
+    });
+    rail.appendChild(prec);
+    rail.appendChild(bande);
+    rail.appendChild(suiv);
+    return { prec: prec, suiv: suiv };
+  }
+
+  function langueRail() {
+    try { return localStorage.getItem('roots.langue') === 'en' ? 'en' : 'fr'; } catch (e) { return 'fr'; }
+  }
+
   function glisser(bande) {
     if (!bande || bande.dataset.glisse) return;
     bande.dataset.glisse = '1';
     var actif = false, departX = 0, departScroll = 0, bouge = false;
+
+    if (!bande.getAttribute('role')) bande.setAttribute('role', 'group');
+    nommerRail(bande);
+    /* Zone de defilement focalisable SEULEMENT si rien dedans ne l'est — et
+       la question se repose a CHAQUE changement de contenu : une bande posee
+       avant que ses cartes n'arrivent est vide au moment ou on l'installe, et
+       une decision prise a cet instant serait fausse une seconde plus tard. */
+    function reglerTabulation() {
+      if (bande.hasAttribute('data-tabindex-tenu')) return;
+      if (bande.querySelector(FOCALISABLE)) bande.removeAttribute('tabindex');
+      else bande.setAttribute('tabindex', '0');
+    }
+    if (bande.hasAttribute('tabindex')) bande.setAttribute('data-tabindex-tenu', '1');
+    reglerTabulation();
+
+    var cmd = poserCommandes(bande);
+
+    function pas() {
+      var carte = bande.firstElementChild;
+      var l = carte ? carte.getBoundingClientRect().width : 0;
+      return Math.max(l + 12, Math.round(bande.clientWidth * 0.8));
+    }
+    function doux() {
+      return (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+        ? 'auto' : 'smooth';
+    }
+    function direBouts() {
+      if (!cmd) return;
+      var g = bande.scrollLeft <= 1;
+      var d = bande.scrollLeft + bande.clientWidth >= bande.scrollWidth - 1;
+      var hors = bande.scrollWidth <= bande.clientWidth + 1;
+      cmd.prec.setAttribute('aria-disabled', (g || hors) ? 'true' : 'false');
+      cmd.suiv.setAttribute('aria-disabled', (d || hors) ? 'true' : 'false');
+      cmd.prec.hidden = cmd.suiv.hidden = hors;
+    }
+    if (cmd) {
+      [['prec', -1], ['suiv', 1]].forEach(function (x) {
+        cmd[x[0]].addEventListener('click', function () {
+          if (cmd[x[0]].getAttribute('aria-disabled') === 'true') return;
+          bande.scrollBy({ left: x[1] * pas(), behavior: doux() });
+        });
+      });
+      bande.addEventListener('scroll', direBouts, { passive: true });
+      window.addEventListener('resize', direBouts);
+      direBouts();
+    }
+    if (window.MutationObserver) {
+      new MutationObserver(function () {
+        reglerTabulation();
+        direBouts();
+      }).observe(bande, { childList: true });
+    }
 
     function suivre(e) {
       if (!actif) return;
