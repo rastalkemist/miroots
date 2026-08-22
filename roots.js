@@ -261,15 +261,35 @@
     if (ilot) {
       /* Deplie dans sa rangee, l'ilot s'etire sur toute la largeur : sa boite
          ne dit rien de ce qu'il lui faut. On lit donc sa largeur de contenu,
-         le temps d'une mesure. */
+         le temps d'une mesure.
+
+         DEUX largeurs se mesurent, pas une. La premiere est celle du texte
+         entier. La seconde est le PLANCHER : le meme ilot dont l'etat est
+         reduit a ses points de suspension — la forme la plus etroite ou il
+         reste lui-meme, puisqu'il garde son nom, sa commande, et le signe
+         qu'un etat est la mais coupe. Ce plancher n'est pas un nombre choisi,
+         c'est une mesure.
+         L'ancrage se decide sur le PLANCHER. L'ilot prend ensuite toute la
+         place que sa borne lui laisse, jusqu'a sa largeur entiere, et son
+         etat se coupe entre les deux. Decider sur la largeur entiere le
+         privait d'ancrage partout ou il aurait tenu coupe — un ecran couche,
+         par exemple. */
       var etaitCache = ilot.classList.contains('cache');
       ilot.classList.remove('cache');
-      ilot.style.width = 'max-content';
       var gardeMax = ilot.style.maxWidth; ilot.style.maxWidth = 'none';
+      ilot.style.width = 'max-content';
       var largeurIlot = ilot.scrollWidth;
+      var etat = ilot.querySelector('.lecteur-etat');
+      var plancher = largeurIlot;
+      if (etat) {
+        var dit = etat.textContent;
+        etat.textContent = '\u2026';
+        plancher = ilot.scrollWidth;
+        etat.textContent = dit;
+      }
       ilot.style.maxWidth = gardeMax; ilot.style.width = '';
       if (etaitCache) ilot.classList.add('cache');
-      if (librePresDe() >= largeurIlot + ECART_NAV) {
+      if (librePresDe() >= plancher + ECART_NAV) {
         corps.classList.add('nav-ilot-ancre');
         droite.insertBefore(ilot, droite.firstChild);
         ilot.classList.remove('cache');
@@ -291,6 +311,19 @@
         }
       }
     }
+
+    /* LA HAUTEUR RENDUE DE LA BARRE, PUBLIEE A LA FEUILLE DE STYLE.
+       Ce qui doit s'arreter sous la barre — une feuille qui monte du bas, un
+       bandeau qui se pose — ne peut pas se caler sur une hauteur ECRITE : la
+       barre grandit avec ce qu'elle porte, et une valeur declaree derive du
+       rendu sans que rien ne le signale. Elle se mesure donc ici, ou toutes
+       les promotions viennent d'etre posees, et la feuille de style la lit.
+       La rangee du lecteur radio n'entre pas dans le compte : elle vit SOUS
+       la barre, et ce qui se cale sur la barre ne lui doit rien. */
+    var creux = parseFloat(getComputedStyle(haut).paddingTop) || 0;
+    document.body.style.setProperty('--entete-h-rendue',
+      Math.ceil(barre.getBoundingClientRect().height + creux * 2) + 'px');
+
     if (radio) radio.rendre();
   }
 

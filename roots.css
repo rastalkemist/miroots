@@ -1040,7 +1040,19 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    ce mouvement, sinon la sortie ne se verrait pas. */
 .languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
 .languette-radio.parait{opacity:0;transform:translateY(calc(var(--esp-2) * -1))}
-body[data-surface="ambiante"] .languette-radio{background:rgba(var(--blanc-casse-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
+/* L'ilot se pose sur un film : ce qu'on lit dedans depend de ce qui passe
+   dessous. Le voile porte donc l'echelon 1 de l'univers, et son OPACITE est ce
+   qui gouverne la lisibilite — plus elle monte, moins le film remonte a travers
+   le texte, et moins le flou vit.
+   Mesure sur le film servi, floute comme ici : le blanc casse rend 2,71:1 au
+   pire a cette opacite. Le plancher applicable est 4,5:1 — les deux textes de
+   l'ilot valent 14 px en 700 et 11,67 px en 500, donc aucun n'est du grand
+   texte. Le reglage passe dessous par arbitrage porte au registre des
+   decisions ; le meme voile tiendrait le plancher a 62 %.
+   Aucun contour ne peut secourir ce texte : a 11,67 px un trait remplit la
+   lettre au lieu de la borner. Changer la teinte, l'opacite ou l'encre exige
+   de remesurer. */
+body[data-surface="ambiante"] .languette-radio{background:rgba(var(--univers-e1-rgb),.40);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
 .lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 .lecteur-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
 .lecteur-btn svg{width:14px;height:14px}
