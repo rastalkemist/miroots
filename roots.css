@@ -1094,14 +1094,19 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
    barre du haut de ses pastilles. Un ecart mesure depuis le bord de l'ecran
    le poserait DANS la barre.
    La ou le bas est libre — la barre est montee dans le nav, ou rangee au
-   coin — la reference redevient l'ecran, en PART de sa hauteur : 7,5 %, et
-   10 % sur ordinateur. Une distance fixe se lit differemment sur un ecran de
-   360 et sur un de 900 ; une part tient la meme proportion partout.
+   coin — la reference redevient l'ecran, en PART de sa hauteur : 5 % sur
+   ecran couche et court, 7,5 % sur tablette, 10 % sur ordinateur. Une
+   distance fixe se lit differemment sur un ecran de 360 et sur un de 900 ;
+   une part tient la meme proportion partout.
    Un telephone couche tombe donc dans le second cas, pas dans le premier :
-   son super-nav monte, son bas est libre, et c'est la part qui vaut. */
+   son super-nav monte, son bas est libre, et c'est la part qui vaut — mais
+   sur la part la plus courte, car sa hauteur l'est aussi. */
 :where(body.p-accueil:not(.nav-haut)) .fab{--fab-bas:calc(var(--barre-h) + var(--souffle-filet))}
 @media(min-width:1024px) and (min-height:600px){
   :where(body.p-accueil) .fab{--fab-bas:10%}
+}
+@media(orientation:landscape) and (max-height:599px){
+  :where(body.p-accueil) .fab{--fab-bas:5%}
 }
 @media(pointer:fine){
   body.p-accueil.nav-haut .fab{font-size:var(--t-26);min-height:64px}

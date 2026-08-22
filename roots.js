@@ -392,7 +392,7 @@
       direAntenne();
       if (!depuisPastille) return;
       if (ouvrir) revelerUnInstant();
-      else { clearTimeout(pose); if (!lecteurRetenu()) montrerLecteur(false, false); }
+      else if (passager) replierPassager();
     }
 
     /* COMBIEN DE TEMPS LE LECTEUR SE MONTRE APRES UN APPUI BREF QUI ALLUME.
@@ -408,9 +408,13 @@
     var POSE_LECTEUR = 2000;
     var MVT_LECTEUR = 240;
     var repli = null;
+    var pose, passager;
 
     function montrerLecteur(ouvrir, retenir) {
       clearTimeout(repli);
+      /* Un geste qui DECIDE clot l'episode passager : ce qui suit ne se
+         replie plus tout seul. */
+      if (retenir !== false) { passager = false; clearTimeout(pose); }
       if (ouvrir) {
         languette.classList.add('parait');
         languette.classList.remove('cache');
@@ -428,19 +432,39 @@
 
     /* Allumer d'un appui bref montre ce qui vient d'etre allume, puis rend
        l'ecran. Ce passage n'ECRIT PAS le choix : seul l'appui long decide que
-       le lecteur reste. */
-    var pose = null;
+       le lecteur reste.
+       `passager` dit que le lecteur n'est la QUE le temps de cette pose. Il
+       est la seule chose qui autorise un repli automatique : un lecteur
+       ouvert par appui long, ou ancre dans la barre faute de place ailleurs,
+       n'est jamais passager et ne se replie donc jamais seul. */
+    pose = null;
+    passager = false;
+
+    function armerPose() {
+      clearTimeout(pose);
+      pose = setTimeout(function () { if (passager) replierPassager(); }, POSE_LECTEUR);
+    }
+
+    function replierPassager() {
+      clearTimeout(pose);
+      passager = false;
+      montrerLecteur(false, false);
+    }
 
     function revelerUnInstant() {
       if (document.body.classList.contains('nav-ilot-ancre')) return;
       if (lecteurRetenu()) return;
-      clearTimeout(pose);
+      passager = true;
       montrerLecteur(true, false);
-      pose = setTimeout(function () {
-        if (languette.contains(document.activeElement)) return;
-        montrerLecteur(false, false);
-      }, POSE_LECTEUR);
+      armerPose();
     }
+
+    /* Toucher le lecteur passager REPART la pose au lieu de l'annuler : on ne
+       retire pas ce qui est en train d'etre lu ou presse, et on ne le laisse
+       pas non plus s'installer. Seul l'appui long l'installe. */
+    ['click', 'focusin'].forEach(function (nom) {
+      languette.addEventListener(nom, function () { if (passager) armerPose(); });
+    });
 
     pastille.addEventListener('pointerdown', function () {
       longFait = false;
@@ -482,6 +506,8 @@
     return { dire: direAntenne, montrer: montrerLecteur, rendre: function () {
       /* Ancre, l'ilot ne se replie plus : sa memoire ne gouverne que le petit
          ecran. */
+      passager = false;
+      clearTimeout(pose);
       if (document.body.classList.contains('nav-ilot-ancre')) montrerLecteur(true, false);
       else montrerLecteur(lecteurRetenu(), false);
       direAntenne();
