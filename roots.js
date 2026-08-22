@@ -422,6 +422,9 @@
       var table = LIBELLES[getLangue()] || LIBELLES.fr;
       var ouverte = alAntenne();
       pastille.classList.toggle('antenne', ouverte);
+      /* L'ilot prend l'encre de l'antenne : l'etat se lit alors dans la
+         couleur du panneau, pas seulement dans le pictogramme. */
+      languette.classList.toggle('antenne', ouverte);
       pastille.setAttribute('aria-label', table.radio);
       lecture.querySelector('use').setAttribute('href', ouverte ? '#i-pause' : '#i-play');
       lecture.setAttribute('data-al-chrome', ouverte ? 'radioArret' : 'radioLire');

@@ -1017,6 +1017,23 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-roam) .radio-pastille{color:var(--univers-e1)}
 body[data-surface="ambiante"] .radio-pastille{color:var(--blanc-casse)}
 body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--jaune-e2)}
+/* A L'ANTENNE, LE PANNEAU S'ALLUME — encre ET voile.
+   Hors antenne l'ilot est discret : voile leger, encre de la surface, texte
+   difficile a lire sur un fond qui varie. C'est voulu. A l'antenne il devient
+   lisible, et c'est le geste qui l'allume.
+   LES DEUX CHANGENT ENSEMBLE, et il le faut : un jaune de mi-luminosite pose
+   sur un voile leger DISPARAIT — mesure sur le film servi, 1,00:1 au pire,
+   moins lisible que l'encre qu'il remplace. C'est le voile qui se ferme sur
+   l'echelon le plus sombre de l'univers qui rend le jaune lisible : 5,14:1
+   mesure, au-dessus du plancher de 4,5 du petit texte.
+   Retirer le voile en laissant le jaune rend le texte moins lisible qu'avant,
+   pas plus. Les deux ne se separent pas.
+   Le jaune suit la surface, comme l'antenne : echelon 2 sur clair, blanc ou
+   film ; echelon 3 sur sombre. La commande de lecture n'est pas un texte et
+   garde la sienne. */
+.languette-radio.antenne{color:var(--jaune-e2);background:rgba(var(--univers-e1-rgb),.85)}
+body[data-surface="ambiante"] .languette-radio.antenne{color:var(--jaune-e2);background:rgba(var(--univers-e1-rgb),.85);border-color:rgba(var(--jaune-e2-rgb),.35)}
+body[data-surface="sombre"] .languette-radio.antenne{color:var(--jaune-e3)}
 body[data-surface="sombre"] .radio-pastille{color:var(--univers-e5)}
 body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
 
@@ -1039,7 +1056,7 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    mouvement. Le decalage part du haut : il descend de sous la pastille qui
    vient d'etre pressee, d'ou il vient. Le repli de la boite attend la fin de
    ce mouvement, sinon la sortie ne se verrait pas. */
-.languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat),gap var(--mvt-parcours) var(--courbe-entree),padding var(--mvt-parcours) var(--courbe-entree)}
+.languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat),gap var(--mvt-parcours) var(--courbe-entree),padding var(--mvt-parcours) var(--courbe-entree),background var(--mvt-etat) var(--courbe-etat),color var(--mvt-etat) var(--courbe-etat),border-color var(--mvt-etat) var(--courbe-etat)}
 /* ANCRE DANS LA BARRE, L'ILOT NE DISPARAIT PAS : IL SE RANGE.
    Meme pli que le logotype Mi | NU, meme mecanique et memes durees — la boite
    se ferme sur ce qu'elle garde, elle ne s'efface pas. Ce qu'elle garde ici est
