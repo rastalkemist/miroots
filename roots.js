@@ -226,7 +226,7 @@
       haut.parentNode.insertBefore(superNav, haut.nextSibling);
     }
     if (gauche && logo) { barre.insertBefore(logo, gauche); gauche.parentNode.removeChild(gauche); gauche = null; }
-    if (ilot) ilot.style.maxWidth = '';
+    if (ilot) { ilot.style.maxWidth = ''; ilot.classList.remove('replie'); }
     if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
     if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
     if (lecture && ilot && lecture.parentNode !== ilot) ilot.appendChild(lecture);
@@ -346,6 +346,14 @@
   var CLE_RADIO = 'roots.radio';
   var CLE_ANTENNE = 'roots.radio.antenne';
 
+  /* ANCRE, LE DEPART EST LE DEPLIE : la place est la, l'ilot la prend. Ce n'est
+     donc pas la meme lecture de la memoire que sur un petit ecran, ou le depart
+     est le replie faute de place. Une seule memoire, deux rendus : elle ne dit
+     « range-toi » que si on le lui a demande. */
+  function lecteurRange() {
+    try { return localStorage.getItem(CLE_RADIO) === 'ferme'; } catch (e) { return false; }
+  }
+
   function lecteurRetenu() {
     try { return localStorage.getItem(CLE_RADIO) === 'ouvert'; } catch (e) { return false; }
   }
@@ -443,6 +451,8 @@
     var repli = null;
     var pose, passager;
 
+    function ancre() { return document.body.classList.contains('nav-ilot-ancre'); }
+
     function montrerLecteur(ouvrir, retenir) {
       clearTimeout(repli);
       /* Un geste qui DECIDE clot l'episode passager : ce qui suit ne se
@@ -481,11 +491,21 @@
     function replierPassager() {
       clearTimeout(pose);
       passager = false;
-      montrerLecteur(false, false);
+      if (ancre()) languette.classList.add('replie');
+      else montrerLecteur(false, false);
     }
 
+    /* Range, il se deploie le temps de la pose puis se range de nouveau ;
+       replie, il se montre puis se replie. Deux rendus, un seul passage — et
+       rien a faire quand il est deja sous les yeux. */
     function revelerUnInstant() {
-      if (document.body.classList.contains('nav-ilot-ancre')) return;
+      if (ancre()) {
+        if (!languette.classList.contains('replie')) return;
+        passager = true;
+        languette.classList.remove('replie');
+        armerPose();
+        return;
+      }
       if (lecteurRetenu()) return;
       passager = true;
       montrerLecteur(true, false);
@@ -505,6 +525,17 @@
       minuteur = setTimeout(function () {
         longFait = true;
         clearTimeout(pose);
+        /* Ancre, le geste long RANGE au lieu d'effacer : la memoire est la
+           meme, seul son rendu change d'un ecran a l'autre. */
+        if (ancre()) {
+          passager = false;
+          clearTimeout(pose);
+          var range = !languette.classList.contains('replie');
+          languette.classList.toggle('replie', range);
+          retenirLecteur(!range);
+          pastille.setAttribute('aria-expanded', range ? 'false' : 'true');
+          return;
+        }
         montrerLecteur(languette.classList.contains('cache'));
       }, APPUI_LONG);
     });
@@ -541,8 +572,15 @@
          ecran. */
       passager = false;
       clearTimeout(pose);
-      if (document.body.classList.contains('nav-ilot-ancre')) montrerLecteur(true, false);
-      else montrerLecteur(lecteurRetenu(), false);
+      if (ancre()) {
+        var range = lecteurRange();
+        languette.classList.toggle('replie', range);
+        montrerLecteur(true, false);
+        pastille.setAttribute('aria-expanded', range ? 'false' : 'true');
+      } else {
+        languette.classList.remove('replie');
+        montrerLecteur(lecteurRetenu(), false);
+      }
       direAntenne();
     } };
   }

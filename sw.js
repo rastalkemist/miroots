@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '6a3ab600ed1a8cac';
+var VERSION   = 'da41df0faef606aa';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];

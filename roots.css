@@ -1039,7 +1039,20 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    mouvement. Le decalage part du haut : il descend de sous la pastille qui
    vient d'etre pressee, d'ou il vient. Le repli de la boite attend la fin de
    ce mouvement, sinon la sortie ne se verrait pas. */
-.languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
+.languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat),gap var(--mvt-parcours) var(--courbe-entree),padding var(--mvt-parcours) var(--courbe-entree)}
+/* ANCRE DANS LA BARRE, L'ILOT NE DISPARAIT PAS : IL SE RANGE.
+   Meme pli que le logotype Mi | NU, meme mecanique et memes durees — la boite
+   se ferme sur ce qu'elle garde, elle ne s'efface pas. Ce qu'elle garde ici est
+   l'ANTENNE : c'est le seul element qui reste un geste une fois range, et c'est
+   par lui qu'on rouvre.
+   Ce n'est pas l'ilot qui retrecit mais SON TEXTE : ancre, l'ilot est cale sur
+   son bord droit, et retrecir sa boite couperait l'antenne au lieu du texte.
+   Le texte se ferme donc, et le bord gauche suit.
+   L'asymetrie est celle de la maison : on s'ouvre en parcours, on se referme en
+   apparition. C'est une intention, pas un oubli. */
+.lecteur-texte{max-width:300px;transition:max-width var(--mvt-parcours) var(--courbe-entree),opacity var(--mvt-parcours) var(--courbe-entree)}
+.languette-radio.replie{gap:0;padding-left:0;transition:gap var(--mvt-apparition) var(--courbe-sortie),padding var(--mvt-apparition) var(--courbe-sortie)}
+.languette-radio.replie .lecteur-texte{max-width:0;opacity:0;transition:max-width var(--mvt-apparition) var(--courbe-sortie),opacity var(--mvt-apparition) var(--courbe-sortie)}
 .languette-radio.parait{opacity:0;transform:translateY(calc(var(--esp-2) * -1))}
 /* L'ilot se pose sur un film : ce qu'on lit dedans depend de ce qui passe
    dessous. Le voile porte l'echelon 3 de l'univers, et son OPACITE est la
