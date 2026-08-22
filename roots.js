@@ -271,7 +271,9 @@
         corps.classList.add('nav-ilot-ancre');
         droite.insertBefore(ilot, droite.firstChild);
         ilot.classList.remove('cache');
-        if (antenne) ilot.insertBefore(antenne, ilot.firstChild);
+        /* La commande est toujours a droite : ancree, l'antenne prend sa place,
+           donc sa place — la derniere. */
+        if (antenne) ilot.appendChild(antenne);
       }
     }
     if (radio) radio.rendre();
