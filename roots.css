@@ -390,6 +390,48 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .code{letter-spacing:.13em;color:var(--univers);font-weight:700;font-family:var(--font-chiffres);font-size:var(--t-code);margin:var(--air-i2) 0}
 .instructions{font-size:var(--t-sm);margin:0 auto;line-height:1.55;color:var(--encre-discrete);max-width:300px}
 .note-partielle{color:var(--rouge-e2);max-width:300px;font-weight:700;line-height:1.45;font-size:var(--t-label);margin:var(--air-i3) auto 0}
+/* ─── LE GESTE FLOTTANT ET LA FEUILLE DU BAS — grammaire, pas ecran ───────
+   Deux ecrans les emploient : ils cessent d'appartenir a l'un d'eux. Ce qui
+   est ecrit ici est ce que les deux disaient MOT POUR MOT ; ce qui differe
+   — remplissage, filet, taille de texte — reste dans la section de l'ecran,
+   qui surcharge par l'ordre, :where() ne pesant rien.
+
+   Le geste flottant se pose en part de la hauteur d'ecran, par un jeton que
+   l'ecran redefinit selon la place que lui laisse son chrome. Le retrait de
+   securite du bas s'ajoute toujours : sans lui, le geste passe sous la barre
+   systeme d'un telephone a encoche.
+
+   La feuille monte depuis le bas et s'arrete AVANT l'en-tete : une hauteur
+   donnee en part de l'ecran la ferait passer sous le nav, qui est fixe, et le
+   haut de son contenu deviendrait illisible. Sa hauteur se plafonne a l'ecran
+   MOINS l'en-tete, moins le degagement qui separe deja tout contenu de cet
+   en-tete, moins la pose qui la souleve du bas. La hauteur d'en-tete employee
+   est celle que le script MESURE sur la barre rendue ; la valeur ecrite ne
+   sert que de repli, et elle sous-estime la barre des que la pastille de
+   l'antenne porte son anneau. La hauteur dynamique est donnee en second : sur
+   un mobile dont la barre d'outils se retracte, c'est la seule qui suit la
+   zone reellement visible.
+
+   Un champ de la feuille ne descend pas sous 16px : en dessous, un navigateur
+   mobile zoome sur la page a la mise au point et n'en revient pas seul. */
+.fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.feuille-bas{overscroll-behavior:contain;position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);--feuille-pose:0px;max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
+.feuille-bas::-webkit-scrollbar{display:none}
+.feuille-bas.visible{transform:translate(-50%,0)}
+.feuille-bas .champ input{font-size:var(--t-16)}
+.feuille-bas .iti input[type=tel]{font-size:var(--t-16)}
+@media(min-width:500px){.feuille-bas{--feuille-pose:22px;bottom:var(--feuille-pose);border-radius:var(--rayon-carte)}}
+/* La tete de la feuille et son geste de fermeture appartiennent a la feuille,
+   pas a l'ecran qui l'ouvre. Le geste porte un dessin de 20 px et une cible
+   INVISIBLE de 44 : reduire le dessin a la cible epaissirait le trait, et
+   l'agrandir mangerait le titre voisin. La cible se pose donc en pseudo,
+   centree sur le dessin ; retirer `position:relative` la decroche et la
+   ramene au coin de la page. */
+.feuille-bas .tete{display:flex;align-items:center;justify-content:flex-end;margin:0 0 var(--feuille-marge)}
+.feuille-bas .tete .ou{font-size:var(--t-label);font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete)}
+.fermer{background:none;border:none;color:var(--encre-discrete);cursor:pointer;line-height:1;padding:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;position:relative}
+.fermer::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
+.fermer svg{width:20px;height:20px;stroke-width:2}
 /* ======================================================================== UNIVERS ======================================================================== */
 /* UN POINT DE REFERENCE, TROIS ALIAS. Chaque ecran declare son univers sur
    <body>, et toute l'interface derive de trois alias — jamais une valeur
@@ -502,6 +544,35 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    sans taille propre elle tombe a 29 x 21. Elle reprend le plancher de 44. */
 :where(body.p-roam) .hero-scene .commande-video{position:absolute;right:var(--esp-3);bottom:var(--esp-3);width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme)}
 :where(body.p-roam) .hero-scene .commande-video svg.i{width:20px;height:20px}
+
+/* ---- Titres de section et notes. Registre INTERFACE : h2 38, h3 28 sur le jeu
+   grand. La note de section emprunte le barreau 12, comme toute description. */
+:where(body.p-roam) .titre-section{margin:0 0 var(--air-i2)}
+:where(body.p-roam) .titre-sous{margin:var(--air-i6) 0 var(--air-i2)}
+:where(body.p-roam) .note-section{margin:0 0 var(--air-i3);font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete)}
+:where(body.p-roam) .vide-rubrique{margin:0;padding:var(--esp-4);background:var(--gris-ilot);border-radius:var(--rayon-carte);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+
+/* ---- Le bien en vedette. La scene sort de la colonne et prend toute la
+   largeur ; le nom, la phrase et le geste restent dans la colonne. Les marges
+   negatives valent la demi-difference entre la fenetre et la colonne : elles
+   atteignent le bord sans employer 100vw, qui compte la barre de defilement et
+   ferait deborder la page a l'horizontale. */
+:where(body.p-roam) .vedette{margin:0 0 var(--air-i6)}
+:where(body.p-roam) .vedette-scene{position:relative;overflow:hidden;background:var(--univers-e1);aspect-ratio:4/3;margin:0 calc(50% - 50vw) var(--air-i3);width:auto}
+:where(body.p-roam) .vedette-scene video{width:100%;height:100%;object-fit:cover;display:block;transition:opacity var(--mvt-apparition) var(--courbe-sortie)}
+:where(body.p-roam) .vedette-scene video.fondu-affiche{opacity:0}
+:where(body.p-roam) .vedette-scene .commande-video{position:absolute;right:var(--esp-3);bottom:var(--esp-3);width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme)}
+:where(body.p-roam) .vedette-scene .commande-video svg.i{width:20px;height:20px}
+:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:2px;margin:0 0 var(--air-i2)}
+:where(body.p-roam) .vedette-ou{font-size:var(--t-note);line-height:var(--lh-12);font-weight:var(--w-regular);color:var(--encre-discrete)}
+:where(body.p-roam) .vedette-dit{margin:0 0 var(--air-i3);font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre)}
+
+/* ---- Le geste flottant et la feuille du bas sont de la grammaire : seul ce
+   qui differe de la forme commune s'ecrit ici. Le filet remplace l'aplat plein
+   parce que la feuille de cet ecran s'ouvre au-dessus d'un contenu clair. */
+:where(body.p-roam) .fab{padding:0 var(--esp-6);border:var(--limite-ep) solid var(--univers);font-size:var(--t-body);gap:var(--esp-2)}
+:where(body.p-roam) .titre-feuille{margin:0 0 var(--air-i3)}
+:where(body.p-roam) .voile{z-index:12}
 /* ======================================================================== ECRAN — accueil ======================================================================== */ :where(body.p-accueil) svg.brand{fill:currentColor;stroke:none}
 /* L'image d'attente est portee par la feuille, pas par l'element video :
    un element video ne prend qu'une seule affiche, et il en faut deux —
@@ -554,34 +625,12 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .ligne-code .code{margin:0;line-height:var(--lh-33)}
 .geste-code-ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--cible-min);min-height:var(--cible-min);padding:0;border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-size:var(--t-note);font-weight:var(--w-bold);white-space:nowrap;cursor:pointer}
 .geste-code-ico svg.i{width:calc(var(--t-code) * .715);height:calc(var(--t-code) * .715)}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-21);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .fab{padding:0 var(--esp-8);border:none;font-size:var(--t-21)}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 :where(body.p-accueil) main{position:relative;z-index:2;min-height:100vh}
 :where(body.p-accueil) .voile{z-index:12}
-/* La feuille monte depuis le bas et s'arrete AVANT l'en-tete : sur un ecran
-   couche, une hauteur donnee en part de l'ecran la faisait passer sous le nav,
-   qui est fixe, et le haut de son contenu devenait illisible. Sa hauteur se
-   plafonne donc a l'ecran MOINS l'en-tete, moins le degagement qui separe
-   deja tout contenu de cet en-tete, moins la pose qui la souleve du bas.
-   La hauteur d'en-tete employee est celle que le script MESURE sur la barre
-   rendue ; la valeur ecrite ne sert que de repli, et elle sous-estime la
-   barre des que la pastille de l'antenne porte son anneau.
-   La hauteur dynamique est donnee en second : sur un mobile dont la barre
-   d'outils se retracte, c'est la seule qui suit la zone reellement visible. */
-:where(body.p-accueil) .feuille-bas{overscroll-behavior:contain;position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);--feuille-pose:0px;max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
-:where(body.p-accueil) .feuille-bas::-webkit-scrollbar{display:none}
-:where(body.p-accueil) .feuille-bas.visible{transform:translate(-50%,0)}
 
-@media(min-width:500px){:where(body.p-accueil) .feuille-bas{--feuille-pose:22px;bottom:var(--feuille-pose);border-radius:var(--rayon-carte)}
-
-}:where(body.p-accueil) .tete{display:flex;align-items:center;justify-content:flex-end;margin:0 0 var(--feuille-marge)}
-:where(body.p-accueil) .tete .ou{font-size:var(--t-label);font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--encre-discrete)}
-:where(body.p-accueil) .fermer{background:none;border:none;color:var(--encre-discrete);cursor:pointer;line-height:1;padding:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;position:relative}
-:where(body.p-accueil) .fermer::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
-:where(body.p-accueil) .fermer svg{width:20px;height:20px;stroke-width:2}
-:where(body.p-accueil) .feuille-bas .champ input{font-size:var(--t-16)}
-:where(body.p-accueil) .feuille-bas .iti input[type=tel]{font-size:var(--t-16)}
 :where(body.p-accueil) .onglets{display:flex;background:var(--gris-ilot);border-radius:var(--rayon-pilule);padding:3px;margin-bottom:var(--air-i3)}
 :where(body.p-accueil) .onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:var(--esp-2);min-height:44px;border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;cursor:pointer}
 :where(body.p-accueil) .onglets button.actif{background:var(--univers);color:var(--blanc)}
@@ -747,9 +796,6 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 }:where(body.p-carte) .entete-panneau{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--air-i3)}
 :where(body.p-carte) .entete-panneau h2{font-size:var(--t-h3);margin:0 0 3px}
 :where(body.p-carte) .entete-panneau p{font-size:var(--t-sm);color:var(--encre-discrete);margin:0}
-:where(body.p-carte) .fermer{background:none;border:none;color:var(--encre-discrete);cursor:pointer;line-height:1;padding:0;width:20px;height:20px;display:flex;align-items:center;justify-content:center;position:relative}
-:where(body.p-carte) .fermer::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
-:where(body.p-carte) .fermer svg{width:20px;height:20px;stroke-width:2}
 :where(body.p-carte) .ligne-panier{display:flex;justify-content:space-between;align-items:center;gap:var(--esp-2);padding:var(--esp-2) 0;border-bottom:1px solid var(--gris-ilot);font-size:var(--t-sm)}
 :where(body.p-carte) .ligne-panier .qte{color:var(--encre-discrete);font-size:var(--t-sm)}
 :where(body.p-carte) .ligne-panier .montant{font-weight:700;color:var(--encre);white-space:nowrap;font-family:var(--font-chiffres)}
