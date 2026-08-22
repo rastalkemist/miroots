@@ -187,20 +187,21 @@
      plus bavard. Le nav demande donc au navigateur la place qui reste, et
      promeut en deux paliers, dans cet ordre :
 
-       palier 1 — le super-nav monte dans la barre s'il y tient avec l'ecart
-                  minimal de part et d'autre ;
+       palier 1 — le super-nav monte dans la barre, A GAUCHE, aux cotes du
+                  logo, s'il y tient avec l'ecart minimal de part et d'autre ;
+                  la radio et le menu restent a droite ;
        palier 2 — l'ilot de radio se deplie a demeure s'il tient ENCORE apres,
                   avec le meme ecart ; l'antenne descend alors dedans et la
                   commande de lecture s'efface, puisqu'un seul bouton suffit.
 
-     UN ECRAN LARGE MAIS COURT NE PROMEUT RIEN. Un telephone couche est large
-     sans etre un ordinateur : sans cette garde, son chrome se comporte comme
-     celui d'un PC. La hauteur est donc une condition, pas un detail.
+     LA HAUTEUR NE COMMANDE PLUS LA PROMOTION, seulement la TYPOGRAPHIE : un
+     ecran large et court garde la taille du telephone, mais promeut comme les
+     autres si la place y est. Ce qui ne peut pas monter se range aux coins
+     bas, dans la gouttiere du site.
 
      La seule valeur declaree est l'ecart minimal. Tout le reste est mesure.
      ------------------------------------------------------------------ */
   var ECART_NAV = 24;
-  var HAUTEUR_NAV_MIN = 600;
 
   function ajusterNav(radio) {
     var barre = document.querySelector('.chrome-inner');
@@ -217,15 +218,18 @@
 
     /* On repart toujours de la disposition de base : mesurer une promotion
        depuis un etat deja promu rend la mesure fausse au tour suivant. */
+    var logo = barre.querySelector('.ankh-home');
+    var gauche = barre.querySelector('.chrome-gauche');
+
     corps.classList.remove('nav-haut', 'nav-ilot-ancre');
     if (superNav && superNav.parentNode !== haut.parentNode) {
       haut.parentNode.insertBefore(superNav, haut.nextSibling);
     }
+    if (gauche && logo) { barre.insertBefore(logo, gauche); gauche.parentNode.removeChild(gauche); gauche = null; }
     if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
     if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
     if (lecture && ilot && lecture.parentNode !== ilot) ilot.appendChild(lecture);
 
-    if (window.innerHeight < HAUTEUR_NAV_MIN) { if (radio) radio.rendre(); return; }
 
     /* La barre est une grille dont deux colonnes s'etirent : la largeur RENDUE
        de ses enfants remplit toujours le contenant, et ne dit donc rien de la
@@ -244,7 +248,13 @@
     var largeurNav = superNav.scrollWidth;
     if (librePresDe() < largeurNav + ECART_NAV * 2) { if (radio) radio.rendre(); return; }
     corps.classList.add('nav-haut');
-    droite.insertBefore(superNav, droite.lastElementChild);
+    /* Le logo et les verbes forment un groupe : sans lui, la barre passerait a
+       quatre colonnes et le logotype central cesserait d'etre central. */
+    gauche = document.createElement('div');
+    gauche.className = 'chrome-gauche';
+    barre.insertBefore(gauche, barre.firstChild);
+    gauche.appendChild(logo);
+    gauche.appendChild(superNav);
 
     /* Palier 2 */
     if (ilot) {
@@ -259,7 +269,7 @@
       if (etaitCache) ilot.classList.add('cache');
       if (librePresDe() >= largeurIlot + ECART_NAV) {
         corps.classList.add('nav-ilot-ancre');
-        droite.insertBefore(ilot, superNav);
+        droite.insertBefore(ilot, droite.firstChild);
         ilot.classList.remove('cache');
         if (antenne) ilot.insertBefore(antenne, ilot.firstChild);
       }
