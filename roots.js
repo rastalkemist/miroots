@@ -196,6 +196,7 @@
   var FLUX_RADIO = '';
   var APPUI_LONG = 500;
   var CLE_RADIO = 'roots.radio';
+  var CLE_ANTENNE = 'roots.radio.antenne';
 
   function lecteurRetenu() {
     try { return localStorage.getItem(CLE_RADIO) === 'ouvert'; } catch (e) { return false; }
@@ -203,29 +204,52 @@
   function retenirLecteur(ouvert) {
     try { localStorage.setItem(CLE_RADIO, ouvert ? 'ouvert' : 'ferme'); } catch (e) {}
   }
+  /* L'antenne se retient comme le lecteur : passer d'un univers a l'autre est
+     une navigation, pas une extinction. */
+  function antenneRetenue() {
+    try { return localStorage.getItem(CLE_ANTENNE) === 'ouverte'; } catch (e) { return false; }
+  }
+  function retenirAntenne(ouverte) {
+    try { localStorage.setItem(CLE_ANTENNE, ouverte ? 'ouverte' : 'fermee'); } catch (e) {}
+  }
 
   function poserRadio(getLangue) {
     var droite = document.querySelector('.chrome-droite');
     if (!droite || document.getElementById('btnRadio')) return null;
 
-    var bloc = document.createElement('div');
-    bloc.className = 'radio-bloc';
-    bloc.innerHTML =
-      '<button type="button" class="radio-pastille" id="btnRadio" aria-pressed="false"' +
-      ' aria-expanded="false" aria-controls="languetteRadio" data-al-chrome="radio">' +
-      '<svg class="i" aria-hidden="true"><use href="#i-radio"/></svg></button>' +
+    var haut = droite.closest('.chrome-haut');
+    if (!haut) return null;
+
+    var bouton = document.createElement('button');
+    bouton.type = 'button';
+    bouton.className = 'radio-pastille';
+    bouton.id = 'btnRadio';
+    bouton.setAttribute('aria-pressed', 'false');
+    bouton.setAttribute('aria-expanded', 'false');
+    bouton.setAttribute('aria-controls', 'languetteRadio');
+    bouton.setAttribute('data-al-chrome', 'radio');
+    bouton.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-radio"/></svg>';
+    droite.insertBefore(bouton, droite.firstChild);
+
+    /* Le lecteur est une rangee du chrome, pas un ilot pose dessus : la barre
+       grandit quand il s'ouvre. Sa rangee reprend la boite de `.chrome-inner`,
+       et l'ilot s'arrete a droite sur le bord de l'antenne — la largeur du
+       hamburger et son ecart sont donc retires a droite. */
+    var rangee = document.createElement('div');
+    rangee.className = 'radio-rangee';
+    rangee.innerHTML =
       '<div class="languette-radio cache" id="languetteRadio" role="group" aria-label="Roots Radio">' +
       '<button type="button" class="lecteur-btn" id="btnRadioLecture" data-al-chrome="radioLire">' +
       '<svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>' +
       '<span class="lecteur-texte"><b class="lecteur-titre">Roots Radio</b>' +
       '<span class="point-pied" aria-hidden="true">\u00b7</span>' +
       '<small class="lecteur-etat"></small></span></div>';
-    droite.insertBefore(bloc, droite.firstChild);
+    haut.appendChild(rangee);
 
-    var pastille = bloc.querySelector('#btnRadio');
-    var languette = bloc.querySelector('#languetteRadio');
-    var lecture = bloc.querySelector('#btnRadioLecture');
-    var etat = bloc.querySelector('.lecteur-etat');
+    var pastille = bouton;
+    var languette = rangee.querySelector('#languetteRadio');
+    var lecture = rangee.querySelector('#btnRadioLecture');
+    var etat = rangee.querySelector('.lecteur-etat');
     var son = null, minuteur = null, longFait = false;
 
     function alAntenne() { return pastille.getAttribute('aria-pressed') === 'true'; }
@@ -249,6 +273,7 @@
         else { son.pause(); }
       }
       pastille.setAttribute('aria-pressed', ouvrir ? 'true' : 'false');
+      retenirAntenne(ouvrir);
       direAntenne();
     }
 
@@ -290,6 +315,7 @@
     });
 
     montrerLecteur(lecteurRetenu(), false);
+    pastille.setAttribute('aria-pressed', antenneRetenue() ? 'true' : 'false');
     direAntenne();
     return { dire: direAntenne };
   }
