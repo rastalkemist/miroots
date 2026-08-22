@@ -226,6 +226,7 @@
       haut.parentNode.insertBefore(superNav, haut.nextSibling);
     }
     if (gauche && logo) { barre.insertBefore(logo, gauche); gauche.parentNode.removeChild(gauche); gauche = null; }
+    if (ilot) ilot.style.maxWidth = '';
     if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
     if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
     if (lecture && ilot && lecture.parentNode !== ilot) ilot.appendChild(lecture);
@@ -264,8 +265,9 @@
       var etaitCache = ilot.classList.contains('cache');
       ilot.classList.remove('cache');
       ilot.style.width = 'max-content';
+      var gardeMax = ilot.style.maxWidth; ilot.style.maxWidth = 'none';
       var largeurIlot = ilot.scrollWidth;
-      ilot.style.width = '';
+      ilot.style.maxWidth = gardeMax; ilot.style.width = '';
       if (etaitCache) ilot.classList.add('cache');
       if (librePresDe() >= largeurIlot + ECART_NAV) {
         corps.classList.add('nav-ilot-ancre');
@@ -274,6 +276,19 @@
         /* La commande est toujours a droite : ancree, l'antenne prend sa place,
            donc sa place — la derniere. */
         if (antenne) ilot.appendChild(antenne);
+
+        /* Ancre, l'ilot grandit vers la gauche, vers le logotype. Il ne doit
+           jamais l'atteindre : il s'arrete un ecart avant, et son etat se
+           coupe alors aux points de suspension. Sans cette borne, un etat
+           bavard ou une langue plus longue le pousserait sous le logotype.
+           La borne se lit apres l'ancrage : deplie dans sa rangee, l'ilot n'a
+           ni la place ni le voisin qu'il a une fois ancre. */
+        var centre = barre.querySelector('.centre');
+        if (centre) {
+          var libre = ilot.getBoundingClientRect().right
+            - (centre.getBoundingClientRect().right + ECART_NAV);
+          ilot.style.maxWidth = Math.max(0, Math.round(libre)) + 'px';
+        }
       }
     }
     if (radio) radio.rendre();
@@ -365,7 +380,7 @@
       etat.textContent = ouverte ? table.radioAntenne : table.radioEteinte;
     }
 
-    function basculerAntenne() {
+    function basculerAntenne(depuisPastille) {
       var ouvrir = !alAntenne();
       if (FLUX_RADIO) {
         if (!son) { son = new Audio(FLUX_RADIO); son.preload = 'none'; }
@@ -375,12 +390,56 @@
       pastille.setAttribute('aria-pressed', ouvrir ? 'true' : 'false');
       retenirAntenne(ouvrir);
       direAntenne();
+      if (!depuisPastille) return;
+      if (ouvrir) revelerUnInstant();
+      else { clearTimeout(pose); if (!lecteurRetenu()) montrerLecteur(false, false); }
     }
 
+    /* COMBIEN DE TEMPS LE LECTEUR SE MONTRE APRES UN APPUI BREF QUI ALLUME.
+       Le mouvement d'entree et de sortie vient de l'echelle du systeme :
+       l'apparition d'un bandeau y vaut 240 ms. Le TEMPS DE POSE, lui, n'est
+       pas une duree de mouvement et l'echelle n'en porte pas ; il est repris
+       du delai court des messages passagers d'Android — 2 000 ms, la valeur
+       du cadre, non un chiffre choisi.
+       Il tient sous les cinq secondes du seuil de mise en pause, et rien
+       n'est dit par cette seule apparition : l'etat vit en permanence sur la
+       pastille, qui le porte en couleur et en intitule. Le foyer pose dans le
+       lecteur suspend le repli : personne ne se fait retirer ce qu'il lit. */
+    var POSE_LECTEUR = 2000;
+    var MVT_LECTEUR = 240;
+    var repli = null;
+
     function montrerLecteur(ouvrir, retenir) {
-      languette.classList.toggle('cache', !ouvrir);
+      clearTimeout(repli);
+      if (ouvrir) {
+        languette.classList.add('parait');
+        languette.classList.remove('cache');
+        /* Une boite qui vient de quitter `display:none` ne transite pas : il
+           lui faut un rendu a l'etat de depart avant qu'on l'en sorte. */
+        languette.getBoundingClientRect();
+        languette.classList.remove('parait');
+      } else if (!languette.classList.contains('cache')) {
+        languette.classList.add('parait');
+        repli = setTimeout(function () { languette.classList.add('cache'); }, MVT_LECTEUR);
+      }
       pastille.setAttribute('aria-expanded', ouvrir ? 'true' : 'false');
       if (retenir !== false) retenirLecteur(ouvrir);
+    }
+
+    /* Allumer d'un appui bref montre ce qui vient d'etre allume, puis rend
+       l'ecran. Ce passage n'ECRIT PAS le choix : seul l'appui long decide que
+       le lecteur reste. */
+    var pose = null;
+
+    function revelerUnInstant() {
+      if (document.body.classList.contains('nav-ilot-ancre')) return;
+      if (lecteurRetenu()) return;
+      clearTimeout(pose);
+      montrerLecteur(true, false);
+      pose = setTimeout(function () {
+        if (languette.contains(document.activeElement)) return;
+        montrerLecteur(false, false);
+      }, POSE_LECTEUR);
     }
 
     pastille.addEventListener('pointerdown', function () {
@@ -388,6 +447,7 @@
       clearTimeout(minuteur);
       minuteur = setTimeout(function () {
         longFait = true;
+        clearTimeout(pose);
         montrerLecteur(languette.classList.contains('cache'));
       }, APPUI_LONG);
     });
@@ -399,17 +459,19 @@
     pastille.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     pastille.addEventListener('click', function () {
       if (longFait) { longFait = false; return; }
-      basculerAntenne();
+      basculerAntenne(true);
     });
     pastille.addEventListener('keydown', function (e) {
       if (e.key !== 'ArrowDown') return;
       e.preventDefault();
+      clearTimeout(pose);
       montrerLecteur(true);
       lecture.focus();
     });
-    lecture.addEventListener('click', basculerAntenne);
+    lecture.addEventListener('click', function () { basculerAntenne(false); });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape' || languette.classList.contains('cache')) return;
+      clearTimeout(pose);
       montrerLecteur(false);
       pastille.focus();
     });

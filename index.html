@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kMeGNNzMgdEsNaCJbqUKxMNx6p7mlajOa1xJr4CVAts='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-4E9b09Qhwhpxvr3A+2t6vf/ZS3OVevjyPGQc4376J5Y='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="description" content="Réserver une place au jardin ou au bureau, commander à la carte, retrouver sa réservation. Le Roots, où que tu sois.">
 <meta property="og:type" content="website">
@@ -31,11 +31,7 @@
 <script>Roots.sprite()</script>
 
 <div class="video-fond" id="fondAccueil" aria-hidden="true">
-  <video id="videoAccueil" muted loop playsinline preload="none"></video>
-  <div class="halo"></div>
-  <div class="feuille" style="width:38vmax;height:52vmax;right:-14vmax;top:-8vmax;"></div>
-  <div class="feuille" style="width:30vmax;height:44vmax;left:-10vmax;bottom:-16vmax;animation-delay:3s;"></div>
-  <div class="feuille" style="width:20vmax;height:30vmax;right:8vmax;bottom:-10vmax;animation-delay:6s;opacity:.7;"></div>
+  <video id="videoAccueil" muted playsinline preload="none"></video>
 </div>
 <button type="button" class="commande-video cache" id="cmdVideo" data-al="alPause" aria-label="Mettre la vidéo en pause"><svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
 
@@ -1311,6 +1307,17 @@
     cmdVideo.querySelector('use').setAttribute('href', enLecture ? '#i-pause' : '#i-lecture');
   }
 
+  /* COMBIEN DE FOIS LE FILM PASSE, AU PLUS, AVANT DE S'ARRETER SEUL.
+     Un film qui tourne sans fin tient l'ecran allume : le navigateur pose un
+     verrou de veille des qu'une video joue, occupe plus d'un cinquieme de la
+     zone visible et s'y montre a plus des trois quarts — ce qui est le cas
+     d'un fond plein ecran, muet ou non. L'appareil ne s'eteint alors plus et
+     ne se verrouille plus tout seul.
+     Le film s'arrete donc de lui-meme sur sa derniere image, et la commande
+     le relance. Porter ce nombre a zero le rend perpetuel et rend le defaut. */
+  var PASSES_FOND = 1;
+  var passesFaites = 0;
+
   function lancerFond() {
     var voulue = sourceFond();
     if (videoAccueil.getAttribute('src') !== voulue) videoAccueil.setAttribute('src', voulue);
@@ -1322,20 +1329,44 @@
     if (!fondAccueil || !videoAccueil || !cmdVideo) return;
     if (economieDeDonnees()) { videoAccueil.remove(); return; }
 
-    videoAccueil.addEventListener('play', function () {
-      fondAccueil.classList.add('avec-video');
-      marquerCommandeVideo(true);
-    });
+    videoAccueil.addEventListener('play', function () { marquerCommandeVideo(true); });
     videoAccueil.addEventListener('pause', function () { marquerCommandeVideo(false); });
     /* Le geste ordinaire est l'appui sur l'image. La commande porte le meme
        geste pour qui navigue au clavier, et ne quitte le hors-ecran qu'au
        foyer : sans elle, la mise en pause n'appartiendrait qu'au pointeur. */
     function basculerFond() {
-      if (videoAccueil.paused) lancerFond(); else videoAccueil.pause();
+      if (!videoAccueil.paused) { videoAccueil.pause(); return; }
+      if (passesFaites >= PASSES_FOND) { passesFaites = 0; videoAccueil.currentTime = 0; }
+      lancerFond();
     }
     videoAccueil.addEventListener('click', basculerFond);
     cmdVideo.addEventListener('click', basculerFond);
     cmdVideo.classList.remove('cache');
+
+    /* Un passage s'acheve : on repart tant que le compte n'est pas atteint,
+       sinon l'image se fige sur la derniere vue et l'appareil reprend son
+       droit de s'eteindre. Une relance a la main rouvre le compte. */
+    videoAccueil.addEventListener('ended', function () {
+      passesFaites += 1;
+      if (passesFaites < PASSES_FOND) { videoAccueil.currentTime = 0; lancerFond(); }
+      else marquerCommandeVideo(false);
+    });
+
+    /* ECRAN VERROUILLE, ECRAN ETEINT, APPLICATION QUITTEE : l'image s'arrete.
+       Seul le son garde le droit de continuer hors de l'ecran ; une image
+       qui continue de se decoder derriere un ecran noir ne se voit pas, se
+       paie en batterie et retient le verrou de veille.
+       Le retour a l'ecran rend le film s'il jouait, et lui seul : le son
+       n'est pas touche ici. */
+    var jouaitAvantSortie = false;
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        jouaitAvantSortie = !videoAccueil.paused;
+        if (jouaitAvantSortie) videoAccueil.pause();
+      } else if (jouaitAvantSortie && passesFaites < PASSES_FOND) {
+        lancerFond();
+      }
+    });
 
     if (window.matchMedia) {
       var mq = window.matchMedia('(orientation: portrait)');

@@ -209,9 +209,15 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .pied{width:var(--piste);max-width:var(--col);margin:var(--air-i6) auto 0;padding:var(--esp-4) 0 var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .pied a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
 :root{--barre-h:72px}
-.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:2px solid var(--univers);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14)}
+/* Le filet qui borde la barre du bas, et la pastille d'un verbe. Ces deux
+   mesures sont nommees parce qu'une TROISIEME s'en derive : le souffle qui
+   separe le filet du haut des pastilles. Les changer sans passer par ces
+   noms desaccorderait ce qui se cale dessus. */
+:where(body){--filet-barre:2px;--pastille-verbe:52px;
+ --souffle-filet:calc((var(--barre-h) - var(--filet-barre) - var(--pastille-verbe)) / 2)}
+.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:var(--filet-barre) solid var(--univers);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14)}
 .verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;color:var(--gris-500);display:flex;align-items:center;justify-content:center}
-.ico-rond{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.ico-rond{width:var(--pastille-verbe);height:var(--pastille-verbe);border-radius:50%;display:flex;align-items:center;justify-content:center}
 .ico-rond svg{width:44px;height:44px;stroke-width:2}
 .verbe.actif .ico-rond{background:var(--univers);color:var(--blanc)}
 .verbe.dormant{opacity:.55}
@@ -427,13 +433,17 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    que l'image n'est pas arrivee, et quand aucune n'est servie. */
 :where(body.p-accueil) .video-fond{position:fixed;inset:0;z-index:0;overflow:hidden;background:linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1));background-image:url(media/hero.jpg),linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1));background-size:cover;background-position:center}
 @media(orientation:portrait){:where(body.p-accueil) .video-fond{background-image:url(media/hero-portrait.jpg),linear-gradient(160deg,var(--vert-e3),var(--vert-e2) 55%,var(--vert-e1))}}
-/* La video occupe le fond entier, recadree par le centre. Le degrade et les
-   feuilles restent DESSOUS : ils reparaissent seuls si la video ne se pose
-   pas — connexion econome, mouvement reduit, format refuse. Rien ne se
-   dessine deux fois : la classe posee par l'ecran retire l'un ou l'autre. */
+/* La video occupe le fond entier, recadree par le centre. Sous elle il n'y a
+   que l'image d'attente et son degrade, portes par la feuille : rien d'anime
+   ne se superpose au film. Quand la video ne se pose pas — connexion econome,
+   mouvement reduit, format refuse — l'image d'attente tient seule l'ecran.
+
+   Le fond se prend au doigt : la zone de contenu de cet ecran est vide et
+   couvre tout, elle laisse donc passer le geste, et ses propres enfants le
+   reprennent. Sans cela, aucun appui n'atteindrait jamais le film. */
 :where(body.p-accueil) .video-fond video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-:where(body.p-accueil) .video-fond.avec-video .halo,
-:where(body.p-accueil) .video-fond.avec-video .feuille{display:none}
+:where(body.p-accueil) main{pointer-events:none}
+:where(body.p-accueil) main > *{pointer-events:auto}
 /* La commande d'arret est VISIBLE et permanente : une image qui part seule
    doit pouvoir s'arreter sans chercher. Sa plaque porte l'encre d'univers a
    forte opacite pour tenir sur n'importe quelle image dessous. */
@@ -451,15 +461,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .commande-video:focus{left:var(--pose-gauche)}
 :where(body.p-accueil) .commande-video svg{width:20px;height:20px}
 @media(min-width:640px) and (min-height:600px){:where(body.p-accueil) .commande-video{bottom:calc(138px + var(--safe-bas))}}
-:where(body.p-accueil) .video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;background:radial-gradient(circle,rgba(var(--jaune-e3-rgb),.42),transparent 62%);animation:respirer 9s ease-in-out infinite}
-@keyframes respirer{0%,100%{transform:scale(1);opacity:1}
-}:where(body.p-accueil) .video-fond .feuille-1{width:38vmax;height:52vmax;right:-14vmax;top:-8vmax}
-:where(body.p-accueil) .video-fond .feuille-2{width:30vmax;height:44vmax;left:-10vmax;bottom:-16vmax;animation-delay:3s}
-:where(body.p-accueil) .video-fond .feuille-3{width:20vmax;height:30vmax;right:8vmax;bottom:-10vmax;animation-delay:6s;opacity:.7}
-:where(body.p-accueil) .video-fond .feuille{position:absolute;border-radius:0 55% 0 55%;background:rgba(var(--vert-e1-rgb),.5);animation:bercer 12s ease-in-out infinite;transform-origin:bottom center}
-@keyframes bercer{0%,100%{transform:rotate(-4deg)}
-50%{transform:rotate(5deg)}
-}/* Les deux gestes du code. Ce sont des actions secondaires : un seul bouton
+/* Les deux gestes du code. Ce sont des actions secondaires : un seul bouton
    plein par ecran, et il est ailleurs. La cible tient le plancher de 44. */
 .gestes-code{display:flex;gap:var(--esp-2);justify-content:center;margin-top:var(--air-i3);flex-wrap:wrap}
 .geste-code{min-height:var(--cible-min);padding:0 var(--esp-4);border:2px solid var(--gris-ilot);border-radius:var(--rayon-pilule);background:transparent;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:var(--w-bold);cursor:pointer}
@@ -476,12 +478,10 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .ligne-code .code{margin:0;line-height:var(--lh-33)}
 .geste-code-ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--cible-min);min-height:var(--cible-min);padding:0;border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-size:var(--t-note);font-weight:var(--w-bold);white-space:nowrap;cursor:pointer}
 .geste-code-ico svg.i{width:calc(var(--t-code) * .715);height:calc(var(--t-code) * .715)}
-:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:86px;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-21);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+:where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-21);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
-@media(min-width:640px) and (min-height:600px){:where(body.p-accueil) .fab{--fab-bas:134px;bottom:calc(var(--fab-bas) + var(--safe-bas))}
-
-}:where(body.p-accueil) main{position:relative;z-index:2;min-height:100vh}
+:where(body.p-accueil) main{position:relative;z-index:2;min-height:100vh}
 :where(body.p-accueil) .voile{z-index:12}
 :where(body.p-accueil) .feuille-bas{overscroll-behavior:contain;position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);max-height:90vh;overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
 :where(body.p-accueil) .feuille-bas::-webkit-scrollbar{display:none}
@@ -1007,6 +1007,12 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    et leurs contours paraissent paralleles. L'elargir casse ce parallelisme. */
 .languette-radio{margin-top:var(--esp-2);margin-left:auto;width:max-content;max-width:100%;margin-right:calc(var(--cible-min) + var(--esp-2) + var(--cible-min) / 2 - (var(--esp-4) - var(--esp-3)) / 2 - (var(--t-chrome-titre) + var(--esp-3)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;gap:var(--esp-4);padding:0 calc((var(--esp-4) - var(--esp-3)) / 2 - var(--limite-ep)) 0 var(--esp-3);background:var(--gris-ilot);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--encre);overflow:hidden}
 .languette-radio.cache{display:none}
+/* L'ilot entre et sort au cran d'apparition d'un bandeau de l'echelle de
+   mouvement. Le decalage part du haut : il descend de sous la pastille qui
+   vient d'etre pressee, d'ou il vient. Le repli de la boite attend la fin de
+   ce mouvement, sinon la sortie ne se verrait pas. */
+.languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
+.languette-radio.parait{opacity:0;transform:translateY(calc(var(--esp-2) * -1))}
 body[data-surface="ambiante"] .languette-radio{background:rgba(var(--blanc-casse-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
 .lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 .lecteur-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
@@ -1054,7 +1060,6 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
   body:not(.nav-haut) .chrome-bas{left:var(--bord);right:auto;transform:none;bottom:calc(var(--esp-3) + var(--safe-bas));width:auto;min-height:0;height:auto;padding:var(--esp-1);background:var(--blanc);border:var(--limite-ep) solid var(--univers);border-radius:var(--rayon-pilule);box-shadow:0 12px 30px rgba(var(--ombre-teinte),.28)}
   body:not(.nav-haut) .verbe{flex:0 0 auto;padding:var(--esp-1)}
   body:not(.nav-haut) .ico-rond{width:44px;height:44px}
-  body:not(.nav-haut).p-accueil .fab{left:auto;right:var(--bord);transform:none;bottom:calc(var(--esp-3) + var(--safe-bas))}
   body:not(.nav-haut).p-accueil .commande-video{bottom:calc(var(--esp-3) + var(--cible-min) + var(--esp-3) + var(--safe-bas))}
   body.p-accueil .fab{font-size:var(--t-21)}
 }
@@ -1081,10 +1086,23 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
    touche au doigt. Sur doigt, la taille du geste reste celle du pouce. */
 /* Le geste focal reste AU CENTRE. Un appel a l'action cale a gauche est le
    seul placement que la recherche deconseille : le regard termine sa course au
-   centre ou a droite, jamais au bord gauche. Le super-nav parti, seul le vide
-   sous lui change — il vaut la moitie de ce qu'il valait quand la barre basse
-   l'occupait. */
-body.p-accueil.nav-haut .fab{bottom:calc(var(--fab-bas) * .75 + var(--safe-bas))}
+   centre ou a droite, jamais au bord gauche.
+
+   SA DISTANCE AU BAS DEPEND DE CE QU'IL Y A EN BAS.
+   La ou une barre pleine largeur occupe le bas, elle est la reference : le
+   geste s'en ecarte du MEME souffle que celui qui separe le filet de cette
+   barre du haut de ses pastilles. Un ecart mesure depuis le bord de l'ecran
+   le poserait DANS la barre.
+   La ou le bas est libre — la barre est montee dans le nav, ou rangee au
+   coin — la reference redevient l'ecran, en PART de sa hauteur : 7,5 %, et
+   10 % sur ordinateur. Une distance fixe se lit differemment sur un ecran de
+   360 et sur un de 900 ; une part tient la meme proportion partout.
+   Un telephone couche tombe donc dans le second cas, pas dans le premier :
+   son super-nav monte, son bas est libre, et c'est la part qui vaut. */
+:where(body.p-accueil:not(.nav-haut)) .fab{--fab-bas:calc(var(--barre-h) + var(--souffle-filet))}
+@media(min-width:1024px) and (min-height:600px){
+  :where(body.p-accueil) .fab{--fab-bas:10%}
+}
 @media(pointer:fine){
   body.p-accueil.nav-haut .fab{font-size:var(--t-26);min-height:64px}
 }
