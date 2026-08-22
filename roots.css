@@ -275,16 +275,17 @@ body[data-surface="ambiante"] .chrome-burger{color:var(--blanc-casse);filter:dro
    plage — le blanc casse rend 19:1 sur une image sombre et 1,15:1 sur une image
    claire. Le trait porte donc la couleur d'univers autour de chaque lettre, et
    c'est la PAIRE qui porte la lisibilite : sur la plage des luminosites, le
-   meilleur des deux tombe au plus bas a 3,70:1, au-dessus du plancher de 3:1
-   applicable au grand texte.
-   Le trait porte l'ECHELON 1, le plus sombre de la famille : c'est ce qui
-   ecarte le plus le trait de l'encre, et donc ce qui tient la paire. Une
-   couleur d'univers plus claire y rendait 2,84:1, sous le plancher.
+   meilleur des deux tombe au plus bas a 2,84:1.
+   CE QUE CELA VAUT, mesure : le plancher applicable au grand texte est 3:1, et
+   ce reglage passe dessous sur la bande de luminosite ou les deux se croisent.
+   L'echelon 1, plus sombre, y rendait 3,70:1 — il ecarte davantage le trait de
+   l'encre. Le choix de la couleur d'univers est un arbitrage porte au registre
+   des decisions.
    Toute autre couleur de trait, ou toute autre encre de lettre, exige de
    remesurer la paire — le nombre ci-dessus ne vaut que pour ce couple.
    Les huit ombres sont SANS FLOU : un trait flou ne borne plus la lettre, et
    la mesure qui suppose deux aplats devient fausse. */
-:where(body){--trait-nav:1px;--cerne-univers:var(--trait-nav) 0 0 var(--univers-e1),calc(var(--trait-nav) * -1) 0 0 var(--univers-e1),0 var(--trait-nav) 0 var(--univers-e1),0 calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) var(--trait-nav) 0 var(--univers-e1),calc(var(--trait-nav) * -1) calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) calc(var(--trait-nav) * -1) 0 var(--univers-e1),calc(var(--trait-nav) * -1) var(--trait-nav) 0 var(--univers-e1)}
+:where(body){--trait-nav:1px;--cerne-univers:var(--trait-nav) 0 0 var(--univers),calc(var(--trait-nav) * -1) 0 0 var(--univers),0 var(--trait-nav) 0 var(--univers),0 calc(var(--trait-nav) * -1) 0 var(--univers),var(--trait-nav) var(--trait-nav) 0 var(--univers),calc(var(--trait-nav) * -1) calc(var(--trait-nav) * -1) 0 var(--univers),var(--trait-nav) calc(var(--trait-nav) * -1) 0 var(--univers),calc(var(--trait-nav) * -1) var(--trait-nav) 0 var(--univers)}
 body[data-surface="ambiante"] .chrome-titre{color:var(--blanc-casse);text-shadow:var(--cerne-univers)}
 
 body[data-surface="ambiante"] .chrome-bas{z-index:6;box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.18)}
@@ -1041,22 +1042,18 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
 .languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
 .languette-radio.parait{opacity:0;transform:translateY(calc(var(--esp-2) * -1))}
 /* L'ilot se pose sur un film : ce qu'on lit dedans depend de ce qui passe
-   dessous, et une encre unique s'y perd a un bout de la plage. Ses lettres
-   portent donc LE MEME CERNE que le verbe d'univers, et c'est la paire qui
-   porte la lisibilite : 3,70:1 au pire, mesure sur le film servi, voile
-   compose et floute comme ici.
-   Le plancher applicable est 4,5:1 — les deux textes de l'ilot valent 14 px en
-   700 et 11,67 px en 500, donc aucun n'est du grand texte. Le reglage passe
-   dessous par arbitrage porte au registre des decisions.
-   LE VOILE NE PORTE PLUS LA LISIBILITE, seulement le style : la paire vaut
-   3,70 quelle que soit sa teinte et son opacite, puisque le cerne s'appuie sur
-   la lettre et non sur le fond. Le baisser ou l'eclaircir ne coute donc rien a
-   la mesure ; retirer le cerne la ferait tomber a 1,54:1.
-   Changer l'encre des lettres ou la couleur du cerne exige de remesurer. */
+   dessous. Le voile porte l'echelon 3 de l'univers, et son OPACITE est la
+   SEULE chose qui gouverne la lisibilite du texte, puisque les lettres n'ont
+   aucun cerne pour s'en detacher toutes seules.
+   Mesure sur le film servi, voile compose et floute comme ici : le blanc casse
+   rend 1,54:1 au pire. Le plancher applicable est 4,5:1 — les deux textes de
+   l'ilot valent 14 px en 700 et 11,67 px en 500, donc aucun n'est du grand
+   texte. Le reglage passe dessous par arbitrage porte au registre.
+   Monter l'opacite est le seul levier ; a teinte egale l'echelon 3 plafonne
+   sous le plancher meme opaque a 90 %. Un cerne sur les lettres portait la
+   paire a 3,70:1 quelle que soit l'opacite.
+   Changer la teinte, l'opacite ou l'encre exige de remesurer. */
 body[data-surface="ambiante"] .languette-radio{background:rgba(var(--univers-e3-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
-body[data-surface="ambiante"] .lecteur-titre,
-body[data-surface="ambiante"] .point-pied,
-body[data-surface="ambiante"] .lecteur-etat{text-shadow:var(--cerne-univers)}
 .lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 .lecteur-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
 .lecteur-btn svg{width:14px;height:14px}
