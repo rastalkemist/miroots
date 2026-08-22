@@ -18,10 +18,110 @@ window.Roots = window.Roots || {};
     essai: true
   };
 
-  var entetes = {
-    'apikey': CLE,
-    'Content-Type': 'application/json'
-  };
+
+  /* ------------------------------------------------------------------
+     LA SESSION.
+     Trois surfaces s'ouvrent sans compte ; une seule en exige un. La passerelle
+     doit donc porter une session SANS que rien d'autre en depende : un ecran
+     qui n'en a pas besoin ne doit pas savoir qu'elle existe.
+
+     CE QUI EST TENU ICI, et rien de plus :
+       — ouvrir et fermer, par un moyen passe en argument ;
+       — retenir entre deux lancements ;
+       — RENOUVELER EN SILENCE. Un jeton qui expire pendant qu'une personne
+         coche une tache doit se renouveler sans qu'elle le voie, sinon l'ecran
+         ment. Le renouvellement se fait AVANT l'appel, jamais apres son echec :
+         reessayer apres un refus rejoue une ecriture deja partie.
+       — poser l'autorisation sur chaque appel ;
+       — un seul etat lisible, par un evenement, pour qu'aucun ecran ne
+         reinvente sa lecture.
+
+     CE QUI N'EST PAS TENU ICI : le moyen de preuve. `ouvrirSession` prend le
+     nom du don et ses champs ; elle ne choisit pas entre un mot de passe, un
+     code a usage unique ou un lien. Ce choix se tranche ailleurs, et ce fichier
+     n'a pas a changer quand il tombe.
+
+     UN RENOUVELLEMENT A LA FOIS. Deux appels simultanes qui renouvellent tous
+     les deux invalident le premier jeton rendu : la promesse en cours se
+     partage au lieu de se rejouer. */
+  var CLE_SESSION = 'roots.session';
+  var MARGE_RENOUV = 60;
+  var session = null;
+  var renouvEnCours = null;
+
+  function lireSession() {
+    try {
+      var b = localStorage.getItem(CLE_SESSION);
+      return b ? JSON.parse(b) : null;
+    } catch (e) { return null; }
+  }
+
+  function retenirSession(s) {
+    session = s;
+    try {
+      if (s) localStorage.setItem(CLE_SESSION, JSON.stringify(s));
+      else localStorage.removeItem(CLE_SESSION);
+    } catch (e) {}
+    try {
+      window.dispatchEvent(new CustomEvent('roots:session', { detail: { connecte: !!s } }));
+    } catch (e) {}
+  }
+
+  function poserSession(corps) {
+    if (!corps || !corps.access_token) throw new Error('session sans jeton');
+    retenirSession({
+      acces: corps.access_token,
+      rafraichir: corps.refresh_token || null,
+      expire: Math.floor(Date.now() / 1000) + (corps.expires_in || 3600)
+    });
+    return { connecte: true };
+  }
+
+  function sessionExpiree(marge) {
+    if (!session) return false;
+    return session.expire - (marge || 0) <= Math.floor(Date.now() / 1000);
+  }
+
+  function don(type, champs) {
+    return fetch(BASE + '/auth/v1/token?grant_type=' + type, {
+      method: 'POST',
+      headers: { 'apikey': CLE, 'Content-Type': 'application/json' },
+      body: JSON.stringify(champs)
+    }).then(function (r) {
+      return r.text().then(function (t) {
+        var c = null;
+        try { c = t ? JSON.parse(t) : null; } catch (e) {}
+        if (!r.ok) {
+          var brut = (c && (c.error_description || c.msg || c.error)) || t;
+          throw new ErreurRoots(traduire(brut, langueCourante()), langueCourante(), brut, r.status);
+        }
+        return c;
+      });
+    });
+  }
+
+  function renouveler() {
+    if (renouvEnCours) return renouvEnCours;
+    if (!session || !session.rafraichir) return Promise.resolve(false);
+    renouvEnCours = don('refresh_token', { refresh_token: session.rafraichir })
+      .then(function (c) { poserSession(c); return true; })
+      ['catch'](function () { retenirSession(null); return false; })
+      .then(function (v) { renouvEnCours = null; return v; });
+    return renouvEnCours;
+  }
+
+  function entetesCourants() {
+    var e = { 'apikey': CLE, 'Content-Type': 'application/json' };
+    if (session && session.acces) e['Authorization'] = 'Bearer ' + session.acces;
+    return e;
+  }
+
+  function avantAppel() {
+    if (session && sessionExpiree(MARGE_RENOUV)) return renouveler();
+    return Promise.resolve(true);
+  }
+
+  session = lireSession();
 
   /* ---------- Messages ----------
      Clé = message rendu par la base. Valeur = ce que lit un humain.
@@ -189,14 +289,19 @@ window.Roots = window.Roots || {};
   }
 
   function lire(table, requete) {
-    return envoyer('/rest/v1/' + table + (requete ? '?' + requete : ''), { headers: entetes });
+    return avantAppel().then(function () {
+      return envoyer('/rest/v1/' + table + (requete ? '?' + requete : ''),
+        { headers: entetesCourants() });
+    });
   }
 
   function appeler(fonction, parametres) {
-    return envoyer('/rest/v1/rpc/' + fonction, {
-      method: 'POST',
-      headers: entetes,
-      body: JSON.stringify(parametres || {})
+    return avantAppel().then(function () {
+      return envoyer('/rest/v1/rpc/' + fonction, {
+        method: 'POST',
+        headers: entetesCourants(),
+        body: JSON.stringify(parametres || {})
+      });
     });
   }
 
@@ -724,6 +829,28 @@ window.Roots = window.Roots || {};
         p_ifu: o.ifu || null, p_courriel: adresseTransmissible(o.courriel)
       });
     },
+
+    /* Les cinq gestes de session. `ouvrirSession` prend le NOM du don et ses
+       champs : elle ne choisit pas le moyen de preuve, et ce fichier ne change
+       pas le jour ou ce choix tombe. */
+    ouvrirSession: function (typeDeDon, champs) {
+      return don(typeDeDon, champs || {}).then(poserSession);
+    },
+
+    fermerSession: function () {
+      var jeton = session && session.acces;
+      retenirSession(null);
+      if (!jeton) return Promise.resolve({ connecte: false });
+      return fetch(BASE + '/auth/v1/logout', {
+        method: 'POST',
+        headers: { 'apikey': CLE, 'Authorization': 'Bearer ' + jeton }
+      })['catch'](function () {})
+        .then(function () { return { connecte: false }; });
+    },
+
+    estConnecte: function () { return !!(session && session.acces); },
+
+    renouvelerSession: renouveler,
 
     consulterFacture: function (jeton) {
       return appeler('consulter_facture', { p_jeton: jeton });
