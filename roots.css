@@ -244,7 +244,16 @@ body[data-surface="ambiante"] .switch .knob{background:var(--univers)}
 body[data-surface="ambiante"] .reste .nu{color:var(--gris-500)}
 body[data-surface="ambiante"] .lang-btn{color:var(--blanc-casse);text-shadow:0 1px 4px rgba(var(--ombre-teinte),.4)}
 body[data-surface="ambiante"] .chrome-burger{color:var(--blanc-casse);filter:drop-shadow(0 1px 4px rgba(var(--ombre-teinte),.4))}
-body[data-surface="ambiante"] .chrome-titre{color:var(--blanc-casse);text-shadow:0 1px 6px rgba(var(--ombre-teinte),.4)}
+/* Le fond anime n'a pas de couleur : une encre unique s'y perd a un bout de la
+   plage — le blanc cassé rend 19:1 sur une image sombre et 1,15:1 sur une image
+   claire. Le trait porte donc l'echelon 1 de l'univers autour de chaque lettre,
+   et c'est la PAIRE qui tient : pour toute luminosite d'image, l'un des deux
+   passe 3:1. Les huit ombres sont SANS FLOU — un trait flou ne borne plus la
+   lettre, et la mesure qui suppose deux aplats devient fausse. */
+:where(body){--trait-nav:1px}
+body[data-surface="ambiante"] .chrome-titre{color:var(--blanc-casse);text-shadow:var(--trait-nav) 0 0 var(--univers-e1),calc(var(--trait-nav) * -1) 0 0 var(--univers-e1),0 var(--trait-nav) 0 var(--univers-e1),0 calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) var(--trait-nav) 0 var(--univers-e1),calc(var(--trait-nav) * -1) calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) calc(var(--trait-nav) * -1) 0 var(--univers-e1),calc(var(--trait-nav) * -1) var(--trait-nav) 0 var(--univers-e1)}
+body[data-surface="ambiante"] .chrome-burger,
+body[data-surface="ambiante"] .radio-pastille{filter:drop-shadow(var(--trait-nav) 0 0 var(--univers-e1)) drop-shadow(calc(var(--trait-nav) * -1) 0 0 var(--univers-e1)) drop-shadow(0 var(--trait-nav) 0 var(--univers-e1)) drop-shadow(0 calc(var(--trait-nav) * -1) 0 var(--univers-e1))}
 body[data-surface="ambiante"] .chrome-bas{z-index:6;box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.18)}
 
 @media(min-width:640px){body[data-surface="ambiante"] .chrome-bas{box-shadow:0 12px 34px rgba(var(--ombre-teinte),.4)}
@@ -948,16 +957,20 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    le menu du systeme au lieu d'ouvrir le lecteur.
 
    Le lecteur ne flotte pas au-dessus de la barre : il en forme une seconde
-   rangee, et la barre grandit quand il s'ouvre. Sa rangee reprend la boite de `.chrome-inner`
-   pour partir du meme bord gauche que le logo ; l'ilot s'arrete a droite sur le
-   bord de l'antenne, d'ou le retrait de la largeur du hamburger et de son
-   ecart. Changer l'un des deux sans l'autre desaligne l'ilot de son bouton.
+   rangee, et la barre grandit quand il s'ouvre. Sa rangee reprend la boite de
+   `.chrome-inner` pour partir du meme bord gauche que le logo. A droite, la
+   commande de lecture ferme l'ilot et tombe sur les TRAITS de l'antenne, pas
+   sur sa cible : le retrait vaut donc la largeur du hamburger, son ecart, et
+   le creux entre la cible de l'antenne et son dessin, moins le souffle laisse
+   a la commande. Changer la taille de l'antenne, du hamburger ou de leur ecart
+   sans reprendre ce calcul desaligne l'ilot de son bouton.
 
    La commande de lecture est plus petite que le plancher de cible : son calque
    invisible la ramene a 44 px sans grossir l'ilot. Le retirer descend la cible
    sous le plancher. */
 .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-.radio-pastille svg{width:24px;height:24px}
+:where(body){--antenne-dessin:24px}
+.radio-pastille svg{width:var(--antenne-dessin);height:var(--antenne-dessin)}
 .radio-pastille.antenne{color:var(--jaune-e2)}
 :where(body.p-roam) .radio-pastille{color:var(--univers-e1)}
 body[data-surface="ambiante"] .radio-pastille{color:var(--blanc-casse)}
@@ -967,7 +980,7 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
 
 .radio-rangee{width:var(--site-w);max-width:var(--col);margin:0 auto}
 body[data-surface="ambiante"] .radio-rangee{max-width:initial}
-.languette-radio{margin-top:var(--esp-2);margin-right:calc(var(--cible-min) + var(--esp-2));min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;gap:var(--esp-2);padding:0 var(--esp-3) 0 var(--esp-1);background:var(--gris-ilot);border:1px solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--encre);overflow:hidden}
+.languette-radio{margin-top:var(--esp-2);margin-right:calc(var(--cible-min) + (var(--cible-min) - var(--antenne-dessin)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);padding:0 var(--esp-2) 0 var(--esp-3);background:var(--gris-ilot);border:1px solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--encre);overflow:hidden}
 .languette-radio.cache{display:none}
 body[data-surface="ambiante"] .languette-radio{background:rgba(var(--blanc-casse-rgb),.20);border:1px solid rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
 .lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}

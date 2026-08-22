@@ -239,11 +239,11 @@
     rangee.className = 'radio-rangee';
     rangee.innerHTML =
       '<div class="languette-radio cache" id="languetteRadio" role="group" aria-label="Roots Radio">' +
-      '<button type="button" class="lecteur-btn" id="btnRadioLecture" data-al-chrome="radioLire">' +
-      '<svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button>' +
       '<span class="lecteur-texte"><b class="lecteur-titre">Roots Radio</b>' +
       '<span class="point-pied" aria-hidden="true">\u00b7</span>' +
-      '<small class="lecteur-etat"></small></span></div>';
+      '<small class="lecteur-etat"></small></span>' +
+      '<button type="button" class="lecteur-btn" id="btnRadioLecture" data-al-chrome="radioLire">' +
+      '<svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button></div>';
     haut.appendChild(rangee);
 
     var pastille = bouton;
