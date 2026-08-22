@@ -965,13 +965,15 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    C'est le bloc qui porte la position relative ; la retirer rendrait le lecteur
    au chrome entier. Le panneau prend l'echelon 1 de son univers : il appartient
    au nav, et le nav appartient a l'univers. L'antenne eteinte prend l'encre de
-   la pastille Mi|NU au repos, et suit donc la surface ; allumee elle prend le
-   jaune, d'un echelon plus vif quand la surface est sombre. Il tient sur UNE ligne et s'etire vers la gauche autant que
+   la pastille Mi|NU au repos, et suit donc la surface — l'univers rouge la
+   descend d'un echelon ; allumee elle prend le jaune, d'un echelon plus vif
+   quand la surface est sombre. Il tient sur UNE ligne et s'etire vers la gauche autant que
    le corps de page le permet, l'etat cedant en premier. */
 .radio-bloc{position:relative;display:flex;align-items:center}
 .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .radio-pastille svg{width:24px;height:24px}
 .radio-pastille.antenne{color:var(--jaune-e2)}
+:where(body.p-roam) .radio-pastille{color:var(--univers-e1)}
 body[data-surface="ambiante"] .radio-pastille{color:var(--blanc-casse)}
 body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
 .languette-radio{position:absolute;top:100%;right:0;margin-top:var(--esp-2);z-index:9;display:flex;align-items:center;gap:var(--esp-2);padding:var(--esp-1) var(--esp-2);background:rgba(var(--univers-e1-rgb),.92);backdrop-filter:blur(8px);border-radius:var(--rayon-pilule);color:var(--creme);width:max-content;max-width:calc(100vw - var(--esp-4) * 2)}
