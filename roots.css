@@ -205,7 +205,7 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
 .verbe.dormant{opacity:.55}
 .verbe.dormant::after{content:'';position:absolute;top:9px;right:calc(50% - 28px);width:6px;height:6px;border-radius:50%;background:var(--roots-jaune)}
 
-@media(min-width:640px){.chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));width:auto;min-height:0;height:auto;padding:var(--esp-1);border:1.5px solid var(--univers);border-radius:var(--rayon-pilule);box-shadow:0 12px 30px rgba(var(--ombre-teinte),.28)}
+@media(min-width:640px) and (min-height:600px){.chrome-bas{left:50%;right:auto;transform:translateX(-50%);bottom:calc(18px + var(--safe-bas));width:auto;min-height:0;height:auto;padding:var(--esp-1);border:1.5px solid var(--univers);border-radius:var(--rayon-pilule);box-shadow:0 12px 30px rgba(var(--ombre-teinte),.28)}
 .verbe{flex:0 0 auto;padding:var(--esp-1) var(--esp-1)}
 .ico-rond{width:56px;height:56px}
 
@@ -252,11 +252,10 @@ body[data-surface="ambiante"] .chrome-burger{color:var(--blanc-casse);filter:dro
    lettre, et la mesure qui suppose deux aplats devient fausse. */
 :where(body){--trait-nav:1px}
 body[data-surface="ambiante"] .chrome-titre{color:var(--blanc-casse);text-shadow:var(--trait-nav) 0 0 var(--univers-e1),calc(var(--trait-nav) * -1) 0 0 var(--univers-e1),0 var(--trait-nav) 0 var(--univers-e1),0 calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) var(--trait-nav) 0 var(--univers-e1),calc(var(--trait-nav) * -1) calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) calc(var(--trait-nav) * -1) 0 var(--univers-e1),calc(var(--trait-nav) * -1) var(--trait-nav) 0 var(--univers-e1)}
-body[data-surface="ambiante"] .chrome-burger,
-body[data-surface="ambiante"] .radio-pastille{filter:drop-shadow(var(--trait-nav) 0 0 var(--univers-e1)) drop-shadow(calc(var(--trait-nav) * -1) 0 0 var(--univers-e1)) drop-shadow(0 var(--trait-nav) 0 var(--univers-e1)) drop-shadow(0 calc(var(--trait-nav) * -1) 0 var(--univers-e1))}
+
 body[data-surface="ambiante"] .chrome-bas{z-index:6;box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.18)}
 
-@media(min-width:640px){body[data-surface="ambiante"] .chrome-bas{box-shadow:0 12px 34px rgba(var(--ombre-teinte),.4)}
+@media(min-width:640px) and (min-height:600px){body[data-surface="ambiante"] .chrome-bas{box-shadow:0 12px 34px rgba(var(--ombre-teinte),.4)}
 
 }body[data-surface="ambiante"] .menu-pop{z-index:15;background:var(--blanc);box-shadow:0 18px 44px rgba(var(--ombre-teinte),.38)}
 body[data-surface="ambiante"] .toast{bottom:calc(156px + var(--safe-bas));z-index:20}
@@ -440,7 +439,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .commande-video:focus-visible,
 :where(body.p-accueil) .commande-video:focus{left:var(--esp-3)}
 :where(body.p-accueil) .commande-video svg{width:20px;height:20px}
-@media(min-width:640px){:where(body.p-accueil) .commande-video{bottom:calc(138px + var(--safe-bas))}}
+@media(min-width:640px) and (min-height:600px){:where(body.p-accueil) .commande-video{bottom:calc(138px + var(--safe-bas))}}
 :where(body.p-accueil) .video-fond .halo{position:absolute;width:70vmax;height:70vmax;top:-18vmax;left:-12vmax;border-radius:50%;background:radial-gradient(circle,rgba(var(--jaune-e3-rgb),.42),transparent 62%);animation:respirer 9s ease-in-out infinite}
 @keyframes respirer{0%,100%{transform:scale(1);opacity:1}
 }:where(body.p-accueil) .video-fond .feuille-1{width:38vmax;height:52vmax;right:-14vmax;top:-8vmax}
@@ -469,7 +468,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil) .fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(86px + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border-radius:var(--rayon-pilule);background:var(--blanc);border:none;color:var(--univers);font-family:var(--font-eclat);font-size:var(--t-21);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 :where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
-@media(min-width:640px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}
+@media(min-width:640px) and (min-height:600px){:where(body.p-accueil) .fab{bottom:calc(134px + var(--safe-bas))}
 
 }:where(body.p-accueil) main{position:relative;z-index:2;min-height:100vh}
 :where(body.p-accueil) .voile{z-index:12}
@@ -610,7 +609,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .barre-panier.cachee{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(12px)}
 :where(body.p-carte) .barre-panier .badge{background:var(--blanc);color:var(--univers);border-radius:var(--rayon-pilule);padding:2px var(--esp-2);font-size:var(--t-label);margin-right:var(--esp-2)}
 
-@media(min-width:640px){:where(body.p-carte) .barre-panier{bottom:calc(98px + var(--safe-bas))}
+@media(min-width:640px) and (min-height:600px){:where(body.p-carte) .barre-panier{bottom:calc(98px + var(--safe-bas))}
 
 }:where(body.p-carte) .voile{z-index:40}
 :where(body.p-carte) .panneau{position:fixed;z-index:41;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);max-height:90vh;overflow-y:auto;scrollbar-width:none;background:var(--blanc);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:var(--esp-5) var(--esp-5) var(--esp-6);box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
@@ -959,17 +958,21 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    Le lecteur ne flotte pas au-dessus de la barre : il en forme une seconde
    rangee, et la barre grandit quand il s'ouvre. Sa rangee reprend la boite de
    `.chrome-inner` pour partir du meme bord gauche que le logo. A droite, la
-   commande de lecture ferme l'ilot et tombe sur les TRAITS de l'antenne, pas
-   sur sa cible : le retrait vaut donc la largeur du hamburger, son ecart, et
-   le creux entre la cible de l'antenne et son dessin, moins le souffle laisse
-   a la commande. Changer la taille de l'antenne, du hamburger ou de leur ecart
+   commande de lecture ferme l'ilot et tombe sur la DERNIERE ONDE de l'antenne,
+   ni sur sa cible ni sur la boite de son dessin : le retrait vaut la largeur du
+   hamburger, son ecart, le creux entre la cible de l'antenne et son dessin, et
+   la part non encree du dessin, moins le filet de l'ilot. Changer la taille de l'antenne, du hamburger ou de leur ecart
    sans reprendre ce calcul desaligne l'ilot de son bouton.
 
    La commande de lecture est plus petite que le plancher de cible : son calque
    invisible la ramene a 44 px sans grossir l'ilot. Le retirer descend la cible
    sous le plancher. */
 .radio-pastille{width:var(--cible-min);height:var(--cible-min);border:none;background:none;color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
-:where(body){--antenne-dessin:24px}
+/* Le retrait est la part du dessin de l'antenne qui n'est pas encree a
+   droite, mesuree sur le trace : la commande de lecture s'aligne sur la
+   DERNIERE ONDE, pas sur la boite. Redessiner l'antenne oblige a
+   remesurer cette part. */
+:where(body){--antenne-dessin:24px;--antenne-retrait:.075}
 .radio-pastille svg{width:var(--antenne-dessin);height:var(--antenne-dessin)}
 .radio-pastille.antenne{color:var(--jaune-e2)}
 :where(body.p-roam) .radio-pastille{color:var(--univers-e1)}
@@ -980,7 +983,7 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
 
 .radio-rangee{width:var(--site-w);max-width:var(--col);margin:0 auto}
 body[data-surface="ambiante"] .radio-rangee{max-width:initial}
-.languette-radio{margin-top:var(--esp-2);margin-right:calc(var(--cible-min) + (var(--cible-min) - var(--antenne-dessin)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);padding:0 var(--esp-2) 0 var(--esp-3);background:var(--gris-ilot);border:1px solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--encre);overflow:hidden}
+.languette-radio{margin-top:var(--esp-2);margin-right:calc(var(--cible-min) + (var(--cible-min) - var(--antenne-dessin)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);padding:0 calc(var(--esp-2) + var(--antenne-dessin) * var(--antenne-retrait) - var(--limite-ep)) 0 var(--esp-3);background:var(--gris-ilot);border:1px solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--encre);overflow:hidden}
 .languette-radio.cache{display:none}
 body[data-surface="ambiante"] .languette-radio{background:rgba(var(--blanc-casse-rgb),.20);border:1px solid rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
 .lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
@@ -995,3 +998,55 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
    meme pied et avec la meme encre. */
 .pied-politique .point-pied{color:var(--encre-discrete);font-size:var(--t-sm)}
 .pied-politique .lien-langue{min-height:var(--cible-min);min-width:var(--cible-min);border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- LE NAV MESURE, LA FEUILLE COMPOSE ----------
+   Un ecran large mais COURT est un telephone couche, jamais un ordinateur :
+   les paliers de presentation exigent donc largeur ET hauteur. Sans la
+   seconde, un telephone en paysage prend la typographie des grands ecrans et
+   son chrome double de taille.
+
+   Les deux classes de promotion sont posees par la mesure du nav, jamais par
+   une rupture chiffree. `nav-haut` : le super-nav est monte dans la barre.
+   `nav-ilot-ancre` : l'ilot de radio y tient aussi, deplie a demeure, et
+   l'antenne y est descendue — la commande de lecture s'efface alors, un seul
+   bouton portant le geste. */
+
+/* Ecran couche et court : le chrome garde la taille du telephone. */
+@media(min-width:640px) and (max-height:599px){
+  :where(body){--t-chrome-titre:var(--t-16);--t-h3:var(--t-21)}
+}
+
+/* Telephone couche : les deux gestes se rangent aux coins bas, la ou les
+   pouces tombent, au lieu de se disputer le centre. */
+@media(orientation:landscape) and (max-height:599px){
+  .chrome-bas{left:var(--esp-3);right:auto;transform:none;bottom:calc(var(--esp-3) + var(--safe-bas));width:auto;min-height:0;height:auto;padding:var(--esp-1);background:var(--blanc);border:var(--limite-ep) solid var(--univers);border-radius:var(--rayon-pilule);box-shadow:0 12px 30px rgba(var(--ombre-teinte),.28)}
+  .verbe{flex:0 0 auto;padding:var(--esp-1)}
+  .ico-rond{width:44px;height:44px}
+  :where(body.p-accueil) .fab{left:auto;right:var(--esp-3);transform:none;bottom:calc(var(--esp-3) + var(--safe-bas))}
+  :where(body.p-accueil) .commande-video{bottom:calc(var(--esp-3) + var(--cible-min) + var(--esp-3) + var(--safe-bas))}
+}
+
+/* Palier 1 — le super-nav a rejoint la barre : il n'est plus une barre, il est
+   une rangee de verbes. */
+body.nav-haut .chrome-bas{position:static;left:auto;right:auto;bottom:auto;transform:none;width:auto;min-height:0;height:auto;padding:0;background:none;border:none;box-shadow:none;display:flex;align-items:center;gap:var(--esp-1)}
+body.nav-haut .verbe{flex:0 0 auto;padding:0}
+body.nav-haut .ico-rond{width:var(--cible-min);height:var(--cible-min)}
+body.nav-haut .chrome-droite{gap:var(--esp-3)}
+/* Monte dans la barre, le super-nav perd le fond blanc qui detachait ses
+   verbes : sur l'ecran ambiant ils prennent donc l'encre du reste du chrome.
+   Le verbe courant garde son disque, qui se detache seul. */
+body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
+/* Le geste focal monte d'un barreau typographique LA OU IL SE VISE A LA
+   SOURIS, et nulle part ailleurs : c'est le pointeur fin qui distingue
+   l'ordinateur de la tablette, pas une largeur — une tablette est large et se
+   touche au doigt. Sur doigt, la taille du geste reste celle du pouce. */
+@media(pointer:fine){
+  body.p-accueil.nav-haut .fab{font-size:var(--t-26);min-height:64px}
+}
+
+/* Palier 2 — l'ilot est ancre dans la barre : il ne se replie plus, et
+   l'antenne y remplace la commande de lecture. */
+body.nav-ilot-ancre .radio-rangee{display:none}
+body.nav-ilot-ancre .languette-radio{margin:0;width:max-content;padding:0 var(--esp-1) 0 var(--esp-3)}
+body.nav-ilot-ancre .lecteur-btn{display:none}
+body.nav-ilot-ancre .languette-radio .radio-pastille{flex-shrink:0}

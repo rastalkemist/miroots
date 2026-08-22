@@ -180,6 +180,94 @@
   }
 
   /* ------------------------------------------------------------------
+     LE NAV SE MESURE LUI-MEME.
+
+     Aucun seuil en pixels : une rupture chiffree ment des que le contenu
+     change — un mot d'univers plus long, une autre langue, un etat de radio
+     plus bavard. Le nav demande donc au navigateur la place qui reste, et
+     promeut en deux paliers, dans cet ordre :
+
+       palier 1 — le super-nav monte dans la barre s'il y tient avec l'ecart
+                  minimal de part et d'autre ;
+       palier 2 — l'ilot de radio se deplie a demeure s'il tient ENCORE apres,
+                  avec le meme ecart ; l'antenne descend alors dedans et la
+                  commande de lecture s'efface, puisqu'un seul bouton suffit.
+
+     UN ECRAN LARGE MAIS COURT NE PROMEUT RIEN. Un telephone couche est large
+     sans etre un ordinateur : sans cette garde, son chrome se comporte comme
+     celui d'un PC. La hauteur est donc une condition, pas un detail.
+
+     La seule valeur declaree est l'ecart minimal. Tout le reste est mesure.
+     ------------------------------------------------------------------ */
+  var ECART_NAV = 24;
+  var HAUTEUR_NAV_MIN = 600;
+
+  function ajusterNav(radio) {
+    var barre = document.querySelector('.chrome-inner');
+    var droite = document.querySelector('.chrome-droite');
+    var haut = document.querySelector('.chrome-haut');
+    var superNav = document.getElementById('superNav');
+    if (!barre || !droite || !haut) return;
+
+    var rangee = haut.querySelector('.radio-rangee');
+    var ilot = document.getElementById('languetteRadio');
+    var antenne = document.getElementById('btnRadio');
+    var lecture = document.getElementById('btnRadioLecture');
+    var corps = document.body;
+
+    /* On repart toujours de la disposition de base : mesurer une promotion
+       depuis un etat deja promu rend la mesure fausse au tour suivant. */
+    corps.classList.remove('nav-haut', 'nav-ilot-ancre');
+    if (superNav && superNav.parentNode !== haut.parentNode) {
+      haut.parentNode.insertBefore(superNav, haut.nextSibling);
+    }
+    if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
+    if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
+    if (lecture && ilot && lecture.parentNode !== ilot) ilot.appendChild(lecture);
+
+    if (window.innerHeight < HAUTEUR_NAV_MIN) { if (radio) radio.rendre(); return; }
+
+    /* La barre est une grille dont deux colonnes s'etirent : la largeur RENDUE
+       de ses enfants remplit toujours le contenant, et ne dit donc rien de la
+       place libre. C'est la largeur NATURELLE de chaque contenu qu'il faut
+       sommer. */
+    function librePresDe() {
+      var pris = 0;
+      Array.prototype.forEach.call(barre.children, function (el) {
+        pris += el.scrollWidth;
+      });
+      return barre.getBoundingClientRect().width - pris;
+    }
+
+    /* Palier 1 */
+    if (!superNav) { if (radio) radio.rendre(); return; }
+    var largeurNav = superNav.scrollWidth;
+    if (librePresDe() < largeurNav + ECART_NAV * 2) { if (radio) radio.rendre(); return; }
+    corps.classList.add('nav-haut');
+    droite.insertBefore(superNav, droite.lastElementChild);
+
+    /* Palier 2 */
+    if (ilot) {
+      /* Deplie dans sa rangee, l'ilot s'etire sur toute la largeur : sa boite
+         ne dit rien de ce qu'il lui faut. On lit donc sa largeur de contenu,
+         le temps d'une mesure. */
+      var etaitCache = ilot.classList.contains('cache');
+      ilot.classList.remove('cache');
+      ilot.style.width = 'max-content';
+      var largeurIlot = ilot.scrollWidth;
+      ilot.style.width = '';
+      if (etaitCache) ilot.classList.add('cache');
+      if (librePresDe() >= largeurIlot + ECART_NAV) {
+        corps.classList.add('nav-ilot-ancre');
+        droite.insertBefore(ilot, superNav);
+        ilot.classList.remove('cache');
+        if (antenne) ilot.insertBefore(antenne, ilot.firstChild);
+      }
+    }
+    if (radio) radio.rendre();
+  }
+
+  /* ------------------------------------------------------------------
      ROOTS RADIO. Deux choix, un geste chacun : l'appui bref allume ou eteint
      l'antenne, l'appui long ouvre ou referme le lecteur. Seul un nouvel appui
      long replie le lecteur, et il reste deplie d'un ecran a l'autre : son etat
@@ -317,7 +405,13 @@
     montrerLecteur(lecteurRetenu(), false);
     pastille.setAttribute('aria-pressed', antenneRetenue() ? 'true' : 'false');
     direAntenne();
-    return { dire: direAntenne };
+    return { dire: direAntenne, montrer: montrerLecteur, rendre: function () {
+      /* Ancre, l'ilot ne se replie plus : sa memoire ne gouverne que le petit
+         ecran. */
+      if (document.body.classList.contains('nav-ilot-ancre')) montrerLecteur(true, false);
+      else montrerLecteur(lecteurRetenu(), false);
+      direAntenne();
+    } };
   }
 
   /* Navigation partagée. opts :
@@ -529,11 +623,21 @@
 
     var radio = opts.radio ? poserRadio(getLangue) : null;
 
+    var minuteurNav = null;
+    function replacerNav() {
+      clearTimeout(minuteurNav);
+      minuteurNav = setTimeout(function () { ajusterNav(radio); }, 120);
+    }
+    window.addEventListener('resize', replacerNav);
+    window.addEventListener('orientationchange', replacerNav);
+    ajusterNav(radio);
+
     function dessinerSections() {
       /* Les libelles du chrome suivent la meme bascule que la liste : chaque
          ecran rappelle deja cette fonction au changement de langue. */
       poserLibelles(getLangue());
       if (radio) radio.dire();
+      ajusterNav(radio);
       var cont = document.getElementById('sections');
       if (!cont) return;
       var liste = getSections(getLangue()) || [];
