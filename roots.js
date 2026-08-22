@@ -203,12 +203,32 @@
      ------------------------------------------------------------------ */
   var ECART_NAV = 24;
 
+  /* LA HAUTEUR RENDUE DE LA BARRE, PUBLIEE A LA FEUILLE DE STYLE.
+     Ce qui doit s'arreter sous la barre — une feuille qui monte du bas, un
+     tiroir qui descend — ne peut pas se caler sur une hauteur ECRITE : la barre
+     grandit avec ce qu'elle porte, et une valeur declaree derive du rendu sans
+     que rien ne le signale.
+     Elle se publie a CHAQUE passage, quel que soit le sort des promotions : un
+     ecran ou rien ne monte a une barre lui aussi, et ce qui se cale dessous en
+     depend autant. La rangee du lecteur n'entre pas dans le compte — elle vit
+     SOUS la barre. */
+  function publierHauteur(barre, haut) {
+    var creux = parseFloat(getComputedStyle(haut).paddingTop) || 0;
+    document.body.style.setProperty('--entete-h-rendue',
+      Math.ceil(barre.getBoundingClientRect().height + creux * 2) + 'px');
+  }
+
   function ajusterNav(radio) {
     var barre = document.querySelector('.chrome-inner');
     var droite = document.querySelector('.chrome-droite');
     var haut = document.querySelector('.chrome-haut');
     var superNav = document.getElementById('superNav');
     if (!barre || !droite || !haut) return;
+    promouvoirNav(radio, barre, droite, haut, superNav);
+    publierHauteur(barre, haut);
+  }
+
+  function promouvoirNav(radio, barre, droite, haut, superNav) {
 
     var rangee = haut.querySelector('.radio-rangee');
     var ilot = document.getElementById('languetteRadio');
@@ -311,18 +331,6 @@
         }
       }
     }
-
-    /* LA HAUTEUR RENDUE DE LA BARRE, PUBLIEE A LA FEUILLE DE STYLE.
-       Ce qui doit s'arreter sous la barre — une feuille qui monte du bas, un
-       bandeau qui se pose — ne peut pas se caler sur une hauteur ECRITE : la
-       barre grandit avec ce qu'elle porte, et une valeur declaree derive du
-       rendu sans que rien ne le signale. Elle se mesure donc ici, ou toutes
-       les promotions viennent d'etre posees, et la feuille de style la lit.
-       La rangee du lecteur radio n'entre pas dans le compte : elle vit SOUS
-       la barre, et ce qui se cale sur la barre ne lui doit rien. */
-    var creux = parseFloat(getComputedStyle(haut).paddingTop) || 0;
-    document.body.style.setProperty('--entete-h-rendue',
-      Math.ceil(barre.getBoundingClientRect().height + creux * 2) + 'px');
 
     if (radio) radio.rendre();
   }
