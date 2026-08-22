@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-CF3FdJPMNUrPfpEFpUK0UATRAd97jL0K7WEx0MBOCCg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-RSdlrkKuJ10N8bd5xm7R8CG3+rCw/3f+khPmkLKBQmg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -70,14 +70,14 @@
     <article class="vedette" id="vedette" data-zone="cotonou">
       <div class="vedette-scene">
         <video id="filmRoam" muted playsinline preload="none"
-               poster="media/lieux/ahoefa-hero.jpg" aria-hidden="true"></video>
+               poster="media/lieux/ahoefa-fiche.jpg" aria-hidden="true"></video>
         <button type="button" class="commande-video cache" id="cmdFilmRoam"
                 data-al="alPause" aria-label="Mettre la vidéo en pause">
           <svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
       </div>
       <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
-      <p class="vedette-dit" data-t="accAhoefa">L’appartement où le Roots a commencé. Deux chambres, un salon, une véranda, un jardin à soi.</p>
-      <a class="bouton-contour" href="#feuilleResa" data-t="gesteVisiter">Visiter</a>
+      <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
+      <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
     </article>
 
     <div class="pastilles" role="group" aria-labelledby="etSejourner">
@@ -88,19 +88,19 @@
     </div>
 
     <ul class="rail-piste" id="railSejour" data-rail-nom="Les biens">
-        <li><a class="carte-bien" href="#feuilleResa" data-zone="cotonou">
+        <li><a class="carte-bien" href="#feuilleResa" data-bien="kekeli" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/kekeli-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="tete"><span class="nom">Kekeli</span><span class="ou">Sainte-Rita, Cotonou</span></span>
           <span class="dit" data-t="accKekeli">« Le jour se lève » en éwé. Le studio que la lumière traverse du matin au soir.</span>
           <span class="geste" data-t="gesteVisiter">Visiter</span>
         </a></li>
-        <li><a class="carte-bien" href="#feuilleResa" data-zone="peches">
+        <li><a class="carte-bien" href="#feuilleResa" data-bien="lion-bar" data-zone="peches">
           <span class="vignette"><img src="media/lieux/lion-bar-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="tete"><span class="nom">Lion Bar</span><span class="ou">Grand-Popo</span></span>
           <span class="dit" data-t="accLion">Poser sa tente entre les cocotiers, à quelques pas du bruit de l’océan.</span>
           <span class="geste" data-t="gesteVisiter">Visiter</span>
         </a></li>
-        <li><a class="carte-bien" href="#feuilleResa" data-zone="ailleurs">
+        <li><a class="carte-bien" href="#feuilleResa" data-bien="bel-ami" data-zone="ailleurs">
           <span class="vignette"><img src="media/lieux/bel-ami-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="tete"><span class="nom">Bel Ami sur Pilotis</span><span class="ou">Lac Ahémé</span></span>
           <span class="dit" data-t="accBelAmi">Une cabane sur l’eau. La terrasse donne sur le large, et rien d’autre.</span>
@@ -222,38 +222,74 @@
      et un libelle cache qui dirait autre chose ferait diverger ce qu'on lit de
      ce qu'on entend. -->
 <button class="fab" id="fabRecherche" aria-haspopup="dialog" aria-controls="feuilleResa"
-        data-t="chercherMots">Où&#8239;? Quand&#8239;? Qui&#8239;?</button>
+        data-t="chercherMots">Je découvre</button>
 
 <div class="voile" id="voileResa"></div>
 <div class="feuille-bas" id="feuilleResa" role="dialog" aria-modal="true" aria-labelledby="etFeuille" data-al-chrome="feuille">
   <div class="poignee"></div>
   <div class="tete"><button class="fermer" id="fermerResa" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
   <h2 class="titre-feuille" id="etFeuille" data-t="titreFeuille">Réserver un séjour</h2>
-    <section class="groupe" aria-labelledby="etLogement">
-      <span class="etiquette" id="etLogement" data-t="etLogement">Le logement</span>
-      <div class="cartes-logement" id="cartesLogement" role="radiogroup" aria-labelledby="etLogement"></div>
-      <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
-    </section>
-  <section class="bloc-sejour">
-    <span class="etiquette" data-t="etDates">Tes dates</span>
-    <div class="rangee-dates">
-      <div class="champ"><label for="arrivee" data-t="lArrivee">Arrivée</label>
-        <input type="date" id="arrivee"></div>
-      <div class="champ"><label for="depart" data-t="lDepart">Départ</label>
-        <input type="date" id="depart"></div>
-    </div>
-    <p class="ligne-nuits" id="ligneNuits" aria-live="polite"></p>
-  </section>
+  <!-- ══════════════ LA FEUILLE D'EXPLORATION ══════════════
+       Trois pas, un seul ouvert a la fois. Un pas ferme se replie sur une
+       rangee qui montre ce qu'il porte : on voit d'un coup d'oeil ce qui est
+       repondu et ce qui reste. Choisir un lieu fait passer au pas suivant —
+       l'enchainement se fait tout seul et ne se demande jamais.
+       Aucun rouage du sejour ne change : memes identifiants, memes gestes.
+       Seule la disposition est neuve. -->
+  <div class="explorer" id="explorer">
 
-  <section class="bloc-sejour" id="groupePersonnes">
-    <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
-    <div class="stepper">
-      <button type="button" id="moinsPersonnes" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
-      <span id="valeurPersonnes">1</span>
-      <button type="button" id="plusPersonnes" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
-      <span class="max" id="maxPersonnes"></span>
-    </div>
-  </section>
+    <section class="etape ouverte" data-pas="ou">
+      <button type="button" class="etape-tete" aria-expanded="true" aria-controls="corpsOu">
+        <span class="etape-quoi" data-t="eOu">Où&#8239;?</span>
+        <span class="etape-valeur" id="valOu" data-t="eOuVide">Choisir un lieu</span>
+      </button>
+      <div class="etape-corps" id="corpsOu">
+        <h3 class="etape-titre" id="etLogement" tabindex="-1" data-t="ouTitre">Où veux-tu poser tes valises&#8239;?</h3>
+        <div class="pastilles" id="zonesFeuille" role="group" aria-labelledby="etLogement">
+          <button type="button" class="cat actif" data-zone="" aria-pressed="true" data-t="zTous">Tous</button>
+          <button type="button" class="cat" data-zone="cotonou" aria-pressed="false" data-t="zCotonou">à Cotonou</button>
+          <button type="button" class="cat" data-zone="peches" aria-pressed="false" data-t="zPeches">Route des Pêches</button>
+          <button type="button" class="cat" data-zone="ailleurs" aria-pressed="false" data-t="zAilleurs">partout ailleurs</button>
+        </div>
+        <div class="cartes-logement" id="cartesLogement" role="radiogroup" aria-labelledby="etLogement"></div>
+        <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
+      </div>
+    </section>
+
+    <section class="etape" data-pas="quand">
+      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuand">
+        <span class="etape-quoi" data-t="eQuand">Quand&#8239;?</span>
+        <span class="etape-valeur" id="valQuand" data-t="eQuandVide">Ajouter des dates</span>
+      </button>
+      <div class="etape-corps" id="corpsQuand" hidden>
+        <h3 class="etape-titre" tabindex="-1" data-t="quandTitre">Quand veux-tu venir&#8239;?</h3>
+        <div class="rangee-dates">
+          <div class="champ"><label for="arrivee" data-t="lArrivee">Arrivée</label>
+            <input type="date" id="arrivee"></div>
+          <div class="champ"><label for="depart" data-t="lDepart">Départ</label>
+            <input type="date" id="depart"></div>
+        </div>
+        <p class="ligne-nuits" id="ligneNuits" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="etape" data-pas="qui" id="groupePersonnes">
+      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQui">
+        <span class="etape-quoi" data-t="eQui">Qui&#8239;?</span>
+        <span class="etape-valeur" id="valQui" data-t="eQuiVide">Ajouter des voyageurs</span>
+      </button>
+      <div class="etape-corps" id="corpsQui" hidden>
+        <h3 class="etape-titre" id="etQui" tabindex="-1" data-t="quiTitre">Tu viens à combien&#8239;?</h3>
+        <div class="stepper" role="group" aria-labelledby="etQui">
+          <button type="button" id="moinsPersonnes" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
+          <span id="valeurPersonnes">1</span>
+          <button type="button" id="plusPersonnes" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
+          <span class="max" id="maxPersonnes"></span>
+        </div>
+      </div>
+    </section>
+
+  </div>
 
   <section class="bloc-sejour">
     <div class="champ groupe"><label for="nomSejour" data-t="tonNom">Ton prénom</label>
@@ -355,7 +391,7 @@
       etSejourner: 'Séjourner',
       chapoSejour: 'Le meilleur du confort, du bien-être et de l’authenticité locale à votre portée : visitez le Bénin dès aujourd’hui.',
       ouAhoefa: 'Sainte-Rita, Cotonou',
-      accAhoefa: 'L’appartement où le Roots a commencé. Deux chambres, un salon, une véranda, un jardin à soi.',
+      accAhoefa: 'Tu passes à Cotonou bientôt ? Kër Yawa, c’est la base. TMTC ;)',
       accKekeli: '« Le jour se lève » en éwé. Le studio que la lumière traverse du matin au soir.',
       accLion: 'Poser sa tente entre les cocotiers, à quelques pas du bruit de l’océan.',
       accBelAmi: 'Une cabane sur l’eau. La terrasse donne sur le large, et rien d’autre.',
@@ -387,8 +423,19 @@
       numRoots: 'Accueil Roots',
       noteNumeros: 'Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.',
       chercher: 'Chercher un séjour',
-      chercherMots: 'Où ? Quand ? Qui ?',
+      chercherMots: 'Je découvre',
       titreFeuille: 'Réserver un séjour',
+      eOu: 'Où ?',
+      eOuVide: 'Choisir un lieu',
+      ouTitre: 'Où veux-tu poser tes valises ?',
+      quandTitre: 'Quand veux-tu venir ?',
+      quiTitre: 'Tu viens à combien ?',
+      eQuand: 'Quand ?',
+      eQuandVide: 'Ajouter des dates',
+      eQui: 'Qui ?',
+      eQuiVide: 'Ajouter des voyageurs',
+      voyageur: 'voyageur',
+      voyageurs: 'voyageurs',
     },
     en: {
       saut: 'Skip to content',
@@ -429,7 +476,7 @@
       etSejourner: 'Stay',
       chapoSejour: 'Comfort, wellbeing and local authenticity within reach: come and see Benin.',
       ouAhoefa: 'Sainte-Rita, Cotonou',
-      accAhoefa: 'The flat where Roots began. Two bedrooms, a living room, a veranda and a garden of your own.',
+      accAhoefa: 'Passing through Cotonou soon? Kër Yawa is the base. You know it ;)',
       accKekeli: '“Daybreak” in Ewe. The studio the light crosses from morning to evening.',
       accLion: 'Pitch your tent among the coconut palms, a few steps from the sound of the ocean.',
       accBelAmi: 'A cabin on the water. The deck opens onto the lake, and nothing else.',
@@ -461,8 +508,19 @@
       numRoots: 'Roots reception',
       noteNumeros: 'Taken from the ARCEP national numbering plan, January 2021. None has been dialled yet.',
       chercher: 'Search for a stay',
-      chercherMots: 'Where? When? Who?',
+      chercherMots: 'Let’s roam!',
       titreFeuille: 'Book a stay',
+      eOu: 'Where?',
+      eOuVide: 'Pick a place',
+      ouTitre: 'Where do you want to land?',
+      quandTitre: 'When are you coming?',
+      quiTitre: 'How many of you?',
+      eQuand: 'When?',
+      eQuandVide: 'Add dates',
+      eQui: 'Who?',
+      eQuiVide: 'Add travellers',
+      voyageur: 'traveller',
+      voyageurs: 'travellers',
     }
   };
 
@@ -486,6 +544,22 @@
   var itiSejour = null;
   var reservation = null;
 
+  /* La vignette d'un lieu suit le nommage du dossier des lieux : identifiant
+     du lieu, puis l'emploi. Une image absente laisse l'aplat d'univers, qui
+     tient la place sans casser la grille. */
+  function vignetteDuLieu(slug) {
+    var v = document.createElement('span');
+    v.className = 'vignette';
+    var img = document.createElement('img');
+    img.src = 'media/lieux/' + slug + '-carte.jpg';
+    img.alt = '';
+    img.width = 720; img.height = 540;
+    img.loading = 'lazy'; img.decoding = 'async';
+    img.addEventListener('error', function () { img.remove(); });
+    v.appendChild(img);
+    return v;
+  }
+
   function carteLogement(l) {
     var b = document.createElement('button');
     b.type = 'button';
@@ -493,6 +567,13 @@
     b.setAttribute('role', 'radio');
     b.setAttribute('aria-checked', 'false');
     b.dataset.slug = l.slug;
+    b.appendChild(vignetteDuLieu(l.slug));
+    /* La pastille ne parait que sur la carte retenue : c'est sa presence, et
+       non sa couleur, qui porte le choix. L'etat est aussi dans aria-checked. */
+    var marque = document.createElement('span');
+    marque.className = 'marque';
+    marque.setAttribute('aria-hidden', 'true');
+    b.appendChild(marque);
     var tete = document.createElement('span');
     tete.className = 'tete-logement';
     var nom = document.createElement('span');
@@ -537,6 +618,12 @@
     dessinerLogements();
     majPersonnes();
     majRecap();
+    /* Le passage au pas suivant est declenche ici et non par delegation : le
+       redessin retire du document la carte qui vient d'etre appuyee, et un
+       evenement dont la cible est retiree ne remonte plus a son conteneur. */
+    resumerPas();
+    var pasOu = document.querySelector('#explorer .etape[data-pas="ou"]');
+    if (pasOu) pasSuivant(pasOu);
   }
 
   function nuits() {
@@ -799,6 +886,104 @@
      position d'un univers a l'autre : ce qui ouvre l'engagement se trouve
      toujours au meme endroit.
      ------------------------------------------------------------------ */
+
+  /* ------------------------------------------------------------------
+     LES TROIS PAS DE LA FEUILLE. Un seul ouvert : ouvrir un pas ferme les
+     autres. Un pas ferme montre ce qu'il porte, faute de quoi il faudrait le
+     rouvrir pour savoir ce qu'on a repondu. Le resume se LIT sur l'ecran et ne
+     tient aucun etat a lui : deux sources pour une meme valeur finissent par
+     diverger, et c'est la seule chose qu'il fallait eviter ici.
+     ------------------------------------------------------------------ */
+  /* Le rattachement d'un bien a sa zone vit ici tant que la lecture publique
+     ne rend pas le lieu. Il part des que `zone_libelle` est servi. */
+  var ZONE_DU_BIEN = { ahoefa: 'cotonou', kekeli: 'cotonou',
+                       'lion-bar': 'peches', 'bel-ami': 'ailleurs' };
+
+  function lesPas() { return Array.prototype.slice.call(document.querySelectorAll('#explorer .etape')); }
+
+  function ouvrirPas(pas) {
+    lesPas().forEach(function (e) {
+      var vise = e === pas;
+      e.classList.toggle('ouverte', vise);
+      var tete = e.querySelector('.etape-tete'), corps = e.querySelector('.etape-corps');
+      tete.setAttribute('aria-expanded', vise ? 'true' : 'false');
+      corps.hidden = !vise;
+    });
+    /* Le titre du pas ouvert prend le foyer : la rangee qui portait le foyer
+       vient de se replier, et sans cela le foyer retomberait sur le document. */
+    var titre = pas && pas.querySelector('.etape-titre');
+    if (titre) titre.focus({ preventScroll: false });
+  }
+
+  function pasSuivant(pas) {
+    var t = lesPas(), i = t.indexOf(pas);
+    if (i > -1 && t[i + 1]) ouvrirPas(t[i + 1]);
+  }
+
+  function resumerPas() {
+    var choisi = document.querySelector('#cartesLogement .choisi .nom');
+    var mots = t() || {};
+    var a = $('arrivee'), dp = $('depart'), n = $('valeurPersonnes');
+    $('valOu').textContent = choisi ? choisi.textContent : (mots.eOuVide || 'Choisir un lieu');
+    $('valOu').classList.toggle('rempli', !!choisi);
+    var dates = '';
+    if (a && a.value && dp && dp.value) {
+      var court = function (v) {
+        var d = new Date(v + 'T00:00:00');
+        return isNaN(d) ? v : d.toLocaleDateString(document.documentElement.lang || 'fr',
+                 { day: 'numeric', month: 'short' });
+      };
+      dates = court(a.value) + ' – ' + court(dp.value);
+    }
+    $('valQuand').textContent = dates || (mots.eQuandVide || 'Ajouter des dates');
+    $('valQuand').classList.toggle('rempli', !!dates);
+    var nb = n ? parseInt(n.textContent, 10) : 0;
+    var qui = nb > 0 ? nb + ' ' + (nb > 1 ? (mots.voyageurs || 'voyageurs') : (mots.voyageur || 'voyageur')) : '';
+    $('valQui').textContent = qui || (mots.eQuiVide || 'Ajouter des voyageurs');
+    $('valQui').classList.toggle('rempli', !!qui);
+  }
+
+  function feuilleEnTroisPas() {
+    var ex = $('explorer');
+    if (!ex) return;
+    ex.addEventListener('click', function (e) {
+      var tete = e.target.closest && e.target.closest('.etape-tete');
+      if (tete) { ouvrirPas(tete.parentNode); }
+    });
+    ex.addEventListener('change', function () { setTimeout(resumerPas, 0); });
+    ['moinsPersonnes', 'plusPersonnes'].forEach(function (id) {
+      if ($(id)) $(id).addEventListener('click', function () { setTimeout(resumerPas, 0); });
+    });
+    /* Les pastilles de zone n'ecrivent rien : elles cachent des cartes deja
+       dessinees. Le choix courant survit au filtre. */
+    var zf = $('zonesFeuille');
+    if (zf) zf.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('.cat');
+      if (!b) return;
+      Array.prototype.forEach.call(zf.querySelectorAll('.cat'), function (o) {
+        var a = o === b;
+        o.classList.toggle('actif', a);
+        o.setAttribute('aria-pressed', a ? 'true' : 'false');
+      });
+      var z = b.getAttribute('data-zone');
+      Array.prototype.forEach.call($('cartesLogement').children, function (c) {
+        c.hidden = !!(z && ZONE_DU_BIEN[c.dataset.slug] !== z);
+      });
+    });
+    resumerPas();
+  }
+
+  /* Une carte de la page porte deja le choix du lieu : la feuille s'ouvre
+     dessus, et le premier pas est repondu sans qu'on le repose. */
+  function ouvrirSur(slug) {
+    var z = $('cartesLogement');
+    if (!z) return;
+    var c = z.querySelector('[data-slug="' + slug + '"]');
+    if (c) { c.click(); return; }
+    resumerPas();
+    ouvrirPas(lesPas()[0]);
+  }
+
   function feuilleDeRecherche() {
     var fab = $('fabRecherche'), f = $('feuilleResa'), v = $('voileResa'), x = $('fermerResa');
     if (!fab || !f || !v) return;
@@ -823,19 +1008,23 @@
     /* Une carte de bien ouvre la meme feuille : le lien reste un lien pour qui
        n'a pas de script, et le geste l'intercepte pour qui en a un. */
     Array.prototype.forEach.call(document.querySelectorAll('a[href="#feuilleResa"]'), function (a) {
-      a.addEventListener('click', function (e) { e.preventDefault(); ouvrir(); });
+      a.addEventListener('click', function (e) {
+        e.preventDefault(); ouvrir();
+        var slug = a.getAttribute('data-bien');
+        if (slug) ouvrirSur(slug); else resumerPas();
+      });
     });
   }
 
   /* ------------------------------------------------------------------
-     LE FILM DE LA VEDETTE. Une passe puis un fondu sur l'affiche : un element
+     LE FILM DE LA VEDETTE. Deux passes puis un fondu sur l'affiche : un element
      qui joue tient le verrou de veille de l'appareil, et l'ecran ne s'eteint
      plus tant que la lecture dure. Porter PASSES a zero rend ce defaut. Une
      lecture refusee n'est pas forcee — l'affiche tient l'ecran et la source
      est relachee, donc rien ne se telecharge.
      ------------------------------------------------------------------ */
   var FILM = 'media/lieux/ahoefa-hero.mp4';
-  var PASSES = 1;
+  var PASSES = 2;
   function filmVedette() {
     var v = $('filmRoam'), cmd = $('cmdFilmRoam');
     if (!v || !cmd) return;
@@ -908,6 +1097,7 @@
     });
   }
 
+  feuilleEnTroisPas();
   feuilleDeRecherche();
   filmVedette();
   reserveSiAbsente();
