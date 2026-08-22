@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-mivB/1sDxFWdvABe4wH0OMHjGptLCHkIZK2zSzteecI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Découvrir Plan</title>
+<meta name="theme-color" content="#1A1A1A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="plan.css">
+<script src="roots.js"></script>
+<script src="garde.js"></script>
+</head>
+<body class="p-plan" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="decouvrir-plan.html">Plan</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="corps">
+
+  <section class="entree-haut" aria-labelledby="titrePlan">
+    <h1 id="titrePlan" data-t="titre">Pose ta semaine. Coche. Avance.</h1>
+    <p class="entree-dit" id="promesse"></p>
+
+    <!-- Le fragment reprend les composants de l'ecran reel, en decor. Il est
+         retire de l'arbre d'accessibilite : ce qu'il montre est deja dit par
+         le titre et par la phrase au-dessus, et le repeter en lecture d'ecran
+         ferait entendre une liste de taches qui n'appartient a personne. -->
+    <div class="apercu" aria-hidden="true">
+      <span class="apercu-jour" data-t="apercuJour">Lundi</span>
+      <div class="apercu-ligne fait"><span class="apercu-case"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="apercu1">Finir la maquette du flyer</span></div>
+      <div class="apercu-ligne fait"><span class="apercu-case"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="apercu2">Appeler le studio</span></div>
+      <div class="apercu-ligne"><span class="apercu-case"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="apercu3">Relire le dossier</span></div>
+      <div class="apercu-jauge"><div class="part"></div></div>
+      <span class="apercu-compte" data-t="apercuCompte">5 sur 8</span>
+    </div>
+
+    <a class="entree-acte" href="plan.html" data-t="acte">Ouvrir mon Plan</a>
+    <p class="entree-sous" data-t="sousActe">Tu ouvres la fenêtre quand tu veux. Jamais l'inverse.</p>
+  </section>
+
+  <section class="entree-bloc" aria-labelledby="etJugement">
+    <span class="etiquette" id="etJugement" data-t="etJugement">Sans jugement</span>
+    <p data-t="ditJugement">Ce qui n'est pas fait ne passe pas au rouge. La semaine d'après ne traîne pas les manquements de la précédente : tu reprends ce que tu veux, tu laisses le reste.</p>
+  </section>
+
+  <section class="entree-bloc" aria-labelledby="etAllie">
+    <span class="etiquette" id="etAllie" data-t="etAllie">Un allié, si tu veux</span>
+    <p data-t="ditAllie">Montre où tu en es à quelqu'un en qui tu as confiance : ton allié voit ton avancement, pas ce que tu écris. Tu choisis qui, tu choisis quoi, et tu refermes quand tu veux.</p>
+    <p class="entree-appui" data-t="appuiAllie">Personne ne peut demander à voir. Ça s'offre, ça ne se réclame pas.</p>
+  </section>
+
+  <section class="entree-bloc entree-nu" aria-labelledby="etNu">
+    <span class="etiquette" id="etNu" data-t="etNu">Et bientôt, NU Plan</span>
+    <p data-t="ditNu">La pastille Mi | NU, là-haut : le jour où elle bascule, ton plan devient un plan qu'on porte à plusieurs. Un binôme, un club, une action collective.</p>
+  </section>
+
+  <section class="entree-bloc entree-fin">
+    <a class="entree-acte" href="plan.html" data-t="acte">Ouvrir mon Plan</a>
+    <p class="entree-sous" data-t="gratuit">Gratuit pour la communauté NU.</p>
+  </section>
+
+</div>
+
+<footer class="pied">
+  <a href="confidentialite.html" data-t="piedPolitique">Politique de confidentialité</a>
+</footer>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe actif" aria-current="true" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      titre: 'Pose ta semaine. Coche. Avance.',
+      promesseA: 'Et ', promesseB: 'personne ne voit cette liste', promesseC: ' — pas même l’équipe du Roots.',
+      apercuJour: 'Lundi', apercu1: 'Finir la maquette du flyer',
+      apercu2: 'Appeler le studio', apercu3: 'Relire le dossier',
+      apercuCompte: '5 sur 8',
+      acte: 'Ouvrir mon Plan',
+      sousActe: 'Tu ouvres la fenêtre quand tu veux. Jamais l’inverse.',
+      etJugement: 'Sans jugement',
+      ditJugement: 'Ce qui n’est pas fait ne passe pas au rouge. La semaine d’après ne traîne pas les manquements de la précédente : tu reprends ce que tu veux, tu laisses le reste.',
+      etAllie: 'Un allié, si tu veux',
+      ditAllie: 'Montre où tu en es à quelqu’un en qui tu as confiance : ton allié voit ton avancement, pas ce que tu écris. Tu choisis qui, tu choisis quoi, et tu refermes quand tu veux.',
+      appuiAllie: 'Personne ne peut demander à voir. Ça s’offre, ça ne se réclame pas.',
+      etNu: 'Et bientôt, NU Plan',
+      ditNu: 'La pastille Mi | NU, là-haut : le jour où elle bascule, ton plan devient un plan qu’on porte à plusieurs. Un binôme, un club, une action collective.',
+      gratuit: 'Gratuit pour la communauté NU.',
+      piedPolitique: 'Politique de confidentialité',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.'
+    },
+    en: {
+      saut: 'Skip to content',
+      titre: 'Set your week. Tick. Move on.',
+      promesseA: 'And ', promesseB: 'no one sees this list', promesseC: ' — not even the Roots team.',
+      apercuJour: 'Monday', apercu1: 'Finish the flyer layout',
+      apercu2: 'Call the studio', apercu3: 'Read the file again',
+      apercuCompte: '5 of 8',
+      acte: 'Open my Plan',
+      sousActe: 'You open the window when you want to. Never the other way round.',
+      etJugement: 'No judgement',
+      ditJugement: 'What you didn’t do doesn’t turn red. Next week doesn’t drag last week’s misses along: you pick up what you want, you leave the rest.',
+      etAllie: 'An ally, if you want one',
+      ditAllie: 'Show where you stand to someone you trust: your ally sees your progress, not what you write. You choose who, you choose what, and you close it whenever you like.',
+      appuiAllie: 'No one can ask to see. It is offered, never claimed.',
+      etNu: 'And soon, NU Plan',
+      ditNu: 'That Mi | NU pill up there: the day it switches, your plan becomes one you carry together. A partner, a club, a collective push.',
+      gratuit: 'Free for the NU community.',
+      piedPolitique: 'Privacy policy',
+      toastNu: 'NU, the community side of Roots, is coming soon.'
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
+  function t() { return T[langue] || T.fr; }
+
+  /* La promesse porte une moitie en gras : elle se compose en morceaux plutot
+     que par une chaine de balisage, qu'une traduction pourrait casser. */
+  function dessinerPromesse() {
+    var p = $('promesse');
+    p.textContent = '';
+    p.appendChild(document.createTextNode(t().promesseA));
+    var fort = document.createElement('strong');
+    fort.textContent = t().promesseB;
+    p.appendChild(fort);
+    p.appendChild(document.createTextNode(t().promesseC));
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
+    dessinerPromesse();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  }
+
+  var chrome = Roots.initChrome({
+    toastId: 'toast',
+    getLangue: function () { return langue; },
+    getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; },
+    /* Le verbe de l'univers mene a l'outil ; ici on est en amont de l'outil,
+       donc il remonte la page au lieu d'y conduire quelqu'un qui n'a pas encore
+       de compte. */
+    onVerbe: function (v) {
+      if (v !== 'plan') return false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return true;
+    }
+  });
+
+  $('btnLangue').addEventListener('click', function () {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    Roots.retenirLangue(langue);
+    appliquerLangue();
+  });
+
+  if (Roots.poserLibelles) Roots.poserLibelles();
+  appliquerLangue();
+})();
+</script>
+</body>
+</html>

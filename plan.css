@@ -31,8 +31,6 @@
 :where(body.p-plan){
   --univers: var(--roots-noir);
   --univers-e1: var(--roots-noir);
-  --univers-e3: var(--terre-e3);
-  --univers-e5: var(--gris-ilot);
   --univers-e1-rgb: var(--noir-rgb);
   --univers-rgb: var(--noir-rgb);
   --encre: var(--roots-noir);
@@ -244,3 +242,170 @@
   color: var(--blanc);
   cursor: pointer;
 }
+
+/* ---- La place vide d'un montant -----------------------------------------
+ * Une absence n'emprunte pas la voix d'un chiffre : elle se dit au corps et
+ * a l'encre de la prose, sans la graisse ni la chasse des chiffres, qui
+ * feraient crier une phrase de quatre mots.
+ */
+:where(body.p-plan) .montant.sans{
+  font-family: var(--font-corps);
+  font-size: var(--t-body);
+  line-height: var(--lh-16);
+  font-weight: var(--w-medium);
+}
+
+/* ==========================================================================
+   PAGE D'ENTREE — ce qu'on voit avant d'avoir un compte
+   ==========================================================================
+   Ce bloc sert decouvrir-plan.html, qui partage la feuille de l'outil plutot
+   que d'en charger une seconde : une page vue une fois ne justifie pas un
+   fichier de plus dans la coque.
+
+   Ce qu'il exige : que tout ce qui compte tienne au-dessus de 640 px de haut a
+   360 px de large. Ce qui suit se lit en defilant, et rien de ce qui suit n'est
+   necessaire pour comprendre l'offre.
+
+   Ce qu'il refuse : tout mouvement qui demarre seul. Aucune regle d'ici ne
+   porte d'animation ; l'apercu est fixe.
+*/
+
+:where(body.p-plan) .entree-haut{ margin: 0 0 var(--air-i8) }
+
+:where(body.p-plan) .entree-haut h1{
+  margin: 0 0 var(--air-i2);
+  font-family: var(--font-eclat);
+  font-weight: var(--w-xbold);
+  font-size: var(--t-h3);
+  line-height: var(--lh-28);
+  letter-spacing: -.02em;
+  color: var(--encre);
+}
+:where(body.p-plan) .entree-dit{
+  margin: 0 0 var(--air-i6);
+  font-size: var(--t-body);
+  line-height: var(--lh-16);
+  color: var(--encre);
+}
+
+/* ---- L'apercu ------------------------------------------------------------
+ * Il reprend les composants de l'ecran reel pour que ce qu'on montre soit ce
+ * qu'on livre. Il n'est pas interactif : aucune de ses parties ne repond, et
+ * il est hors de l'arbre d'accessibilite.
+ */
+:where(body.p-plan) .apercu{
+  background: var(--blanc);
+  border: var(--limite-ep) solid var(--gris-filet);
+  border-radius: var(--rayon-carte);
+  padding: var(--esp-4);
+  margin: 0 0 var(--air-i6);
+}
+:where(body.p-plan) .apercu-jour{
+  display: block;
+  margin-bottom: var(--air-i2);
+  font-size: var(--t-label);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  font-weight: var(--w-bold);
+  color: var(--encre-discrete);
+}
+:where(body.p-plan) .apercu-ligne{
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: var(--esp-2) 0;
+  font-size: var(--t-body);
+  line-height: var(--lh-16);
+  color: var(--encre);
+}
+:where(body.p-plan) .apercu-case{
+  flex: 0 0 auto;
+  width: var(--esp-6);
+  height: var(--esp-6);
+  border: 2px solid var(--univers);
+  border-radius: var(--rayon-champ);
+  background: var(--blanc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+:where(body.p-plan) .apercu-case svg{ width: var(--esp-4); height: var(--esp-4); display: none }
+:where(body.p-plan) .apercu-ligne.fait .apercu-case{ background: var(--univers) }
+:where(body.p-plan) .apercu-ligne.fait .apercu-case svg{ display: block; color: var(--blanc) }
+:where(body.p-plan) .apercu-ligne.fait{ color: var(--encre-discrete) }
+:where(body.p-plan) .apercu-jauge{
+  height: var(--esp-3);
+  background: var(--gris-aplat);
+  border-radius: var(--rayon-pilule);
+  overflow: hidden;
+  margin: var(--air-i3) 0 var(--air-i1);
+}
+:where(body.p-plan) .apercu-jauge .part{
+  height: 100%;
+  width: 62%;
+  background: var(--univers);
+  border-radius: var(--rayon-pilule);
+}
+:where(body.p-plan) .apercu-compte{
+  font-family: var(--font-chiffres);
+  font-size: var(--t-h4);
+  line-height: var(--lh-21);
+  font-weight: var(--w-bold);
+  color: var(--encre);
+}
+
+/* ---- L'acte --------------------------------------------------------------
+ * Un lien, pas un bouton : il conduit a un autre ecran. Son libelle nomme
+ * l'acte — un libelle generique attire le clic et trompe sur la destination.
+ */
+:where(body.p-plan) .entree-acte{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: var(--cible-min);
+  box-sizing: border-box;
+  padding: var(--esp-3) var(--esp-4);
+  background: var(--univers);
+  color: var(--blanc);
+  border-radius: var(--rayon-pilule);
+  font-family: var(--font-eclat);
+  font-weight: var(--w-bold);
+  font-size: var(--t-h4);
+  text-decoration: none;
+}
+:where(body.p-plan) .entree-sous{
+  margin: var(--air-i2) 0 0;
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+  color: var(--encre-discrete);
+  text-align: center;
+}
+
+/* ---- Les blocs qui suivent ---------------------------------------------- */
+:where(body.p-plan) .entree-bloc{ margin: 0 0 var(--air-i8) }
+:where(body.p-plan) .entree-bloc p{
+  margin: 0;
+  font-size: var(--t-body);
+  line-height: var(--lh-16);
+  color: var(--encre);
+}
+:where(body.p-plan) .entree-appui{
+  margin-top: var(--air-i2) !important;
+  font-size: var(--t-sm) !important;
+  line-height: var(--lh-14) !important;
+  color: var(--accent-plan) !important;
+  font-weight: var(--w-bold);
+}
+
+/* Le bloc qui annonce NU prend l'aplat de l'univers : ce qui n'existe pas
+   encore se distingue de ce qui existe, sans etre grise ni barre. */
+:where(body.p-plan) .entree-nu{
+  background: var(--univers);
+  border-radius: var(--rayon-carte);
+  padding: var(--esp-6);
+}
+:where(body.p-plan) .entree-nu > .etiquette,
+:where(body.p-plan) .entree-nu p{ color: var(--blanc-casse) }
+
+:where(body.p-plan) .entree-fin{ margin-bottom: var(--air-i6) }
