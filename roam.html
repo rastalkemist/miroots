@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-MUu0J54dqc2/pz3EzaafYojU8EYaF0SLMaI4/glokRA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-CF3FdJPMNUrPfpEFpUK0UATRAd97jL0K7WEx0MBOCCg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -53,150 +53,155 @@
   </div>
 </header>
 
+<h1 class="hors-ecran" data-t="h1">Mi Roam — séjourner et découvrir au Bénin</h1>
 <div id="contenu" class="corps">
   <!-- L'accord fond vert / encre creme est la declinaison actee de
        l'hebergement. Il porte un titre et une carte, jamais une lecture
        longue : le corps de la page revient a l'encre sur fond clair. -->
-  <!-- L'univers presente la flotte par LIEU. Un lieu ouvert mene a la
-       reservation ; un lieu a venir est une carte muette — jamais un bouton
-       qui echouerait. Les faits (adresses, surfaces) viennent des documents
-       de marque ; rien n'est promis qui n'y figure. -->
-  <!-- ══════════════ HERO ══════════════
-       La suite des trois plans d'Ahoefa se joue UNE fois puis se fond sur son
-       affiche : une lecture qui dure tient le verrou de veille de l'appareil,
-       et l'ecran ne s'eteint plus seul. L'affiche porte l'ecran partout ou la
-       lecture est refusee — economie de donnees, faible consommation,
-       mouvement reduit — et la source est alors relachee, donc rien ne se
-       telecharge. Porter le nombre de passes a zero rend le defaut. -->
-  <section class="hero-roam" aria-labelledby="titreRoam">
-    <div class="hero-scene">
-      <video id="filmRoam" muted playsinline preload="none"
-             poster="media/lieux/ahoefa-hero-affiche.jpg" aria-hidden="true"></video>
-      <button type="button" class="commande-video cache" id="cmdFilmRoam"
-              data-al="alPause" aria-label="Mettre la vidéo en pause">
-        <svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
-    </div>
-    <h1 id="titreRoam" data-t="titre">Séjourner</h1>
-    <p class="hero-dit" data-t="heroDit">Tu passes à Cotonou bientôt ? Kër Yawa, c’est la base. TMTC ;)</p>
-    <a class="bouton-contour" href="#sejourner" data-t="gesteVisiter">Visiter</a>
-  </section>
-
-  <!-- ══════════════ SEJOURNER ══════════════
-       Un seul rail, filtre par des pastilles de zone. La meme donnee sert les
-       deux formes : a quatre biens les pastilles filtrent un rail, a trente
-       elles se redeploient en rails separes sans que rien ne se recompose.
-       Le rail recoit ses commandes et son nom de `Roots.glisser`. -->
+  <!-- ══════════════ SÉJOURNER ══════════════
+       La vedette porte le film et le seul geste plein de la section. Les
+       pastilles filtrent le rail qui la suit ; choisir une zone qui exclut le
+       bien mis en avant retire la vedette, faute de quoi l'écran montrerait un
+       lieu que le filtre vient d'écarter. -->
   <section class="bloc-sejour" id="sejourner" aria-labelledby="etSejourner">
-    <h2 class="etiquette" id="etSejourner" data-t="etSejourner">Séjourner…</h2>
-    <p class="chapo-section" data-t="chapoSejour">Le meilleur du confort, du bien-être et de l’authenticité locale à votre portée : visitez le Bénin dès aujourd’hui.</p>
+    <h2 class="titre-section" id="etSejourner" data-t="etSejourner">Séjourner</h2>
+    <p class="note-section" data-t="chapoSejour">Le meilleur du confort, du bien-être et de l’authenticité locale à votre portée : visitez le Bénin dès aujourd’hui.</p>
+
+    <article class="vedette" id="vedette" data-zone="cotonou">
+      <div class="vedette-scene">
+        <video id="filmRoam" muted playsinline preload="none"
+               poster="media/lieux/ahoefa-hero.jpg" aria-hidden="true"></video>
+        <button type="button" class="commande-video cache" id="cmdFilmRoam"
+                data-al="alPause" aria-label="Mettre la vidéo en pause">
+          <svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
+      </div>
+      <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+      <p class="vedette-dit" data-t="accAhoefa">L’appartement où le Roots a commencé. Deux chambres, un salon, une véranda, un jardin à soi.</p>
+      <a class="bouton-contour" href="#feuilleResa" data-t="gesteVisiter">Visiter</a>
+    </article>
+
     <div class="pastilles" role="group" aria-labelledby="etSejourner">
       <button type="button" class="cat actif" data-zone="" aria-pressed="true" data-t="zTous">Tous</button>
       <button type="button" class="cat" data-zone="cotonou" aria-pressed="false" data-t="zCotonou">à Cotonou</button>
-      <button type="button" class="cat" data-zone="peches" aria-pressed="false" data-t="zPeches">sur la Route des Pêches</button>
+      <button type="button" class="cat" data-zone="peches" aria-pressed="false" data-t="zPeches">Route des Pêches</button>
       <button type="button" class="cat" data-zone="ailleurs" aria-pressed="false" data-t="zAilleurs">partout ailleurs</button>
     </div>
-    <ul class="rail-piste" id="railSejour">
-        <li><a class="carte-bien" href="#reserver" data-zone="cotonou">
-          <span class="vignette"><img src="media/lieux/ahoefa-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
-          <span class="tete"><span class="nom">Ahoefa</span><span class="ou">Sainte-Rita, Cotonou</span></span>
-          <span class="dit" data-t="accAhoefa">L’appartement où le Roots a commencé. Deux chambres, un salon, une véranda, un jardin à soi.</span>
-          <span class="geste" data-t="gesteVisiter">Visiter</span>
-        </a></li>
-        <li><a class="carte-bien" href="#reserver" data-zone="cotonou">
+
+    <ul class="rail-piste" id="railSejour" data-rail-nom="Les biens">
+        <li><a class="carte-bien" href="#feuilleResa" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/kekeli-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="tete"><span class="nom">Kekeli</span><span class="ou">Sainte-Rita, Cotonou</span></span>
           <span class="dit" data-t="accKekeli">« Le jour se lève » en éwé. Le studio que la lumière traverse du matin au soir.</span>
           <span class="geste" data-t="gesteVisiter">Visiter</span>
         </a></li>
-        <li><a class="carte-bien" href="#reserver" data-zone="peches">
+        <li><a class="carte-bien" href="#feuilleResa" data-zone="peches">
           <span class="vignette"><img src="media/lieux/lion-bar-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="tete"><span class="nom">Lion Bar</span><span class="ou">Grand-Popo</span></span>
           <span class="dit" data-t="accLion">Poser sa tente entre les cocotiers, à quelques pas du bruit de l’océan.</span>
           <span class="geste" data-t="gesteVisiter">Visiter</span>
         </a></li>
-        <li><a class="carte-bien" href="#reserver" data-zone="ailleurs">
+        <li><a class="carte-bien" href="#feuilleResa" data-zone="ailleurs">
           <span class="vignette"><img src="media/lieux/bel-ami-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="tete"><span class="nom">Bel Ami sur Pilotis</span><span class="ou">Lac Ahémé</span></span>
           <span class="dit" data-t="accBelAmi">Une cabane sur l’eau. La terrasse donne sur le large, et rien d’autre.</span>
           <span class="geste" data-t="gesteVisiter">Visiter</span>
         </a></li>
     </ul>
-  </section>
 
-  <section class="bloc-sejour" aria-labelledby="etBientot">
-    <h2 class="etiquette" id="etBientot" data-t="etBientot">Bientôt</h2>
+    <!-- Ce rail ne sert qu'à la présentation : il sort avant la production. -->
+    <h3 class="titre-sous" id="etBientot" data-t="etBientot">Bientôt</h3>
     <ul class="rail-piste" id="railBientot">
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Interfaces</span><span class="ou">Calavi Arconville</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
-          <span class="tete"><span class="nom">Roots Camp</span><span class="ou">Plage de Djègbadji, Ouidah</span></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
+          <span class="tete"><span class="nom">Roots Camp</span><span class="ou">Djègbadji, Ouidah</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Raven — RxR I</span><span class="ou">Roots Roamer</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Ranger — RxR II</span><span class="ou">Roots Roamer</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
     </ul>
   </section>
 
-  <!-- ══════════════ DECOUVRIR ══════════════
-       Les cartes n'empruntent ni texte ni image a leurs etablissements : la
-       reserve tient l'ecran jusqu'a ce que chaque adresse ait donne les
-       siennes. Une carte d'attente ne porte ni verbe ni chevron — elle n'est
-       pas actionnable, et cela se voit. -->
-  <section class="bloc-sejour" aria-labelledby="etDecouvrir">
-    <h2 class="etiquette" id="etDecouvrir" data-t="etDecouvrir">Découvrir</h2>
-    <p class="chapo-section" data-t="chapoDecouvrir">Vous sortez ce soir ? Ça tombe bien, au Bénin, ça bouge toujours ! Restaurants, événements artistiques et culturels, soirées et festivals : tous les bons plans ci-dessous.</p>
-    <h3 class="etiquette sous" id="etIncontournables" data-t="etIncontournables">Les in-Cotonou-rnables</h3>
-    <ul class="rail-piste" id="railCotonou">
+  <!-- ══════════════ DÉCOUVRIR ══════════════
+       Même rang que Séjourner : deux sections sœurs, chacune avec son titre,
+       sa note, ses pastilles et ses rails. Les cartes n'empruntent ni texte ni
+       image aux établissements ; la réserve tient l'écran jusqu'à ce que
+       chacun ait donné les siens. -->
+  <section class="bloc-sejour" id="decouvrir" aria-labelledby="etDecouvrir">
+    <h2 class="titre-section" id="etDecouvrir" data-t="etDecouvrir">Découvrir</h2>
+    <p class="note-section" data-t="chapoDecouvrir">Vous sortez ce soir ? Ça tombe bien, au Bénin, ça bouge toujours ! Restaurants, événements artistiques et culturels, soirées et festivals : tous les bons plans ci-dessous.</p>
+    <div class="pastilles" role="group" aria-labelledby="etDecouvrir">
+      <button type="button" class="cat actif" data-rub="" aria-pressed="true" data-t="zTous">Tous</button>
+      <button type="button" class="cat" data-rub="incontournables" aria-pressed="false" data-t="rIncont">in-Cotonou-rnables</button>
+      <button type="button" class="cat" data-rub="evenements" aria-pressed="false" data-t="rEvt">Événements</button>
+      <button type="button" class="cat" data-rub="manquer" aria-pressed="false" data-t="rManquer">À ne pas manquer</button>
+      <button type="button" class="cat" data-rub="pepites" aria-pressed="false" data-t="rPepites">Pépites</button>
+    </div>
+
+    <div class="rubrique" data-rub="incontournables">
+      <h3 class="titre-sous" id="etIncont" data-t="rIncontTitre">Les in-Cotonou-rnables</h3>
+      <ul class="rail-piste" id="railIncont">
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Jammin Bar</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Zone 5 bar</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Zone 5 Playa</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Africa Sound City</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
-          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-ankh"/></svg></span>
+          <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
           <span class="tete"><span class="nom">Yes Papa</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
-    </ul>
+      </ul>
+    </div>
+    <div class="rubrique" data-rub="evenements">
+      <h3 class="titre-sous" id="etEvt" data-t="rEvtTitre">Événements à venir</h3>
+      <p class="vide-rubrique" data-t="videEvt">Rien n’est encore inscrit. Les premiers événements du Roots et de NU arrivent.</p>
+    </div>
+    <div class="rubrique" data-rub="manquer">
+      <h3 class="titre-sous" id="etManquer" data-t="rManquerTitre">À ne pas manquer</h3>
+      <p class="vide-rubrique" data-t="videManquer">Rien n’est encore inscrit. Les programmes en cours arrivent.</p>
+    </div>
+    <div class="rubrique" data-rub="pepites">
+      <h3 class="titre-sous" id="etPepites" data-t="rPepitesTitre">Pépites du Bénin</h3>
+      <p class="vide-rubrique" data-t="videPepites">Rien n’est encore inscrit. Les bonnes adresses hors de Cotonou arrivent.</p>
+    </div>
   </section>
 
-  <!-- ══════════════ NUMEROS ══════════════
-       Grille fixe, jamais un defilement automatique : une information qui
-       bouge et demarre seule doit pouvoir etre arretee, et une bande
-       d'urgence est le pire endroit d'un produit pour faire courir quelqu'un
-       apres une cible mouvante. Aucun numero n'est publie ici avant d'avoir
-       ete compose et inscrit au registre. -->
-  <section class="bloc-sejour" aria-labelledby="etNumeros">
-    <h2 class="etiquette" id="etNumeros" data-t="etNumeros">Numéros utiles</h2>
-    <p class="chapo-section" data-t="chapoNumeros">En construction : les numéros sont en cours de vérification, un par un.</p>
-    <ul class="grille-numeros" id="grilleUrgences">
+  <!-- ══════════════ NUMÉROS ══════════════
+       Grille fixe, jamais un défilement automatique : une bande d'urgence est
+       le pire endroit d'un produit pour faire courir quelqu'un après une cible
+       qui bouge. Aucun numéro n'est publié avant d'avoir été composé. -->
+  <section class="bloc-sejour" id="numeros" aria-labelledby="etNumeros">
+    <h2 class="titre-section" id="etNumeros" data-t="etNumeros">Numéros utiles</h2>
+    <p class="note-section" data-t="chapoNumeros">En construction : les numéros sont en cours de vérification, un par un.</p>
+    <ul class="grille-numeros">
       <li><span class="num-quoi" data-t="numPolice">Police Républicaine</span><span class="num-tel">113</span><span class="num-repli">114</span></li>
       <li><span class="num-quoi" data-t="numPompiers">Sapeurs-Pompiers</span><span class="num-tel">115</span><span class="num-repli">—</span></li>
       <li><span class="num-quoi" data-t="numRoots">Accueil Roots</span><span class="num-tel">+229 01 46 75 55 75</span><span class="num-repli">—</span></li>
@@ -204,12 +209,31 @@
     <p class="note-source" data-t="noteNumeros">Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.</p>
   </section>
 
-  <section class="bloc-sejour" id="reserver" aria-labelledby="etLogement">
-    <span class="etiquette" id="etLogement" data-t="etLogement">Le logement</span>
-    <div class="cartes-logement" id="cartesLogement" role="radiogroup" aria-labelledby="etLogement"></div>
-    <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
-  </section>
+</div>
 
+<!-- ══════════════ LA BARRE DE RECHERCHE ET SA FEUILLE ══════════════
+     Même triple que l'accueil de Roots — un geste flottant, un voile, une
+     feuille qui monte du bas — et la même position à l'écran : ce qui ouvre
+     l'engagement se trouve toujours au même endroit, d'un univers à l'autre.
+     La feuille porte le formulaire de séjour sans qu'un seul de ses rouages
+     change : mêmes identifiants, même mécanique de dates, de personnes, de
+     récapitulatif et de code. -->
+<!-- Le nom accessible du geste est son texte visible : trois mots suffisent,
+     et un libelle cache qui dirait autre chose ferait diverger ce qu'on lit de
+     ce qu'on entend. -->
+<button class="fab" id="fabRecherche" aria-haspopup="dialog" aria-controls="feuilleResa"
+        data-t="chercherMots">Où&#8239;? Quand&#8239;? Qui&#8239;?</button>
+
+<div class="voile" id="voileResa"></div>
+<div class="feuille-bas" id="feuilleResa" role="dialog" aria-modal="true" aria-labelledby="etFeuille" data-al-chrome="feuille">
+  <div class="poignee"></div>
+  <div class="tete"><button class="fermer" id="fermerResa" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <h2 class="titre-feuille" id="etFeuille" data-t="titreFeuille">Réserver un séjour</h2>
+    <section class="groupe" aria-labelledby="etLogement">
+      <span class="etiquette" id="etLogement" data-t="etLogement">Le logement</span>
+      <div class="cartes-logement" id="cartesLogement" role="radiogroup" aria-labelledby="etLogement"></div>
+      <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
+    </section>
   <section class="bloc-sejour">
     <span class="etiquette" data-t="etDates">Tes dates</span>
     <div class="rangee-dates">
@@ -327,29 +351,44 @@
       vide: 'Aucun logement n’est ouvert à la réservation pour le moment. Écris-nous et on t’arrange ça.',
       politique: 'Politique de confidentialité', piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
-      heroDit: 'Tu passes à Cotonou bientôt ? Kër Yawa, c’est la base. TMTC ;)',
-      gesteVisiter: 'Visiter',
-      etSejourner: 'Séjourner…',
+      h1: 'Mi Roam — séjourner et découvrir au Bénin',
+      etSejourner: 'Séjourner',
       chapoSejour: 'Le meilleur du confort, du bien-être et de l’authenticité locale à votre portée : visitez le Bénin dès aujourd’hui.',
-      zTous: 'Tous',
-      zCotonou: 'à Cotonou',
-      zPeches: 'sur la Route des Pêches',
-      zAilleurs: 'partout ailleurs',
+      ouAhoefa: 'Sainte-Rita, Cotonou',
       accAhoefa: 'L’appartement où le Roots a commencé. Deux chambres, un salon, une véranda, un jardin à soi.',
       accKekeli: '« Le jour se lève » en éwé. Le studio que la lumière traverse du matin au soir.',
       accLion: 'Poser sa tente entre les cocotiers, à quelques pas du bruit de l’océan.',
       accBelAmi: 'Une cabane sur l’eau. La terrasse donne sur le large, et rien d’autre.',
+      gesteVisiter: 'Visiter',
+      zTous: 'Tous',
+      zCotonou: 'à Cotonou',
+      zPeches: 'Route des Pêches',
+      zAilleurs: 'partout ailleurs',
       etBientot: 'Bientôt',
+      aVenir: 'À venir',
       ficheAVenir: 'Fiche à venir',
       etDecouvrir: 'Découvrir',
       chapoDecouvrir: 'Vous sortez ce soir ? Ça tombe bien, au Bénin, ça bouge toujours ! Restaurants, événements artistiques et culturels, soirées et festivals : tous les bons plans ci-dessous.',
-      etIncontournables: 'Les in-Cotonou-rnables',
+      rIncont: 'in-Cotonou-rnables',
+      rEvt: 'Événements',
+      rManquer: 'À ne pas manquer',
+      rPepites: 'Pépites',
+      rIncontTitre: 'Les in-Cotonou-rnables',
+      rEvtTitre: 'Événements à venir',
+      rManquerTitre: 'À ne pas manquer',
+      rPepitesTitre: 'Pépites du Bénin',
+      videEvt: 'Rien n’est encore inscrit. Les premiers événements du Roots et de NU arrivent.',
+      videManquer: 'Rien n’est encore inscrit. Les programmes en cours arrivent.',
+      videPepites: 'Rien n’est encore inscrit. Les bonnes adresses hors de Cotonou arrivent.',
       etNumeros: 'Numéros utiles',
       chapoNumeros: 'En construction : les numéros sont en cours de vérification, un par un.',
       numPolice: 'Police Républicaine',
       numPompiers: 'Sapeurs-Pompiers',
       numRoots: 'Accueil Roots',
       noteNumeros: 'Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.',
+      chercher: 'Chercher un séjour',
+      chercherMots: 'Où ? Quand ? Qui ?',
+      titreFeuille: 'Réserver un séjour',
     },
     en: {
       saut: 'Skip to content',
@@ -386,29 +425,44 @@
       vide: 'No rooms are open for booking right now. Write to us and we will arrange it.',
       politique: 'Privacy policy', piedPolitique: 'Privacy policy',
       toastNu: 'NU, the community side of Roots, is coming soon.',
-      heroDit: 'Passing through Cotonou soon? Kër Yawa is the base. You know it ;)',
-      gesteVisiter: 'Visit',
-      etSejourner: 'Stay…',
+      h1: 'Mi Roam — stay and discover in Benin',
+      etSejourner: 'Stay',
       chapoSejour: 'Comfort, wellbeing and local authenticity within reach: come and see Benin.',
-      zTous: 'All',
-      zCotonou: 'in Cotonou',
-      zPeches: 'on the Route des Pêches',
-      zAilleurs: 'everywhere else',
+      ouAhoefa: 'Sainte-Rita, Cotonou',
       accAhoefa: 'The flat where Roots began. Two bedrooms, a living room, a veranda and a garden of your own.',
       accKekeli: '“Daybreak” in Ewe. The studio the light crosses from morning to evening.',
       accLion: 'Pitch your tent among the coconut palms, a few steps from the sound of the ocean.',
       accBelAmi: 'A cabin on the water. The deck opens onto the lake, and nothing else.',
+      gesteVisiter: 'Visit',
+      zTous: 'All',
+      zCotonou: 'in Cotonou',
+      zPeches: 'Route des Pêches',
+      zAilleurs: 'everywhere else',
       etBientot: 'Soon',
+      aVenir: 'Coming',
       ficheAVenir: 'Details coming',
       etDecouvrir: 'Discover',
       chapoDecouvrir: 'Going out tonight? Good news — Benin never sits still. Restaurants, arts and culture, parties and festivals: the good spots are below.',
-      etIncontournables: 'Cotonou essentials',
+      rIncont: 'Cotonou essentials',
+      rEvt: 'Events',
+      rManquer: 'Not to be missed',
+      rPepites: 'Hidden gems',
+      rIncontTitre: 'Cotonou essentials',
+      rEvtTitre: 'Upcoming events',
+      rManquerTitre: 'Not to be missed',
+      rPepitesTitre: 'Hidden gems of Benin',
+      videEvt: 'Nothing listed yet. The first Roots and NU events are on their way.',
+      videManquer: 'Nothing listed yet. Current programmes are on their way.',
+      videPepites: 'Nothing listed yet. The good spots outside Cotonou are on their way.',
       etNumeros: 'Useful numbers',
       chapoNumeros: 'Under construction: the numbers are being checked, one by one.',
       numPolice: 'Republican Police',
       numPompiers: 'Fire brigade',
       numRoots: 'Roots reception',
       noteNumeros: 'Taken from the ARCEP national numbering plan, January 2021. None has been dialled yet.',
+      chercher: 'Search for a stay',
+      chercherMots: 'Where? When? Who?',
+      titreFeuille: 'Book a stay',
     }
   };
 
@@ -739,23 +793,57 @@
 
 
   /* ------------------------------------------------------------------
-     LE FILM DU HERO.
-     Une passe unique — trois plans montes bout a bout — puis un fondu sur
-     l'affiche. Un element qui joue tient le verrou de veille de l'appareil :
-     l'ecran ne s'eteint plus tant que la lecture dure. Porter PASSES a zero
-     rend ce defaut. La lecture refusee n'est pas forcee : l'affiche tient
-     l'ecran, et la source est relachee pour que rien ne se telecharge.
+     LA FEUILLE DU BAS. Clone du triple de l'accueil — un geste flottant, un
+     voile, une feuille qui monte. Le foyer entre dans la feuille a l'ouverture
+     et revient au geste a la fermeture ; echappement ferme. Le geste garde sa
+     position d'un univers a l'autre : ce qui ouvre l'engagement se trouve
+     toujours au meme endroit.
+     ------------------------------------------------------------------ */
+  function feuilleDeRecherche() {
+    var fab = $('fabRecherche'), f = $('feuilleResa'), v = $('voileResa'), x = $('fermerResa');
+    if (!fab || !f || !v) return;
+    function ouvrir() {
+      f.classList.add('visible'); v.classList.add('visible');
+      fab.setAttribute('aria-expanded', 'true');
+      var premier = f.querySelector('input,select,button:not(.fermer),[tabindex]');
+      if (premier) premier.focus();
+    }
+    function fermer() {
+      f.classList.remove('visible'); v.classList.remove('visible');
+      fab.setAttribute('aria-expanded', 'false');
+      fab.focus();
+    }
+    fab.setAttribute('aria-expanded', 'false');
+    fab.addEventListener('click', ouvrir);
+    if (x) x.addEventListener('click', fermer);
+    v.addEventListener('click', fermer);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && f.classList.contains('visible')) fermer();
+    });
+    /* Une carte de bien ouvre la meme feuille : le lien reste un lien pour qui
+       n'a pas de script, et le geste l'intercepte pour qui en a un. */
+    Array.prototype.forEach.call(document.querySelectorAll('a[href="#feuilleResa"]'), function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); ouvrir(); });
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     LE FILM DE LA VEDETTE. Une passe puis un fondu sur l'affiche : un element
+     qui joue tient le verrou de veille de l'appareil, et l'ecran ne s'eteint
+     plus tant que la lecture dure. Porter PASSES a zero rend ce defaut. Une
+     lecture refusee n'est pas forcee — l'affiche tient l'ecran et la source
+     est relachee, donc rien ne se telecharge.
      ------------------------------------------------------------------ */
   var FILM = 'media/lieux/ahoefa-hero.mp4';
   var PASSES = 1;
-  function fondHero() {
+  function filmVedette() {
     var v = $('filmRoam'), cmd = $('cmdFilmRoam');
     if (!v || !cmd) return;
     var faites = 0;
     function marquer(joue) {
       var cle = joue ? 'alPause' : 'alLire';
       cmd.setAttribute('data-al', cle);
-      cmd.setAttribute('aria-label', t()[cle] || (joue ? 'Pause' : 'Lire'));
+      cmd.setAttribute('aria-label', (t() && t()[cle]) || (joue ? 'Pause' : 'Lire'));
       cmd.querySelector('use').setAttribute('href', joue ? '#i-pause' : '#i-lecture');
     }
     function relacher() { marquer(false); v.removeAttribute('src'); v.load(); }
@@ -768,8 +856,7 @@
     v.addEventListener('ended', function () {
       faites += 1;
       if (faites < PASSES) { v.currentTime = 0; v.play(); return; }
-      v.classList.add('fondu-affiche');
-      marquer(false);
+      v.classList.add('fondu-affiche'); marquer(false);
     });
     cmd.addEventListener('click', function () {
       if (v.paused) { faites = 0; v.classList.remove('fondu-affiche'); lancer(); marquer(true); }
@@ -777,30 +864,30 @@
     });
     document.addEventListener('visibilitychange', function () { if (document.hidden) v.pause(); });
     var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    var refuse = (c && c.saveData) ||
-      (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-    if (refuse) { cmd.classList.remove('cache'); marquer(false); return; }
+    if ((c && c.saveData) ||
+        (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+      cmd.classList.remove('cache'); marquer(false); return;
+    }
     lancer(); marquer(true);
   }
 
-  /* Une image qui manque ne laisse pas le glyphe casse du navigateur au
-     milieu d'une carte juste : la vignette bascule sur la reserve, qui est
-     la meme surface que celle des cartes en attente. */
-  function reserveSiAbsente(zone) {
-    Array.prototype.forEach.call(zone.querySelectorAll('.vignette img'), function (img) {
+  /* Une image absente ne laisse pas le glyphe casse du navigateur au milieu
+     d'une carte juste : la vignette bascule sur la reserve, qui est la surface
+     des cartes en attente. */
+  function reserveSiAbsente() {
+    Array.prototype.forEach.call(document.querySelectorAll('.vignette img'), function (img) {
       img.addEventListener('error', function () {
-        var v = img.parentNode;
-        v.classList.add('reserve');
-        v.innerHTML = '<svg class="i-reserve" aria-hidden="true"><use href="#i-ankh"/></svg>';
+        var z = img.parentNode;
+        z.classList.add('reserve');
+        z.innerHTML = '<svg class="i-reserve" aria-hidden="true"><use href="#i-roam"/></svg>';
       });
     });
   }
 
-  /* Les pastilles filtrent le rail. La meme donnee servira des rails separes
-     le jour ou les biens seront assez nombreux : rien a recomposer. */
-  function pastillesDeZone() {
-    var barre = document.querySelector('.pastilles'), piste = $('railSejour');
-    if (!barre || !piste) return;
+  /* Les pastilles filtrent. Une zone qui exclut le bien mis en avant retire la
+     vedette : montrer un lieu que le filtre vient d'ecarter serait faux. */
+  function filtrer(barre, cible, attr) {
+    if (!barre) return;
     barre.addEventListener('click', function (e) {
       var b = e.target.closest ? e.target.closest('.cat') : null;
       if (!b) return;
@@ -809,19 +896,26 @@
         o.classList.toggle('actif', a);
         o.setAttribute('aria-pressed', a ? 'true' : 'false');
       });
-      var z = b.getAttribute('data-zone');
-      Array.prototype.forEach.call(piste.children, function (li) {
-        var c = li.querySelector('[data-zone]');
-        li.hidden = !!(z && c && c.getAttribute('data-zone') !== z);
+      var val = b.getAttribute(attr);
+      Array.prototype.forEach.call(cible, function (n) {
+        /* C'est la CASE du rail qui se cache, pas la carte : masquer l'enfant
+           laisserait une case vide qui garde sa place et sa gouttiere. */
+        var boite = (n.closest && n.closest('li')) || n;
+        boite.hidden = !!(val && n.getAttribute(attr) !== val);
       });
-      piste.scrollLeft = 0;
+      var ved = $('vedette');
+      if (ved && attr === 'data-zone') ved.hidden = !!(val && ved.getAttribute('data-zone') !== val);
     });
   }
 
-  fondHero();
-  pastillesDeZone();
-  reserveSiAbsente(document);
-  ['railSejour', 'railBientot', 'railCotonou'].forEach(function (id) {
+  feuilleDeRecherche();
+  filmVedette();
+  reserveSiAbsente();
+  filtrer(document.querySelector('#sejourner .pastilles'),
+          document.querySelectorAll('#railSejour > li > [data-zone]'), 'data-zone');
+  filtrer(document.querySelector('#decouvrir .pastilles'),
+          document.querySelectorAll('#decouvrir .rubrique'), 'data-rub');
+  ['railSejour', 'railBientot', 'railIncont'].forEach(function (id) {
     if ($(id) && Roots.glisser) Roots.glisser($(id));
   });
 
