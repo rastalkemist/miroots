@@ -275,17 +275,17 @@ body[data-surface="ambiante"] .chrome-burger{color:var(--blanc-casse);filter:dro
    plage — le blanc casse rend 19:1 sur une image sombre et 1,15:1 sur une image
    claire. Le trait porte donc la couleur d'univers autour de chaque lettre, et
    c'est la PAIRE qui porte la lisibilite : sur la plage des luminosites, le
-   meilleur des deux tombe au plus bas a 2,84:1.
-   CE QUE CELA VAUT, mesure : le plancher applicable au grand texte est 3:1, et
-   ce reglage passe dessous sur la bande de luminosite ou les deux se croisent.
-   L'echelon 1 de l'univers y rendait 3,70:1. Le choix de la couleur d'univers
-   est un arbitrage porte au registre des decisions.
+   meilleur des deux tombe au plus bas a 3,70:1, au-dessus du plancher de 3:1
+   applicable au grand texte.
+   Le trait porte l'ECHELON 1, le plus sombre de la famille : c'est ce qui
+   ecarte le plus le trait de l'encre, et donc ce qui tient la paire. Une
+   couleur d'univers plus claire y rendait 2,84:1, sous le plancher.
    Toute autre couleur de trait, ou toute autre encre de lettre, exige de
    remesurer la paire — le nombre ci-dessus ne vaut que pour ce couple.
    Les huit ombres sont SANS FLOU : un trait flou ne borne plus la lettre, et
    la mesure qui suppose deux aplats devient fausse. */
-:where(body){--trait-nav:1px}
-body[data-surface="ambiante"] .chrome-titre{color:var(--blanc-casse);text-shadow:var(--trait-nav) 0 0 var(--univers),calc(var(--trait-nav) * -1) 0 0 var(--univers),0 var(--trait-nav) 0 var(--univers),0 calc(var(--trait-nav) * -1) 0 var(--univers),var(--trait-nav) var(--trait-nav) 0 var(--univers),calc(var(--trait-nav) * -1) calc(var(--trait-nav) * -1) 0 var(--univers),var(--trait-nav) calc(var(--trait-nav) * -1) 0 var(--univers),calc(var(--trait-nav) * -1) var(--trait-nav) 0 var(--univers)}
+:where(body){--trait-nav:1px;--cerne-univers:var(--trait-nav) 0 0 var(--univers-e1),calc(var(--trait-nav) * -1) 0 0 var(--univers-e1),0 var(--trait-nav) 0 var(--univers-e1),0 calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) var(--trait-nav) 0 var(--univers-e1),calc(var(--trait-nav) * -1) calc(var(--trait-nav) * -1) 0 var(--univers-e1),var(--trait-nav) calc(var(--trait-nav) * -1) 0 var(--univers-e1),calc(var(--trait-nav) * -1) var(--trait-nav) 0 var(--univers-e1)}
+body[data-surface="ambiante"] .chrome-titre{color:var(--blanc-casse);text-shadow:var(--cerne-univers)}
 
 body[data-surface="ambiante"] .chrome-bas{z-index:6;box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.18)}
 
@@ -396,7 +396,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    portent le meme poids : l'univers change, aucune mesure ne change.
    Traversent seuls, hors alias : la semantique de statut et l'anneau de
    focus, qui sont les memes dans tous les univers. */
-:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb);--univers-e3:var(--vert-e3);--univers-e5:var(--vert-e5)}
+:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb);--univers-e3:var(--vert-e3);--univers-e3-rgb:var(--vert-e3-rgb);--univers-e5:var(--vert-e5)}
 
 /* ------------------------------------------------------------------------ Univers Mi Roam ------------------------------------------------------------------------ */
 /* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
@@ -404,7 +404,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    alias — jamais une valeur neuve — parce que la palette garantit qu'a echelon
    egal les familles portent le meme poids : l'univers change, aucune mesure ne
    change. Le nav appartient a l'univers ; le super-nav du bas commute. */
-:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e5:var(--rouge-e5)}
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e5:var(--rouge-e5)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
@@ -1041,18 +1041,22 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
 .languette-radio{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
 .languette-radio.parait{opacity:0;transform:translateY(calc(var(--esp-2) * -1))}
 /* L'ilot se pose sur un film : ce qu'on lit dedans depend de ce qui passe
-   dessous. Le voile porte donc l'echelon 1 de l'univers, et son OPACITE est ce
-   qui gouverne la lisibilite — plus elle monte, moins le film remonte a travers
-   le texte, et moins le flou vit.
-   Mesure sur le film servi, floute comme ici : le blanc casse rend 2,71:1 au
-   pire a cette opacite. Le plancher applicable est 4,5:1 — les deux textes de
-   l'ilot valent 14 px en 700 et 11,67 px en 500, donc aucun n'est du grand
-   texte. Le reglage passe dessous par arbitrage porte au registre des
-   decisions ; le meme voile tiendrait le plancher a 62 %.
-   Aucun contour ne peut secourir ce texte : a 11,67 px un trait remplit la
-   lettre au lieu de la borner. Changer la teinte, l'opacite ou l'encre exige
-   de remesurer. */
-body[data-surface="ambiante"] .languette-radio{background:rgba(var(--univers-e1-rgb),.40);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
+   dessous, et une encre unique s'y perd a un bout de la plage. Ses lettres
+   portent donc LE MEME CERNE que le verbe d'univers, et c'est la paire qui
+   porte la lisibilite : 3,70:1 au pire, mesure sur le film servi, voile
+   compose et floute comme ici.
+   Le plancher applicable est 4,5:1 — les deux textes de l'ilot valent 14 px en
+   700 et 11,67 px en 500, donc aucun n'est du grand texte. Le reglage passe
+   dessous par arbitrage porte au registre des decisions.
+   LE VOILE NE PORTE PLUS LA LISIBILITE, seulement le style : la paire vaut
+   3,70 quelle que soit sa teinte et son opacite, puisque le cerne s'appuie sur
+   la lettre et non sur le fond. Le baisser ou l'eclaircir ne coute donc rien a
+   la mesure ; retirer le cerne la ferait tomber a 1,54:1.
+   Changer l'encre des lettres ou la couleur du cerne exige de remesurer. */
+body[data-surface="ambiante"] .languette-radio{background:rgba(var(--univers-e3-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
+body[data-surface="ambiante"] .lecteur-titre,
+body[data-surface="ambiante"] .point-pied,
+body[data-surface="ambiante"] .lecteur-etat{text-shadow:var(--cerne-univers)}
 .lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 .lecteur-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
 .lecteur-btn svg{width:14px;height:14px}
