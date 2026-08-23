@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-32Luql03Bo0yroMV7AMtqImOffIIAUYQS+G4hJPwyKA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-iQX1njXkhjJ7sCT3wDcZ88H6wVpm3RL+EliN03JWBas='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -360,18 +360,13 @@
   <!-- Une sortie n'a ni plage de dates ni compte de voyageurs : la date
        appartient au lieu, et qui vient se dit par le partage. Le pas unique
        n'a donc rien a replier — il est POSE, pas deplie. -->
-  <div class="explorer explorer-nu" id="explorerDec">
-    <section class="etape ouverte" data-pas="quoi">
-      <h3 class="etape-ouvert" id="etQuoi" data-t="quoiTitre">On va où ce soir&#8239;?</h3>
-      <div class="etape-corps" id="corpsQuoi">
-        <div class="champ champ-suggest">
-          <input type="text" id="qLieuDec" autocomplete="off" spellcheck="false"
-                 aria-describedby="etQuoi"
-                 data-p="pLieuDec" placeholder="Chercher un lieu, un événement">
-        </div>
-        <ul class="rail-piste piste-choix" id="suggDec" aria-labelledby="etQuoi"></ul>
-      </div>
-    </section>
+  <div class="explorer-nu" id="explorerDec">
+    <div class="champ groupe champ-quoi">
+      <label for="qLieuDec" id="etQuoi" data-t="quoiTitre">On va où ce soir&#8239;?</label>
+      <input type="text" id="qLieuDec" autocomplete="off" spellcheck="false"
+             data-p="pLieuDec" placeholder="Chercher un lieu, un événement">
+      <ul class="rail-piste piste-choix" id="suggDec" aria-labelledby="etQuoi"></ul>
+    </div>
   </div>
   <p class="message-ferme" id="videDec" role="status" data-t="videDecouvrir">Aucun lieu ne porte encore de fiche. Choisir en ouvre la présentation dès qu'elles arrivent.</p>
 
@@ -1710,12 +1705,17 @@
     var f = $('fabRecherche');
     if (!f) return;
     function poser() {
-      document.body.style.setProperty(
-        '--geste-h', Math.round(f.getBoundingClientRect().height) + 'px');
+      /* Ce qui est publie n'est pas la hauteur du geste mais la distance qui
+         separe le BAS DE LA FENETRE du HAUT du geste : elle contient sa
+         hauteur, son decalage — un pourcentage ici, une barre la — et l'aire
+         sure. Une seule mesure couvre donc les deux mises en page. */
+      document.body.style.setProperty('--geste-bas',
+        Math.max(0, Math.round(window.innerHeight - f.getBoundingClientRect().top)) + 'px');
     }
     poser();
     if (window.ResizeObserver) new ResizeObserver(poser).observe(f);
-    else window.addEventListener('resize', poser);
+    window.addEventListener('resize', poser);
+    window.addEventListener('scroll', poser, { passive: true });
   }
 
   function scenesDeVedette() {

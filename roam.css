@@ -27,11 +27,8 @@
    à deux colonnes — le libellé est dans un bouton, le sélecteur ne peut donc
    pas y entrer, mais rien n'empêche les deux de partager la ligne. */
 :where(body.p-roam) .etape.ouverte[data-pas="qui"],
-:where(body.p-roam) .etape.ouverte[data-pas="quiDec"]{display:grid;grid-template-columns:1fr auto;align-items:center}
 :where(body.p-roam) .etape.ouverte[data-pas="qui"] .etape-tete,
-:where(body.p-roam) .etape.ouverte[data-pas="quiDec"] .etape-tete{padding-bottom:var(--esp-2)}
 :where(body.p-roam) .etape.ouverte[data-pas="qui"] .etape-corps,
-:where(body.p-roam) .etape.ouverte[data-pas="quiDec"] .etape-corps{padding:0 var(--esp-4) 0 0}
 
 /* ---- LE LIEN TERTIAIRE. Une seule peau, deux libellés : « Visiter » sur une
    carte de la page, « Plus d'infos » dans le tiroir. Échelon 2 de l'univers et
@@ -135,8 +132,8 @@
   /* Le plein bord est une figure de TÉLÉPHONE : l'écran y est la page. Dès que
      la page a des marges, la scène les prend comme tout le reste — une pièce
      qui déborde seule ne dit plus qu'elle appartient à la même page. */
-  :where(body.p-roam) .vedette{display:grid;grid-template-columns:50% 1fr;grid-template-rows:auto 1fr;align-items:start;margin:0 0 var(--air-i8);width:auto}
-  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 2;margin:0;width:100%;height:auto;aspect-ratio:4/3;align-self:start}
+  :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto;align-items:start;margin:0 0 var(--air-i8);width:auto}
+  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1;margin:0;width:100%;height:auto;aspect-ratio:4/3;align-self:start}
   /* Le geste passe en tete de colonne : l'ordre du document garde le nom
      d'abord, ce dont le petit ecran a besoin pour les mettre sur une ligne.
      Il descend d'un quart de la hauteur du film. Un remplissage en pourcentage
@@ -154,8 +151,11 @@
      son geste tombent ensemble plus bas, séparés par un cran d'air : ils se
      répondent, ils ne se dispersent pas. Deux ancrages tiennent le poids du
      propos contre celui de la scène là où trois le diluaient. */
-  :where(body.p-roam) .vedette{align-items:stretch}
-  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1 / span 2;display:block;position:relative;height:100%;padding:0 5vw;margin:0}
+  /* La colonne du propos prend EXACTEMENT le rapport de la scène, donc sa
+     hauteur : les deux colonnes font la même largeur. Les pourcentages se
+     comptent alors sur la hauteur de la vidéo, et les blocs suivent d'eux-mêmes
+     quand elle change de taille — aucune valeur à recalculer. */
+  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1;display:block;position:relative;width:100%;height:auto;aspect-ratio:4/3;padding:0 5vw;margin:0}
   :where(body.p-roam) .vedette-dire .vedette-nom{position:absolute;top:25%;left:5vw;right:5vw;margin:0;text-align:left}
   :where(body.p-roam) .vedette-bas{position:absolute;top:70%;left:5vw;right:5vw;display:block}
   :where(body.p-roam) .vedette-bas .vedette-dit{margin:0;padding:0;max-width:none;text-align:left}
@@ -203,9 +203,9 @@
 :where(body.p-roam) .rail-cmd,
 :where(body.p-roam) .scene-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:var(--limite-ep) solid var(--univers);background:rgba(var(--blanc-rgb),.2);color:var(--univers);box-shadow:none}
 :where(body.p-roam) .rail-cmd.prec,
-:where(body.p-roam) .scene-cmd.prec{left:var(--esp-8);right:auto}
+:where(body.p-roam) .scene-cmd.prec{left:var(--esp-2);right:auto}
 :where(body.p-roam) .rail-cmd.suiv,
-:where(body.p-roam) .scene-cmd.suiv{right:var(--esp-8);left:auto}
+:where(body.p-roam) .scene-cmd.suiv{right:var(--esp-2);left:auto}
 :where(body.p-roam) .rail-cmd svg.i,
 :where(body.p-roam) .scene-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
 :where(body.p-roam) .rail-cmd.prec svg.i,
@@ -244,3 +244,12 @@
 :where(body.p-roam) .ilot-choix .vignette,
 :where(body.p-roam) .choix-carte .vignette{background:var(--gris-ilot)}
 :where(body.p-roam) .carte-bien .vignette.reserve{color:var(--encre-discrete)}
+
+/* ---- LE PIED PREND SA PLACE SOUS LE GESTE FLOTTANT. La page réservait une
+   hauteur écrite en dur. Elle réserve désormais la distance qui sépare le bas
+   de la fenêtre du haut du geste — mesurée, donc juste dans les deux mises en
+   page, la barre du bas comme la barre du haut — plus le souffle que le geste
+   se donne au-dessous. Le sélecteur porte sa classe sans `:where` : la
+   déclaration qu'il remplace vise `body` seul, et une règle de poids nul ne la
+   reprend pas. */
+body.p-roam{--geste-bas:calc(var(--barre-h) + var(--souffle-filet) + var(--cible-min));padding-bottom:calc(var(--geste-bas) + var(--souffle-filet))}
