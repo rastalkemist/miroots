@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-VUWQLYjCY+U8f9RPlOB90fVouiqTjwPJ1GPSDVFhIzU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-+LWZ1VRLJu2Qx5FisCcyInyynAaKye3KJzrXt4BV7IM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -75,6 +75,13 @@
     </div>
 
     <ul class="rail-piste" id="railSejour" data-rail-nom="Les biens">
+        <li><a class="carte-bien" href="#feuilleResa" data-bien="ahoefa" data-zone="cotonou">
+          <span class="vignette"><img src="media/lieux/ahoefa-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
+          <span class="carte-tete">
+            <span class="nom-ligne"><span class="nom">Ahoefa</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
+            <span class="ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span>
+          </span>
+        </a></li>
         <li><a class="carte-bien" href="#feuilleResa" data-bien="kekeli" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/kekeli-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
@@ -98,18 +105,35 @@
         </a></li>
     </ul>
 
+    <!-- La scene de vedette porte une VUE PAR BIEN de la collection. Ce qui
+         change d'une vue a l'autre est le cartouche — nom, lieu, geste — et
+         rien d'autre : la description tient sur la collection, pas sur un
+         bien. Les vues sont declarees ici et non tirees de la base : aucun
+         champ n'y marque encore l'appartenance a la collection. Chacune porte
+         son cartouche en donnee ; le script ne fabrique aucun libelle. -->
+    <h2 class="titre-sous" id="etKerYawa">Kër Yawa</h2>
     <article class="vedette" id="vedette" data-zone="cotonou">
       <div class="vedette-scene">
-        <video id="filmRoam" muted playsinline preload="none"
-               poster="media/lieux/ahoefa-debut.jpg"
-               tabindex="0" role="button" data-al="alPause"
-               aria-label="Mettre la vidéo en pause"></video>
+        <ul class="vedette-piste" id="pisteVedette" aria-labelledby="etKerYawa">
+          <li class="vedette-vue" data-bien="ahoefa" data-nom="Ahoefa" data-ou="ouAhoefa">
+            <video id="filmRoam" muted playsinline preload="none"
+                   poster="media/lieux/ahoefa-debut.jpg"
+                   tabindex="0" role="button" data-al="alPause"
+                   aria-label="Mettre la vidéo en pause"></video>
+          </li>
+          <li class="vedette-vue" data-bien="kekeli" data-nom="Kekeli" data-ou="ouKekeli">
+            <img src="media/lieux/kekeli-fiche.jpg" alt="" width="1440" height="1080"
+                 loading="lazy" decoding="async">
+          </li>
+        </ul>
       </div>
-      <div class="vedette-tete">
-        <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
-        <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
+      <div class="vedette-dire">
+        <div class="vedette-tete">
+          <h3 class="vedette-nom" id="vedetteNom">Ahoefa<span class="vedette-ou" id="vedetteOu" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+          <a class="bouton-contour" id="vedetteGeste" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
+        </div>
+        <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
       </div>
-      <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
     </article>
 
     <!-- Ce rail ne sert qu'à la présentation : il sort avant la production. -->
@@ -415,7 +439,8 @@
     <p class="ligne-partager"><button type="button" class="lien-tertiaire" id="partagerDec" data-t="partager">Partager avec un proche</button></p>
     <p class="etat-partage" id="etatPartage" role="status"></p>
     <button class="bouton-confirmer" id="btnAgenda" disabled aria-describedby="noteAgenda" data-t="ajouterAgenda">Ajouter à mon agenda</button>
-    <p class="note-agenda" id="noteAgenda" data-t="agendaSansLieu">Choisis un lieu pour poser la sortie.</p>
+    <p class="note-agenda" id="noteAgenda" data-t="agendaSansDate" hidden>Cette sortie n’a pas encore de date.</p>
+    <p class="consent-lien"><a href="confidentialite.html" data-t="politique">Politique de confidentialité</a></p>
   </section>
   </div>
 
@@ -487,7 +512,6 @@
       partageRate: 'Le message n’a pas pu être copié.',
       ajouterAgenda: 'Ajouter à mon agenda',
       agendaSansDate: 'Cette sortie n’a pas encore de date.',
-      agendaSansLieu: 'Choisis un lieu pour poser la sortie.',
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
       rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
@@ -508,7 +532,8 @@
       h1: 'Mi Roam — séjourner et découvrir au Bénin',
       etSejourner: 'Séjourner',
       chapoSejour: 'Le meilleur du confort, du bien-être et de l’authenticité locale à votre portée : visitez le Bénin dès aujourd’hui.',
-      ouAhoefa: 'Sainte-Rita, Cotonou',
+      ouAhoefa: 'Sainte-Rita, Cotonou', ouKekeli: 'Sainte-Rita, Cotonou',
+      vuePrec: 'Vue précédente', vueSuiv: 'Vue suivante',
       accAhoefa: 'Tu passes à Cotonou bientôt ? Kër Yawa, c’est la base. TMTC ;)',
       accKekeli: '« Le jour se lève » en éwé. Le studio que la lumière traverse du matin au soir.',
       accLion: 'Poser sa tente entre les cocotiers, à quelques pas du bruit de l’océan.',
@@ -595,7 +620,6 @@
       partageRate: 'The message could not be copied.',
       ajouterAgenda: 'Add to my calendar',
       agendaSansDate: 'This outing has no date yet.',
-      agendaSansLieu: 'Pick a place to set the outing.',
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
       rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
@@ -616,7 +640,8 @@
       h1: 'Mi Roam — stay and discover in Benin',
       etSejourner: 'Stay',
       chapoSejour: 'Comfort, wellbeing and local authenticity within reach: come and see Benin.',
-      ouAhoefa: 'Sainte-Rita, Cotonou',
+      ouAhoefa: 'Sainte-Rita, Cotonou', ouKekeli: 'Sainte-Rita, Cotonou',
+      vuePrec: 'Previous view', vueSuiv: 'Next view',
       accAhoefa: 'Passing through Cotonou soon? Kër Yawa is the base. You know it ;)',
       accKekeli: '“Daybreak” in Ewe. The studio the light crosses from morning to evening.',
       accLion: 'Pitch your tent among the coconut palms, a few steps from the sound of the ocean.',
@@ -1112,6 +1137,12 @@
       var v = t()[el.getAttribute('data-p')];
       if (typeof v === 'string') el.placeholder = v;
     });
+    /* Un libelle qui ne se lit qu'a l'oreille se traduit comme les autres :
+       `data-al` pointe la table de l'ecran, et rien ne le reposait. */
+    document.querySelectorAll('[data-al]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-al')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
+    });
     if (sejour.notice) $('texteConsentSejour').textContent = Roots.db.texteNotice(sejour.notice, langue);
     dessinerLogements();
     majRecap();
@@ -1589,12 +1620,10 @@
     var date = dateDeLaSortie(lieuDec);
     b.disabled = !date;
     if (!note) return;
-    var cle = !lieuDec ? 'agendaSansLieu' : (date ? '' : 'agendaSansDate');
-    note.hidden = !cle;
-    if (cle) {
-      note.setAttribute('data-t', cle);
-      note.textContent = mots[cle] || '';
-    }
+    /* La ligne ne parait que si elle a quelque chose a dire : un lieu retenu
+       et pas encore de date. Sans lieu, le geste ferme se lit seul. */
+    note.hidden = !(lieuDec && !date);
+    if (!note.hidden) note.textContent = mots.agendaSansDate || '';
   }
 
   function explorateurDecouvrir() {
@@ -1757,6 +1786,168 @@
      ------------------------------------------------------------------ */
   var FILM = 'media/lieux/ahoefa-hero.mp4';
   var PASSES = 2;
+  /* LA SCENE DE VEDETTE, VUE PAR VUE. Une piste qui se cale sur ses vues, et
+     deux commandes posees de part et d'autre. Ce qui suit la vue est le
+     cartouche : nom, lieu, geste. Chaque vue porte les siens en donnee — le
+     script ne compose aucun libelle, il recopie. Le lieu passe par la table
+     de langue, comme le reste.
+     Une vue qui sort du champ arrete son film : un media qui joue hors du
+     regard tient le verrou de veille pour rien. */
+  /* OU SE TIENNENT LES COMMANDES D'UNE RANGEE. Aucun seuil en pixels : on
+     demande la place. Si le titre, un souffle et le groupe de commandes
+     entrent sur une meme ligne, les commandes s'y rangent, alignees a droite —
+     le regard revient sur elles apres avoir parcouru la rangee. Sinon elles se
+     posent SUR les images, en retrait des bords, ou elles prennent la peau des
+     gestes poses sur un media : cercle cerclé de creme sur un fond d'univers
+     assombri, lisible par-dessus n'importe quelle photographie.
+     La mesure se refait a chaque redimensionnement : une regle chiffree
+     mentirait des que le titre change de longueur ou de langue. */
+  /* LE BAS DE PAGE RESPIRE AUTANT DE PART ET D'AUTRE DU GESTE FLOTTANT. Le
+     souffle SOUS lui est celui que sa position declare — l'ecart entre le
+     geste et le filet de la barre. La page se donne le meme AU-DESSUS, ce qui
+     demande la hauteur reellement rendue du geste : elle change avec le
+     libelle, la langue et le corps de texte, donc elle se mesure au lieu de
+     s'ecrire. */
+  function publierHauteurDuGeste() {
+    var f = $('fabRecherche');
+    if (!f) return;
+    function poser() {
+      /* La valeur se pose sur le corps et non sur la racine : la feuille de
+         style y declare un repli, et une declaration en ligne sur le meme
+         element l'emporte sans avoir a peser sur la specificite. */
+      document.body.style.setProperty(
+        '--geste-h', Math.round(f.getBoundingClientRect().height) + 'px');
+    }
+    poser();
+    if (window.ResizeObserver) new ResizeObserver(poser).observe(f);
+    else window.addEventListener('resize', poser);
+  }
+
+  function titreDeLaRangee(rail) {
+    var t = rail.previousElementSibling;
+    /* La ligne de tete deja posee porte le titre : sans ce premier examen, la
+       seconde mesure remonterait au titre de la section au-dessus. */
+    if (t && t.classList.contains('rail-tete')) return t.querySelector('h1,h2,h3,h4,h5,h6');
+    /* Le titre doit PRECEDER IMMEDIATEMENT la rangee : un titre dont un autre
+       element le separe n'est pas la ligne de cette rangee, et l'y accrocher
+       poserait les commandes au-dessus d'un contenu qui n'est pas le sien. */
+    return t && /^H[1-6]$/.test(t.tagName) ? t : null;
+  }
+
+  function largeurDuTexte(el) {
+    var r = document.createRange();
+    r.selectNodeContents(el);
+    return r.getBoundingClientRect().width;
+  }
+
+  function placerUneRangee(rail) {
+    var titre = titreDeLaRangee(rail);
+    var cmds = Array.prototype.slice.call(rail.querySelectorAll('.rail-cmd'));
+    if (!titre || cmds.length < 2) return;
+    var groupe = rail.querySelector('.rail-tete');
+    if (!groupe) {
+      groupe = document.createElement('div');
+      groupe.className = 'rail-tete';
+      titre.parentNode.insertBefore(groupe, titre);
+      groupe.appendChild(titre);
+    }
+    /* Le souffle exige entre le titre et les commandes est celui que la
+       feuille de style declare sur le groupe : il n'est pas rappele ici. */
+    var vu = getComputedStyle(groupe);
+    var souffle = parseFloat(vu.columnGap) || 0;
+    var ecart = parseFloat(vu.rowGap) || 0;
+    var large = groupe.clientWidth || rail.clientWidth;
+    var groupeCmd = cmds[0].offsetWidth * 2 + ecart;
+    var tient = largeurDuTexte(titre) + souffle + groupeCmd <= large;
+    rail.dataset.cmd = tient ? 'ligne' : 'image';
+    cmds.forEach(function (b) {
+      var ou = tient ? groupe : rail;
+      if (b.parentNode !== ou) ou.appendChild(b);
+    });
+  }
+
+  function placerLesCommandes() {
+    Array.prototype.forEach.call(document.querySelectorAll('.rail'), placerUneRangee);
+  }
+
+  window.addEventListener('resize', placerLesCommandes);
+
+  function scenesDeVedette() {
+    var piste = $('pisteVedette');
+    if (!piste) return;
+    var vues = Array.prototype.slice.call(piste.querySelectorAll('.vedette-vue'));
+    if (vues.length < 2) return;
+    var nom = $('vedetteNom'), ou = $('vedetteOu'), geste = $('vedetteGeste');
+    var cmds = commandesDeScene(piste);
+    var courante = 0;
+
+    function porter(i) {
+      var vue = vues[i];
+      if (!vue || !nom || !ou || !geste) return;
+      courante = i;
+      nom.firstChild.nodeValue = vue.dataset.nom;
+      ou.setAttribute('data-t', vue.dataset.ou);
+      ou.textContent = (t() || {})[vue.dataset.ou] || '';
+      geste.setAttribute('data-bien', vue.dataset.bien);
+      vues.forEach(function (x, k) {
+        var f = x.querySelector('video');
+        if (f && k !== i && !f.paused) f.pause();
+      });
+      if (cmds) {
+        cmds.prec.setAttribute('aria-disabled', i <= 0 ? 'true' : 'false');
+        cmds.suiv.setAttribute('aria-disabled', i >= vues.length - 1 ? 'true' : 'false');
+      }
+    }
+
+    function vueVisible() {
+      var g = piste.scrollLeft, l = piste.clientWidth || 1;
+      return Math.max(0, Math.min(vues.length - 1, Math.round(g / l)));
+    }
+
+    function aller(pas) {
+      var i = Math.max(0, Math.min(vues.length - 1, courante + pas));
+      piste.scrollTo({ left: i * piste.clientWidth, behavior: mouvementDoux() });
+      porter(i);
+    }
+
+    if (cmds) {
+      cmds.prec.addEventListener('click', function () { aller(-1); });
+      cmds.suiv.addEventListener('click', function () { aller(1); });
+    }
+    piste.addEventListener('scroll', function () {
+      var i = vueVisible();
+      if (i !== courante) porter(i);
+    }, { passive: true });
+    porter(0);
+  }
+
+  function mouvementDoux() {
+    return (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      ? 'auto' : 'smooth';
+  }
+
+  /* Les deux commandes de la scene prennent la peau des commandes posees SUR
+     un media, celle que porte deja la commande de lecture : cercle cerclé de
+     creme sur un fond d'univers assombri, lisible par-dessus n'importe quelle
+     image. */
+  function commandesDeScene(piste) {
+    var scene = piste.parentNode;
+    if (!scene) return null;
+    var mots = t() || {};
+    var faites = {};
+    ['prec', 'suiv'].forEach(function (sens) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'scene-cmd ' + sens;
+      b.setAttribute('aria-label', mots[sens === 'prec' ? 'vuePrec' : 'vueSuiv'] || '');
+      b.setAttribute('data-al', sens === 'prec' ? 'vuePrec' : 'vueSuiv');
+      b.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-chevron"/></svg>';
+      scene.appendChild(b);
+      faites[sens] = b;
+    });
+    return faites;
+  }
+
   function filmVedette() {
     var v = $('filmRoam');
     if (!v) return;
@@ -1841,6 +2032,7 @@
   explorateurDecouvrir();
   feuilleDeRecherche();
   filmVedette();
+  scenesDeVedette();
   reserveSiAbsente();
   filtrer(document.querySelector('#sejourner .pastilles'),
           document.querySelectorAll('#railSejour > li > [data-zone]'), 'data-zone');
@@ -1849,6 +2041,8 @@
   ['railSejour', 'railBientot', 'railIncont', 'suggDec'].forEach(function (id) {
     if ($(id) && Roots.glisser) Roots.glisser($(id));
   });
+  placerLesCommandes();
+  publierHauteurDuGeste();
 
   Roots.poserLibelles && Roots.poserLibelles();
 
