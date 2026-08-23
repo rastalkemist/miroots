@@ -106,7 +106,11 @@
    tronc la pose sur `.bloc-sejour` et `.rubrique`. Rien n'est repris ici — un
    bloc dans un bloc ne se remet pas de gouttière. */
 :where(body.p-roam) .titre-section{margin:0 0 var(--air-i2)}
-:where(body.p-roam) .note-section{margin:0 0 var(--air-i3);line-height:var(--lh-14)}
+/* La note reprend son papier : en amont, une liste de sélecteurs laissée
+   ouverte par une virgule finale l'agrège à la règle du geste flottant, dont
+   elle reçoit l'aplat d'univers et l'encre blanche. Requis tant que la liste
+   reste ouverte. */
+:where(body.p-roam) .note-section{margin:0 0 var(--air-i3);line-height:var(--lh-14);background:none;color:var(--encre-discrete)}
 :where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:0;margin:0;font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold)}
 :where(body.p-roam) .vedette-ou{font-size:var(--t-note);line-height:var(--lh-12);font-weight:var(--w-regular);color:var(--encre-discrete)}
 
@@ -128,8 +132,11 @@
    Le film reste du même côté d'une vedette à l'autre : une suite de blocs dont
    l'image alterne se balaie moins bien qu'une suite alignée. */
 @media(min-width:820px){
-  :where(body.p-roam) .vedette{display:grid;grid-template-columns:50% 1fr;grid-template-rows:auto 1fr;align-items:start;margin:0 calc(50% - 50vw) var(--air-i8);width:auto}
-  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 2;margin:0;height:auto;aspect-ratio:4/3}
+  /* Le plein bord est une figure de TÉLÉPHONE : l'écran y est la page. Dès que
+     la page a des marges, la scène les prend comme tout le reste — une pièce
+     qui déborde seule ne dit plus qu'elle appartient à la même page. */
+  :where(body.p-roam) .vedette{display:grid;grid-template-columns:50% 1fr;grid-template-rows:auto 1fr;align-items:start;margin:0 0 var(--air-i8);width:auto}
+  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 2;margin:0;width:100%;height:auto;aspect-ratio:4/3;align-self:start}
   /* Le geste passe en tete de colonne : l'ordre du document garde le nom
      d'abord, ce dont le petit ecran a besoin pour les mettre sur une ligne.
      Il descend d'un quart de la hauteur du film. Un remplissage en pourcentage
@@ -184,99 +191,48 @@
 :where(body.p-roam) .carte-choix .carte-plus{align-self:flex-start;padding:0 var(--esp-3) var(--esp-3);font-size:var(--t-sm);line-height:var(--lh-14)}
 :where(body.p-roam) .piste-choix .ilot-vide{flex:1 1 auto;padding:var(--esp-3);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
 
-/* ---- LES COMMANDES DU RAIL SORTENT DES CARTES. Posées sur les bords des
-   cartes elles couvrent ce qu'on regarde, et le doigt qui les vise masque la
-   piste. Groupées, elles laissent aller et venir sans redéplacer le pointeur.
-   Elles montent donc au-dessus de la piste, côte à côte, alignées à droite —
-   là où le regard revient après avoir parcouru la rangée.
-   ⚠ LE DISQUE MAIGRIT, LA CIBLE NE MAIGRIT PAS. Un disque à pleine cible
-   sépare le titre de sa rangée. Ce qui rétrécit est donc le DESSIN ; la zone
-   d'appui reste entière, portée par un rectangle transparent centré sur le
-   disque. Réduire la cible elle-même passerait sous le minimum de la
-   grammaire et sous celui de la norme. */
+/* ---- LES COMMANDES D'UN CARROUSEL, ET IL N'Y EN A QU'UNE SORTE. Elles se
+   posent DE PART ET D'AUTRE, par-dessus les images et EN RETRAIT de leurs
+   bords : à cheval sur une arête, un disque se lit comme une pièce détachée.
+   La pastille est un voile clair cerclé d'univers — l'aplat n'est là que pour
+   asseoir le chevron, le cerne porte la lisibilité. Aucun aplat d'univers :
+   une commande n'est pas un engagement.
+   Le même mécanisme sert la scène de vedette et toutes les rangées : deux
+   carrousels qui se manœuvrent différemment sont deux apprentissages. */
 :where(body.p-roam) .rail{display:block;position:relative}
-/* La ligne de tête d'une rangée : le titre à gauche, les commandes à droite.
-   Le souffle exigé entre les deux et l'écart entre les deux commandes sont
-   déclarés ICI et lus par la mesure — une seule source. Le souffle est large :
-   la ligne ne se prend que si elle respire. */
-:where(body.p-roam) .rail-tete{display:flex;align-items:center;justify-content:space-between;column-gap:var(--esp-8);row-gap:var(--esp-2)}
-:where(body.p-roam) .rail-tete > :where(h1,h2,h3){flex:0 1 auto;min-width:0}
-/* Le disque maigrit SANS que la zone d'appui maigrisse : la boite garde la
-   cible entiere et se borde de transparent, l'aplat s'arretant a la boite de
-   remplissage. Le cerne se refait a l'interieur. Aucun pseudo-element n'est
-   ajoute a un composant de la grammaire : une cible portee par un `::after`
-   serait une difference que rien ne peut declarer. */
-:where(body.p-roam) .rail-tete .rail-cmd{position:static;transform:none;flex:0 0 auto;width:var(--cible-min);height:var(--cible-min);border-width:calc((var(--cible-min) - var(--esp-6)) / 2);border-color:transparent;background-clip:padding-box;background-color:var(--blanc);box-shadow:inset 0 0 0 var(--limite-ep) var(--limite-controle)}
-:where(body.p-roam) .rail-tete .rail-cmd + .rail-cmd{margin-left:var(--esp-2)}
-:where(body.p-roam) .rail-tete .rail-cmd svg.i{width:var(--esp-4);height:var(--esp-4)}
-
-/* Faute de ligne, les commandes se posent SUR les images — et DEDANS, pas sur
-   leur arête : un disque à cheval sur un bord se lit comme une pièce détachée.
-   Elles prennent la peau des gestes posés sur un média, allégée : sur une
-   photographie un disque de papier disparaît, et un disque opaque mange ce
-   qu'on regarde. Le cerne clair porte la lisibilité, l'aplat ne fait que
-   l'asseoir. */
-:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd{top:50%;transform:translateY(-50%);width:var(--cible-min);height:var(--cible-min);border-color:var(--creme);background:rgba(var(--univers-e1-rgb),.5);color:var(--creme);box-shadow:none}
-:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd.prec{left:var(--esp-8);right:auto}
-:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd.suiv{right:var(--esp-8);left:auto}
-:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
+:where(body.p-roam) .rail-cmd,
+:where(body.p-roam) .scene-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:var(--limite-ep) solid var(--univers);background:rgba(var(--blanc-rgb),.2);color:var(--univers);box-shadow:none}
+:where(body.p-roam) .rail-cmd.prec,
+:where(body.p-roam) .scene-cmd.prec{left:var(--esp-8);right:auto}
+:where(body.p-roam) .rail-cmd.suiv,
+:where(body.p-roam) .scene-cmd.suiv{right:var(--esp-8);left:auto}
+:where(body.p-roam) .rail-cmd svg.i,
+:where(body.p-roam) .scene-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
+:where(body.p-roam) .rail-cmd.prec svg.i,
+:where(body.p-roam) .scene-cmd.prec svg.i{transform:rotate(180deg)}
+:where(body.p-roam) .rail-cmd[aria-disabled="true"],
+:where(body.p-roam) .scene-cmd[aria-disabled="true"]{opacity:.4;cursor:default}
 
 /* ---- LE SOUFFLE SOUS LA RANGÉE. Deux blocs empilés prennent un cran d'air
    vertical ; la rangée n'en portait aucun et le titre suivant lui était collé. */
 :where(body.p-roam) .rail{margin-bottom:var(--air-i6)}
 
 /* ---- LA SCÈNE DE VEDETTE, VUE PAR VUE. La piste se cale sur ses vues et ne
-   s'arrête jamais entre deux. Les commandes se posent DE PART ET D'AUTRE de la
-   scène, par-dessus le média : c'est le seul endroit où une commande sur un
-   aplat photographique ne masque pas ce qu'on regarde, la scène occupant toute
-   la largeur. Elles prennent la peau de la commande de lecture — cercle cerclé
-   de crème sur un fond d'univers assombri — parce qu'elle est déjà la forme
-   d'un geste posé sur un média. */
+   s'arrête jamais entre deux. */
 :where(body.p-roam) .vedette-piste{display:flex;margin:0;padding:0;list-style:none;height:100%;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
 :where(body.p-roam) .vedette-piste::-webkit-scrollbar{display:none}
-:where(body.p-roam) .vedette-vue{flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always}
-:where(body.p-roam) .vedette-vue img{width:100%;height:100%;object-fit:cover;display:block}
-:where(body.p-roam) .scene-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme);cursor:pointer}
-:where(body.p-roam) .scene-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
-:where(body.p-roam) .scene-cmd.prec{left:var(--esp-3)}
-:where(body.p-roam) .scene-cmd.prec svg.i{transform:rotate(180deg)}
-:where(body.p-roam) .scene-cmd.suiv{right:var(--esp-3)}
-:where(body.p-roam) .scene-cmd[aria-disabled="true"]{opacity:.4;cursor:default}
+:where(body.p-roam) .vedette-vue{flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always;position:relative}
+:where(body.p-roam) .vedette-vue img,
+:where(body.p-roam) .vedette-vue video{width:100%;height:100%;object-fit:cover;display:block}
 
-/* ---- LE MOUVEMENT. Registre expressif, celui de la surface publique. Aucune
-   durée ni courbe n'est écrite : la durée suit la distance parcourue, et le
-   jeton employé le dit — ouverture pour le tiroir qui se déplie, fondu pour la
-   bascule d'onglet, micro-interaction pour un changement d'état.
-   Deux exigences que toute reprise doit tenir : rien ne démarre seul, et aucun
-   état n'est dit par le seul mouvement — chacun porte aussi un mot, une couleur
-   ou un cerne, faute de quoi il disparaît quand le mouvement est coupé.
-   Le repli est instantané : l'élément quitte le flux, donc aucune sortie ne se
-   joue. */
-@keyframes roamTiroir{from{opacity:0;transform:translateY(calc(var(--esp-3) * -1))}to{opacity:1;transform:none}}
-@keyframes roamFondu{from{opacity:0}to{opacity:1}}
-:where(body.p-roam) .etape.ouverte .etape-corps{animation:roamTiroir var(--mvt-ample) var(--courbe-a-entree) both}
-:where(body.p-roam) .feuille-bas .contenu.actif{animation:roamFondu var(--mvt-court) var(--courbe-a-entree) both}
-:where(body.p-roam) .etape-tete,
-:where(body.p-roam) .etape-valeur,
-:where(body.p-roam) .rail-cmd,
-:where(body.p-roam) .lien-tertiaire{transition:color var(--mvt-eclair) var(--courbe-a),background-color var(--mvt-eclair) var(--courbe-a),opacity var(--mvt-eclair) var(--courbe-a)}
-:where(body.p-roam) .ilot-choix,
-:where(body.p-roam) .choix-carte{transition:background-color var(--mvt-eclair) var(--courbe-a),box-shadow var(--mvt-eclair) var(--courbe-a)}
-
-/* ---- LA NOTE DE SECTION REPREND SON PAPIER. Une liste de sélecteurs laissée
-   ouverte par une virgule finale, en amont, agrège cette classe à la règle du
-   geste flottant : elle en reçoit l'aplat d'univers et l'encre blanche. Cette
-   règle rétablit le papier et l'encre discrète, et elle est requise tant que la
-   liste reste ouverte. */
-:where(body.p-roam) .note-section{background:none;color:var(--encre-discrete)}
-
-/* ---- LE PIED PREND SA PLACE SOUS LE GESTE FLOTTANT. La page réservait une
-   hauteur fixe au bas ; le geste, lui, est posé à un souffle du filet de la
-   barre. Le filet du pied se donne donc le MÊME souffle au-dessus du geste :
-   deux fois ce souffle, la barre, et la hauteur rendue du geste. */
-/* Le sélecteur porte sa classe sans `:where` — la déclaration qu'il
-   remplace vise `body` seul, et une règle de poids nul ne la reprend pas. */
-body.p-roam{--geste-h:var(--barre-h);padding-bottom:calc(var(--barre-h) + var(--souffle-filet) * 2 + var(--geste-h) + var(--safe-bas))}
+/* ---- LE PAS POSÉ. Un pas unique n'a rien à replier : pas de tête, pas de
+   valeur, pas de bascule. Le titre s'écrit, le champ suit, la rangée dessous. */
+/* La case d'une grille refuse par defaut de devenir plus etroite que son
+   contenu : la rangee qui deborde emporterait alors la case entiere, et la
+   piste ne saurait plus qu'elle a de quoi defiler. */
+:where(body.p-roam) .explorer-nu .etape{background:none;padding:0;border-radius:0;overflow:visible;min-width:0}
+:where(body.p-roam) .explorer-nu .etape-ouvert{display:block;margin:0 0 var(--air-i2);font-size:var(--t-body);line-height:var(--lh-16);font-weight:var(--w-bold);color:var(--encre)}
+:where(body.p-roam) .explorer-nu .etape-corps{padding:0}
 
 /* ---- LES AFFICHES D'ATTENTE PASSENT AU GRIS. Une réserve est un manque, pas
    une intention : un aplat d'univers plein la rend plus remarquable que les

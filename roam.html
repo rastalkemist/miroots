@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-qzKuhV42u9xuTqiAv9D5mgHAz7AZsory0DTp8GzFaBw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-32Luql03Bo0yroMV7AMtqImOffIIAUYQS+G4hJPwyKA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -116,16 +116,10 @@
     <article class="vedette" id="vedette" data-zone="cotonou">
       <div class="vedette-scene">
         <ul class="vedette-piste" id="pisteVedette" aria-labelledby="etKerYawa">
-          <li class="vedette-vue" data-bien="ahoefa" data-nom="Ahoefa" data-ou="ouAhoefa">
-            <video id="filmRoam" muted playsinline preload="none"
-                   poster="media/lieux/ahoefa-debut.jpg"
-                   tabindex="0" role="button" data-al="alPause"
-                   aria-label="Mettre la vidéo en pause"></video>
-          </li>
-          <li class="vedette-vue" data-bien="kekeli" data-nom="Kekeli" data-ou="ouKekeli">
-            <img src="media/lieux/kekeli-fiche.jpg" alt="" width="1440" height="1080"
-                 loading="lazy" decoding="async">
-          </li>
+          <li class="vedette-vue" data-bien="ahoefa" data-nom="Ahoefa" data-ou="ouAhoefa"
+              data-film="media/lieux/ahoefa-hero.mp4" data-affiche="media/lieux/ahoefa-debut.jpg"></li>
+          <li class="vedette-vue" data-bien="kekeli" data-nom="Kekeli" data-ou="ouKekeli"
+              data-film="media/lieux/kekeli-hero.mp4" data-affiche="media/lieux/kekeli-fiche.jpg"></li>
         </ul>
       </div>
       <div class="vedette-dire">
@@ -171,14 +165,6 @@
   <section class="bloc-sejour" id="decouvrir" aria-labelledby="etDecouvrir">
     <h1 class="titre-section" id="etDecouvrir" data-t="etDecouvrir">Découvrir</h1>
     <p class="note-section" data-t="chapoDecouvrir">Vous sortez ce soir ? Ça tombe bien, au Bénin, ça bouge toujours ! Restaurants, événements artistiques et culturels, soirées et festivals : tous les bons plans ci-dessous.</p>
-    <div class="pastilles" role="group" aria-labelledby="etDecouvrir">
-      <button type="button" class="cat actif" data-rub="" aria-pressed="true" data-t="zTous">Tous</button>
-      <button type="button" class="cat" data-rub="incontournables" aria-pressed="false" data-t="rIncont">in-Cotonou-rnables</button>
-      <button type="button" class="cat" data-rub="evenements" aria-pressed="false" data-t="rEvt">Événements</button>
-      <button type="button" class="cat" data-rub="manquer" aria-pressed="false" data-t="rManquer">À ne pas manquer</button>
-      <button type="button" class="cat" data-rub="pepites" aria-pressed="false" data-t="rPepites">Pépites du pays</button>
-    </div>
-
     <div class="rubrique" data-rub="incontournables">
       <h2 class="titre-sous" id="etIncont" data-t="rIncontTitre">Les in-Cotonou-rnables</h2>
       <ul class="rail-piste" id="railIncont">
@@ -218,7 +204,7 @@
       <p class="vide-rubrique" data-t="videManquer">Rien n’est encore inscrit. Les programmes en cours arrivent.</p>
     </div>
     <div class="rubrique" data-rub="pepites">
-      <h2 class="titre-sous" id="etPepites" data-t="rPepitesTitre">Pépites du Bénin</h2>
+      <h2 class="titre-sous" id="etPepites" data-t="rPepitesTitre">Pépites du pays</h2>
       <p class="vide-rubrique" data-t="videPepites">Rien n’est encore inscrit. Les bonnes adresses hors de Cotonou arrivent.</p>
     </div>
   </section>
@@ -371,15 +357,13 @@
        remplace « Ou », et la liste suggeree est garnie des lieux que la page
        porte deja. Une seule source : ce qui est sur la page est ce qui se
        cherche. -->
-  <div class="explorer" id="explorerDec">
-
-    <section class="etape" data-pas="quoi">
-      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuoi">
-        <span class="etape-quoi" data-t="eQuoi">Quoi&#8239;?</span>
-        <span class="etape-ouvert" id="etQuoi" data-t="quoiTitre">On va où ce soir&#8239;?</span>
-        <span class="etape-valeur" id="valQuoi" data-t="eQuoiVide">Choisir un lieu</span>
-      </button>
-      <div class="etape-corps" id="corpsQuoi" hidden>
+  <!-- Une sortie n'a ni plage de dates ni compte de voyageurs : la date
+       appartient au lieu, et qui vient se dit par le partage. Le pas unique
+       n'a donc rien a replier — il est POSE, pas deplie. -->
+  <div class="explorer explorer-nu" id="explorerDec">
+    <section class="etape ouverte" data-pas="quoi">
+      <h3 class="etape-ouvert" id="etQuoi" data-t="quoiTitre">On va où ce soir&#8239;?</h3>
+      <div class="etape-corps" id="corpsQuoi">
         <div class="champ champ-suggest">
           <input type="text" id="qLieuDec" autocomplete="off" spellcheck="false"
                  aria-describedby="etQuoi"
@@ -388,38 +372,6 @@
         <ul class="rail-piste piste-choix" id="suggDec" aria-labelledby="etQuoi"></ul>
       </div>
     </section>
-
-    <section class="etape" data-pas="quandDec">
-      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuandDec">
-        <span class="etape-quoi" data-t="eQuand">Quand&#8239;?</span>
-        <span class="etape-ouvert" id="etQuandDec" data-t="quandTitre">Ajouter des dates</span>
-        <span class="etape-valeur" id="valQuandDec" data-t="eQuandVide">Ajouter des dates</span>
-      </button>
-      <div class="etape-corps" id="corpsQuandDec" hidden>
-        <div class="rangee-dates">
-          <div class="champ"><label for="arriveeDec" data-t="lArrivee">Arrivée</label>
-            <input type="date" id="arriveeDec"></div>
-          <div class="champ"><label for="departDec" data-t="lDepart">Départ</label>
-            <input type="date" id="departDec"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="etape" data-pas="quiDec">
-      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuiDec">
-        <span class="etape-quoi" data-t="eQui">Qui&#8239;?</span>
-        <span class="etape-ouvert" id="etQuiDec" data-t="quiTitre">Combien serez-vous&#8239;?</span>
-        <span class="etape-valeur" id="valQuiDec" data-t="eQuiVide">Ajouter des voyageurs</span>
-      </button>
-      <div class="etape-corps rangee-qui" id="corpsQuiDec" hidden>
-        <div class="stepper" role="group" aria-labelledby="etQuiDec">
-          <button type="button" id="moinsDec" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
-          <span id="valeurDec">1</span>
-          <button type="button" id="plusDec" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
-        </div>
-      </div>
-    </section>
-
   </div>
   <p class="message-ferme" id="videDec" role="status" data-t="videDecouvrir">Aucun lieu ne porte encore de fiche. Choisir en ouvre la présentation dès qu'elles arrivent.</p>
 
@@ -549,14 +501,10 @@
       ficheAVenir: 'Fiche à venir',
       etDecouvrir: 'Découvrir',
       chapoDecouvrir: 'Vous sortez ce soir ? Ça tombe bien, au Bénin, ça bouge toujours ! Restaurants, événements artistiques et culturels, soirées et festivals : tous les bons plans ci-dessous.',
-      rIncont: 'in-Cotonou-rnables',
-      rEvt: 'Événements',
-      rManquer: 'À ne pas manquer',
-      rPepites: 'Pépites du pays',
       rIncontTitre: 'Les in-Cotonou-rnables',
       rEvtTitre: 'Événements à venir',
       rManquerTitre: 'À ne pas manquer',
-      rPepitesTitre: 'Pépites du Bénin',
+      rPepitesTitre: 'Pépites du pays',
       videEvt: 'Rien n’est encore inscrit. Les premiers événements du Roots et de NU arrivent.',
       videManquer: 'Rien n’est encore inscrit. Les programmes en cours arrivent.',
       videPepites: 'Rien n’est encore inscrit. Les bonnes adresses hors de Cotonou arrivent.',
@@ -657,14 +605,10 @@
       ficheAVenir: 'Details coming',
       etDecouvrir: 'Discover',
       chapoDecouvrir: 'Going out tonight? Good news — Benin never sits still. Restaurants, arts and culture, parties and festivals: the good spots are below.',
-      rIncont: 'Cotonou essentials',
-      rEvt: 'Events',
-      rManquer: 'Not to be missed',
-      rPepites: 'Hidden gems',
       rIncontTitre: 'Cotonou essentials',
       rEvtTitre: 'Upcoming events',
       rManquerTitre: 'Not to be missed',
-      rPepitesTitre: 'Hidden gems of Benin',
+      rPepitesTitre: 'Hidden gems of the country',
       videEvt: 'Nothing listed yet. The first Roots and NU events are on their way.',
       videManquer: 'Nothing listed yet. Current programmes are on their way.',
       videPepites: 'Nothing listed yet. The good spots outside Cotonou are on their way.',
@@ -1184,8 +1128,13 @@
   var ZONE_DU_BIEN = { ahoefa: 'cotonou', kekeli: 'cotonou',
                        'lion-bar': 'peches', 'bel-ami': 'ailleurs' };
 
+  /* Un pas POSE n'a pas de tete : il ne se replie pas, donc il ne fait pas
+     partie de ce qui s'ouvre et se ferme. La presence de la tete est ce qui
+     distingue les deux, et rien d'autre n'a a le savoir. */
   function lesPas(racine) {
-    return Array.prototype.slice.call((racine || $('explorer')).querySelectorAll('.etape'));
+    return Array.prototype.slice.call(
+      (racine || $('explorer')).querySelectorAll('.etape')
+    ).filter(function (e) { return !!e.querySelector('.etape-tete'); });
   }
 
   /* LE RETOUR DEFAIT CE QUE LE GESTE A FAIT, DANS L'ORDRE INVERSE. Chaque
@@ -1530,29 +1479,13 @@
     });
   }
 
-  function resumerDec() {
-    var mots = t() || {};
-    var a = $('arriveeDec'), dp = $('departDec'), n = $('valeurDec');
-    $('valQuoi').textContent = lieuDec ? lieuDec.nom : (mots.eQuoiVide || 'Choisir un lieu');
-    $('valQuoi').classList.toggle('rempli', !!lieuDec);
-    var dates = '';
-    if (a && a.value && dp && dp.value) dates = jourCourt(a.value) + ' – ' + jourCourt(dp.value);
-    $('valQuandDec').textContent = dates || (mots.eQuandVide || 'Ajouter des dates');
-    $('valQuandDec').classList.toggle('rempli', !!dates);
-    var nb = n ? parseInt(n.textContent, 10) : 0;
-    var qui = nb > 0 ? nb + ' ' + (nb > 1 ? (mots.voyageurs || 'voyageurs') : (mots.voyageur || 'voyageur')) : '';
-    $('valQuiDec').textContent = qui || (mots.eQuiVide || 'Ajouter des voyageurs');
-    $('valQuiDec').classList.toggle('rempli', !!qui);
-  }
-
+  /* Retenir un lieu ne replie rien : le pas est pose, il n'a pas de tiroir.
+     Le nom retenu occupe le champ — il nomme le choix, il n'affine pas. */
   function retenirLieuDec(l) {
     lieuDec = l;
     $('qLieuDec').value = l.nom;
     dessinerLieuxDec();
-    resumerDec();
     majAgenda();
-    var pas = document.querySelector('#explorerDec .etape[data-pas="quoi"]');
-    if (pas) pasSuivant(pas);
   }
 
   function optionsVuesDec() {
@@ -1632,29 +1565,11 @@
     if (!c || !z || !ex) return;
     LIEUX = lireLesLieuxDeLaPage();
     dessinerLieuxDec();
-    basculeDesRangees(ex);
-    ex.addEventListener('change', function () { setTimeout(resumerDec, 0); });
-    ['moinsDec', 'plusDec'].forEach(function (id) {
-      if ($(id)) $(id).addEventListener('click', function () {
-        var v = $('valeurDec'), n = parseInt(v.textContent, 10) || 1;
-        n = id === 'plusDec' ? n + 1 : n - 1;
-        v.textContent = n < 1 ? 1 : n;
-        resumerDec();
-      });
-    });
-    /* Le champ n'ouvre plus rien : le carrousel est la des que le tiroir
-       l'est. Il AFFINE — il ne cherche pas un terme libre — et ce qu'il
-       affine reste ce que la page porte. */
+    /* Le champ AFFINE — il ne cherche pas un terme libre — et ce qu'il affine
+       reste ce que la page porte. */
     c.addEventListener('input', function () {
-      if (lieuDec && c.value !== lieuDec.nom) { lieuDec = null; resumerDec(); majAgenda(); }
+      if (lieuDec && c.value !== lieuDec.nom) { lieuDec = null; majAgenda(); }
       dessinerLieuxDec();
-    });
-    /* Une piste repliee mesure zero : ses commandes se rangent, faute de
-       debordement a annoncer. Redessiner a l'ouverture du tiroir remet la
-       piste sous mesure — la piste observe ses propres enfants. */
-    ex.addEventListener('click', function (e) {
-      if (!e.target.closest || !e.target.closest('.etape[data-pas="quoi"] .etape-tete')) return;
-      setTimeout(dessinerLieuxDec, 0);
     });
     c.addEventListener('keydown', function (e) {
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowRight') return;
@@ -1676,7 +1591,6 @@
     });
     if ($('partagerDec')) $('partagerDec').addEventListener('click', partagerLaSortie);
     if ($('telDec') && Roots.initTelRoots) Roots.initTelRoots($('telDec'));
-    resumerDec();
     majAgenda();
   }
 
@@ -1698,6 +1612,10 @@
     });
     $('ct-visiter').classList.toggle('actif', nom === 'visiter');
     $('ct-decouvrir').classList.toggle('actif', nom === 'decouvrir');
+    /* Une piste masquee mesure zero : ses commandes se rangent, faute de
+       debordement a annoncer. La redessiner quand son panneau parait la remet
+       sous mesure — la piste observe ses propres enfants. */
+    if (nom === 'decouvrir') setTimeout(dessinerLieuxDec, 0);
   }
 
   /* Quitter l'onglet d'ouverture pose une couche : le retour y ramene avant
@@ -1774,19 +1692,6 @@
     });
   }
 
-  /* ------------------------------------------------------------------
-     LE FILM DE LA VEDETTE. Deux passes, puis le film revient a sa premiere
-     image et s'y arrete : l'affiche EST cette image, donc l'ecran ne change pas
-     de vue quand la lecture cesse. Un element qui joue tient le verrou de veille
-     de l'appareil, et l'ecran ne s'eteint plus tant que la lecture dure ; porter
-     PASSES a zero rend ce defaut. La scene est sa propre commande — l'appui
-     bascule —, ce qui vaut mecanisme au sens de SC 2.2.2 : le role, le nom et
-     l'arret de tabulation la rendent atteignable sans souris. Une lecture
-     refusee n'est pas forcee : l'affiche tient l'ecran et la source est
-     relachee, donc rien ne se telecharge.
-     ------------------------------------------------------------------ */
-  var FILM = 'media/lieux/ahoefa-hero.mp4';
-  var PASSES = 2;
   /* LA SCENE DE VEDETTE, VUE PAR VUE. Une piste qui se cale sur ses vues, et
      deux commandes posees de part et d'autre. Ce qui suit la vue est le
      cartouche : nom, lieu, geste. Chaque vue porte les siens en donnee — le
@@ -1794,105 +1699,23 @@
      de langue, comme le reste.
      Une vue qui sort du champ arrete son film : un media qui joue hors du
      regard tient le verrou de veille pour rien. */
-  /* OU SE TIENNENT LES COMMANDES D'UNE RANGEE. Aucun seuil en pixels : on
-     demande la place. Si le titre, un souffle et le groupe de commandes
-     entrent sur une meme ligne, les commandes s'y rangent, alignees a droite —
-     le regard revient sur elles apres avoir parcouru la rangee. Sinon elles se
-     posent SUR les images, en retrait des bords, ou elles prennent la peau des
-     gestes poses sur un media : cercle cerclé de creme sur un fond d'univers
-     assombri, lisible par-dessus n'importe quelle photographie.
-     La mesure se refait a chaque redimensionnement : une regle chiffree
-     mentirait des que le titre change de longueur ou de langue. */
   /* LE BAS DE PAGE RESPIRE AUTANT DE PART ET D'AUTRE DU GESTE FLOTTANT. Le
-     souffle SOUS lui est celui que sa position declare — l'ecart entre le
-     geste et le filet de la barre. La page se donne le meme AU-DESSUS, ce qui
-     demande la hauteur reellement rendue du geste : elle change avec le
-     libelle, la langue et le corps de texte, donc elle se mesure au lieu de
-     s'ecrire. */
+     souffle SOUS lui est celui que sa position declare. La page se donne le
+     meme AU-DESSUS, ce qui demande la hauteur reellement rendue du geste :
+     elle change avec le libelle, la langue et le corps de texte, donc elle se
+     mesure au lieu de s'ecrire. La valeur se pose sur le corps et non sur la
+     racine : la feuille y declare un repli, et une declaration en ligne sur le
+     meme element l'emporte sans peser sur la specificite. */
   function publierHauteurDuGeste() {
     var f = $('fabRecherche');
     if (!f) return;
     function poser() {
-      /* La valeur se pose sur le corps et non sur la racine : la feuille de
-         style y declare un repli, et une declaration en ligne sur le meme
-         element l'emporte sans avoir a peser sur la specificite. */
       document.body.style.setProperty(
         '--geste-h', Math.round(f.getBoundingClientRect().height) + 'px');
     }
     poser();
     if (window.ResizeObserver) new ResizeObserver(poser).observe(f);
     else window.addEventListener('resize', poser);
-  }
-
-  function titreDeLaRangee(rail) {
-    var t = rail.previousElementSibling;
-    /* La ligne de tete deja posee porte le titre : sans ce premier examen, la
-       seconde mesure remonterait au titre de la section au-dessus. */
-    if (t && t.classList.contains('rail-tete')) return t.querySelector('h1,h2,h3,h4,h5,h6');
-    /* Le titre doit PRECEDER IMMEDIATEMENT la rangee : un titre dont un autre
-       element le separe n'est pas la ligne de cette rangee, et l'y accrocher
-       poserait les commandes au-dessus d'un contenu qui n'est pas le sien. */
-    return t && /^H[1-6]$/.test(t.tagName) ? t : null;
-  }
-
-  function largeurDuTexte(el) {
-    var r = document.createRange();
-    r.selectNodeContents(el);
-    return r.getBoundingClientRect().width;
-  }
-
-  function placerUneRangee(rail) {
-    var titre = titreDeLaRangee(rail);
-    var cmds = Array.prototype.slice.call(rail.querySelectorAll('.rail-cmd'));
-    if (!titre || cmds.length < 2) return;
-    /* La ligne de tete est la SOEUR de la rangee, jamais son enfant : la
-       chercher dans la rangee en fabriquerait une neuve a chaque mesure, et
-       chacune emboiterait la precedente. */
-    var groupe = titre.parentNode;
-    if (!groupe.classList.contains('rail-tete')) {
-      groupe = document.createElement('div');
-      groupe.className = 'rail-tete';
-      titre.parentNode.insertBefore(groupe, titre);
-      groupe.appendChild(titre);
-    }
-    /* Le souffle exige entre le titre et les commandes, et l'ecart entre les
-       deux commandes, sont declares par la feuille de style sur le groupe :
-       ils ne sont pas rappeles ici. Le souffle compte DEUX FOIS — une fois
-       entre le titre et les commandes, une fois apres elles — sans quoi la
-       ligne se prend a l'etroit.
-       La ligne ne se prend que sur la mise en page large, celle que la barre
-       declare quand elle a promu le super-nav : c'est la meme mesure que le
-       reste de la coque, et aucun seuil chiffre n'est ecrit ici. */
-    var vu = getComputedStyle(groupe);
-    var souffle = parseFloat(vu.columnGap) || 0;
-    var ecart = parseFloat(vu.rowGap) || 0;
-    var large = groupe.clientWidth || rail.clientWidth;
-    var groupeCmd = cmds[0].offsetWidth * 2 + ecart;
-    var page = document.body.classList.contains('nav-haut');
-    var tient = page && largeurDuTexte(titre) + souffle * 2 + groupeCmd <= large;
-    rail.dataset.cmd = tient ? 'ligne' : 'image';
-    cmds.forEach(function (b) {
-      var ou = tient ? groupe : rail;
-      if (b.parentNode !== ou) ou.appendChild(b);
-    });
-  }
-
-  function placerLesCommandes() {
-    Array.prototype.forEach.call(document.querySelectorAll('.rail'), placerUneRangee);
-  }
-
-  window.addEventListener('resize', placerLesCommandes);
-  /* La premiere pose tombe avant deux evenements qui changent la mesure : la
-     barre promeut le super-nav apres sa propre mesure, et un titre servi dans
-     la police de repli n'a pas la largeur du titre servi dans la sienne. La
-     pose se refait donc sur les trois signaux. */
-  if (window.MutationObserver) {
-    new MutationObserver(placerLesCommandes)
-      .observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  }
-  window.addEventListener('load', placerLesCommandes);
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(placerLesCommandes)['catch'](function () {});
   }
 
   function scenesDeVedette() {
@@ -1902,6 +1725,7 @@
     if (vues.length < 2) return;
     var nom = $('vedetteNom'), ou = $('vedetteOu'), geste = $('vedetteGeste');
     var cmds = commandesDeScene(piste);
+    var lire = filmsDeVedette();
     var courante = 0;
 
     function porter(i) {
@@ -1912,10 +1736,7 @@
       ou.setAttribute('data-t', vue.dataset.ou);
       ou.textContent = (t() || {})[vue.dataset.ou] || '';
       geste.setAttribute('data-bien', vue.dataset.bien);
-      vues.forEach(function (x, k) {
-        var f = x.querySelector('video');
-        if (f && k !== i && !f.paused) f.pause();
-      });
+      if (lire) lire(i);
       if (cmds) {
         cmds.prec.setAttribute('aria-disabled', i <= 0 ? 'true' : 'false');
         cmds.suiv.setAttribute('aria-disabled', i >= vues.length - 1 ? 'true' : 'false');
@@ -1971,44 +1792,102 @@
     return faites;
   }
 
-  function filmVedette() {
-    var v = $('filmRoam');
-    if (!v) return;
-    var faites = 0;
-    function nommer(joue) {
-      var cle = joue ? 'alPause' : 'alLire';
-      v.setAttribute('data-al', cle);
-      v.setAttribute('aria-label', (t() && t()[cle]) || (joue ? 'Pause' : 'Lire'));
-    }
-    function relacher() { nommer(false); v.removeAttribute('src'); v.load(); }
-    function lancer() {
-      if (v.getAttribute('src') !== FILM) v.setAttribute('src', FILM);
-      var r = v.play();
-      if (r && r['catch']) r['catch'](relacher);
-      nommer(true);
-    }
-    /* Revenir a zero AVANT de suspendre : la derniere image rendue est alors la
-       premiere du film, celle que porte l'affiche. */
-    function reposer() { v.pause(); v.currentTime = 0; nommer(false); }
-    v.addEventListener('ended', function () {
-      faites += 1;
-      if (faites < PASSES) { v.currentTime = 0; v.play(); return; }
-      reposer();
-    });
-    function basculer() {
-      if (v.paused) { faites = 0; lancer(); } else { v.pause(); nommer(false); }
-    }
-    v.addEventListener('click', basculer);
-    v.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); basculer(); }
-    });
-    document.addEventListener('visibilitychange', function () { if (document.hidden) v.pause(); });
+  /* LES FILMS DE LA SCENE. Une vue porte son film en donnee ; le lecteur est
+     fabrique ici, avec son affiche. Un film absent du dossier retire son
+     lecteur et laisse l'affiche : la vue reste juste, et le jour ou le fichier
+     arrive elle joue, sans une ligne a changer.
+     LA LECTURE PART SEULE, en sourdine et en ligne — c'est la seule forme
+     qu'un navigateur laisse demarrer sans geste — et elle BOUCLE tant que la
+     vue est regardee. Ce qui demarre seul doit pouvoir s'arreter : le lecteur
+     EST sa propre commande, il porte un role, un nom et le clavier. Hors du
+     champ, hors de la vue courante, ou l'onglet caché, il se suspend : un
+     media qui joue tient le verrou de veille de l'appareil.
+     Economie de donnees et mouvement reduit : l'affiche seule. */
+  function lecteurDeLaVue(vue) {
+    var film = vue.getAttribute('data-film'), affiche = vue.getAttribute('data-affiche');
+    if (!film) return null;
+    var v = document.createElement('video');
+    v.muted = true; v.loop = true; v.playsInline = true;
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', ''); v.setAttribute('loop', '');
+    v.preload = 'none';
+    if (affiche) v.poster = affiche;
+    v.tabIndex = 0;
+    v.setAttribute('role', 'button');
+    v.setAttribute('data-al', 'alPause');
+    v.setAttribute('aria-label', (t() && t().alPause) || 'Pause');
+    v.addEventListener('error', function () { v.remove(); posterDeSecours(vue, affiche); });
+    vue.appendChild(v);
+    return v;
+  }
+
+  /* Sans lecteur, l'affiche tient la vue : une image, pas un aplat vide. */
+  function posterDeSecours(vue, affiche) {
+    if (!affiche || vue.querySelector('img')) return;
+    var i = document.createElement('img');
+    i.src = affiche; i.alt = ''; i.loading = 'lazy'; i.decoding = 'async';
+    vue.appendChild(i);
+  }
+
+  function sobre() {
     var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if ((c && c.saveData) ||
-        (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-      nommer(false); return;
+    return !!((c && c.saveData) ||
+      (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches));
+  }
+
+  function filmsDeVedette() {
+    var piste = $('pisteVedette');
+    if (!piste) return null;
+    var vues = Array.prototype.slice.call(piste.querySelectorAll('.vedette-vue'));
+    var lecteurs = vues.map(function (vue) {
+      var v = lecteurDeLaVue(vue);
+      if (!v) { posterDeSecours(vue, vue.getAttribute('data-affiche')); return null; }
+      function nommer(joue) {
+        var cle = joue ? 'alPause' : 'alLire';
+        v.setAttribute('data-al', cle);
+        v.setAttribute('aria-label', (t() && t()[cle]) || (joue ? 'Pause' : 'Lire'));
+      }
+      function lancer() {
+        if (sobre()) { nommer(false); return; }
+        if (v.getAttribute('src') !== v.dataset.source) {
+          v.dataset.source = vue.getAttribute('data-film');
+          v.setAttribute('src', v.dataset.source);
+        }
+        var r = v.play();
+        if (r && r['catch']) r['catch'](function () { nommer(false); });
+        nommer(true);
+      }
+      function suspendre() { if (!v.paused) { v.pause(); nommer(false); } }
+      function basculer() { if (v.paused) lancer(); else suspendre(); }
+      v.addEventListener('click', basculer);
+      v.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); basculer(); }
+      });
+      return { v: v, lancer: lancer, suspendre: suspendre };
+    });
+
+    var visible = true;
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (e) {
+        visible = e[0].isIntersecting;
+        if (!visible) lecteurs.forEach(function (l) { if (l) l.suspendre(); });
+        else porterLaLecture(courante);
+      }, { threshold: 0.25 }).observe(piste);
     }
-    lancer();
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) lecteurs.forEach(function (l) { if (l) l.suspendre(); });
+      else porterLaLecture(courante);
+    });
+
+    var courante = 0;
+    function porterLaLecture(i) {
+      courante = i;
+      lecteurs.forEach(function (l, k) {
+        if (!l) return;
+        if (k === i && visible) l.lancer(); else l.suspendre();
+      });
+    }
+    porterLaLecture(0);
+    return porterLaLecture;
   }
 
   /* Une image absente ne laisse pas le glyphe casse du navigateur au milieu
@@ -2054,17 +1933,13 @@
   ongletsDeLaFeuille();
   explorateurDecouvrir();
   feuilleDeRecherche();
-  filmVedette();
   scenesDeVedette();
   reserveSiAbsente();
   filtrer(document.querySelector('#sejourner .pastilles'),
           document.querySelectorAll('#railSejour > li > [data-zone]'), 'data-zone');
-  filtrer(document.querySelector('#decouvrir .pastilles'),
-          document.querySelectorAll('#decouvrir .rubrique'), 'data-rub');
   ['railSejour', 'railBientot', 'railIncont', 'suggDec'].forEach(function (id) {
     if ($(id) && Roots.glisser) Roots.glisser($(id));
   });
-  placerLesCommandes();
   publierHauteurDuGeste();
 
   Roots.poserLibelles && Roots.poserLibelles();
