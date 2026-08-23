@@ -287,8 +287,17 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
    dans sa feuille y ajouterait un retrait que rien ne justifie.
    Le tronc ne sait pas qu'un bloc de section vit dans une feuille ; il n'a pas
    besoin de le savoir, il l'exclut. */
+/* La marge globale est UNE SEULE ligne, et le rendu doit la poser une seule
+   fois. Un bloc qui vit dans la piste la tient deja de la piste et n'ajoute
+   rien ; seul un bloc qui sort de la piste la reconstitue chez lui, pour que
+   son texte retombe sur la meme ligne que le mobilier du chrome.
+   CE QUI CASSE SI ON LE MODIFIE : rendre le retrait inconditionnel pose une
+   marge dans la marge — un pourcentage de la piste et non de la fenetre — et
+   tout ce qui borde la page cesse d'etre aligne sur le logo et sur le menu. */
+.corps :is(.bloc,.bloc-sejour,.rubrique),
 :is(.bloc,.bloc-sejour,.rubrique) :is(.bloc,.bloc-sejour,.rubrique),
 .feuille-bas :is(.bloc,.bloc-sejour,.rubrique){padding-inline:0}
+.corps :is(.bloc,.bloc-sejour,.rubrique).hors-piste{padding-inline:var(--marge)}
 .corps{width:var(--piste);margin:0 auto;padding:var(--esp-4) 0 0}
 .corps > p,
 .corps > .chapo,
@@ -383,6 +392,14 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .lang-btn{height:44px;min-width:44px;padding:0 var(--esp-1);border:none;background:none;color:var(--univers);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer}
 .chrome-burger{width:44px;height:44px;border:none;background:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--univers-e1)}
 .chrome-burger svg{width:30px;height:30px}
+/* Le dernier meuble du chrome pose son DESSIN sur la ligne de marge, non sa
+   cible : un glyphe plus etroit que sa cible laisse un vide que l'oeil compte
+   comme de la marge, et le bord droit cesse de repondre au bord gauche, dont
+   le dessin remplit sa cible. Le retrait vaut la demi-difference entre les
+   deux ; la cible garde sa taille et deborde vers l'exterieur.
+   CE QUI CASSE SI ON LE MODIFIE : changer la taille du glyphe sans changer ce
+   retrait desaligne les deux bords. */
+.chrome-burger{margin-inline-end:calc(var(--esp-3) * -1)}
 .chrome-titre{position:relative;text-decoration:none;cursor:pointer}
 .chrome-titre::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;min-width:var(--cible-min);height:var(--cible-min)}
 /* La page courante reste dans le menu et s'y marque : une navigation
@@ -716,10 +733,10 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .carte-bien .vignette img{width:100%;height:100%;object-fit:cover;display:block}
 :where(body.p-roam) .carte-bien .vignette.reserve{display:flex;align-items:center;justify-content:center;background:var(--univers-e1);color:var(--creme)}
 :where(body.p-roam) .carte-bien .vignette.reserve .i-reserve{width:38%;height:38%;fill:currentColor}
-:where(body.p-roam) .carte-bien .tete{display:flex;flex-direction:column;gap:2px;padding:var(--esp-3) var(--esp-3) 0}
+:where(body.p-roam) .carte-bien .tete{display:flex;flex-direction:column;gap:2px;padding:var(--esp-4) var(--esp-4) 0}
 :where(body.p-roam) .carte-bien .nom{font-size:var(--t-body);line-height:var(--lh-16);font-weight:700}
-:where(body.p-roam) .carte-bien .dit{display:block;padding:var(--air-i1) var(--esp-3) 0;font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
-:where(body.p-roam) .carte-bien .avenir{display:block;padding:var(--air-i1) var(--esp-3) var(--esp-3);font-size:var(--t-note);line-height:var(--lh-12);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--encre-discrete)}
+:where(body.p-roam) .carte-bien .dit{display:block;padding:var(--air-i1) var(--esp-4) 0;font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+:where(body.p-roam) .carte-bien .avenir{display:block;padding:var(--air-i1) var(--esp-4) var(--esp-4);font-size:var(--t-note);line-height:var(--lh-12);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--encre-discrete)}
 
 /* Un fait pratique se lit comme une definition : son sujet, puis ce qu'il dit.
    Il se pose sur la surface CHAUDE — creme et encre pleine —, celle des blocs
@@ -979,8 +996,17 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    elles restent perceptibles et focalisables sous le doigt qui les cherche.
    Le rail ne se voit que si la bande deborde ; sinon les commandes se cachent
    et le rail n'est plus qu'une boite. */
-.rail{position:relative;display:flex;align-items:center}
-.rail > .categories,.rail > .rail-piste,.rail > .pastilles{flex:1 1 auto;min-width:0}
+/* La bande a defilement. Ses deux commandes se tiennent GROUPEES au-dessus
+   de la piste, jamais posees sur une carte : une commande posee sur le contenu
+   se confond avec lui selon l'image qui passe dessous, et l'appui manque sa
+   cible pour ouvrir la carte. Groupees, elles evitent aussi le trajet d'un
+   bord a l'autre quand on change de sens.
+   CE QU'ELLES EXIGENT : la piste garde son debordement, qui laisse voir le
+   bord de la carte suivante — c'est lui qui dit qu'il y en a d'autres.
+   CE QUI CASSE SI ON LE MODIFIE : rendre les commandes absolues les remet sur
+   les cartes. Leur rangee se replie d'elle-meme quand rien ne defile. */
+.rail{position:relative;display:grid;grid-template-columns:1fr auto auto;column-gap:var(--esp-2);row-gap:var(--esp-2);align-items:center}
+.rail > .categories,.rail > .rail-piste,.rail > .pastilles{grid-column:1 / -1;grid-row:2;min-width:0}
 /* LES COMMANDES SE POSENT PAR-DESSUS LES BORDS DE LA PISTE, jamais a cote.
    Dans le flux elles prennent deux cibles et deux ecarts — 104 px sur une
    colonne de 324, soit pres du tiers — et une carte de 240 n'y tient plus.
@@ -988,9 +1014,9 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    est le bord d'une carte, qui est deja coupe par le debordement.
    Le disque clair et son anneau forment une paire : sur une vignette
    quelconque, l'un des deux se detache toujours. */
-.rail-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:10;width:var(--cible-min);height:var(--cible-min);border:var(--limite-ep) solid var(--limite-controle);border-radius:50%;background:var(--blanc);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.22)}
-.rail-cmd.prec{left:0}
-.rail-cmd.suiv{right:0}
+.rail-cmd{grid-row:1;width:var(--cible-min);height:var(--cible-min);border:var(--limite-ep) solid var(--limite-controle);border-radius:50%;background:var(--blanc);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.22)}
+.rail-cmd.prec{grid-column:2}
+.rail-cmd.suiv{grid-column:3}
 .rail-cmd svg.i{width:20px;height:20px}
 .rail-cmd.prec svg.i{transform:rotate(180deg)}
 .rail-cmd[aria-disabled="true"]{opacity:.4;cursor:default}
@@ -1621,7 +1647,7 @@ body.nav-ilot-ancre .languette-radio .radio-pastille{flex-shrink:0}
    nom — un lien, donc souligné : le soulignement est ce qui dit « lien » sans
    la couleur, que le monochrome retire. */
 :where(body.p-roam) .carte-bien .nom-ligne{display:flex;align-items:baseline;justify-content:space-between;gap:var(--esp-3);min-width:0}
-:where(body.p-roam) .carte-bien .carte-tete{display:flex;flex-direction:column;gap:0;padding:var(--esp-3);text-align:left}
+:where(body.p-roam) .carte-bien .carte-tete{display:flex;flex-direction:column;gap:0;padding:var(--esp-4);text-align:left}
 :where(body.p-roam) .carte-bien .geste{display:inline-flex;align-items:center;flex:0 0 auto;min-height:0;padding:0;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--univers)}
 :where(body.p-roam) .carte-bien .ou{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete)}
 
@@ -1675,20 +1701,25 @@ body.nav-ilot-ancre .languette-radio .radio-pastille{flex-shrink:0}
    Le film reste du même côté d'une vedette à l'autre : une suite de blocs dont
    l'image alterne se balaie moins bien qu'une suite alignée. */
 @media(min-width:820px){
-  :where(body.p-roam) .vedette{display:grid;grid-template-columns:50% 1fr;grid-template-rows:auto 1fr;align-items:start;margin:0 calc(50% - 50vw) var(--air-i8);width:auto}
-  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 2;margin:0;height:auto;aspect-ratio:4/3}
-  /* Le geste passe en tete de colonne : l'ordre du document garde le nom
-     d'abord, ce dont le petit ecran a besoin pour les mettre sur une ligne.
-     Il descend d'un quart de la hauteur du film. Un remplissage en pourcentage
-     se calcule sur la largeur de SA colonne : le film et la colonne font la
-     meme largeur, et le rapport 4/3 donne au film une hauteur de 75 % de cette
-     largeur — le quart de cette hauteur en vaut donc 18,75 %. */
-  :where(body.p-roam) .vedette-tete{grid-column:2;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;padding:calc(75% * 0.25) 5vw 0;margin:0;gap:0;grid-row:1;align-self:start}
-  :where(body.p-roam) .vedette-tete .bouton-contour{order:-1;flex:0 0 auto;align-self:flex-start;display:inline-flex;margin-bottom:var(--air-i6)}
-  :where(body.p-roam) .vedette-nom{margin:0 0 var(--air-i2);text-align:left}
-  :where(body.p-roam) .vedette-dit{grid-column:2;grid-row:2;align-self:start;padding:0 5vw;margin:0;max-width:none;text-align:left}
+  /* Au-dela de la tablette, le bien en vedette se partage la PISTE en deux
+     colonnes de meme largeur, separees par la gouttiere de grille : le film a
+     gauche, ce qui le dit a droite. Il ne sort pas de la piste — la largeur
+     de page admise est ce qui se partage, pas la fenetre.
+     La colonne de droite se lit de haut en bas : le nom, ce qu'on en dit, puis
+     le geste. Le geste vient APRES la description ; l'ordre du document garde
+     le nom en premier, ce dont le petit ecran a besoin pour poser le nom et le
+     geste sur une meme ligne.
+     CE QUI CASSE SI ON LE MODIFIE : la tete cesse d'etre une boite pour que
+     ses deux enfants deviennent des cases de la meme grille. Lui redonner une
+     boite remet le geste contre le nom. */
+  :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto;column-gap:var(--gouttiere-grille);align-items:start;margin:0 0 var(--air-i8);width:auto}
+  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 3;margin:0;width:auto;height:auto;aspect-ratio:4/3}
+  :where(body.p-roam) .vedette-tete{display:contents}
+  :where(body.p-roam) .vedette-nom{grid-column:2;grid-row:1;margin:0 0 var(--air-i2);text-align:left}
+  :where(body.p-roam) .vedette-dit{grid-column:2;grid-row:2;margin:0 0 var(--air-i3);padding:0;max-width:none;text-align:left}
+  :where(body.p-roam) .vedette-tete .bouton-contour{grid-column:2;grid-row:3;justify-self:start;align-self:start;margin:0;order:0}
   /* La note de section tient sa ligne tant que la page la porte : la mesure de
-     lecture ne s'impose qu'à ce qui dépasse. */
+     lecture ne s'impose qu'a ce qui depasse. */
   :where(body.p-roam) .note-section{max-width:none}
 }
 
