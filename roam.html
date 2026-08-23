@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-iQX1njXkhjJ7sCT3wDcZ88H6wVpm3RL+EliN03JWBas='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-c2AS32mnuk6uB583P2EqY5XIwUywrYwOV2adrtz0GcI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -1718,6 +1718,23 @@
     window.addEventListener('scroll', poser, { passive: true });
   }
 
+  /* LA HAUTEUR RENDUE DU GROUPE DE PROPOS. Il se pose a une fraction de la
+     hauteur de la scene ; quand la scene est plus courte que le groupe, cette
+     fraction le ferait deborder sous elle. La feuille borne donc l'ancrage par
+     la hauteur reellement rendue du groupe — elle change avec le nombre de
+     lignes, la langue et le corps de texte, donc elle se mesure. */
+  function publierHauteurDuPropos() {
+    var g = document.querySelector('.vedette-bas');
+    if (!g) return;
+    function poser() {
+      document.body.style.setProperty(
+        '--propos-h', Math.ceil(g.getBoundingClientRect().height) + 'px');
+    }
+    poser();
+    if (window.ResizeObserver) new ResizeObserver(poser).observe(g);
+    window.addEventListener('resize', poser);
+  }
+
   function scenesDeVedette() {
     var piste = $('pisteVedette');
     if (!piste) return;
@@ -1941,6 +1958,7 @@
     if ($(id) && Roots.glisser) Roots.glisser($(id));
   });
   publierHauteurDuGeste();
+  publierHauteurDuPropos();
 
   Roots.poserLibelles && Roots.poserLibelles();
 
