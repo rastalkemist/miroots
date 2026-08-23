@@ -200,8 +200,16 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .contenu{display:none}
 .contenu.actif{display:block}
 
-.bloc{padding-inline:var(--marge)}
-.bloc .bloc{padding-inline:0}
+.bloc,:where(body.p-roam) .bloc-sejour,:where(body.p-roam) .rubrique{padding-inline:var(--marge)}
+/* Deux garanties, une seule raison : la part ne se reconduit qu'UNE fois.
+   Un bloc dans un bloc ne se repadde pas — deux applications mangeraient la
+   moitie de la piste, trois la totalite. Un bloc DANS UNE FEUILLE non plus :
+   la feuille porte deja sa marge, et un bloc de section qu'un ecran reemploie
+   dans sa feuille y ajouterait un retrait que rien ne justifie.
+   Le tronc ne sait pas qu'un bloc de section vit dans une feuille ; il n'a pas
+   besoin de le savoir, il l'exclut. */
+:is(.bloc,.bloc-sejour,.rubrique) :is(.bloc,.bloc-sejour,.rubrique),
+.feuille-bas :is(.bloc,.bloc-sejour,.rubrique){padding-inline:0}
 .corps{width:var(--piste);margin:0 auto;padding:var(--esp-4) 0 0}
 .corps > p,
 .corps > .chapo,
@@ -562,10 +570,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
-:where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i6);padding-inline:var(--marge)}
-:where(body.p-roam) .bloc-sejour .bloc-sejour,
-:where(body.p-roam) .bloc-sejour .rubrique{padding-inline:0}
-:where(body.p-roam) .rubrique{padding-inline:var(--marge)}
+:where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i6)}
 :where(body.p-roam) .bloc-sejour > .etiquette{display:block;margin-bottom:var(--air-i2);font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
 /* Les lieux de la flotte. Un lieu ouvert est un lien qui mene au geste ; un
    lieu a venir est une carte muette, sans etat interactif — un statut n'est
