@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-AoL2AqzylyaqxSPxG3YtiXqZccWF8MOwvcTjoP9JSys='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-VUWQLYjCY+U8f9RPlOB90fVouiqTjwPJ1GPSDVFhIzU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -66,19 +66,6 @@
     <h1 class="titre-section" id="etSejourner" data-t="etSejourner">Séjourner</h1>
     <p class="note-section" data-t="chapoSejour">Le meilleur du confort, du bien-être et de l’authenticité locale à votre portée : visitez le Bénin dès aujourd’hui.</p>
 
-    <article class="vedette" id="vedette" data-zone="cotonou">
-      <div class="vedette-scene">
-        <video id="filmRoam" muted playsinline preload="none"
-               poster="media/lieux/ahoefa-debut.jpg"
-               tabindex="0" role="button" data-al="alPause"
-               aria-label="Mettre la vidéo en pause"></video>
-      </div>
-      <div class="vedette-tete">
-        <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
-        <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
-      </div>
-      <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
-    </article>
 
     <div class="pastilles" role="group" aria-labelledby="etSejourner">
       <button type="button" class="cat actif" data-zone="" aria-pressed="true" data-t="zTous">Tous</button>
@@ -110,6 +97,20 @@
           </span>
         </a></li>
     </ul>
+
+    <article class="vedette" id="vedette" data-zone="cotonou">
+      <div class="vedette-scene">
+        <video id="filmRoam" muted playsinline preload="none"
+               poster="media/lieux/ahoefa-debut.jpg"
+               tabindex="0" role="button" data-al="alPause"
+               aria-label="Mettre la vidéo en pause"></video>
+      </div>
+      <div class="vedette-tete">
+        <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+        <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
+      </div>
+      <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
+    </article>
 
     <!-- Ce rail ne sert qu'à la présentation : il sort avant la production. -->
     <h2 class="titre-sous" id="etBientot" data-t="etBientot">Bientôt</h2>
@@ -212,7 +213,6 @@
       <li><span class="num-quoi" data-t="numPompiers">Sapeurs-Pompiers</span><span class="num-tel">115</span><span class="num-repli">—</span></li>
       <li><span class="num-quoi" data-t="numRoots">Accueil Roots</span><span class="num-tel">+229 01 46 75 55 75</span><span class="num-repli">—</span></li>
     </ul>
-    <p class="note-source" data-t="noteNumeros">Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.</p>
 
     <h2 class="titre-sous" id="etSavoir" data-t="etSavoir">Bon à savoir</h2>
     <ul class="grille-infos" aria-labelledby="etSavoir">
@@ -222,7 +222,6 @@
       <li><span class="info-quoi" data-t="iPriseQ">Électricité</span><span class="info-dit" data-t="iPriseD">230 V, 50 Hz. Prises de type C et E — les mêmes qu’en France.</span></li>
       <li><span class="info-quoi" data-t="iLangueQ">Langue</span><span class="info-dit" data-t="iLangueD">Le français est la langue officielle.</span></li>
     </ul>
-    <p class="note-source" data-t="noteInfos">Sources : evisa.bj pour le visa · Institut Pasteur pour la fièvre jaune · worldstandards.eu pour le courant.</p>
   </section>
 
 </div>
@@ -357,11 +356,11 @@
       </button>
       <div class="etape-corps" id="corpsQuoi" hidden>
         <div class="champ champ-suggest">
-          <input type="text" id="qLieuDec" readonly autocomplete="off" spellcheck="false"
-                 aria-expanded="false" aria-controls="suggDec" aria-describedby="etQuoi"
+          <input type="text" id="qLieuDec" autocomplete="off" spellcheck="false"
+                 aria-describedby="etQuoi"
                  data-p="pLieuDec" placeholder="Chercher un lieu, un événement">
         </div>
-        <ul class="tiroir-lieux" id="suggDec" aria-labelledby="etQuoi" hidden></ul>
+        <ul class="rail-piste piste-choix" id="suggDec" aria-labelledby="etQuoi"></ul>
       </div>
     </section>
 
@@ -413,7 +412,7 @@
       <div class="champ groupe"><label for="telDec" data-t="tonTel">Ton numéro (WhatsApp, si possible)</label>
         <input type="tel" inputmode="tel" id="telDec" autocomplete="tel"></div>
     </div>
-    <p class="ligne-partager"><button type="button" class="lien-tertiaire" id="partagerDec" data-t="partager">Partager</button></p>
+    <p class="ligne-partager"><button type="button" class="lien-tertiaire" id="partagerDec" data-t="partager">Partager avec un proche</button></p>
     <p class="etat-partage" id="etatPartage" role="status"></p>
     <button class="bouton-confirmer" id="btnAgenda" disabled aria-describedby="noteAgenda" data-t="ajouterAgenda">Ajouter à mon agenda</button>
     <p class="note-agenda" id="noteAgenda" data-t="agendaSansLieu">Choisis un lieu pour poser la sortie.</p>
@@ -481,7 +480,7 @@
       laNuit: function (p) { return p + ' la nuit'; },
       parNuit: 'la nuit',
       plusInfos: 'Plus d’infos',
-      partager: 'Partager',
+      partager: 'Partager avec un proche',
       partageTitre: 'On sort',
       partageDit: function (lieu) { return 'On va à ' + lieu + '. Tu viens ?'; },
       partageCopie: 'Message copié. Colle-le où tu veux.',
@@ -544,11 +543,9 @@
       iArgentQ: 'Argent', iArgentD: 'La monnaie est le franc CFA (XOF).',
       iPriseQ: 'Électricité', iPriseD: '230 V, 50 Hz. Prises de type C et E — les mêmes qu’en France.',
       iLangueQ: 'Langue', iLangueD: 'Le français est la langue officielle.',
-      noteInfos: 'Sources : evisa.bj pour le visa · Institut Pasteur pour la fièvre jaune · worldstandards.eu pour le courant.',
       numPolice: 'Police Républicaine',
       numPompiers: 'Sapeurs-Pompiers',
       numRoots: 'Accueil Roots',
-      noteNumeros: 'Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.',
       chercher: 'Chercher un séjour',
       chercherMots: 'Je découvre',
       alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
@@ -591,7 +588,7 @@
       laNuit: function (p) { return p + ' a night'; },
       parNuit: 'a night',
       plusInfos: 'More info',
-      partager: 'Share',
+      partager: 'Share with a friend',
       partageTitre: 'We are going out',
       partageDit: function (lieu) { return 'We are heading to ' + lieu + '. Coming?'; },
       partageCopie: 'Message copied. Paste it anywhere.',
@@ -654,11 +651,9 @@
       iArgentQ: 'Money', iArgentD: 'The currency is the CFA franc (XOF).',
       iPriseQ: 'Power', iPriseD: '230 V, 50 Hz. Type C and E sockets — the same as in France.',
       iLangueQ: 'Language', iLangueD: 'French is the official language.',
-      noteInfos: 'Sources: evisa.bj for the visa · Institut Pasteur for yellow fever · worldstandards.eu for the mains.',
       numPolice: 'Republican Police',
       numPompiers: 'Fire brigade',
       numRoots: 'Roots reception',
-      noteNumeros: 'Taken from the ARCEP national numbering plan, January 2021. None has been dialled yet.',
       chercher: 'Search for a stay',
       chercherMots: 'Let’s roam!',
       alPause: 'Pause the video', alLire: 'Play the video',
@@ -714,7 +709,14 @@
     img.alt = '';
     img.width = 720; img.height = 540;
     img.loading = 'lazy'; img.decoding = 'async';
-    img.addEventListener('error', function () { img.remove(); });
+    /* Une image absente bascule la vignette sur la reserve — la meme surface
+       que les cartes en attente de la page. Le repli est porte ici, la ou la
+       vignette est faite : les cartes se redessinent, et un gestionnaire pose
+       apres coup viserait des elements deja retires du document. */
+    img.addEventListener('error', function () {
+      v.classList.add('reserve');
+      v.innerHTML = '<svg class="i-reserve" aria-hidden="true"><use href="#i-roam"/></svg>';
+    });
     v.appendChild(img);
     return v;
   }
@@ -1154,8 +1156,58 @@
     return Array.prototype.slice.call((racine || $('explorer')).querySelectorAll('.etape'));
   }
 
+  /* LE RETOUR DEFAIT CE QUE LE GESTE A FAIT, DANS L'ORDRE INVERSE. Chaque
+     couche ouverte pose une entree d'historique, et toujours AU GESTE : un
+     navigateur mobile ecarte du bouton retour toute entree posee autrement.
+     Le retour depile la couche du dessus et la referme. Une fermeture par
+     geste rend ses entrees par un retour programme, que le gestionnaire
+     ignore — c'est le sens du compteur. Retirer une couche retire aussi
+     celles posees par-dessus. */
+  var pileCouches = [], retoursRendus = 0;
+
+  function couchePosee(nom) {
+    for (var i = 0; i < pileCouches.length; i++) if (pileCouches[i].nom === nom) return true;
+    return false;
+  }
+
+  function poserCouche(nom, fermer) {
+    if (couchePosee(nom)) return;
+    var e = { nom: nom, fermer: fermer, poussee: false };
+    try { history.pushState({ roamCouche: nom }, ''); e.poussee = true; } catch (err) {}
+    pileCouches.push(e);
+  }
+
+  function retirerCouche(nom) {
+    var i = -1, k;
+    for (k = pileCouches.length - 1; k >= 0; k--) if (pileCouches[k].nom === nom) { i = k; break; }
+    if (i < 0) return;
+    var rendus = 0;
+    for (k = i; k < pileCouches.length; k++) if (pileCouches[k].poussee) rendus += 1;
+    pileCouches.length = i;
+    if (!rendus) return;
+    retoursRendus += rendus;
+    try { history.go(-rendus); } catch (err) { retoursRendus -= rendus; }
+  }
+
+  window.addEventListener('popstate', function () {
+    if (retoursRendus > 0) { retoursRendus -= 1; return; }
+    var e = pileCouches.pop();
+    if (e) e.fermer();
+  });
+
+  /* Replier sans toucher a l'historique : la couche a deja ete retiree, ou
+     c'est une autre couche qui emporte celle-ci. */
+  var muetHistorique = false;
+
+  function replierLesPas(hote) {
+    muetHistorique = true;
+    ouvrirPas(null, hote);
+    muetHistorique = false;
+  }
+
   function ouvrirPas(pas, racine) {
-    lesPas(racine || (pas && pas.parentNode)).forEach(function (e) {
+    var hote = racine || (pas && pas.parentNode);
+    lesPas(hote).forEach(function (e) {
       var vise = e === pas;
       e.classList.toggle('ouverte', vise);
       var tete = e.querySelector('.etape-tete'), corps = e.querySelector('.etape-corps');
@@ -1168,11 +1220,28 @@
        d'appuyer. */
     var champ = pas && pas.querySelector('input,select,button:not(.etape-tete)');
     if (champ) champ.focus({ preventScroll: true });
+    if (muetHistorique) return;
+    if (pas) poserCouche('pas', function () { replierLesPas(hote); });
+    else retirerCouche('pas');
+  }
+
+  /* Un pas est RENSEIGNE quand sa valeur porte la marque que lui pose le
+     resume. Le pas suivant est le prochain pas non renseigne, jamais le
+     voisin immediat : qui a commence par les dates ne se voit pas renvoyer
+     dessus. Quand il n'en reste aucun, les tiroirs se replient et la feuille
+     RESTE OUVERTE — c'est le geste principal qui la ferme, jamais un choix. */
+  function estRenseigne(pas) {
+    var v = pas.querySelector('.etape-valeur');
+    return !!(v && v.classList.contains('rempli'));
   }
 
   function pasSuivant(pas) {
     var t = lesPas(pas.parentNode), i = t.indexOf(pas);
-    if (i > -1 && t[i + 1]) ouvrirPas(t[i + 1]);
+    for (var k = 1; k < t.length; k++) {
+      var c = t[(i + k) % t.length];
+      if (!estRenseigne(c)) { ouvrirPas(c); return; }
+    }
+    ouvrirPas(null, pas.parentNode);
   }
 
   function jourCourt(v) {
@@ -1316,25 +1385,85 @@
      ------------------------------------------------------------------ */
   var LIEUX = [];
 
+  /* L'ORDRE DE VEDETTE DU CARROUSEL, pose ici et non laisse au hasard du
+     document : ce qui a une date passe devant ce qui n'en a pas, puis les
+     lieux, du plus couru au plus lointain. A l'interieur d'une rubrique
+     l'ordre reste celui de la page — le classement par frequentation demande
+     un compte que la base ne rend pas encore. Une rubrique absente ne coute
+     rien : elle n'apporte simplement aucune carte. */
+  var ORDRE_RUBRIQUES = ['evenements', 'manquer', 'incontournables', 'pepites'];
+
   function lireLesLieuxDeLaPage() {
     var out = [];
-    Array.prototype.forEach.call(
-      document.querySelectorAll('#decouvrir .rubrique .carte-bien'), function (c) {
-        var nom = c.querySelector('.nom'), ou = c.querySelector('.ou');
-        if (!nom) return;
-        var n = nom.textContent.trim();
-        out.push({
-          nom: n,
-          ou: ou ? ou.textContent.trim() : '',
-          slug: nu(n).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+    ORDRE_RUBRIQUES.forEach(function (rub) {
+      Array.prototype.forEach.call(
+        document.querySelectorAll('#decouvrir .rubrique[data-rub="' + rub + '"] .carte-bien'),
+        function (c) {
+          var nom = c.querySelector('.nom'), ou = c.querySelector('.ou');
+          if (!nom) return;
+          var n = nom.textContent.trim();
+          out.push({
+            nom: n,
+            ou: ou ? ou.textContent.trim() : '',
+            slug: nu(n).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+          });
         });
-      });
+    });
     return out;
   }
 
-  function optionLieuDec(l) {
-    var li = ilotBien(l, 'sugd-' + l.slug, l.ou, '', '', '');
-    li.querySelector('.ilot-choix').addEventListener('click', function () { retenirLieuDec(l); });
+  /* La carte du carrousel porte DEUX gestes qui ne s'emboitent pas : le corps
+     retient le lieu et replie le tiroir ; le geste de coin mene a la fiche. Un
+     bouton dans un lien, ou l'inverse, ne s'active pas au clavier et ne
+     s'annonce pas — ils sont donc freres, jamais imbriques. Tant qu'un lieu
+     n'a pas de fiche, le coin porte la mention que la page emploie deja au
+     lieu d'un lien qui ne mene nulle part. */
+  function carteDeChoix(l) {
+    var mots = t() || {};
+    var li = document.createElement('li');
+    var carte = document.createElement('div');
+    carte.className = 'carte-bien carte-choix';
+    carte.dataset.slug = l.slug;
+
+    var corps = document.createElement('button');
+    corps.type = 'button';
+    corps.className = 'choix-carte';
+    corps.setAttribute('aria-pressed', 'false');
+    corps.appendChild(vignetteDuLieu(l.slug));
+
+    var tete = document.createElement('span');
+    tete.className = 'carte-tete';
+    var ligne = document.createElement('span');
+    ligne.className = 'nom-ligne';
+    var nom = document.createElement('span');
+    nom.className = 'nom';
+    nom.textContent = l.nom;
+    ligne.appendChild(nom);
+    tete.appendChild(ligne);
+    if (l.ou) {
+      var ou = document.createElement('span');
+      ou.className = 'ou';
+      ou.textContent = l.ou;
+      tete.appendChild(ou);
+    }
+    corps.appendChild(tete);
+    carte.appendChild(corps);
+
+    if (l.fiche) {
+      var plus = document.createElement('a');
+      plus.className = 'carte-plus lien-tertiaire';
+      plus.href = l.fiche;
+      plus.textContent = mots.plusInfos || 'Plus d\u2019infos';
+      carte.appendChild(plus);
+    } else {
+      var att = document.createElement('span');
+      att.className = 'avenir';
+      att.textContent = mots.ficheAVenir || 'Fiche \u00e0 venir';
+      carte.appendChild(att);
+    }
+
+    corps.addEventListener('click', function () { retenirLieuDec(l); });
+    li.appendChild(carte);
     return li;
   }
 
@@ -1343,7 +1472,11 @@
   function dessinerLieuxDec() {
     var z = $('suggDec'), champ = $('qLieuDec');
     if (!z) return;
-    var q = nu(champ && champ.value);
+    /* Le nom du lieu retenu occupe le champ : il nomme le choix, il n'affine
+       pas. Le prendre pour un filtre reduirait le carrousel a la seule carte
+       deja choisie des qu'on rouvre le tiroir. */
+    var brut = champ ? champ.value : '';
+    var q = nu(lieuDec && brut === lieuDec.nom ? '' : brut);
     var vus = LIEUX.map(function (l) { return { l: l, r: rang(l, q) }; })
                    .filter(function (o) { return !q || o.r; })
                    .sort(function (a, b) { return a.r - b.r; });
@@ -1357,14 +1490,12 @@
       rien.textContent = t().aucunResultat;
       z.appendChild(rien);
     }
-    vus.forEach(function (o) { z.appendChild(optionLieuDec(o.l)); });
-    if (lieuDec) {
-      Array.prototype.forEach.call(z.children, function (c) {
-        var b = c.querySelector && c.querySelector('.ilot-choix');
-        if (!b || !c.dataset.slug) return;
-        b.setAttribute('aria-pressed', c.dataset.slug === lieuDec.slug ? 'true' : 'false');
-      });
-    }
+    vus.forEach(function (o) { z.appendChild(carteDeChoix(o.l)); });
+    if (!lieuDec) return;
+    Array.prototype.forEach.call(z.querySelectorAll('.carte-choix'), function (c) {
+      var b = c.querySelector('.choix-carte');
+      if (b) b.setAttribute('aria-pressed', c.dataset.slug === lieuDec.slug ? 'true' : 'false');
+    });
   }
 
   function resumerDec() {
@@ -1386,7 +1517,6 @@
     lieuDec = l;
     $('qLieuDec').value = l.nom;
     dessinerLieuxDec();
-    fermerListeDec();
     resumerDec();
     majAgenda();
     var pas = document.querySelector('#explorerDec .etape[data-pas="quoi"]');
@@ -1394,18 +1524,7 @@
   }
 
   function optionsVuesDec() {
-    return Array.prototype.slice.call(document.querySelectorAll('#suggDec .ilot-choix'));
-  }
-  function ouvrirListeDec() {
-    var z = $('suggDec'), c = $('qLieuDec');
-    if (!z || !c) return;
-    dessinerLieuxDec();
-    z.hidden = false; c.setAttribute('aria-expanded', 'true');
-  }
-  function fermerListeDec() {
-    var z = $('suggDec'), c = $('qLieuDec');
-    if (!z || !c) return;
-    z.hidden = true; c.setAttribute('aria-expanded', 'false');
+    return Array.prototype.slice.call(document.querySelectorAll('#suggDec .choix-carte'));
   }
 
   /* LE PARTAGE. Rien n'est collecte : le message part du telephone de la
@@ -1482,6 +1601,7 @@
     var c = $('qLieuDec'), z = $('suggDec'), ex = $('explorerDec');
     if (!c || !z || !ex) return;
     LIEUX = lireLesLieuxDeLaPage();
+    dessinerLieuxDec();
     basculeDesRangees(ex);
     ex.addEventListener('change', function () { setTimeout(resumerDec, 0); });
     ['moinsDec', 'plusDec'].forEach(function (id) {
@@ -1492,39 +1612,38 @@
         resumerDec();
       });
     });
-    function rendreLaSaisieDec() {
-      if (!c.readOnly) return false;
-      c.readOnly = false; c.focus(); return true;
-    }
-    var venuDuFoyerDec = false;
-    c.addEventListener('focus', function () { venuDuFoyerDec = true; ouvrirListeDec(); });
-    c.addEventListener('click', function () {
-      if (venuDuFoyerDec) { venuDuFoyerDec = false; return; }
-      if (z.hidden) { ouvrirListeDec(); return; }
-      rendreLaSaisieDec();
-    });
+    /* Le champ n'ouvre plus rien : le carrousel est la des que le tiroir
+       l'est. Il AFFINE — il ne cherche pas un terme libre — et ce qu'il
+       affine reste ce que la page porte. */
     c.addEventListener('input', function () {
-      if (lieuDec && c.value !== lieuDec.nom) { lieuDec = null; resumerDec(); }
-      ouvrirListeDec();
+      if (lieuDec && c.value !== lieuDec.nom) { lieuDec = null; resumerDec(); majAgenda(); }
+      dessinerLieuxDec();
+    });
+    /* Une piste repliee mesure zero : ses commandes se rangent, faute de
+       debordement a annoncer. Redessiner a l'ouverture du tiroir remet la
+       piste sous mesure — la piste observe ses propres enfants. */
+    ex.addEventListener('click', function (e) {
+      if (!e.target.closest || !e.target.closest('.etape[data-pas="quoi"] .etape-tete')) return;
+      setTimeout(dessinerLieuxDec, 0);
     });
     c.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        if (z.hidden) ouvrirListeDec();
-        var o = optionsVuesDec(); if (o.length) o[0].focus();
-      } else if (e.key === 'Escape') {
-        if (!z.hidden) { e.stopPropagation(); fermerListeDec(); }
-      } else if (e.key.length === 1 || e.key === 'Backspace') { rendreLaSaisieDec(); }
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      var o = optionsVuesDec(); if (o.length) o[0].focus();
     });
+    /* Les cartes sont de vrais boutons : les fleches deplacent le FOYER d'une
+       carte a l'autre, et la piste suit toute seule. Echappement rend le
+       foyer au champ. */
     z.addEventListener('keydown', function (e) {
       var o = optionsVuesDec(), i = o.indexOf(document.activeElement);
       if (i < 0) return;
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' ||
+          e.key === 'ArrowDown' || e.key === 'ArrowUp') {
         e.preventDefault();
-        o[((e.key === 'ArrowDown' ? i + 1 : i - 1) + o.length) % o.length].focus();
-      } else if (e.key === 'Escape') { e.stopPropagation(); fermerListeDec(); c.focus(); }
+        var av = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+        o[((av ? i + 1 : i - 1) + o.length) % o.length].focus();
+      } else if (e.key === 'Escape') { e.stopPropagation(); c.focus(); }
     });
-    c.addEventListener('blur', function () { setTimeout(function () { fermerListeDec(); c.readOnly = true; }, 0); });
     if ($('partagerDec')) $('partagerDec').addEventListener('click', partagerLaSortie);
     if ($('telDec') && Roots.initTelRoots) Roots.initTelRoots($('telDec'));
     resumerDec();
@@ -1534,14 +1653,34 @@
   /* Les onglets reprennent la mecanique de la feuille de reservation : la
      classe active passe d'un bouton a l'autre et d'un panneau a l'autre, rien
      de plus. */
+  var ONGLET_INITIAL = 'visiter';
+
+  function ongletActif() {
+    var b = document.querySelector('#onglets button.actif');
+    return b ? b.dataset.ong : ONGLET_INITIAL;
+  }
+
+  function activerOnglet(nom) {
+    var barre = $('onglets');
+    if (!barre) return;
+    Array.prototype.forEach.call(barre.querySelectorAll('button'), function (x) {
+      x.classList.toggle('actif', x.dataset.ong === nom);
+    });
+    $('ct-visiter').classList.toggle('actif', nom === 'visiter');
+    $('ct-decouvrir').classList.toggle('actif', nom === 'decouvrir');
+  }
+
+  /* Quitter l'onglet d'ouverture pose une couche : le retour y ramene avant
+     de fermer la feuille. Y revenir par un geste la rend. */
   function ongletsDeLaFeuille() {
     var barre = $('onglets');
     if (!barre) return;
     barre.addEventListener('click', function (e) {
       var b = e.target.closest('button'); if (!b) return;
-      barre.querySelectorAll('button').forEach(function (x) { x.classList.toggle('actif', x === b); });
-      $('ct-visiter').classList.toggle('actif', b.dataset.ong === 'visiter');
-      $('ct-decouvrir').classList.toggle('actif', b.dataset.ong === 'decouvrir');
+      var nom = b.dataset.ong;
+      activerOnglet(nom);
+      if (nom === ONGLET_INITIAL) retirerCouche('onglet');
+      else poserCouche('onglet', function () { activerOnglet(ONGLET_INITIAL); });
     });
   }
 
@@ -1563,8 +1702,20 @@
       fab.setAttribute('aria-expanded', 'true');
       var premier = f.querySelector('input,select,button:not(.fermer),[tabindex]');
       if (premier) premier.focus();
+      poserCouche('feuille', function () { fermer(); });
+      /* La feuille rouvre sur l'onglet quitte : sa couche se repose avec elle,
+         sinon le retour fermerait la feuille sans repasser par l'onglet. */
+      if (ongletActif() !== ONGLET_INITIAL) {
+        poserCouche('onglet', function () { activerOnglet(ONGLET_INITIAL); });
+      }
     }
+    /* Fermer la feuille emporte les couches ouvertes par-dessus : les tiroirs
+       se replient sans rendre d'entree, `retirerCouche` rendant les leurs avec
+       celle de la feuille. */
     function fermer() {
+      retirerCouche('feuille');
+      replierLesPas($('explorer'));
+      replierLesPas($('explorerDec'));
       f.classList.remove('visible'); v.classList.remove('visible');
       fab.setAttribute('aria-expanded', 'false');
       fab.focus();
@@ -1653,6 +1804,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('.vignette img'), function (img) {
       img.addEventListener('error', function () {
         var z = img.parentNode;
+        if (!z) return;
         z.classList.add('reserve');
         z.innerHTML = '<svg class="i-reserve" aria-hidden="true"><use href="#i-roam"/></svg>';
       });
@@ -1694,7 +1846,7 @@
           document.querySelectorAll('#railSejour > li > [data-zone]'), 'data-zone');
   filtrer(document.querySelector('#decouvrir .pastilles'),
           document.querySelectorAll('#decouvrir .rubrique'), 'data-rub');
-  ['railSejour', 'railBientot', 'railIncont'].forEach(function (id) {
+  ['railSejour', 'railBientot', 'railIncont', 'suggDec'].forEach(function (id) {
     if ($(id) && Roots.glisser) Roots.glisser($(id));
   });
 
