@@ -390,6 +390,15 @@
                                    24 x 24 px CSS : 44 est un choix, pas un minimum */
   --cible-plancher-aa: 24px;    /* SC 2.5.8, niveau AA — plancher normatif */
   --tuile-action-min: 96px;     /* contrainte de poste, aucune source : elle n'existe pas */
+  --carte-min: 256px;           /* plancher d'une carte en grille auto-ajustee.
+                                   Derive de la mesure de lecture : une carte
+                                   vaut la moitie d'une colonne de prose,
+                                   gouttiere deduite — (540 - 24) / 2, arrondi
+                                   a la base 4. Deux cartes cote a cote font
+                                   donc la largeur d'un paragraphe. Le baisser
+                                   sous 226 ou le monter au-dela de 283 change
+                                   le nombre de colonnes servies sur grand
+                                   ecran. */
 }
 
 /* ---------- 2 bis. LES TROIS JEUX D'ÉCRAN — jeux DISCRETS, jamais un
@@ -660,7 +669,7 @@
    invisible sur fond nu, elle ne sert qu'a separer le texte qui defile des
    glyphes. Les deux cibles tiennent le plancher de 44 px ; les reduire fait
    tomber le critere de taille de cible. */
-.regle-taille { position: fixed; right: var(--esp-3); z-index: 6;
+.regle-taille { position: fixed; right: var(--bord); z-index: 6;
                 display: flex; align-items: center; gap: 0;
                 width: max-content; font-size: var(--t-label);
                 opacity: 1; transition: opacity 200ms var(--courbe-a); }
@@ -682,6 +691,15 @@
    bouton qui ment. Elle reste servie au plus petit jeu, ou le corps part de
    plus bas. Le zoom du navigateur reste disponible partout. */
 @media (min-width: 641px) { .regle-taille { display: none; } }
+/* Large mais court : un telephone couche, jamais un ordinateur. La largeur
+   seule ne les distingue pas — au-dela de 640 px le chrome prendrait la
+   typographie des grands ecrans et doublerait de taille sur un ecran qui n'a
+   pas la hauteur de le porter. Le seuil de 599 px de hauteur est celui qui dit
+   « couche » partout ailleurs dans la feuille : en poser un second garantit
+   qu'ils divergeront. */
+@media (min-width: 640px) and (max-height: 599px) {
+  :root { --t-chrome-titre: var(--t-16); --t-h3: var(--t-21); }
+}
 @media print {
   .lecture-longue { line-height: var(--lh-lecture-print); }
 }

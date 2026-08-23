@@ -20,6 +20,7 @@ jeton,rang,valeur
 --blanc-casse,0,#FDFBF6
 --blanc-casse-rgb,0,253, 251, 246
 --blanc-rgb,0,255, 255, 255
+--carte-min,0,256px
 --casse-ll-h5,0,uppercase
 --cible-min,0,44px
 --cible-plancher-aa,0,24px
@@ -209,6 +210,7 @@ jeton,rang,valeur
 --t-chrome-titre,0,var(--t-21)
 --t-chrome-titre,1,var(--t-16)
 --t-chrome-titre,2,var(--t-21)
+--t-chrome-titre,3,var(--t-16)
 --t-code,0,var(--t-33)
 --t-display,0,var(--t-68)
 --t-display,1,var(--t-51)
@@ -221,6 +223,7 @@ jeton,rang,valeur
 --t-h3,0,var(--t-28)
 --t-h3,1,var(--t-21)
 --t-h3,2,var(--t-21)
+--t-h3,3,var(--t-21)
 --t-h4,0,var(--t-21)
 --t-h4,1,var(--t-16)
 --t-h4,2,var(--t-16)

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-aT76+wxuXSLMf3NULYMwQExz0SsF4E+KmJqHFOTSXyI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-AoL2AqzylyaqxSPxG3YtiXqZccWF8MOwvcTjoP9JSys='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -400,9 +400,12 @@
   <p class="message-ferme" id="videDec" role="status" data-t="videDecouvrir">Aucun lieu ne porte encore de fiche. Choisir en ouvre la présentation dès qu'elles arrivent.</p>
 
   <!-- Decouvrir, c'est planifier : la sortie se pose dans l'agenda, et l'on
-       peut y convier d'autres personnes. Le geste d'invitation est un BOUTON,
-       pas un lien — il agit sur l'ecran courant, il ne mene nulle part — mais
-       il porte la peau du lien tertiaire, qui est la forme de ce rang. -->
+       porte la nouvelle soi-meme. Le geste de partage est un BOUTON, pas un
+       lien — il agit sur l'ecran courant, il ne mene nulle part — mais il porte
+       la peau du lien tertiaire, qui est la forme de ce rang. AUCUNE donnee de
+       tiers n'est demandee : le message part du telephone de la personne.
+       Le geste principal reste ferme tant que la sortie n'a pas de date, et la
+       ligne sous lui dit pourquoi : un bouton ferme et muet est un cul-de-sac. -->
   <section class="bloc-sejour">
     <div id="invites">
       <div class="champ groupe"><label for="nomDec" data-t="tonNom">Ton prénom</label>
@@ -410,9 +413,10 @@
       <div class="champ groupe"><label for="telDec" data-t="tonTel">Ton numéro (WhatsApp, si possible)</label>
         <input type="tel" inputmode="tel" id="telDec" autocomplete="tel"></div>
     </div>
-    <p class="etat-invites" id="etatInvites" role="status"></p>
-    <p class="ligne-inviter"><button type="button" class="lien-tertiaire" id="inviterDec" data-t="inviter">Inviter d'autres personnes</button></p>
-    <button class="bouton-confirmer" id="btnAgenda" disabled data-t="ajouterAgenda">Ajouter à mon agenda</button>
+    <p class="ligne-partager"><button type="button" class="lien-tertiaire" id="partagerDec" data-t="partager">Partager</button></p>
+    <p class="etat-partage" id="etatPartage" role="status"></p>
+    <button class="bouton-confirmer" id="btnAgenda" disabled aria-describedby="noteAgenda" data-t="ajouterAgenda">Ajouter à mon agenda</button>
+    <p class="note-agenda" id="noteAgenda" data-t="agendaSansLieu">Choisis un lieu pour poser la sortie.</p>
   </section>
   </div>
 
@@ -477,10 +481,14 @@
       laNuit: function (p) { return p + ' la nuit'; },
       parNuit: 'la nuit',
       plusInfos: 'Plus d’infos',
-      inviter: 'Inviter d’autres personnes',
-      invitesAjoutes: function (n) { return n > 1 ? n + ' invités à renseigner.' : 'Un invité à renseigner.'; },
+      partager: 'Partager',
+      partageTitre: 'On sort',
+      partageDit: function (lieu) { return 'On va à ' + lieu + '. Tu viens ?'; },
+      partageCopie: 'Message copié. Colle-le où tu veux.',
+      partageRate: 'Le message n’a pas pu être copié.',
       ajouterAgenda: 'Ajouter à mon agenda',
-      prenomInvite: 'Son prénom', telInvite: 'Son numéro',
+      agendaSansDate: 'Cette sortie n’a pas encore de date.',
+      agendaSansLieu: 'Choisis un lieu pour poser la sortie.',
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
       rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
@@ -583,10 +591,14 @@
       laNuit: function (p) { return p + ' a night'; },
       parNuit: 'a night',
       plusInfos: 'More info',
-      inviter: 'Invite other people',
-      invitesAjoutes: function (n) { return n > 1 ? n + ' guests to fill in.' : 'One guest to fill in.'; },
+      partager: 'Share',
+      partageTitre: 'We are going out',
+      partageDit: function (lieu) { return 'We are heading to ' + lieu + '. Coming?'; },
+      partageCopie: 'Message copied. Paste it anywhere.',
+      partageRate: 'The message could not be copied.',
       ajouterAgenda: 'Add to my calendar',
-      prenomInvite: 'Their first name', telInvite: 'Their number',
+      agendaSansDate: 'This outing has no date yet.',
+      agendaSansLieu: 'Pick a place to set the outing.',
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
       rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
@@ -1396,55 +1408,74 @@
     z.hidden = true; c.setAttribute('aria-expanded', 'false');
   }
 
-  /* Les paires d'invites. Chaque paire porte un identifiant engendre : un
-     libelle sans `for` valide ne nomme rien, et deux champs de meme identifiant
-     rendent le second inatteignable. Le champ telephonique recoit le meme
-     appareillage que celui du sejour — indicatif, drapeau, format. */
-  var nbInvites = 0;
-
-  function ajouterUnInvite() {
-    var z = $('invites');
-    if (!z) return;
-    nbInvites += 1;
-    var n = nbInvites;
-    var bloc = document.createElement('div');
-    bloc.className = 'paire-invite';
-
-    var cN = document.createElement('div');
-    cN.className = 'champ groupe';
-    var lN = document.createElement('label');
-    lN.htmlFor = 'nomInvite' + n;
-    lN.setAttribute('data-t', 'prenomInvite');
-    lN.textContent = t().prenomInvite;
-    var iN = document.createElement('input');
-    iN.id = 'nomInvite' + n;
-    iN.autocomplete = 'off';
-    cN.appendChild(lN); cN.appendChild(iN);
-
-    var cT = document.createElement('div');
-    cT.className = 'champ groupe';
-    var lT = document.createElement('label');
-    lT.htmlFor = 'telInvite' + n;
-    lT.setAttribute('data-t', 'telInvite');
-    lT.textContent = t().telInvite;
-    var iT = document.createElement('input');
-    iT.type = 'tel'; iT.inputMode = 'tel'; iT.id = 'telInvite' + n; iT.autocomplete = 'off';
-    cT.appendChild(lT); cT.appendChild(iT);
-
-    bloc.appendChild(cN); bloc.appendChild(cT);
-    z.appendChild(bloc);
-    if (Roots.initTelRoots) Roots.initTelRoots(iT);
-    iN.focus();
-    if ($('etatInvites')) $('etatInvites').textContent = t().invitesAjoutes(nbInvites);
-    majAgenda();
+  /* LE PARTAGE. Rien n'est collecte : le message part du telephone de la
+     personne, vers qui elle veut. La feuille native du systeme est le chemin
+     direct — elle presente les applications reellement installees — et elle
+     EXIGE deux choses : une origine sure, et l'activation transitoire du
+     geste. L'appel part donc du gestionnaire de clic lui-meme, sans aucune
+     attente avant lui : une attente le fait refuser. Refermer la feuille
+     rejette par le meme chemin qu'une absence de cible, donc un refus ne dit
+     rien et ne s'affiche pas. La ou la feuille n'existe pas — un parc de
+     navigateurs de bureau en est depourvu — le message est copie par le
+     mecanisme du tronc, qui porte deja son propre repli sans presse-papiers.
+     Le resultat s'annonce dans une region vivante : il ne deplace pas le
+     foyer, il doit donc se dire. */
+  function messageDeSortie() {
+    var mots = t() || {};
+    if (!lieuDec || typeof mots.partageDit !== 'function') return '';
+    return mots.partageDit(lieuDec.nom);
   }
 
-  /* Le geste principal reste ferme tant que la sortie n'a pas de lieu et que
-     personne n'est nomme : un agenda sans quoi ni qui n'ajoute rien. */
+  function direPartage(mot) {
+    var e = $('etatPartage');
+    if (e) e.textContent = mot || '';
+  }
+
+  function partagerLaSortie() {
+    var texte = messageDeSortie();
+    if (!texte) return;
+    var mots = t() || {};
+    var url = location.href.split('#')[0];
+    var charge = { title: mots.partageTitre, text: texte, url: url };
+    if (navigator.share && navigator.canShare && navigator.canShare(charge)) {
+      direPartage('');
+      navigator.share(charge).catch(function () { });
+      return;
+    }
+    if (!window.Roots || !Roots.copier) { direPartage(mots.partageRate); return; }
+    Roots.copier(texte + ' ' + url, function (ok) {
+      direPartage(ok ? mots.partageCopie : mots.partageRate);
+    });
+  }
+
+  /* Le geste de partage n'existe qu'une fois le lieu retenu : partager une
+     sortie sans sortie n'envoie rien. */
+  function majPartage() {
+    var b = $('partagerDec');
+    if (b) b.disabled = !lieuDec;
+  }
+
+  /* Le geste principal reste FERME tant que la sortie n'a pas de date : un
+     agenda sans debut n'ajoute rien, et le bouton ne doit pas pouvoir ecrire
+     une entree vide. La ligne sous lui porte le motif et lui est rattachee :
+     fermer sans dire pourquoi laisse la personne devant un mur. */
+  function dateDeLaSortie(l) {
+    return (l && (l.debut || l.date_debut)) || '';
+  }
+
   function majAgenda() {
-    var b = $('btnAgenda'), n = $('nomDec');
+    var b = $('btnAgenda'), note = $('noteAgenda'), mots = t() || {};
+    majPartage();
     if (!b) return;
-    b.disabled = !(lieuDec && n && n.value.trim());
+    var date = dateDeLaSortie(lieuDec);
+    b.disabled = !date;
+    if (!note) return;
+    var cle = !lieuDec ? 'agendaSansLieu' : (date ? '' : 'agendaSansDate');
+    note.hidden = !cle;
+    if (cle) {
+      note.setAttribute('data-t', cle);
+      note.textContent = mots[cle] || '';
+    }
   }
 
   function explorateurDecouvrir() {
@@ -1494,8 +1525,7 @@
       } else if (e.key === 'Escape') { e.stopPropagation(); fermerListeDec(); c.focus(); }
     });
     c.addEventListener('blur', function () { setTimeout(function () { fermerListeDec(); c.readOnly = true; }, 0); });
-    if ($('inviterDec')) $('inviterDec').addEventListener('click', ajouterUnInvite);
-    if ($('nomDec')) $('nomDec').addEventListener('input', majAgenda);
+    if ($('partagerDec')) $('partagerDec').addEventListener('click', partagerLaSortie);
     if ($('telDec') && Roots.initTelRoots) Roots.initTelRoots($('telDec'));
     resumerDec();
     majAgenda();
