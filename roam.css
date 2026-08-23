@@ -155,7 +155,7 @@
      hauteur : les deux colonnes font la même largeur. Les pourcentages se
      comptent alors sur la hauteur de la vidéo, et les blocs suivent d'eux-mêmes
      quand elle change de taille — aucune valeur à recalculer. */
-  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1;display:block;position:relative;width:100%;height:auto;aspect-ratio:4/3;padding:0 5vw;margin:0}
+  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1;display:block;position:relative;width:100%;height:auto;aspect-ratio:4/3;padding:0 5vw;margin:0;transform:translateY(calc(-1 * var(--propos-decalage,0px)))}
   :where(body.p-roam) .vedette-dire .vedette-nom{position:absolute;top:25%;left:5vw;right:5vw;margin:0;text-align:left}
   /* L'ancrage demandé est tenu tant que la scène est assez haute pour le
      porter ; sinon il est ramené juste ce qu'il faut pour que le groupe finisse
@@ -256,4 +256,4 @@
    se donne au-dessous. Le sélecteur porte sa classe sans `:where` : la
    déclaration qu'il remplace vise `body` seul, et une règle de poids nul ne la
    reprend pas. */
-body.p-roam{--propos-h:0px;--geste-bas:calc(var(--barre-h) + var(--souffle-filet) + var(--cible-min));padding-bottom:calc(var(--geste-bas) + var(--souffle-filet))}
+body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h) + var(--souffle-filet) + var(--cible-min));padding-bottom:calc(var(--geste-bas) + var(--souffle-filet))}

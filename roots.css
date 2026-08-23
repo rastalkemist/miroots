@@ -1448,11 +1448,6 @@ body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--jaune-e2)}
    Le jaune suit la surface, comme l'antenne : echelon 2 sur clair, blanc ou
    film ; echelon 3 sur sombre. La commande de lecture n'est pas un texte et
    garde la sienne. */
-.languette-radio.antenne{color:var(--jaune-e2);border-color:rgba(var(--jaune-e2-rgb),.55)}
-body[data-surface="sombre"] .languette-radio.antenne{color:var(--jaune-e3);border-color:rgba(var(--jaune-e3-rgb),.55)}
-body[data-surface="sombre"] .radio-pastille{color:var(--univers-e5)}
-body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
-
 .radio-rangee{width:var(--chrome-w);margin:0 auto}
 /* LE LECTEUR. Une seule regle gouverne sa droite : la COMMANDE, toujours a
    droite, a son centre sur l'AXE VERTICAL de l'antenne. Ce qui depasse a
@@ -1472,6 +1467,27 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    rouge affichait le noir d'un autre monde. */
 .languette-radio{margin-top:var(--esp-2);margin-left:auto;width:max-content;max-width:100%;margin-right:calc(var(--cible-min) + var(--esp-2) + var(--cible-min) / 2 - (var(--esp-4) - var(--esp-3)) / 2 - (var(--t-chrome-titre) + var(--esp-3)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;gap:var(--esp-4);padding:0 calc((var(--esp-4) - var(--esp-3)) / 2 - var(--limite-ep)) 0 var(--esp-3);background:var(--gris-ilot);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--univers-e1);overflow:hidden}
 .languette-radio.cache{display:none}
+/* L'ETAT DE L'ANTENNE, SURFACE PAR SURFACE.
+   Sur un fond opaque et clair, l'ilot eteint s'ecrit au noir de marque. Allume,
+   le jaune ne touche QUE les pictogrammes : ils portent l'etat sans avoir a
+   etre lus, et un pictogramme releve du plancher des objets graphiques, non de
+   celui du texte. Le mot qui dit l'antenne prend l'univers, qui se lit ; le
+   contour tombe, l'etat n'ayant plus besoin d'une seconde forme.
+   Sur un fond sombre ou sans fond, rien ne garantit ce qui passe dessous : le
+   mot rejoint alors les pictogrammes dans le jaune, seule encre qui ne se
+   confonde ni avec un film ni avec un aplat sombre. */
+:where(body:not([data-surface="sombre"]):not([data-surface="ambiante"])){
+  --radio-eteinte:var(--roots-noir);
+  --radio-mot:var(--univers);
+}
+:where(body[data-surface="sombre"],body[data-surface="ambiante"]){
+  --radio-eteinte:var(--blanc-casse);
+  --radio-mot:var(--jaune-e2);
+}
+.languette-radio,.radio-pastille{color:var(--radio-eteinte)}
+.languette-radio.antenne{color:var(--radio-eteinte);border-color:transparent}
+.languette-radio.antenne .lecteur-etat{color:var(--radio-mot)}
+.languette-radio.antenne .lecteur-btn,.radio-pastille.antenne{color:var(--jaune-e2)}
 /* L'ilot entre et sort au cran d'apparition d'un bandeau de l'echelle de
    mouvement. Le decalage part du haut : il descend de sous la pastille qui
    vient d'etre pressee, d'ou il vient. Le repli de la boite attend la fin de
@@ -1535,21 +1551,26 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
    garde ses bords. Le chrome est donc toujours plus large que la piste au-dela
    du telephone, et l'ecart croit avec l'ecran — c'est voulu, ce n'est pas un
    desalignement.
-        piste   5-90-5 · 15-70-15 · 20-60-20 · 25-50-25
+        piste   5-90-5 · 20-60-20 · 25-50-25 · 25-50-25
         chrome  5-90-5 · 10-80-10 · 15-70-15 · 20-60-20
+   La piste cesse de bouger au-dela de l'ordinateur ; le chrome continue de se
+   resserrer. Au franchissement du dernier palier le chrome se RAPPROCHE donc de
+   la piste — l'ecart mesure 160 px juste avant, 80 juste apres — puis recroit
+   avec la largeur. C'est la seule marche ou les deux bords se rejoignent au
+   lieu de s'ecarter ; toucher a l'un des deux jeux la deplace.
    La condition porte la LARGEUR ET LA HAUTEUR, comme celle de la typographie :
    un telephone couche garde les marges et les tailles du telephone.
    CE QUI CASSE SI ON LE MODIFIE : le mobilier du chrome se cale sur
    `--chrome-w`, le contenu sur `--piste`. Faire pointer les deux sur le meme
    jeton supprime le recentrage et ramene une seule echelle. */
 @media(min-width:640px) and (min-height:600px){
-  :root{--marge:15%;--site-w:70%;--marge-chrome:10%;--chrome-w:80%;--grille-colonnes:8}
+  :root{--marge:20%;--site-w:60%;--marge-chrome:10%;--chrome-w:80%;--grille-colonnes:8}
 }
 @media(min-width:1024px) and (min-height:600px){
-  :root{--marge:20%;--site-w:60%;--marge-chrome:15%;--chrome-w:70%;--grille-colonnes:12;--gouttiere-grille:var(--esp-6)}
+  :root{--marge:25%;--site-w:50%;--marge-chrome:15%;--chrome-w:70%;--grille-colonnes:12;--gouttiere-grille:var(--esp-6)}
 }
 @media(min-width:1600px) and (min-height:600px){
-  :root{--marge:25%;--site-w:50%;--marge-chrome:20%;--chrome-w:60%}
+  :root{--marge-chrome:20%;--chrome-w:60%}
 }
 
 /* Ecran couche et court : le chrome garde la taille du telephone. */
@@ -1578,6 +1599,20 @@ body.nav-haut .verbe{flex:0 0 auto;padding:0}
 :where(body){--verbe-part:.786}
 body.nav-haut .ico-rond{width:var(--cible-min);height:var(--cible-min)}
 body.nav-haut .ico-rond svg{width:calc(var(--cible-min) * var(--verbe-part));height:calc(var(--cible-min) * var(--verbe-part))}
+/* Monte sur un chrome a fond opaque, le verbe courant se marque par SON ENCRE
+   et non par un disque : la couleur d'univers le distingue seule des verbes
+   discrets, et le disque etait la seule forme pleine de la rangee.
+   CE QUI GARDE LE DISQUE : un chrome sans fond, pose sur un film. Aucune encre
+   ne se detache d'une image que rien ne contraint ; le disque y est la
+   garantie de lisibilite, pas une decoration. La cible ne bouge pas. */
+body.nav-haut:not([data-surface="ambiante"]) .verbe.actif .ico-rond{background:none;color:var(--univers)}
+/* Monte, la barre tient deux groupes : le mobilier de gauche prend sa largeur
+   naturelle, la colonne qui suit prend le reste et pousse l'antenne au bord.
+   Le logotype rejoint le groupe de gauche, ou l'ecart unique le separe du
+   super-nav exactement comme le super-nav est separe du logo.
+   CE QUI CASSE SI ON LE MODIFIE : le groupe de gauche compte trois membres et
+   une seule valeur d'ecart ; en donner une seconde rompt l'egalite. */
+body.nav-haut .chrome-inner{grid-template-columns:auto 1fr}
 .chrome-gauche{display:flex;align-items:center;gap:var(--esp-3)}
 /* Monte dans la barre, le super-nav perd le fond blanc qui detachait ses
    verbes : sur l'ecran ambiant ils prennent donc l'encre du reste du chrome.
