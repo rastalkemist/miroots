@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-6AF6AfsTOKg2zHbNqqlFZSiYGLd5lYv0JbLQv1s1VOI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-SZnJyVT0MuOz+Qh0BSi46dkEDR9D0AzsTfFYQ1eDZjw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -70,10 +70,9 @@
     <article class="vedette" id="vedette" data-zone="cotonou">
       <div class="vedette-scene">
         <video id="filmRoam" muted playsinline preload="none"
-               poster="media/lieux/ahoefa-fiche.jpg" aria-hidden="true"></video>
-        <button type="button" class="commande-video cache" id="cmdFilmRoam"
-                data-al="alPause" aria-label="Mettre la vidéo en pause">
-          <svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
+               poster="media/lieux/ahoefa-debut.jpg"
+               tabindex="0" role="button" data-al="alPause"
+               aria-label="Mettre la vidéo en pause"></video>
       </div>
       <div class="vedette-tete">
         <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
@@ -447,6 +446,7 @@
       noteNumeros: 'Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.',
       chercher: 'Chercher un séjour',
       chercherMots: 'Je découvre',
+      alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
       titreFeuille: 'Réserver un séjour',
       eOu: 'Où ?',
       eOuVide: 'Choisir un lieu',
@@ -540,6 +540,7 @@
       noteNumeros: 'Taken from the ARCEP national numbering plan, January 2021. None has been dialled yet.',
       chercher: 'Search for a stay',
       chercherMots: 'Let’s roam!',
+      alPause: 'Pause the video', alLire: 'Play the video',
       titreFeuille: 'Book a stay',
       eOu: 'Where?',
       eOuVide: 'Pick a place',
@@ -1048,47 +1049,56 @@
   }
 
   /* ------------------------------------------------------------------
-     LE FILM DE LA VEDETTE. Deux passes puis un fondu sur l'affiche : un element
-     qui joue tient le verrou de veille de l'appareil, et l'ecran ne s'eteint
-     plus tant que la lecture dure. Porter PASSES a zero rend ce defaut. Une
-     lecture refusee n'est pas forcee — l'affiche tient l'ecran et la source
-     est relachee, donc rien ne se telecharge.
+     LE FILM DE LA VEDETTE. Deux passes, puis le film revient a sa premiere
+     image et s'y arrete : l'affiche EST cette image, donc l'ecran ne change pas
+     de vue quand la lecture cesse. Un element qui joue tient le verrou de veille
+     de l'appareil, et l'ecran ne s'eteint plus tant que la lecture dure ; porter
+     PASSES a zero rend ce defaut. La scene est sa propre commande — l'appui
+     bascule —, ce qui vaut mecanisme au sens de SC 2.2.2 : le role, le nom et
+     l'arret de tabulation la rendent atteignable sans souris. Une lecture
+     refusee n'est pas forcee : l'affiche tient l'ecran et la source est
+     relachee, donc rien ne se telecharge.
      ------------------------------------------------------------------ */
   var FILM = 'media/lieux/ahoefa-hero.mp4';
   var PASSES = 2;
   function filmVedette() {
-    var v = $('filmRoam'), cmd = $('cmdFilmRoam');
-    if (!v || !cmd) return;
+    var v = $('filmRoam');
+    if (!v) return;
     var faites = 0;
-    function marquer(joue) {
+    function nommer(joue) {
       var cle = joue ? 'alPause' : 'alLire';
-      cmd.setAttribute('data-al', cle);
-      cmd.setAttribute('aria-label', (t() && t()[cle]) || (joue ? 'Pause' : 'Lire'));
-      cmd.querySelector('use').setAttribute('href', joue ? '#i-pause' : '#i-lecture');
+      v.setAttribute('data-al', cle);
+      v.setAttribute('aria-label', (t() && t()[cle]) || (joue ? 'Pause' : 'Lire'));
     }
-    function relacher() { marquer(false); v.removeAttribute('src'); v.load(); }
+    function relacher() { nommer(false); v.removeAttribute('src'); v.load(); }
     function lancer() {
       if (v.getAttribute('src') !== FILM) v.setAttribute('src', FILM);
       var r = v.play();
       if (r && r['catch']) r['catch'](relacher);
-      cmd.classList.remove('cache');
+      nommer(true);
     }
+    /* Revenir a zero AVANT de suspendre : la derniere image rendue est alors la
+       premiere du film, celle que porte l'affiche. */
+    function reposer() { v.pause(); v.currentTime = 0; nommer(false); }
     v.addEventListener('ended', function () {
       faites += 1;
       if (faites < PASSES) { v.currentTime = 0; v.play(); return; }
-      v.classList.add('fondu-affiche'); marquer(false);
+      reposer();
     });
-    cmd.addEventListener('click', function () {
-      if (v.paused) { faites = 0; v.classList.remove('fondu-affiche'); lancer(); marquer(true); }
-      else { v.pause(); marquer(false); }
+    function basculer() {
+      if (v.paused) { faites = 0; lancer(); } else { v.pause(); nommer(false); }
+    }
+    v.addEventListener('click', basculer);
+    v.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); basculer(); }
     });
     document.addEventListener('visibilitychange', function () { if (document.hidden) v.pause(); });
     var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
     if ((c && c.saveData) ||
         (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-      cmd.classList.remove('cache'); marquer(false); return;
+      nommer(false); return;
     }
-    lancer(); marquer(true);
+    lancer();
   }
 
   /* Une image absente ne laisse pas le glyphe casse du navigateur au milieu
