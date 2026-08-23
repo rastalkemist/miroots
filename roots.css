@@ -177,6 +177,31 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
    cesse d'etre lisible au-dela de la mesure et s'y arrete. Plafonner le
    conteneur revenait a plafonner la page : sur un grand ecran elle n'occupait
    plus que 39 % de la fenetre, la ou la gouttiere en sert 70. */
+/* ─── LE BLOC — la gouttiere se reconduit A L'INTERIEUR ────────────────────
+   Un bloc de section reprend, en dedans, la meme part que la gouttiere prend
+   au dehors : 5 % sur petit ecran, 10 % sur tablette, 15 % sur ordinateur,
+   20 % sur tres large. Le texte cesse alors de coller au bord de son propre
+   bloc, quel que soit l'ecran, sans qu'aucune distance ne soit ecrite.
+   La part se lit sur la LARGEUR DU BLOC, pas sur celle de la fenetre : c'est
+   ce qui la rend juste dans une colonne comme dans une pleine largeur.
+   ⛔ ELLE NE SE RECONDUIT QU'UNE FOIS. Un bloc dans un bloc ne se remet pas
+   de gouttiere : deux applications mangeraient la moitie de la piste, et la
+   troisieme la totalite. Retirer la seconde regle casse cette garantie. */
+/* ─── LES ONGLETS — grammaire, pas ecran ──────────────────────────────────
+   Deux ecrans portent une feuille a onglets : la forme cesse d'appartenir a
+   l'un d'eux. Le panneau retenu se montre, les autres se cachent ; l'onglet
+   retenu prend l'aplat d'univers et l'encre blanche. La cible tient le
+   plancher. ⚠ La MECANIQUE — quel onglet est retenu, ou va le foyer, ce que
+   les fleches font — ne vit pas ici : tant qu'elle est ecrite dans chaque
+   ecran, deux implementations d'un meme composant finiront par diverger. */
+.onglets{display:flex;background:var(--gris-ilot);border-radius:var(--rayon-pilule);padding:3px;margin-bottom:var(--air-i3)}
+.onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:var(--esp-2);min-height:var(--cible-min);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;cursor:pointer}
+.onglets button.actif{background:var(--univers);color:var(--blanc)}
+.contenu{display:none}
+.contenu.actif{display:block}
+
+.bloc{padding-inline:var(--marge)}
+.bloc .bloc{padding-inline:0}
 .corps{width:var(--piste);margin:0 auto;padding:var(--esp-4) 0 0}
 .corps > p,
 .corps > .chapo,
@@ -487,8 +512,19 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    mobile zoome sur la page a la mise au point et n'en revient pas seul. */
 .fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border:none;font-size:var(--t-21);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .fab svg{width:26px;height:26px;stroke-width:2.6}
-.voile{z-index:12}
-.feuille-bas{overscroll-behavior:contain;position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);--feuille-pose:0px;max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
+/* LE RANG DE PILE D'UNE FEUILLE MODALE. Le voile passe au-dessus de TOUT le
+   chrome — barre du bas comprise —, et la feuille au-dessus du voile. Un
+   element de chrome qui surplombe une feuille `aria-modal` la rend non modale :
+   il reste actionnable, et il recouvre le bas de la feuille, commandes
+   comprises. La barre du bas vaut 15 par defaut et 6 sur surface ambiante : un
+   rang inferieur a 15 ne tenait donc que sur l'ecran qui porte un film.
+   Le tiroir reste au-dessus : il s'ouvre depuis la barre, jamais avec elle. */
+.voile{z-index:21}
+/* Le voile DOUX est celui d'un tiroir, pas d'une feuille : le tiroir s'ancre a
+   la barre du haut et s'ouvre depuis elle. Le couvrir rendrait sa propre
+   commande inatteignable. Il garde donc son rang sous le chrome. */
+.voile.voile-doux{z-index:12}
+.feuille-bas{overscroll-behavior:contain;position:fixed;z-index:22;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);--feuille-pose:0px;max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
 .feuille-bas::-webkit-scrollbar{display:none}
 .feuille-bas.visible{transform:translate(-50%,0)}
 .feuille-bas .groupe{margin-bottom:var(--air-i3)}
@@ -526,7 +562,10 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
-:where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i6)}
+:where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i6);padding-inline:var(--marge)}
+:where(body.p-roam) .bloc-sejour .bloc-sejour,
+:where(body.p-roam) .bloc-sejour .rubrique{padding-inline:0}
+:where(body.p-roam) .rubrique{padding-inline:var(--marge)}
 :where(body.p-roam) .bloc-sejour > .etiquette{display:block;margin-bottom:var(--air-i2);font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
 /* Les lieux de la flotte. Un lieu ouvert est un lien qui mene au geste ; un
    lieu a venir est une carte muette, sans etat interactif — un statut n'est
@@ -571,7 +610,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    emploie l'accord creme sur l'echelon 1 de l'univers, qui rend 12,17 — au-dessus
    du plancher AAA de 7. Changer l'un des deux jetons casse ce rapport. */
 
-:where(body.p-roam) .hero-roam{margin:0 0 var(--air-i8)}
 /* La hauteur se prend sur la hauteur RENDUE du chrome, publiee par le script,
    et jamais sur la valeur ecrite : une valeur declaree derive du rendu sans
    que rien ne le signale. Chrome + scene ne depassent pas la moitie haute de
@@ -583,12 +621,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    atteignent le bord SANS employer 100vw, qui compte la barre de defilement
    et ferait deborder la page a l'horizontale sur un ecran large. Le titre, la
    phrase et le geste, eux, restent dans la colonne. */
-:where(body.p-roam) .hero-scene{position:relative;overflow:hidden;background:var(--univers-e1);margin:calc(-1 * var(--esp-4)) calc(50% - 50vw) var(--air-i3);width:auto;height:calc(50vh - var(--entete-h-rendue, var(--entete-h)));height:calc(50dvh - var(--entete-h-rendue, var(--entete-h)))}
-:where(body.p-roam) .hero-scene video{width:100%;height:100%;object-fit:cover;display:block;transition:opacity var(--mvt-apparition) var(--courbe-sortie)}
-:where(body.p-roam) .hero-scene video.fondu-affiche{opacity:0}
-:where(body.p-roam) .hero-dit{margin:0 0 var(--air-i3);font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre)}
 
-:where(body.p-roam) .chapo-section{margin:0 0 var(--air-i3);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
 :where(body.p-roam) .etiquette.sous{margin-top:var(--air-i6)}
 :where(body.p-roam) .cat.actif{border-color:var(--univers);background:var(--univers-selection);color:var(--univers)}
 
@@ -626,8 +659,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 
 /* La commande du film vit DANS la scene du hero, pas sur un fond plein ecran :
    sans taille propre elle tombe a 29 x 21. Elle reprend le plancher de 44. */
-:where(body.p-roam) .hero-scene .commande-video{position:absolute;right:var(--esp-3);bottom:var(--esp-3);width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme)}
-:where(body.p-roam) .hero-scene .commande-video svg.i{width:20px;height:20px}
 
 /* ---- Titres de section et notes. Registre INTERFACE : h2 38, h3 28 sur le jeu
    grand. La note de section emprunte le barreau 12, comme toute description. */
@@ -676,7 +707,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .vedette-dit{margin:0 0 var(--air-i3);font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre);max-width:var(--col)}
 :where(body.p-roam) .note-section,
 :where(body.p-roam) .note-source,
-:where(body.p-roam) .hero-dit{max-width:var(--col)}
 
 /* ---- Le geste flottant et la feuille du bas sont de la grammaire : seul ce
    qui differe de la forme commune s'ecrit ici. Le filet remplace l'aplat plein
@@ -784,11 +814,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 
 :where(body.p-accueil) main{position:relative;z-index:2;min-height:100vh}
 
-:where(body.p-accueil) .onglets{display:flex;background:var(--gris-ilot);border-radius:var(--rayon-pilule);padding:3px;margin-bottom:var(--air-i3)}
-:where(body.p-accueil) .onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:var(--esp-2);min-height:44px;border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;cursor:pointer}
-:where(body.p-accueil) .onglets button.actif{background:var(--univers);color:var(--blanc)}
-:where(body.p-accueil) .contenu{display:none}
-:where(body.p-accueil) .contenu.actif{display:block}
 :where(body.p-accueil) .selecteur-espaces{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--esp-2)}
 :where(body.p-accueil) .option-espace{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--rayon-module);padding:var(--esp-3) var(--esp-1) var(--esp-2);text-align:center;cursor:pointer;font-family:var(--font-corps)}
 :where(body.p-accueil) .option-espace .ico{display:block;height:34px;margin-bottom:var(--air-i1)}
@@ -1403,6 +1428,11 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
 }
 @media(min-width:1024px) and (min-height:600px){
   :root{--marge:15%;--site-w:70%}
+}
+/* Tres large ecran : 20-60-20. Au-dela de cette largeur, une piste de 70 %
+   rend des lignes trop longues pour etre lues d'un seul balayage de l'oeil. */
+@media(min-width:1600px) and (min-height:600px){
+  :root{--marge:20%;--site-w:60%}
 }
 
 /* Ecran couche et court : le chrome garde la taille du telephone. */

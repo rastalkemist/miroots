@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-fwlbqFGLXr/WpdC6KFPl+4vIlU1+IHGVGaxGRHga5Oo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-rq0gPnXD0fZxMbBvwHbpIwR5nz/IGNd+sdN/cT2u2Qw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -241,16 +241,15 @@
         data-t="chercherMots">Je découvre</button>
 
 <div class="voile" id="voileResa"></div>
-<div class="feuille-bas" id="feuilleResa" role="dialog" aria-modal="true" aria-labelledby="etFeuille" data-al-chrome="feuille">
+<div class="feuille-bas" id="feuilleResa" role="dialog" aria-modal="true" aria-labelledby="ong-visiter" data-al-chrome="feuille">
   <div class="poignee"></div>
   <div class="tete"><button class="fermer" id="fermerResa" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
-  <h2 class="titre-feuille" id="etFeuille" data-t="titreFeuille">Réserver un séjour</h2>
   <!-- ══════════════ LES DEUX ONGLETS ══════════════
        La feuille est la version actionnable de la page : ses deux onglets
        portent les deux verbes de l'ecran. Le motif est celui des onglets de
        l'accueil, meme balisage, meme classe active. -->
   <div class="onglets" id="onglets">
-    <button class="actif" data-ong="visiter" data-t="ongVisiter">Visiter</button>
+    <button class="actif" id="ong-visiter" data-ong="visiter" data-t="ongVisiter">Visiter</button>
     <button data-ong="decouvrir" data-t="ongDecouvrir">Découvrir</button>
   </div>
 
@@ -277,7 +276,7 @@
              les parcourt. La liste s'ouvre a l'appui, garnie de tout ce qui est
              ouvert a la reservation. -->
         <div class="champ champ-suggest">
-          <input type="text" id="qLieu" autocomplete="off" spellcheck="false"
+          <input type="text" id="qLieu" readonly autocomplete="off" spellcheck="false"
                  role="combobox" aria-expanded="false" aria-controls="suggLieux"
                  aria-autocomplete="list" aria-describedby="etLogement"
                  data-p="pLieu" placeholder="Chercher un lieu">
@@ -359,7 +358,7 @@
       </button>
       <div class="etape-corps" id="corpsQuoi" hidden>
         <div class="champ champ-suggest">
-          <input type="text" id="qLieuDec" autocomplete="off" spellcheck="false"
+          <input type="text" id="qLieuDec" readonly autocomplete="off" spellcheck="false"
                  role="combobox" aria-expanded="false" aria-controls="suggDec"
                  aria-autocomplete="list" aria-describedby="etQuoi"
                  data-p="pLieuDec" placeholder="Chercher un lieu, un événement">
@@ -462,6 +461,7 @@
       etPersonnes: 'Combien serez-vous ?',
       tonNom: 'Ton prénom', tonTel: 'Ton numéro (WhatsApp, si possible)', pNom: 'Ton prénom',
       laNuit: function (p) { return p + ' la nuit'; },
+      parNuit: 'la nuit',
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
       rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
@@ -562,6 +562,7 @@
       etPersonnes: 'How many of you?',
       tonNom: 'Your first name', tonTel: 'Your number (WhatsApp if possible)', pNom: 'Your first name',
       laNuit: function (p) { return p + ' a night'; },
+      parNuit: 'a night',
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
       rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
@@ -690,39 +691,67 @@
      composant que le rail de la page, memes parties, une seule taille en
      moins. Elle porte `option` parce qu'elle vit dans une boite a
      suggestions, et l'etat retenu s'y lit par `aria-selected`. */
-  function carteOption(l, id, ou, geste) {
+  /* Une option de la liste est un ILOT : la vignette a gauche, ce qui se dit a
+     droite — le nom, le lieu, le montant. AUCUN geste a l'interieur : dans une
+     boite a suggestions, l'option ENTIERE est la cible, et une commande posee
+     dedans serait une seconde commande dans une option qui en est deja une.
+     L'etat retenu se lit par `aria-selected`. */
+  function ilotOption(l, id, lieu, montant, unite) {
     var li = document.createElement('li');
-    li.className = 'suggestion';
+    li.className = 'ilot-lieu';
     li.setAttribute('role', 'option');
     li.setAttribute('aria-selected', 'false');
     li.id = id;
     li.dataset.slug = l.slug;
-    var carte = document.createElement('span');
-    carte.className = 'carte-bien mini';
-    carte.appendChild(vignetteDuLieu(l.slug));
-    var tete = document.createElement('span');
-    tete.className = 'carte-tete';
-    var ligne = document.createElement('span');
-    ligne.className = 'nom-ligne';
+    li.appendChild(vignetteDuLieu(l.slug));
+    var dire = document.createElement('span');
+    dire.className = 'ilot-dire';
     var nom = document.createElement('span');
     nom.className = 'nom';
     nom.textContent = l.nom;
-    var g = document.createElement('span');
-    g.className = 'geste';
-    g.textContent = geste;
-    ligne.appendChild(nom); ligne.appendChild(g);
-    var lieu = document.createElement('span');
-    lieu.className = 'ou';
-    lieu.textContent = ou;
-    tete.appendChild(ligne); tete.appendChild(lieu);
-    carte.appendChild(tete);
-    li.appendChild(carte);
+    dire.appendChild(nom);
+    if (lieu) {
+      var ou = document.createElement('span');
+      ou.className = 'ou';
+      ou.textContent = lieu;
+      dire.appendChild(ou);
+    }
+    li.appendChild(dire);
+    /* Le montant tient la fin de la ligne : une colonne de chiffres alignes a
+       droite se compare d'un coup d'oeil, ce qu'une suite de montants poses au
+       fil du texte ne permet pas. La somme au-dessus, l'unite en dessous : la
+       colonne ne porte alors que des chiffres, et l'unite ne s'y repete pas au
+       milieu des nombres. */
+    if (montant) {
+      var m = document.createElement('span');
+      m.className = 'montant';
+      var somme = document.createElement('span');
+      somme.className = 'somme';
+      somme.textContent = montant;
+      m.appendChild(somme);
+      if (unite) {
+        var u = document.createElement('span');
+        u.className = 'unite';
+        u.textContent = unite;
+        m.appendChild(u);
+      }
+      li.appendChild(m);
+    }
     li.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
     return li;
   }
 
+  /* Le lieu d'un bien vient du rattachement que porte l'ecran tant que la
+     lecture publique ne le rend pas. Absent, la ligne ne parait pas. */
+  function lieuDuBien(slug) {
+    var mots = t() || {};
+    return { cotonou: mots.zCotonou, peches: mots.zPeches, ailleurs: mots.zAilleurs
+           }[ZONE_DU_BIEN[slug]] || '';
+  }
+
   function optionLieu(l) {
-    var li = carteOption(l, 'sugg-' + l.slug, t().jusqua(l.capacite) + ' · ' + t().laNuit(prix(l.prix_nuit)), t().gesteVisiter);
+    var li = ilotOption(l, 'sugg-' + l.slug, lieuDuBien(l.slug),
+                        prix(l.prix_nuit), t().parNuit);
     li.addEventListener('click', function () { choisir(l); });
     return li;
   }
@@ -760,7 +789,7 @@
     z.innerHTML = '';
     if (sansResultat) {
       var rien = document.createElement('li');
-      rien.className = 'suggestion-vide';
+      rien.className = 'ilot-vide';
       rien.setAttribute('role', 'presentation');
       rien.textContent = t().aucunResultat;
       z.appendChild(rien);
@@ -1151,7 +1180,7 @@
 
   function optionsVues() {
     return Array.prototype.slice.call(
-      document.querySelectorAll('#suggLieux .suggestion'));
+      document.querySelectorAll('#suggLieux .ilot-lieu'));
   }
   function marquerActif(i) {
     var o = optionsVues();
@@ -1188,8 +1217,26 @@
   function boiteASuggestions() {
     var c = $('qLieu'), z = $('suggLieux');
     if (!c || !z) return;
-    c.addEventListener('focus', ouvrirListe);
-    c.addEventListener('click', ouvrirListe);
+    /* Le premier appui ouvre la liste SANS lever le clavier : le champ reste en
+       lecture seule, ce qui laisse parcourir ce qui est propose. Un second
+       appui rend la saisie et le clavier monte. Le clavier physique, lui,
+       n'attend pas : une touche rend la saisie immediatement. */
+    function rendreLaSaisie() {
+      if (!c.readOnly) return false;
+      c.readOnly = false;
+      c.focus();
+      return true;
+    }
+    var venuDuFoyer = false;
+    c.addEventListener('focus', function () { venuDuFoyer = true; ouvrirListe(); });
+    c.addEventListener('click', function () {
+      if (venuDuFoyer) { venuDuFoyer = false; return; }
+      if (z.hidden) { ouvrirListe(); return; }
+      rendreLaSaisie();
+    });
+    c.addEventListener('keydown', function (e) {
+      if (e.key.length === 1 || e.key === 'Backspace') rendreLaSaisie();
+    });
     c.addEventListener('input', function () {
       /* Une saisie efface le lieu retenu : le champ et le choix ne peuvent pas
          dire deux choses differentes. */
@@ -1204,7 +1251,7 @@
       else if (e.key === 'Enter') { if (!z.hidden && retenirActif()) e.preventDefault(); }
       else if (e.key === 'Escape') { if (!z.hidden) { e.stopPropagation(); fermerListe(); } }
     });
-    c.addEventListener('blur', function () { setTimeout(fermerListe, 0); });
+    c.addEventListener('blur', function () { setTimeout(function () { fermerListe(); c.readOnly = true; }, 0); });
   }
 
   /* ------------------------------------------------------------------
@@ -1235,7 +1282,7 @@
   }
 
   function optionLieuDec(l) {
-    var li = carteOption(l, 'sugd-' + l.slug, l.ou, t().gesteVisiter);
+    var li = ilotOption(l, 'sugd-' + l.slug, l.ou, '', '');
     li.addEventListener('click', function () { retenirLieuDec(l); });
     return li;
   }
@@ -1254,7 +1301,7 @@
     z.innerHTML = '';
     if (sansResultat) {
       var rien = document.createElement('li');
-      rien.className = 'suggestion-vide';
+      rien.className = 'ilot-vide';
       rien.setAttribute('role', 'presentation');
       rien.textContent = t().aucunResultat;
       z.appendChild(rien);
@@ -1294,7 +1341,7 @@
   }
 
   function optionsVuesDec() {
-    return Array.prototype.slice.call(document.querySelectorAll('#suggDec .suggestion'));
+    return Array.prototype.slice.call(document.querySelectorAll('#suggDec .ilot-lieu'));
   }
   function ouvrirListeDec() {
     var z = $('suggDec'), c = $('qLieuDec');
@@ -1324,8 +1371,17 @@
         resumerDec();
       });
     });
-    c.addEventListener('focus', ouvrirListeDec);
-    c.addEventListener('click', ouvrirListeDec);
+    function rendreLaSaisieDec() {
+      if (!c.readOnly) return false;
+      c.readOnly = false; c.focus(); return true;
+    }
+    var venuDuFoyerDec = false;
+    c.addEventListener('focus', function () { venuDuFoyerDec = true; ouvrirListeDec(); });
+    c.addEventListener('click', function () {
+      if (venuDuFoyerDec) { venuDuFoyerDec = false; return; }
+      if (z.hidden) { ouvrirListeDec(); return; }
+      rendreLaSaisieDec();
+    });
     c.addEventListener('input', function () {
       if (lieuDec && c.value !== lieuDec.nom) { lieuDec = null; resumerDec(); }
       ouvrirListeDec();
@@ -1344,9 +1400,9 @@
         if (!z.hidden && actifDec > -1 && o[actifDec]) { e.preventDefault(); o[actifDec].click(); }
       } else if (e.key === 'Escape') {
         if (!z.hidden) { e.stopPropagation(); fermerListeDec(); }
-      }
+      } else if (e.key.length === 1 || e.key === 'Backspace') { rendreLaSaisieDec(); }
     });
-    c.addEventListener('blur', function () { setTimeout(fermerListeDec, 0); });
+    c.addEventListener('blur', function () { setTimeout(function () { fermerListeDec(); c.readOnly = true; }, 0); });
     resumerDec();
   }
 
