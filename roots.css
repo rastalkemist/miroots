@@ -138,15 +138,16 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
    veut une autre graisse la declare, et sa declaration l'emporte par l'ordre.
    Poser une taille ici sans en poser dans une section d'ecran est sans effet
    sur cette section : `:where()` ne pese rien et l'ordre tranche. */
-h1{font-size:var(--t-h1);line-height:var(--lh-38);color:var(--encre);text-wrap:balance}
-/* Le h2 du registre INTERFACE porte l'eclat en graisse 100, sur l'echelon 2 de
-   l'univers. La fonte est variable de 100 a 900 : la graisse demandee est
-   servie par le fichier, elle n'est pas simulee. Le registre EDITORIAL garde la
-   sienne — sa section la declare, et sa declaration l'emporte. */
-h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-eclat);font-weight:var(--w-thin);color:var(--univers);text-wrap:balance}
-/* En dessous du h2, le registre INTERFACE reste sur la fonte de corps : le
-   changement de fonte marque le seuil du titre principal, il ne se repete pas
-   a chaque niveau. L'encre ALTERNE — encre pleine aux rangs impairs, echelon 2
+h1{font-size:var(--t-h1);line-height:var(--lh-38);font-family:var(--font-eclat);font-weight:var(--w-thin);color:var(--encre);text-wrap:balance}
+/* Le h1 du registre INTERFACE porte l'eclat en graisse 100 : le changement de
+   fonte marque le seuil du titre principal, et il ne se repete pas en dessous.
+   La fonte d'eclat est variable de 100 a 900, celle de corps est servie en
+   100, 200, 300, 500, 700, 900 et 950 : chaque graisse demandee vient d'un
+   fichier, aucune n'est simulee par le navigateur. Le registre EDITORIAL garde
+   les siennes — sa section les declare, et sa declaration l'emporte. */
+h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--univers);text-wrap:balance}
+/* En dessous du h1, le registre INTERFACE reste sur la fonte de corps.
+   L'encre ALTERNE — encre pleine aux rangs impairs, echelon 2
    de l'univers aux rangs pairs : c'est le procede du registre editorial,
    transpose d'un echelon vers le fonce, ou l'echelon 3 tombait sous le
    plancher des qu'un titre se posait sur une surface autre que le papier.
@@ -159,13 +160,12 @@ h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-eclat);
    un titre ne laisse pas un mot seul sur sa derniere ligne. */
 h3{font-size:var(--t-h3);line-height:var(--lh-21);font-family:var(--font-corps);font-weight:var(--w-medium);color:var(--encre);text-wrap:balance}
 h4{font-size:var(--t-h4);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);text-wrap:balance}
-h5{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--encre);text-transform:uppercase;letter-spacing:var(--lettrage-capitales);text-wrap:balance}
-h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);font-style:italic;text-wrap:balance}
+h5{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--encre);text-transform:uppercase;letter-spacing:var(--lettrage-capitales);text-wrap:balance}
+h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--univers);font-style:italic;text-wrap:balance}
 @media(max-width:640px){h5{letter-spacing:var(--lettrage-capitales-petites)}}
 @media(min-width:1025px){
   h1{line-height:var(--lh-51)}
   h4{line-height:var(--lh-21)}
-}
 }
 
 /* La page prend la PISTE ; la prose garde la mesure de lecture. Un bandeau,
@@ -646,6 +646,18 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    defilement. La scene est sa propre commande : l'appui bascule la lecture. */
 :where(body.p-roam) .vedette-scene{position:relative;overflow:hidden;background:var(--univers-e1);margin:0 calc(50% - 50vw) var(--air-i3);width:auto;height:calc(50vh - var(--entete-h-rendue, var(--entete-h)));height:calc(50dvh - var(--entete-h-rendue, var(--entete-h)))}
 :where(body.p-roam) .vedette-scene video{cursor:pointer}
+/* Sur un grand ecran, la scene cesse d'etre pleine largeur : elle prend la
+   moitie de la page et le propos prend l'autre. Une scene pleine largeur y
+   coute toute la hauteur visible pour une seule image, et repousse hors de
+   l'ecran ce qui suit ; en deux colonnes, le nom, le geste et la phrase
+   entrent avec elle. La scene tient la gauche : le regard part de l'image et
+   finit sur le texte, ou se trouve le geste. */
+@media(min-width:1025px){
+  :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--esp-6);align-items:center}
+  :where(body.p-roam) .vedette-scene{grid-row:1 / span 2;margin:0;width:auto;height:auto;aspect-ratio:4/3}
+  :where(body.p-roam) .vedette-tete{align-self:end;margin:0 0 var(--air-i2)}
+  :where(body.p-roam) .vedette-dit{align-self:start;margin:0}
+}
 :where(body.p-roam) .vedette-scene video{width:100%;height:100%;object-fit:cover;display:block;transition:opacity var(--mvt-apparition) var(--courbe-sortie)}
 :where(body.p-roam) .vedette-scene video.fondu-affiche{opacity:0}
 :where(body.p-roam) .vedette-scene .commande-video{position:absolute;right:var(--esp-3);bottom:var(--esp-3);width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme)}
