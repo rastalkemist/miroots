@@ -1,0 +1,290 @@
+/* ============================================================================
+   MI ROAM — la feuille de l'écran, sur le modèle de `plan.css`.
+
+   Elle se charge APRÈS `roots.css` : à cascade égale, la dernière déclaration
+   l'emporte. Rien ici n'est une valeur : tout passe par un jeton.
+
+   Ce qu'elle porte : les règles propres à cet écran. Une règle qu'un second
+   écran emploie quitte cette feuille pour la grammaire, et n'y revient pas.
+   ============================================================================ */
+
+/* Le pas ouvert cesse de rogner ce qui deborde : la liste suggeree sort du
+   flux et doit pouvoir depasser la carte qui la porte. Le pas replie garde le
+   rognage, qui est ce qui lui donne ses angles. */
+
+/* ---- La rangée d'un pas. Repliée : la question courte à gauche, ce qu'elle
+   attend à droite. Dépliée : la question longue REMPLACE les deux, à la même
+   taille — un texte qui grossit en s'ouvrant déplace tout ce qui le suit. */
+:where(body.p-roam) .etape-ouvert{display:none;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--encre)}
+:where(body.p-roam) .etape.ouverte .etape-quoi{display:none}
+:where(body.p-roam) .etape.ouverte .etape-ouvert{display:block}
+:where(body.p-roam) .etape.ouverte .etape-valeur{display:none}
+:where(body.p-roam) .etape.ouverte .etape-tete{padding-bottom:var(--esp-2)}
+:where(body.p-roam) .etape-corps{padding:0 var(--esp-4) var(--esp-4)}
+
+/* Le pas « Qui » ouvert tient sur UNE ligne : la question à gauche, le
+   sélecteur à droite, là où se lisait la valeur. La rangée devient une grille
+   à deux colonnes — le libellé est dans un bouton, le sélecteur ne peut donc
+   pas y entrer, mais rien n'empêche les deux de partager la ligne. */
+:where(body.p-roam) .etape.ouverte[data-pas="qui"],
+:where(body.p-roam) .etape.ouverte[data-pas="quiDec"]{display:grid;grid-template-columns:1fr auto;align-items:center}
+:where(body.p-roam) .etape.ouverte[data-pas="qui"] .etape-tete,
+:where(body.p-roam) .etape.ouverte[data-pas="quiDec"] .etape-tete{padding-bottom:var(--esp-2)}
+:where(body.p-roam) .etape.ouverte[data-pas="qui"] .etape-corps,
+:where(body.p-roam) .etape.ouverte[data-pas="quiDec"] .etape-corps{padding:0 var(--esp-4) 0 0}
+
+/* ---- LE LIEN TERTIAIRE. Une seule peau, deux libellés : « Visiter » sur une
+   carte de la page, « Plus d'infos » dans le tiroir. Échelon 2 de l'univers et
+   soulignement — le soulignement est ce qui dit « lien » quand la couleur est
+   retirée, et la couleur seule ne porte aucun rang.
+   Son nom accessible est son texte visible, et il ne varie pas d'un lieu à
+   l'autre : c'est ce qui en fait un composant reconnaissable. Le but du lien
+   se lit dans son contexte — l'élément qui le porte nomme le lieu —, ce que
+   SC 2.4.4 admet au niveau A. */
+:where(body.p-roam) .lien-tertiaire{font-family:var(--font-corps);font-weight:700;color:var(--univers);background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+/* Porté par un bouton, il descend sous le plancher tactile : un pseudo-élément
+   ramène la cible à 44 sans déplacer le texte. */
+:where(body.p-roam) button.lien-tertiaire{position:relative;font-size:var(--t-sm);line-height:var(--lh-14)}
+:where(body.p-roam) button.lien-tertiaire::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:max(100%,var(--cible-min));height:var(--cible-min)}
+:where(body.p-roam) button.lien-tertiaire:disabled{color:var(--encre-discrete);text-decoration:none;cursor:default}
+:where(body.p-roam) .etat-partage{margin:0;font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);text-align:center}
+:where(body.p-roam) .ligne-partager{margin:0 0 var(--air-i2);text-align:center}
+:where(body.p-roam) .etat-partage:not(:empty){margin-bottom:var(--air-i3)}
+:where(body.p-roam) .note-agenda{margin:var(--air-i2) 0 0;font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);text-align:center}
+
+/* ---- La carte de bien porte le nom, le lieu et le geste. Aucune description :
+   ce qui décrit vit sur la fiche du lieu. Le geste tient la fin de la ligne du
+   nom — un lien, donc souligné : le soulignement est ce qui dit « lien » sans
+   la couleur, que le monochrome retire. */
+:where(body.p-roam) .carte-bien .nom-ligne{display:flex;align-items:baseline;justify-content:space-between;gap:var(--esp-3);min-width:0}
+:where(body.p-roam) .carte-bien .carte-tete{display:flex;flex-direction:column;gap:0;padding:var(--esp-3);text-align:left}
+:where(body.p-roam) .carte-bien .geste{flex:0 0 auto;min-height:0;padding:0}
+:where(body.p-roam) .carte-bien .ou{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete)}
+
+/* ---- Le tiroir du pas « Où ». Il vit DANS le flux : ouvert, il repousse les
+   pas suivants vers le bas au lieu de se poser par-dessus eux. Rien ne masque
+   ce qu'on vient de lire, et la feuille garde un seul défilement.
+   Chaque bien y est un ÎLOT : la vignette à gauche, le nom et le lieu au
+   milieu, le montant à droite — somme au-dessus, unité en dessous. Le lien
+   vers la fiche se pose sous l'unité, dans l'angle : il est FRÈRE du bouton,
+   jamais son enfant — une commande dans une commande n'a ni cible ni nom
+   fiables. */
+:where(body.p-roam) .tiroir-lieux{list-style:none;margin:var(--air-i2) 0 0;padding:0;display:grid;gap:var(--esp-2)}
+:where(body.p-roam) .ilot-lieu{position:relative;list-style:none;background:var(--gris-ilot);border-radius:var(--rayon-module)}
+:where(body.p-roam) .ilot-choix{display:flex;align-items:center;gap:var(--esp-3);width:100%;padding:var(--esp-2) var(--esp-4) var(--esp-2) var(--esp-2);background:none;border:none;border-radius:var(--rayon-module);text-align:left;font-family:var(--font-corps);cursor:pointer}
+:where(body.p-roam) .ilot-choix .vignette{flex:0 0 auto;width:72px;aspect-ratio:4/3;display:block;overflow:hidden;border-radius:var(--rayon-champ);background:var(--univers-e1)}
+:where(body.p-roam) .ilot-choix .vignette img{width:100%;height:100%;object-fit:cover;display:block}
+:where(body.p-roam) .ilot-dire{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:0}
+:where(body.p-roam) .ilot-dire .nom{font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--encre);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+:where(body.p-roam) .ilot-dire .ou{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+:where(body.p-roam) .ilot-lieu .montant{flex:0 0 auto;align-self:flex-start;display:flex;flex-direction:column;align-items:flex-end;gap:0;text-align:right}
+:where(body.p-roam) .ilot-lieu .somme{font-family:var(--font-chiffres);font-variant-numeric:tabular-nums;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--encre);white-space:nowrap}
+:where(body.p-roam) .ilot-lieu .unite{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);white-space:nowrap}
+/* Le lien se pose par-dessus le bouton, dans l'angle bas : il n'est pas dedans,
+   donc l'appui qui l'atteint ne retient pas le lieu. Sa cible descend sous le
+   plancher — un pseudo-élément la ramène à 44 sans déplacer le texte. */
+:where(body.p-roam) .ilot-plus{position:absolute;right:var(--esp-4);bottom:var(--esp-2);z-index:1;font-size:var(--t-note);line-height:var(--lh-12)}
+:where(body.p-roam) .ilot-plus::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:max(100%,var(--cible-min));height:var(--cible-min)}
+/* ---- L'état RETENU. La marque doit sortir gris au repos → lavure d'univers
+   cerclée d'univers à la sélection → aplat plein pour l'action seule. La
+   lavure est translucide : posée sur le gris d'îlot elle le ternit au lieu de
+   l'éclairer. L'aplat clair passe donc SOUS elle, et c'est le fond clair qui
+   la reçoit. */
+:where(body.p-roam) .ilot-choix[aria-pressed="true"],
+:where(body.p-roam) .choix-carte[aria-pressed="true"]{background-color:var(--blanc);background-image:linear-gradient(var(--univers-selection),var(--univers-selection));box-shadow:inset 0 0 0 var(--limite-ep) var(--univers)}
+:where(body.p-roam) .ilot-choix[aria-pressed="true"] .nom,
+:where(body.p-roam) .choix-carte[aria-pressed="true"] .nom{color:var(--univers)}
+:where(body.p-roam) .ilot-vide{list-style:none;padding:var(--esp-2) var(--esp-3);font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete)}
+
+/* ---- Le rythme vertical de l'écran. L'air se prend sur la rampe d'interface,
+   jamais sur une valeur neuve : le titre de section colle à ce qui le suit
+   (cran 2, « texte sous son titre »), la note garde l'interligne de son
+   barreau, et le premier titre monte au cran qui sépare deux blocs de même
+   rang plutôt qu'au cran de rupture — rien ne le précède dans la colonne. */
+:where(body.p-roam) .corps{padding-top:var(--air-i3)}
+/* La part de gouttière se reconduit à l'intérieur des blocs de section : le
+   tronc la pose sur `.bloc-sejour` et `.rubrique`. Rien n'est repris ici — un
+   bloc dans un bloc ne se remet pas de gouttière. */
+:where(body.p-roam) .titre-section{margin:0 0 var(--air-i2)}
+:where(body.p-roam) .note-section{margin:0 0 var(--air-i3);line-height:var(--lh-14)}
+:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:0;margin:0;font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold)}
+:where(body.p-roam) .vedette-ou{font-size:var(--t-note);line-height:var(--lh-12);font-weight:var(--w-regular);color:var(--encre-discrete)}
+
+/* ---- Le cartouche de la vedette. Sur la largeur d'un téléphone, le geste
+   tient la ligne du nom, à droite ; le propos passe dessous, pleine largeur.
+   Les deux boîtes intermédiaires s'effacent pour que leurs enfants soient les
+   cases de la même grille — sans elles, il faudrait deux grilles imbriquées
+   pour un alignement qui n'en demande qu'une. */
+:where(body.p-roam) .vedette-dire{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:var(--esp-3)}
+:where(body.p-roam) .vedette-bas{display:contents}
+:where(body.p-roam) .vedette-dire .vedette-nom{grid-column:1;grid-row:1;margin:0}
+:where(body.p-roam) .vedette-bas .bouton-contour{grid-column:2;grid-row:1;align-self:center}
+:where(body.p-roam) .vedette-bas .vedette-dit{grid-column:1 / -1;grid-row:2;margin:var(--air-i2) 0 0}
+
+/* ---- Au-delà de la tablette, la vedette occupe la page entière : le film
+   prend exactement la moitié de l'écran, et la colonne qui parle prend l'autre
+   moitié en 5-40-5. Tout y est aligné à gauche, et le geste vient en tête —
+   il tombe au premier tiers de la hauteur du film, là où le regard entre.
+   Le film reste du même côté d'une vedette à l'autre : une suite de blocs dont
+   l'image alterne se balaie moins bien qu'une suite alignée. */
+@media(min-width:820px){
+  :where(body.p-roam) .vedette{display:grid;grid-template-columns:50% 1fr;grid-template-rows:auto 1fr;align-items:start;margin:0 calc(50% - 50vw) var(--air-i8);width:auto}
+  :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 2;margin:0;height:auto;aspect-ratio:4/3}
+  /* Le geste passe en tete de colonne : l'ordre du document garde le nom
+     d'abord, ce dont le petit ecran a besoin pour les mettre sur une ligne.
+     Il descend d'un quart de la hauteur du film. Un remplissage en pourcentage
+     se calcule sur la largeur de SA colonne : le film et la colonne font la
+     meme largeur, et le rapport 4/3 donne au film une hauteur de 75 % de cette
+     largeur — le quart de cette hauteur en vaut donc 18,75 %. */
+  /* Le propos est UN GROUPE, et il se lit comme tel. Ancrer le nom, la phrase
+     et le geste à trois hauteurs distinctes de la scène maximise la distance
+     entre des éléments qui se répondent, et la distance est ce qui dit qu'ils
+     ne vont PAS ensemble. Ils tiennent donc ensemble, séparés par des crans
+     d'air de la rampe, et le groupe se centre sur l'axe de la scène. L'ordre
+     est celui qu'on lit : ce que c'est, ce que ça vaut, ce qu'on en fait. */
+  /* DEUX ANCRAGES, ET UN SEUL GROUPE. Le nom se pose au quart de la hauteur
+     de la scène — donc aux trois quarts comptés depuis le bas. Le propos et
+     son geste tombent ensemble plus bas, séparés par un cran d'air : ils se
+     répondent, ils ne se dispersent pas. Deux ancrages tiennent le poids du
+     propos contre celui de la scène là où trois le diluaient. */
+  :where(body.p-roam) .vedette{align-items:stretch}
+  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1 / span 2;display:block;position:relative;height:100%;padding:0 5vw;margin:0}
+  :where(body.p-roam) .vedette-dire .vedette-nom{position:absolute;top:25%;left:5vw;right:5vw;margin:0;text-align:left}
+  :where(body.p-roam) .vedette-bas{position:absolute;top:70%;left:5vw;right:5vw;display:block}
+  :where(body.p-roam) .vedette-bas .vedette-dit{margin:0;padding:0;max-width:none;text-align:left}
+  :where(body.p-roam) .vedette-bas .bouton-contour{display:inline-flex;margin-top:var(--air-i6)}
+  /* La note de section tient sa ligne tant que la page la porte : la mesure de
+     lecture ne s'impose qu'à ce qui dépasse. */
+  :where(body.p-roam) .note-section{max-width:none}
+}
+
+/* ---- Une feuille du bas ne reprend PAS la gouttière intérieure : elle porte
+   déjà sa propre marge. La section de séjour emploie la classe des sections de
+   page, et la reconduction s'y appliquait — ses champs rentraient de 18 px de
+   chaque côté quand les rangées voisines tenaient toute la largeur. La règle
+   d'exclusion est celle du tronc, écrite là où le tronc ne peut pas la voir :
+   il ne sait pas qu'un bloc de section vit dans une feuille. */
+:where(body.p-roam) .feuille-bas .bloc-sejour{padding-inline:0}
+
+/* ---- Le pied : le lien passe AVANT le filet. En bas de page on lit donc le
+   lien, puis le filet, puis le geste flottant — le filet ferme la page au lieu
+   d'ouvrir le pied. */
+:where(body.p-roam) .pied{border-top:none;border-bottom:none;margin-top:var(--air-i6);padding:var(--esp-1) 0 0}
+
+
+/* ---- LE CARROUSEL DE CHOIX. Il reprend la grammaire de carte de la page :
+   même largeur, même vignette, même tête. Ce qui change est le geste — le
+   corps de la carte RETIENT, il ne mène nulle part — donc le corps est un
+   bouton et le geste de coin son frère, jamais son enfant : un bouton dans un
+   lien ne s'active pas au clavier. */
+:where(body.p-roam) .piste-choix{margin:var(--air-i3) 0 0;padding-bottom:var(--esp-1)}
+:where(body.p-roam) .carte-choix{display:flex;flex-direction:column;padding:0}
+:where(body.p-roam) .choix-carte{display:block;width:100%;padding:0;border:none;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+:where(body.p-roam) .choix-carte .vignette{border-radius:0}
+:where(body.p-roam) .carte-choix .carte-plus{align-self:flex-start;padding:0 var(--esp-3) var(--esp-3);font-size:var(--t-sm);line-height:var(--lh-14)}
+:where(body.p-roam) .piste-choix .ilot-vide{flex:1 1 auto;padding:var(--esp-3);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+
+/* ---- LES COMMANDES DU RAIL SORTENT DES CARTES. Posées sur les bords des
+   cartes elles couvrent ce qu'on regarde, et le doigt qui les vise masque la
+   piste. Groupées, elles laissent aller et venir sans redéplacer le pointeur.
+   Elles montent donc au-dessus de la piste, côte à côte, alignées à droite —
+   là où le regard revient après avoir parcouru la rangée.
+   ⚠ LE DISQUE MAIGRIT, LA CIBLE NE MAIGRIT PAS. Un disque à pleine cible
+   sépare le titre de sa rangée. Ce qui rétrécit est donc le DESSIN ; la zone
+   d'appui reste entière, portée par un rectangle transparent centré sur le
+   disque. Réduire la cible elle-même passerait sous le minimum de la
+   grammaire et sous celui de la norme. */
+:where(body.p-roam) .rail{display:block;position:relative}
+/* La ligne de tête d'une rangée : le titre à gauche, les commandes à droite.
+   Le souffle exigé entre les deux et l'écart entre les deux commandes sont
+   déclarés ICI et lus par la mesure — une seule source. Le souffle est large :
+   la ligne ne se prend que si elle respire. */
+:where(body.p-roam) .rail-tete{display:flex;align-items:center;justify-content:space-between;column-gap:var(--esp-8);row-gap:var(--esp-2)}
+:where(body.p-roam) .rail-tete > :where(h1,h2,h3){flex:0 1 auto;min-width:0}
+/* Le disque maigrit SANS que la zone d'appui maigrisse : la boite garde la
+   cible entiere et se borde de transparent, l'aplat s'arretant a la boite de
+   remplissage. Le cerne se refait a l'interieur. Aucun pseudo-element n'est
+   ajoute a un composant de la grammaire : une cible portee par un `::after`
+   serait une difference que rien ne peut declarer. */
+:where(body.p-roam) .rail-tete .rail-cmd{position:static;transform:none;flex:0 0 auto;width:var(--cible-min);height:var(--cible-min);border-width:calc((var(--cible-min) - var(--esp-6)) / 2);border-color:transparent;background-clip:padding-box;background-color:var(--blanc);box-shadow:inset 0 0 0 var(--limite-ep) var(--limite-controle)}
+:where(body.p-roam) .rail-tete .rail-cmd + .rail-cmd{margin-left:var(--esp-2)}
+:where(body.p-roam) .rail-tete .rail-cmd svg.i{width:var(--esp-4);height:var(--esp-4)}
+
+/* Faute de ligne, les commandes se posent SUR les images — et DEDANS, pas sur
+   leur arête : un disque à cheval sur un bord se lit comme une pièce détachée.
+   Elles prennent la peau des gestes posés sur un média, allégée : sur une
+   photographie un disque de papier disparaît, et un disque opaque mange ce
+   qu'on regarde. Le cerne clair porte la lisibilité, l'aplat ne fait que
+   l'asseoir. */
+:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd{top:50%;transform:translateY(-50%);width:var(--cible-min);height:var(--cible-min);border-color:var(--creme);background:rgba(var(--univers-e1-rgb),.5);color:var(--creme);box-shadow:none}
+:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd.prec{left:var(--esp-8);right:auto}
+:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd.suiv{right:var(--esp-8);left:auto}
+:where(body.p-roam) .rail[data-cmd="image"] .rail-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
+
+/* ---- LE SOUFFLE SOUS LA RANGÉE. Deux blocs empilés prennent un cran d'air
+   vertical ; la rangée n'en portait aucun et le titre suivant lui était collé. */
+:where(body.p-roam) .rail{margin-bottom:var(--air-i6)}
+
+/* ---- LA SCÈNE DE VEDETTE, VUE PAR VUE. La piste se cale sur ses vues et ne
+   s'arrête jamais entre deux. Les commandes se posent DE PART ET D'AUTRE de la
+   scène, par-dessus le média : c'est le seul endroit où une commande sur un
+   aplat photographique ne masque pas ce qu'on regarde, la scène occupant toute
+   la largeur. Elles prennent la peau de la commande de lecture — cercle cerclé
+   de crème sur un fond d'univers assombri — parce qu'elle est déjà la forme
+   d'un geste posé sur un média. */
+:where(body.p-roam) .vedette-piste{display:flex;margin:0;padding:0;list-style:none;height:100%;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:none}
+:where(body.p-roam) .vedette-piste::-webkit-scrollbar{display:none}
+:where(body.p-roam) .vedette-vue{flex:0 0 100%;height:100%;scroll-snap-align:center;scroll-snap-stop:always}
+:where(body.p-roam) .vedette-vue img{width:100%;height:100%;object-fit:cover;display:block}
+:where(body.p-roam) .scene-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme);cursor:pointer}
+:where(body.p-roam) .scene-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
+:where(body.p-roam) .scene-cmd.prec{left:var(--esp-3)}
+:where(body.p-roam) .scene-cmd.prec svg.i{transform:rotate(180deg)}
+:where(body.p-roam) .scene-cmd.suiv{right:var(--esp-3)}
+:where(body.p-roam) .scene-cmd[aria-disabled="true"]{opacity:.4;cursor:default}
+
+/* ---- LE MOUVEMENT. Registre expressif, celui de la surface publique. Aucune
+   durée ni courbe n'est écrite : la durée suit la distance parcourue, et le
+   jeton employé le dit — ouverture pour le tiroir qui se déplie, fondu pour la
+   bascule d'onglet, micro-interaction pour un changement d'état.
+   Deux exigences que toute reprise doit tenir : rien ne démarre seul, et aucun
+   état n'est dit par le seul mouvement — chacun porte aussi un mot, une couleur
+   ou un cerne, faute de quoi il disparaît quand le mouvement est coupé.
+   Le repli est instantané : l'élément quitte le flux, donc aucune sortie ne se
+   joue. */
+@keyframes roamTiroir{from{opacity:0;transform:translateY(calc(var(--esp-3) * -1))}to{opacity:1;transform:none}}
+@keyframes roamFondu{from{opacity:0}to{opacity:1}}
+:where(body.p-roam) .etape.ouverte .etape-corps{animation:roamTiroir var(--mvt-ample) var(--courbe-a-entree) both}
+:where(body.p-roam) .feuille-bas .contenu.actif{animation:roamFondu var(--mvt-court) var(--courbe-a-entree) both}
+:where(body.p-roam) .etape-tete,
+:where(body.p-roam) .etape-valeur,
+:where(body.p-roam) .rail-cmd,
+:where(body.p-roam) .lien-tertiaire{transition:color var(--mvt-eclair) var(--courbe-a),background-color var(--mvt-eclair) var(--courbe-a),opacity var(--mvt-eclair) var(--courbe-a)}
+:where(body.p-roam) .ilot-choix,
+:where(body.p-roam) .choix-carte{transition:background-color var(--mvt-eclair) var(--courbe-a),box-shadow var(--mvt-eclair) var(--courbe-a)}
+
+/* ---- LA NOTE DE SECTION REPREND SON PAPIER. Une liste de sélecteurs laissée
+   ouverte par une virgule finale, en amont, agrège cette classe à la règle du
+   geste flottant : elle en reçoit l'aplat d'univers et l'encre blanche. Cette
+   règle rétablit le papier et l'encre discrète, et elle est requise tant que la
+   liste reste ouverte. */
+:where(body.p-roam) .note-section{background:none;color:var(--encre-discrete)}
+
+/* ---- LE PIED PREND SA PLACE SOUS LE GESTE FLOTTANT. La page réservait une
+   hauteur fixe au bas ; le geste, lui, est posé à un souffle du filet de la
+   barre. Le filet du pied se donne donc le MÊME souffle au-dessus du geste :
+   deux fois ce souffle, la barre, et la hauteur rendue du geste. */
+/* Le sélecteur porte sa classe sans `:where` — la déclaration qu'il
+   remplace vise `body` seul, et une règle de poids nul ne la reprend pas. */
+body.p-roam{--geste-h:var(--barre-h);padding-bottom:calc(var(--barre-h) + var(--souffle-filet) * 2 + var(--geste-h) + var(--safe-bas))}
+
+/* ---- LES AFFICHES D'ATTENTE PASSENT AU GRIS. Une réserve est un manque, pas
+   une intention : un aplat d'univers plein la rend plus remarquable que les
+   pièces qui portent une vraie image. Le gris d'îlot la range au second plan,
+   et le glyphe y prend l'encre discrète — mesuré 4,94 contre cet aplat, donc
+   au-dessus du seuil des éléments non textuels comme de celui du texte. */
+:where(body.p-roam) .vedette-scene,
+:where(body.p-roam) .carte-bien .vignette.reserve,
+:where(body.p-roam) .ilot-choix .vignette,
+:where(body.p-roam) .choix-carte .vignette{background:var(--gris-ilot)}
+:where(body.p-roam) .carte-bien .vignette.reserve{color:var(--encre-discrete)}

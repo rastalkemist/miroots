@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-+LWZ1VRLJu2Qx5FisCcyInyynAaKye3KJzrXt4BV7IM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-qzKuhV42u9xuTqiAv9D5mgHAz7AZsory0DTp8GzFaBw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
 <link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="roam.css">
 <script src="roots-db.js"></script>
 <script src="roots.js"></script>
 <script src="vendor/intlTelInput.min.js" defer></script>
@@ -128,11 +129,11 @@
         </ul>
       </div>
       <div class="vedette-dire">
-        <div class="vedette-tete">
-          <h3 class="vedette-nom" id="vedetteNom">Ahoefa<span class="vedette-ou" id="vedetteOu" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+        <h3 class="vedette-nom" id="vedetteNom">Ahoefa<span class="vedette-ou" id="vedetteOu" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+        <div class="vedette-bas">
+          <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
           <a class="bouton-contour" id="vedetteGeste" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
         </div>
-        <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
       </div>
     </article>
 
@@ -1844,21 +1845,31 @@
     var titre = titreDeLaRangee(rail);
     var cmds = Array.prototype.slice.call(rail.querySelectorAll('.rail-cmd'));
     if (!titre || cmds.length < 2) return;
-    var groupe = rail.querySelector('.rail-tete');
-    if (!groupe) {
+    /* La ligne de tete est la SOEUR de la rangee, jamais son enfant : la
+       chercher dans la rangee en fabriquerait une neuve a chaque mesure, et
+       chacune emboiterait la precedente. */
+    var groupe = titre.parentNode;
+    if (!groupe.classList.contains('rail-tete')) {
       groupe = document.createElement('div');
       groupe.className = 'rail-tete';
       titre.parentNode.insertBefore(groupe, titre);
       groupe.appendChild(titre);
     }
-    /* Le souffle exige entre le titre et les commandes est celui que la
-       feuille de style declare sur le groupe : il n'est pas rappele ici. */
+    /* Le souffle exige entre le titre et les commandes, et l'ecart entre les
+       deux commandes, sont declares par la feuille de style sur le groupe :
+       ils ne sont pas rappeles ici. Le souffle compte DEUX FOIS — une fois
+       entre le titre et les commandes, une fois apres elles — sans quoi la
+       ligne se prend a l'etroit.
+       La ligne ne se prend que sur la mise en page large, celle que la barre
+       declare quand elle a promu le super-nav : c'est la meme mesure que le
+       reste de la coque, et aucun seuil chiffre n'est ecrit ici. */
     var vu = getComputedStyle(groupe);
     var souffle = parseFloat(vu.columnGap) || 0;
     var ecart = parseFloat(vu.rowGap) || 0;
     var large = groupe.clientWidth || rail.clientWidth;
     var groupeCmd = cmds[0].offsetWidth * 2 + ecart;
-    var tient = largeurDuTexte(titre) + souffle + groupeCmd <= large;
+    var page = document.body.classList.contains('nav-haut');
+    var tient = page && largeurDuTexte(titre) + souffle * 2 + groupeCmd <= large;
     rail.dataset.cmd = tient ? 'ligne' : 'image';
     cmds.forEach(function (b) {
       var ou = tient ? groupe : rail;
@@ -1871,6 +1882,18 @@
   }
 
   window.addEventListener('resize', placerLesCommandes);
+  /* La premiere pose tombe avant deux evenements qui changent la mesure : la
+     barre promeut le super-nav apres sa propre mesure, et un titre servi dans
+     la police de repli n'a pas la largeur du titre servi dans la sienne. La
+     pose se refait donc sur les trois signaux. */
+  if (window.MutationObserver) {
+    new MutationObserver(placerLesCommandes)
+      .observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+  window.addEventListener('load', placerLesCommandes);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(placerLesCommandes)['catch'](function () {});
+  }
 
   function scenesDeVedette() {
     var piste = $('pisteVedette');
