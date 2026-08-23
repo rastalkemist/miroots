@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-b45zeP96yfacWYoWoR43f2pxJKjyJZljvx+y+FThw5I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-fwlbqFGLXr/WpdC6KFPl+4vIlU1+IHGVGaxGRHga5Oo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -74,7 +74,7 @@
                aria-label="Mettre la vidéo en pause"></video>
       </div>
       <div class="vedette-tete">
-        <h2 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h2>
+        <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
         <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
       </div>
       <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
@@ -90,21 +90,24 @@
     <ul class="rail-piste" id="railSejour" data-rail-nom="Les biens">
         <li><a class="carte-bien" href="#feuilleResa" data-bien="kekeli" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/kekeli-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
-          <span class="tete"><span class="nom">Kekeli</span><span class="ou">Sainte-Rita, Cotonou</span></span>
-          <span class="dit" data-t="accKekeli">« Le jour se lève » en éwé. Le studio que la lumière traverse du matin au soir.</span>
-          <span class="geste" data-t="gesteVisiter">Visiter</span>
+          <span class="carte-tete">
+            <span class="nom-ligne"><span class="nom">Kekeli</span><span class="geste" data-t="gesteVisiter">Visiter</span></span>
+            <span class="ou">Sainte-Rita, Cotonou</span>
+          </span>
         </a></li>
         <li><a class="carte-bien" href="#feuilleResa" data-bien="lion-bar" data-zone="peches">
           <span class="vignette"><img src="media/lieux/lion-bar-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
-          <span class="tete"><span class="nom">Lion Bar</span><span class="ou">Grand-Popo</span></span>
-          <span class="dit" data-t="accLion">Poser sa tente entre les cocotiers, à quelques pas du bruit de l’océan.</span>
-          <span class="geste" data-t="gesteVisiter">Visiter</span>
+          <span class="carte-tete">
+            <span class="nom-ligne"><span class="nom">Lion Bar</span><span class="geste" data-t="gesteVisiter">Visiter</span></span>
+            <span class="ou">Grand-Popo</span>
+          </span>
         </a></li>
         <li><a class="carte-bien" href="#feuilleResa" data-bien="bel-ami" data-zone="ailleurs">
           <span class="vignette"><img src="media/lieux/bel-ami-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
-          <span class="tete"><span class="nom">Bel Ami sur Pilotis</span><span class="ou">Lac Ahémé</span></span>
-          <span class="dit" data-t="accBelAmi">Une cabane sur l’eau. La terrasse donne sur le large, et rien d’autre.</span>
-          <span class="geste" data-t="gesteVisiter">Visiter</span>
+          <span class="carte-tete">
+            <span class="nom-ligne"><span class="nom">Bel Ami sur Pilotis</span><span class="geste" data-t="gesteVisiter">Visiter</span></span>
+            <span class="ou">Lac Ahémé</span>
+          </span>
         </a></li>
     </ul>
 
@@ -113,22 +116,22 @@
     <ul class="rail-piste" id="railBientot">
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Interfaces</span><span class="ou">Calavi Arconville</span></span>
+          <span class="carte-tete"><span class="nom">Interfaces</span><span class="ou">Calavi Arconville</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Roots Camp</span><span class="ou">Djègbadji, Ouidah</span></span>
+          <span class="carte-tete"><span class="nom">Roots Camp</span><span class="ou">Djègbadji, Ouidah</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Raven — RxR I</span><span class="ou">Roots Roamer</span></span>
+          <span class="carte-tete"><span class="nom">Raven — RxR I</span><span class="ou">Roots Roamer</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Ranger — RxR II</span><span class="ou">Roots Roamer</span></span>
+          <span class="carte-tete"><span class="nom">Ranger — RxR II</span><span class="ou">Roots Roamer</span></span>
           <span class="avenir" data-t="aVenir">À venir</span>
         </div></li>
     </ul>
@@ -147,7 +150,7 @@
       <button type="button" class="cat" data-rub="incontournables" aria-pressed="false" data-t="rIncont">in-Cotonou-rnables</button>
       <button type="button" class="cat" data-rub="evenements" aria-pressed="false" data-t="rEvt">Événements</button>
       <button type="button" class="cat" data-rub="manquer" aria-pressed="false" data-t="rManquer">À ne pas manquer</button>
-      <button type="button" class="cat" data-rub="pepites" aria-pressed="false" data-t="rPepites">Pépites</button>
+      <button type="button" class="cat" data-rub="pepites" aria-pressed="false" data-t="rPepites">Pépites du pays</button>
     </div>
 
     <div class="rubrique" data-rub="incontournables">
@@ -155,27 +158,27 @@
       <ul class="rail-piste" id="railIncont">
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Jammin Bar</span><span class="ou">Cotonou</span></span>
+          <span class="carte-tete"><span class="nom">Jammin Bar</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Zone 5 bar</span><span class="ou">Cotonou</span></span>
+          <span class="carte-tete"><span class="nom">Zone 5 bar</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Zone 5 Playa</span><span class="ou">Cotonou</span></span>
+          <span class="carte-tete"><span class="nom">Zone 5 Playa</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Africa Sound City</span><span class="ou">Cotonou</span></span>
+          <span class="carte-tete"><span class="nom">Africa Sound City</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
         <li><div class="carte-bien attente">
           <span class="vignette reserve" aria-hidden="true"><svg class="i-reserve"><use href="#i-roam"/></svg></span>
-          <span class="tete"><span class="nom">Yes Papa</span><span class="ou">Cotonou</span></span>
+          <span class="carte-tete"><span class="nom">Yes Papa</span><span class="ou">Cotonou</span></span>
           <span class="avenir" data-t="ficheAVenir">Fiche à venir</span>
         </div></li>
       </ul>
@@ -246,16 +249,12 @@
        La feuille est la version actionnable de la page : ses deux onglets
        portent les deux verbes de l'ecran. Le motif est celui des onglets de
        l'accueil, meme balisage, meme classe active. -->
-  <div class="onglets" id="ongletsRoam" role="tablist" aria-label="Explorer">
-    <button type="button" class="actif" role="tab" id="ong-visiter"
-            aria-selected="true" aria-controls="ct-visiter" data-ong="visiter"
-            data-t="ongVisiter">Visiter</button>
-    <button type="button" role="tab" id="ong-decouvrir" tabindex="-1"
-            aria-selected="false" aria-controls="ct-decouvrir" data-ong="decouvrir"
-            data-t="ongDecouvrir">Découvrir</button>
+  <div class="onglets" id="onglets">
+    <button class="actif" data-ong="visiter" data-t="ongVisiter">Visiter</button>
+    <button data-ong="decouvrir" data-t="ongDecouvrir">Découvrir</button>
   </div>
 
-  <div class="contenu actif" id="ct-visiter" role="tabpanel" aria-labelledby="ong-visiter">
+  <div class="contenu actif" id="ct-visiter">
   <!-- ══════════════ LA FEUILLE D'EXPLORATION ══════════════
        Trois pas, un seul ouvert a la fois. Un pas ferme se replie sur une
        rangee qui montre ce qu'il porte : on voit d'un coup d'oeil ce qui est
@@ -265,13 +264,13 @@
        Seule la disposition est neuve. -->
   <div class="explorer" id="explorer">
 
-    <section class="etape ouverte" data-pas="ou">
-      <button type="button" class="etape-tete" aria-expanded="true" aria-controls="corpsOu">
+    <section class="etape" data-pas="ou">
+      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsOu">
         <span class="etape-quoi" data-t="eOu">Où&#8239;?</span>
+        <span class="etape-ouvert" id="etLogement" data-t="ouTitre">Où veux-tu poser tes valises&#8239;?</span>
         <span class="etape-valeur" id="valOu" data-t="eOuVide">Choisir un lieu</span>
       </button>
-      <div class="etape-corps" id="corpsOu">
-        <h3 class="etape-titre" id="etLogement" tabindex="-1" data-t="ouTitre">Où veux-tu poser tes valises&#8239;?</h3>
+      <div class="etape-corps" id="corpsOu" hidden>
         <!-- La saisie affine vers une offre existante ; elle ne cherche pas un
              terme libre. Le motif est celui de la boite a suggestions : le champ
              annonce la liste, la liste annonce l'option active, et le clavier
@@ -291,10 +290,10 @@
     <section class="etape" data-pas="quand">
       <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuand">
         <span class="etape-quoi" data-t="eQuand">Quand&#8239;?</span>
+        <span class="etape-ouvert" id="etQuand" data-t="quandTitre">Ajouter des dates</span>
         <span class="etape-valeur" id="valQuand" data-t="eQuandVide">Ajouter des dates</span>
       </button>
       <div class="etape-corps" id="corpsQuand" hidden>
-        <h3 class="etape-titre" tabindex="-1" data-t="quandTitre">Ajouter des dates</h3>
         <div class="rangee-dates">
           <div class="champ"><label for="arrivee" data-t="lArrivee">Arrivée</label>
             <input type="date" id="arrivee"></div>
@@ -308,10 +307,10 @@
     <section class="etape" data-pas="qui" id="groupePersonnes">
       <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQui">
         <span class="etape-quoi" data-t="eQui">Qui&#8239;?</span>
+        <span class="etape-ouvert" id="etQui" data-t="quiTitre">Combien serez-vous&#8239;?</span>
         <span class="etape-valeur" id="valQui" data-t="eQuiVide">Ajouter des voyageurs</span>
       </button>
       <div class="etape-corps rangee-qui" id="corpsQui" hidden>
-        <h3 class="etape-titre" id="etQui" tabindex="-1" data-t="quiTitre">Combien serez-vous&#8239;?</h3>
         <div class="stepper" role="group" aria-labelledby="etQui">
           <button type="button" id="moinsPersonnes" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
           <span id="valeurPersonnes">1</span>
@@ -326,7 +325,7 @@
   <section class="bloc-sejour">
     <div class="champ groupe"><label for="nomSejour" data-t="tonNom">Ton prénom</label>
       <input id="nomSejour" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
-    <div class="champ groupe"><label for="telSejour" data-t="tonTel">Ton numéro (idéalement WhatsApp, pour te joindre)</label>
+    <div class="champ groupe"><label for="telSejour" data-t="tonTel">Ton numéro (WhatsApp, si possible)</label>
       <input type="tel" inputmode="tel" id="telSejour" autocomplete="tel"></div>
   </section>
 
@@ -345,20 +344,20 @@
 
   </div><!-- fin de l'onglet Visiter -->
 
-  <div class="contenu" id="ct-decouvrir" role="tabpanel" aria-labelledby="ong-decouvrir" hidden>
+  <div class="contenu" id="ct-decouvrir">
   <!-- Le meme mecanisme que l'onglet voisin, sur une autre matiere : « Quoi »
        remplace « Ou », et la liste suggeree est garnie des lieux que la page
        porte deja. Une seule source : ce qui est sur la page est ce qui se
        cherche. -->
   <div class="explorer" id="explorerDec">
 
-    <section class="etape ouverte" data-pas="quoi">
-      <button type="button" class="etape-tete" aria-expanded="true" aria-controls="corpsQuoi">
+    <section class="etape" data-pas="quoi">
+      <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuoi">
         <span class="etape-quoi" data-t="eQuoi">Quoi&#8239;?</span>
+        <span class="etape-ouvert" id="etQuoi" data-t="quoiTitre">On va où ce soir&#8239;?</span>
         <span class="etape-valeur" id="valQuoi" data-t="eQuoiVide">Choisir un lieu</span>
       </button>
-      <div class="etape-corps" id="corpsQuoi">
-        <h3 class="etape-titre" id="etQuoi" tabindex="-1" data-t="quoiTitre">On va où ce soir&#8239;?</h3>
+      <div class="etape-corps" id="corpsQuoi" hidden>
         <div class="champ champ-suggest">
           <input type="text" id="qLieuDec" autocomplete="off" spellcheck="false"
                  role="combobox" aria-expanded="false" aria-controls="suggDec"
@@ -372,10 +371,10 @@
     <section class="etape" data-pas="quandDec">
       <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuandDec">
         <span class="etape-quoi" data-t="eQuand">Quand&#8239;?</span>
+        <span class="etape-ouvert" id="etQuandDec" data-t="quandTitre">Ajouter des dates</span>
         <span class="etape-valeur" id="valQuandDec" data-t="eQuandVide">Ajouter des dates</span>
       </button>
       <div class="etape-corps" id="corpsQuandDec" hidden>
-        <h3 class="etape-titre" tabindex="-1" data-t="quandTitre">Ajouter des dates</h3>
         <div class="rangee-dates">
           <div class="champ"><label for="arriveeDec" data-t="lArrivee">Arrivée</label>
             <input type="date" id="arriveeDec"></div>
@@ -388,10 +387,10 @@
     <section class="etape" data-pas="quiDec">
       <button type="button" class="etape-tete" aria-expanded="false" aria-controls="corpsQuiDec">
         <span class="etape-quoi" data-t="eQui">Qui&#8239;?</span>
+        <span class="etape-ouvert" id="etQuiDec" data-t="quiTitre">Combien serez-vous&#8239;?</span>
         <span class="etape-valeur" id="valQuiDec" data-t="eQuiVide">Ajouter des voyageurs</span>
       </button>
       <div class="etape-corps rangee-qui" id="corpsQuiDec" hidden>
-        <h3 class="etape-titre" id="etQuiDec" tabindex="-1" data-t="quiTitre">Combien serez-vous&#8239;?</h3>
         <div class="stepper" role="group" aria-labelledby="etQuiDec">
           <button type="button" id="moinsDec" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
           <span id="valeurDec">1</span>
@@ -461,7 +460,7 @@
       etLogement: 'Le logement', etDates: 'Tes dates',
       lArrivee: 'Arrivée', lDepart: 'Départ',
       etPersonnes: 'Combien serez-vous ?',
-      tonNom: 'Ton prénom', tonTel: 'Ton numéro (idéalement WhatsApp, pour te joindre)', pNom: 'Ton prénom',
+      tonNom: 'Ton prénom', tonTel: 'Ton numéro (WhatsApp, si possible)', pNom: 'Ton prénom',
       laNuit: function (p) { return p + ' la nuit'; },
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
@@ -501,7 +500,7 @@
       rIncont: 'in-Cotonou-rnables',
       rEvt: 'Événements',
       rManquer: 'À ne pas manquer',
-      rPepites: 'Pépites',
+      rPepites: 'Pépites du pays',
       rIncontTitre: 'Les in-Cotonou-rnables',
       rEvtTitre: 'Événements à venir',
       rManquerTitre: 'À ne pas manquer',
@@ -561,7 +560,7 @@
       etLogement: 'Your room', etDates: 'Your dates',
       lArrivee: 'Check-in', lDepart: 'Check-out',
       etPersonnes: 'How many of you?',
-      tonNom: 'Your first name', tonTel: 'Your number (WhatsApp ideally, so we can reach you)', pNom: 'Your first name',
+      tonNom: 'Your first name', tonTel: 'Your number (WhatsApp if possible)', pNom: 'Your first name',
       laNuit: function (p) { return p + ' a night'; },
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
@@ -687,26 +686,43 @@
      le lieu coute. Elle porte `option` et non `radio` — c'est une boite a
      suggestions, pas un groupe de boutons —, et l'etat retenu s'y lit par
      `aria-selected`. */
-  function optionLieu(l) {
+  /* Une option de la liste est UNE CARTE DE BIEN en petit format : meme
+     composant que le rail de la page, memes parties, une seule taille en
+     moins. Elle porte `option` parce qu'elle vit dans une boite a
+     suggestions, et l'etat retenu s'y lit par `aria-selected`. */
+  function carteOption(l, id, ou, geste) {
     var li = document.createElement('li');
     li.className = 'suggestion';
     li.setAttribute('role', 'option');
     li.setAttribute('aria-selected', 'false');
-    li.id = 'sugg-' + l.slug;
+    li.id = id;
     li.dataset.slug = l.slug;
-    li.appendChild(vignetteDuLieu(l.slug));
-    var texte = document.createElement('span');
-    texte.className = 'suggestion-texte';
+    var carte = document.createElement('span');
+    carte.className = 'carte-bien mini';
+    carte.appendChild(vignetteDuLieu(l.slug));
+    var tete = document.createElement('span');
+    tete.className = 'carte-tete';
+    var ligne = document.createElement('span');
+    ligne.className = 'nom-ligne';
     var nom = document.createElement('span');
     nom.className = 'nom';
     nom.textContent = l.nom;
-    var infos = document.createElement('span');
-    infos.className = 'infos';
-    infos.textContent = t().jusqua(l.capacite) + ' · ' + t().laNuit(prix(l.prix_nuit));
-    texte.appendChild(nom);
-    texte.appendChild(infos);
-    li.appendChild(texte);
+    var g = document.createElement('span');
+    g.className = 'geste';
+    g.textContent = geste;
+    ligne.appendChild(nom); ligne.appendChild(g);
+    var lieu = document.createElement('span');
+    lieu.className = 'ou';
+    lieu.textContent = ou;
+    tete.appendChild(ligne); tete.appendChild(lieu);
+    carte.appendChild(tete);
+    li.appendChild(carte);
     li.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
+    return li;
+  }
+
+  function optionLieu(l) {
+    var li = carteOption(l, 'sugg-' + l.slug, t().jusqua(l.capacite) + ' · ' + t().laNuit(prix(l.prix_nuit)), t().gesteVisiter);
     li.addEventListener('click', function () { choisir(l); });
     return li;
   }
@@ -1066,8 +1082,8 @@
        vient de se replier, et sans cela le foyer retomberait sur le document.
        Refermer ne deplace rien : le foyer est deja sur la rangee qu'on vient
        d'appuyer. */
-    var titre = pas && pas.querySelector('.etape-titre');
-    if (titre) titre.focus({ preventScroll: false });
+    var champ = pas && pas.querySelector('input,select,button:not(.etape-tete)');
+    if (champ) champ.focus({ preventScroll: true });
   }
 
   function pasSuivant(pas) {
@@ -1219,25 +1235,7 @@
   }
 
   function optionLieuDec(l) {
-    var li = document.createElement('li');
-    li.className = 'suggestion';
-    li.setAttribute('role', 'option');
-    li.setAttribute('aria-selected', 'false');
-    li.id = 'sugd-' + l.slug;
-    li.dataset.slug = l.slug;
-    li.appendChild(vignetteDuLieu(l.slug));
-    var texte = document.createElement('span');
-    texte.className = 'suggestion-texte';
-    var nom = document.createElement('span');
-    nom.className = 'nom';
-    nom.textContent = l.nom;
-    var infos = document.createElement('span');
-    infos.className = 'infos';
-    infos.textContent = l.ou;
-    texte.appendChild(nom);
-    texte.appendChild(infos);
-    li.appendChild(texte);
-    li.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
+    var li = carteOption(l, 'sugd-' + l.slug, l.ou, t().gesteVisiter);
     li.addEventListener('click', function () { retenirLieuDec(l); });
     return li;
   }
@@ -1352,39 +1350,18 @@
     resumerDec();
   }
 
-  /* ------------------------------------------------------------------
-     LES DEUX ONGLETS. Un seul panneau visible, le rang de tabulation suit :
-     l'onglet retenu est le seul arret, les fleches passent de l'un a l'autre.
-     ------------------------------------------------------------------ */
+  /* Les onglets reprennent la mecanique de la feuille de reservation : la
+     classe active passe d'un bouton a l'autre et d'un panneau a l'autre, rien
+     de plus. */
   function ongletsDeLaFeuille() {
-    var barre = $('ongletsRoam');
+    var barre = $('onglets');
     if (!barre) return;
-    var tous = Array.prototype.slice.call(barre.querySelectorAll('[role="tab"]'));
-    function montrer(b) {
-      tous.forEach(function (o) {
-        var vise = o === b;
-        o.classList.toggle('actif', vise);
-        o.setAttribute('aria-selected', vise ? 'true' : 'false');
-        o.tabIndex = vise ? 0 : -1;
-        var panneau = $(o.getAttribute('aria-controls'));
-        if (panneau) { panneau.classList.toggle('actif', vise); panneau.hidden = !vise; }
-      });
-    }
     barre.addEventListener('click', function (e) {
-      var b = e.target.closest && e.target.closest('[role="tab"]');
-      if (b) montrer(b);
+      var b = e.target.closest('button'); if (!b) return;
+      barre.querySelectorAll('button').forEach(function (x) { x.classList.toggle('actif', x === b); });
+      $('ct-visiter').classList.toggle('actif', b.dataset.ong === 'visiter');
+      $('ct-decouvrir').classList.toggle('actif', b.dataset.ong === 'decouvrir');
     });
-    barre.addEventListener('keydown', function (e) {
-      var i = tous.indexOf(document.activeElement);
-      if (i < 0) return;
-      var j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
-      if (j < 0 && j !== -1) j = tous.length - 1;
-      if (j === -1) return;
-      e.preventDefault();
-      j = (j + tous.length) % tous.length;
-      montrer(tous[j]); tous[j].focus();
-    });
-    montrer(tous[0]);
   }
 
   /* Une carte de la page porte deja le choix du lieu : la feuille s'ouvre
@@ -1413,6 +1390,12 @@
     }
     fab.setAttribute('aria-expanded', 'false');
     fab.addEventListener('click', ouvrir);
+    /* Tout element qui porte `data-ouvre` ouvre la feuille : un geste pose
+       ailleurs — dans la barre du haut sur grand ecran, par exemple — n'a rien
+       a savoir de sa mecanique, et la feuille garde une seule porte. */
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ouvre="feuilleResa"]'), function (b) {
+      b.addEventListener('click', function (e) { e.preventDefault(); ouvrir(); });
+    });
     if (x) x.addEventListener('click', fermer);
     v.addEventListener('click', fermer);
     document.addEventListener('keydown', function (e) {
