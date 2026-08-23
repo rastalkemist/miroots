@@ -1763,10 +1763,56 @@
     return true;
   }
 
+  /* ------------------------------------------------------------------
+     LA FEUILLE FERMEE NE GARDE PAS LE FOYER.
+
+     Une feuille du bas se ferme par une translation hors du cadre. Elle reste
+     donc rendue au sens du calcul, et tout ce qu'elle contient reste dans
+     l'ordre de tabulation : le foyer disparait dans un panneau que personne
+     ne voit, et il faut le traverser en entier pour en sortir.
+
+     `inert` retire l'element ET sa descendance du foyer, du pointeur et de
+     l'arbre d'accessibilite ; `aria-modal` ne couvre que l'etat OUVERT et ne
+     dit rien de l'etat ferme. La classe qui rend la feuille visible est la
+     seule source : l'attribut la suit, il ne la double pas.
+
+     Ce qui casse si on le modifie : retirer l'observateur fige l'etat au
+     chargement, et une feuille ouverte par script reste inerte, donc
+     inutilisable. Ecrire `inert` dans le balisage d'un ecran cree une seconde
+     source de verite sur l'ouverture. */
+  var CLASSE_OUVERTE = 'visible';
+
+  function accorderInerte(feuille) {
+    var ouverte = feuille.classList.contains(CLASSE_OUVERTE);
+    if (ouverte === !feuille.hasAttribute('inert')) return;
+    if (ouverte) feuille.removeAttribute('inert');
+    else feuille.setAttribute('inert', '');
+  }
+
+  function poserInerte() {
+    var feuilles = document.querySelectorAll('.feuille-bas');
+    if (!feuilles.length) return 0;
+    var oeil = new MutationObserver(function (lots) {
+      for (var i = 0; i < lots.length; i++) accorderInerte(lots[i].target);
+    });
+    Array.prototype.forEach.call(feuilles, function (f) {
+      accorderInerte(f);
+      oeil.observe(f, { attributes: true, attributeFilter: ['class'] });
+    });
+    return feuilles.length;
+  }
+
   global.Roots = global.Roots || {};
   global.Roots.sprite = sprite;
   global.Roots.glisser = glisser;
   global.Roots.retirerCoque = retirerCoque;
+  global.Roots.poserInerte = poserInerte;
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', poserInerte);
+  } else {
+    poserInerte();
+  }
 
   poserCoque();
 })(window);

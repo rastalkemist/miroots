@@ -124,7 +124,74 @@
 /* ======================================================================== §2 a §4 — SOCLE. Base, champ telephone, chrome partage. ======================================================================== */ *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:var(--blanc);color:var(--encre);font-family:var(--font-corps);font-weight:var(--w-medium);padding-bottom:calc(124px + var(--safe-bas));position:relative}
 svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.corps{width:var(--piste);max-width:var(--col);margin:0 auto;padding:var(--esp-4) 0 0}
+/* ─── L'ARBRE EDITORIAL — un titre porte son ROLE, sur tout ecran ─────────
+   Sans regle, un titre tombe sur la valeur par defaut du navigateur : 32 px
+   pour un h1, 24 pour un h2, 18,72 pour un h3, interligne `normal`. Aucune de
+   ces valeurs n'est un barreau de l'echelle, et aucun de ces interlignes n'est
+   un cran de la table. Un ecran qui oublie de declarer ses titres sortait donc
+   du systeme sans que rien ne le signale.
+   On prend le ROLE, jamais un nombre : le jeu d'ecran change la valeur du role
+   sans qu'une seule regle bouge. L'interligne suit le barreau, et le barreau du
+   h1 change au jeu grand — c'est la seule bascule qu'il faut ecrire.
+   La graisse n'est PAS posee ici : le defaut du navigateur vaut deja 700 pour
+   un titre, ce que la piece prescrit hors ouverture. Une section d'ecran qui
+   veut une autre graisse la declare, et sa declaration l'emporte par l'ordre.
+   Poser une taille ici sans en poser dans une section d'ecran est sans effet
+   sur cette section : `:where()` ne pese rien et l'ordre tranche. */
+h1{font-size:var(--t-h1);line-height:var(--lh-38);color:var(--encre);text-wrap:balance}
+/* Le h2 du registre INTERFACE porte l'eclat en graisse 100, sur l'echelon 2 de
+   l'univers. La fonte est variable de 100 a 900 : la graisse demandee est
+   servie par le fichier, elle n'est pas simulee. Le registre EDITORIAL garde la
+   sienne — sa section la declare, et sa declaration l'emporte. */
+h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-eclat);font-weight:var(--w-thin);color:var(--univers);text-wrap:balance}
+/* En dessous du h2, le registre INTERFACE reste sur la fonte de corps : le
+   changement de fonte marque le seuil du titre principal, il ne se repete pas
+   a chaque niveau. L'encre ALTERNE — encre pleine aux rangs impairs, echelon 2
+   de l'univers aux rangs pairs : c'est le procede du registre editorial,
+   transpose d'un echelon vers le fonce, ou l'echelon 3 tombait sous le
+   plancher des qu'un titre se posait sur une surface autre que le papier.
+   La graisse descend d'un cran au h3, puis tient a 700 : un sous-titre se
+   distingue par sa taille, pas par une graisse qui rivalise avec le niveau au
+   dessus. Les graisses 100, 300, 500, 700 sont servies par des fichiers
+   propres — aucune n'est simulee par le navigateur.
+   Les deux derniers rangs empruntent a l'editorial ses deux marques : les
+   capitales espacees, puis l'italique. L'equilibre des lignes vaut pour tous :
+   un titre ne laisse pas un mot seul sur sa derniere ligne. */
+h3{font-size:var(--t-h3);line-height:var(--lh-21);font-family:var(--font-corps);font-weight:var(--w-medium);color:var(--encre);text-wrap:balance}
+h4{font-size:var(--t-h4);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);text-wrap:balance}
+h5{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--encre);text-transform:uppercase;letter-spacing:var(--lettrage-capitales);text-wrap:balance}
+h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);font-style:italic;text-wrap:balance}
+@media(max-width:640px){h5{letter-spacing:var(--lettrage-capitales-petites)}}
+@media(min-width:1025px){
+  h1{line-height:var(--lh-51)}
+  h4{line-height:var(--lh-21)}
+}
+}
+
+/* La page prend la PISTE ; la prose garde la mesure de lecture. Un bandeau,
+   une grille et un rail se composent sur la largeur de la page ; un paragraphe
+   cesse d'etre lisible au-dela de la mesure et s'y arrete. Plafonner le
+   conteneur revenait a plafonner la page : sur un grand ecran elle n'occupait
+   plus que 39 % de la fenetre, la ou la gouttiere en sert 70. */
+.corps{width:var(--piste);margin:0 auto;padding:var(--esp-4) 0 0}
+.corps > p,
+.corps > .chapo,
+.corps > .instructions,
+.corps > .note-source,
+.corps > .note-section{max-width:var(--col)}
+
+/* ─── LES DEUX BOUTONS — une forme, une chose dite ────────────────────────
+   Un bouton PLEIN dit un engagement qui mene ailleurs : echelon 2 de
+   l'univers, encre blanche, aucun filet. Il est UNIQUE sur un ecran de
+   dialecte A — deux gestes pleins se disputent la decision et l'affaiblissent.
+   Un bouton en CONTOUR dit une action sur l'ecran courant : papier, filet et
+   encre d'univers. Il peut y en avoir plusieurs, jamais plus saillant que le
+   plein. Ce qui ne fait ni l'un ni l'autre est un lien.
+   Les deux couples sont ceux du deploiement : plein 8,36 sur son papier,
+   contour 8,36 en encre sur papier. Changer l'un des jetons casse le rapport. */
+.bouton-plein,.bouton-contour{display:inline-flex;align-items:center;justify-content:center;gap:var(--esp-2);min-height:var(--cible-min);padding:0 var(--esp-5);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-bold);font-size:var(--t-body);text-decoration:none;cursor:pointer}
+.bouton-plein{background:var(--univers);color:var(--blanc);border:none}
+.bouton-contour{background:var(--blanc);color:var(--univers);border:var(--limite-ep) solid var(--univers)}
 .champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--rayon-champ);height:48px}
 .champ .iti:focus-within{border-color:var(--univers);background:var(--blanc)}
 .iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-16);padding:0 var(--esp-3)}
@@ -516,7 +583,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .hero-scene video{width:100%;height:100%;object-fit:cover;display:block;transition:opacity var(--mvt-apparition) var(--courbe-sortie)}
 :where(body.p-roam) .hero-scene video.fondu-affiche{opacity:0}
 :where(body.p-roam) .hero-dit{margin:0 0 var(--air-i3);font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre)}
-:where(body.p-roam) .bouton-contour{display:inline-flex;align-items:center;justify-content:center;min-height:var(--cible-min);padding:0 var(--esp-5);border:var(--limite-ep) solid var(--univers);border-radius:var(--rayon-pilule);color:var(--univers);background:var(--blanc);font-family:var(--font-corps);font-weight:700;font-size:var(--t-body);text-decoration:none}
 
 :where(body.p-roam) .chapo-section{margin:0 0 var(--air-i3);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
 :where(body.p-roam) .etiquette.sous{margin-top:var(--air-i6)}
@@ -537,7 +603,17 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-roam) .carte-bien .geste{display:inline-flex;align-items:center;min-height:var(--cible-min);padding:0 var(--esp-3);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--univers)}
 :where(body.p-roam) .carte-bien .avenir{display:block;padding:var(--air-i1) var(--esp-3) var(--esp-3);font-size:var(--t-note);line-height:var(--lh-12);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--encre-discrete)}
 
-:where(body.p-roam) .grille-numeros{list-style:none;margin:0;padding:0;display:grid;gap:var(--esp-2)}
+/* Un fait pratique se lit comme une definition : son sujet, puis ce qu'il dit.
+   Il se pose sur la surface CHAUDE — creme et encre pleine —, celle des blocs
+   doux ; la grille des numeros garde l'ilot neutre. Deux matieres, deux
+   fonctions : ce qu'on lit en preparant un voyage n'est pas ce qu'on compose
+   dans l'urgence. Les deux grilles se rangent en colonnes des que la page en
+   offre la place, sans qu'un nombre de colonnes soit ecrit. */
+:where(body.p-roam) .grille-infos{list-style:none;margin:0;padding:0;display:grid;gap:var(--esp-2);grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+:where(body.p-roam) .grille-infos li{padding:var(--esp-4);background:var(--creme);border-radius:var(--rayon-carte)}
+:where(body.p-roam) .info-quoi{display:block;font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--encre)}
+:where(body.p-roam) .info-dit{display:block;margin-top:var(--air-i1);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
+:where(body.p-roam) .grille-numeros{list-style:none;margin:0;padding:0;display:grid;gap:var(--esp-2);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 :where(body.p-roam) .grille-numeros li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:var(--esp-3);min-height:var(--cible-min);padding:var(--esp-2) var(--esp-3);background:var(--gris-ilot);border-radius:var(--rayon-carte)}
 :where(body.p-roam) .num-quoi{font-size:var(--t-sm);line-height:var(--lh-14)}
 :where(body.p-roam) .num-tel{font-family:var(--font-chiffres);font-size:var(--t-body);font-weight:700}
@@ -552,6 +628,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 /* ---- Titres de section et notes. Registre INTERFACE : h2 38, h3 28 sur le jeu
    grand. La note de section emprunte le barreau 12, comme toute description. */
 :where(body.p-roam) .titre-section{margin:0 0 var(--air-i2)}
+:where(body.p-roam) .bloc-sejour + .bloc-sejour .titre-section{margin-top:var(--air-i8)}
 :where(body.p-roam) .titre-sous{margin:var(--air-i6) 0 var(--air-i2)}
 :where(body.p-roam) .note-section{margin:0 0 var(--air-i3);font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete)}
 :where(body.p-roam) .vide-rubrique{margin:0;padding:var(--esp-4);background:var(--gris-ilot);border-radius:var(--rayon-carte);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
@@ -562,19 +639,37 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    atteignent le bord sans employer 100vw, qui compte la barre de defilement et
    ferait deborder la page a l'horizontale. */
 :where(body.p-roam) .vedette{margin:0 0 var(--air-i6)}
-:where(body.p-roam) .vedette-scene{position:relative;overflow:hidden;background:var(--univers-e1);aspect-ratio:4/3;margin:0 calc(50% - 50vw) var(--air-i3);width:auto}
+/* La scene ne depasse pas la moitie haute de l'ecran, chrome compris : la
+   contrainte posee pour le film d'ouverture vaut pour l'element qui le porte.
+   La hauteur se prend sur la hauteur RENDUE du chrome, jamais sur la valeur
+   ecrite ; `dvh` passe avant `vh`, la barre du navigateur se retractant au
+   defilement. La scene est sa propre commande : l'appui bascule la lecture. */
+:where(body.p-roam) .vedette-scene{position:relative;overflow:hidden;background:var(--univers-e1);margin:0 calc(50% - 50vw) var(--air-i3);width:auto;height:calc(50vh - var(--entete-h-rendue, var(--entete-h)));height:calc(50dvh - var(--entete-h-rendue, var(--entete-h)))}
+:where(body.p-roam) .vedette-scene video{cursor:pointer}
 :where(body.p-roam) .vedette-scene video{width:100%;height:100%;object-fit:cover;display:block;transition:opacity var(--mvt-apparition) var(--courbe-sortie)}
 :where(body.p-roam) .vedette-scene video.fondu-affiche{opacity:0}
 :where(body.p-roam) .vedette-scene .commande-video{position:absolute;right:var(--esp-3);bottom:var(--esp-3);width:var(--cible-min);height:var(--cible-min);border-radius:50%;display:flex;align-items:center;justify-content:center;border:var(--limite-ep) solid var(--creme);background:rgba(var(--univers-e1-rgb),.72);color:var(--creme)}
 :where(body.p-roam) .vedette-scene .commande-video svg.i{width:20px;height:20px}
-:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:2px;margin:0 0 var(--air-i2)}
+/* Le nom du lieu et le geste tiennent la meme ligne, le geste au bord oppose
+   et centre sur l'axe horizontal du bloc qu'il accompagne. Sans cette regle le
+   geste tombe a la ligne suivante, au bord gauche, ou rien ne l'attend. */
+:where(body.p-roam) .vedette-tete{display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);margin:0 0 var(--air-i2)}
+:where(body.p-roam) .vedette-tete .bouton-contour{flex:0 0 auto;align-self:center}
+:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:2px;margin:0;min-width:0}
 :where(body.p-roam) .vedette-ou{font-size:var(--t-note);line-height:var(--lh-12);font-weight:var(--w-regular);color:var(--encre-discrete)}
-:where(body.p-roam) .vedette-dit{margin:0 0 var(--air-i3);font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre)}
+:where(body.p-roam) .vedette-dit{margin:0 0 var(--air-i3);font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre);max-width:var(--col)}
+:where(body.p-roam) .note-section,
+:where(body.p-roam) .note-source,
+:where(body.p-roam) .hero-dit{max-width:var(--col)}
 
 /* ---- Le geste flottant et la feuille du bas sont de la grammaire : seul ce
    qui differe de la forme commune s'ecrit ici. Le filet remplace l'aplat plein
    parce que la feuille de cet ecran s'ouvre au-dessus d'un contenu clair. */
-:where(body.p-roam) .fab{border:var(--limite-ep) solid var(--univers);gap:var(--esp-2)}
+/* Le geste flottant est le bouton PLEIN de cet ecran : un engagement qui mene
+   ailleurs, un seul par page. Le contour y est reserve a ce qui agit sur
+   l'ecran courant. L'accueil garde le sien en papier : il se pose sur un film,
+   ou un aplat d'univers ne se detacherait d'aucune image. */
+:where(body.p-roam) .fab{background:var(--univers);color:var(--blanc);border:none;gap:var(--esp-2)}
 
 /* ---- La feuille d'exploration : trois pas, un seul ouvert. Un pas fermé se
    replie sur une rangée qui montre ce qu'il porte ; le pas ouvert est une
