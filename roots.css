@@ -23,6 +23,7 @@
     une rangee prennent la piste ; un paragraphe prend la mesure. Confondre les
     deux, c'est soit etrangler la page, soit rendre le texte illisible. */
  --marge:5%; --site-w:90%; --col:500px;
+ --grille-colonnes:4; --gouttiere-grille:var(--esp-3); --carte-min:260px;
  --piste:var(--site-w);
  --bord:var(--marge);
  /* Famille froide — une seule teinte, 142,5 deg, cinq tons reguliers.
@@ -199,6 +200,66 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .onglets button.actif{background:var(--univers);color:var(--blanc)}
 .contenu{display:none}
 .contenu.actif{display:block}
+
+/* ═══════════════ LES GABARITS DE DECOUPAGE ═══════════════════════════════
+   Un ecran ne declare plus une grille : il choisit un gabarit. Sept formes
+   couvrent ce que le produit compose, et chacune n'a qu'une definition.
+
+   LA GRILLE DE REFERENCE : 4 colonnes sous 640, 8 jusqu'a 1024, 12 au-dela.
+   Au-dela de 1024 le nombre ne bouge plus — ce sont les colonnes qui
+   s'elargissent. Un gabarit dit combien de colonnes il occupe, jamais combien
+   la grille en a.
+
+   LA GOUTTIERE DE GRILLE EST FIXE, la marge de page ne l'est pas. Une marge
+   protege du BORD et suit donc l'ecran ; une gouttiere separe deux CONTENUS,
+   et cet ecart n'a aucune raison de grandir avec l'ecran. Deux crans, un
+   jeton. Les confondre est ce qui a produit trois valeurs pour une fonction.
+
+   CE QUI TRAVERSE LA GRILLE passe par `.hors-piste`, et par elle seule. La
+   demi-difference entre la fenetre et la boite atteint le bord sans employer
+   100vw, qui compte la barre de defilement et fait deborder la page. Elle ne
+   depend que du CENTRAGE du bloc, pas de son remplissage : la gouttiere
+   interieure ne la deplace pas. Toute pleine largeur doit en outre etre
+   NOMMEE et motivee au registre des pleines largeurs, sans quoi elle est
+   refusee au depot. */
+.hors-piste{margin-inline:calc(50% - 50vw);width:auto}
+
+/* ① Deux blocs qui se partagent l'ecran, gouttiere au milieu. Sous le palier
+   a 8 colonnes il n'y a pas de quoi couper : ils s'empilent. */
+.g-duo{display:grid;gap:var(--gouttiere-grille)}
+@media(min-width:641px){.g-duo{grid-template-columns:repeat(2,minmax(0,1fr));align-items:center}}
+
+/* ② Une colonne en largeur de page. La prose y garde sa mesure de lecture ;
+   un bandeau, une grille et un rail prennent toute la largeur. */
+.g-colonne{display:grid;gap:var(--gouttiere-grille)}
+.g-colonne > p,.g-colonne > .chapo{max-width:var(--col)}
+
+/* ③ La bande a defilement N'EST PAS un gabarit neuf : c'est `.rail` et sa
+   piste, deja en grammaire. Elle CACHE ce qui depasse et demande un geste ;
+   la grille de cartes montre tout et demande de descendre. Les confondre est
+   le seul piege de ce jeu de gabarits. */
+
+/* ④ La scene pleine largeur — fond ou film distinct du reste de la page. Elle
+   peut contenir les autres gabarits. */
+.g-scene{position:relative;overflow:hidden;margin-inline:calc(50% - 50vw);width:auto}
+
+/* ⑤ La grille de cartes reguliere : les cartes s'enroulent, TOUT est visible
+   sans geste. Le nombre de colonnes suit la grille de reference, borne par un
+   minimum de carte pour qu'une colonne ne descende jamais sous sa lisibilite. */
+.g-cartes{display:grid;gap:var(--gouttiere-grille);
+  grid-template-columns:repeat(auto-fit,minmax(min(var(--carte-min,260px),100%),1fr))}
+
+/* ⑥ Le bandeau d'appel : pleine largeur, aplat d'univers, une seule colonne
+   centree et courte. C'est une cloture, donc un seul geste, et il est plein. */
+.g-appel{margin-inline:calc(50% - 50vw);width:auto;background:var(--univers);
+  color:var(--blanc);padding-block:var(--air-i8);text-align:center}
+.g-appel > *{max-width:var(--col);margin-inline:auto}
+.g-appel :is(h1,h2,h3,h4,h5,h6){color:var(--blanc)}
+
+/* ⑦ La liste depliante : une colonne etroite, chaque rang se deplie. La
+   mecanique du depliant est deja en grammaire ; ce gabarit ne fait que la
+   ranger. */
+.g-liste{display:grid;gap:var(--esp-2);max-width:var(--col)}
 
 .bloc,:where(body.p-roam) .bloc-sejour,:where(body.p-roam) .rubrique{padding-inline:var(--marge)}
 /* Deux garanties, une seule raison : la part ne se reconduit qu'UNE fois.
@@ -692,7 +753,7 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    l'ecran ce qui suit ; en deux colonnes, le nom, le geste et la phrase
    entrent avec elle. La scene tient la gauche : le regard part de l'image et
    finit sur le texte, ou se trouve le geste. */
-@media(min-width:1025px){
+@media(min-width:641px){
   :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--esp-6);align-items:center}
   :where(body.p-roam) .vedette-scene{grid-row:1 / span 2;margin:0;width:auto;height:auto;aspect-ratio:4/3}
   :where(body.p-roam) .vedette-tete{align-self:end;margin:0 0 var(--air-i2)}
@@ -1429,10 +1490,10 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
    meme que celle de la typographie — largeur ET hauteur — pour qu'un telephone
    couche garde la gouttiere et la taille du telephone. */
 @media(min-width:640px) and (min-height:600px){
-  :root{--marge:10%;--site-w:80%}
+  :root{--marge:10%;--site-w:80%;--grille-colonnes:8}
 }
 @media(min-width:1024px) and (min-height:600px){
-  :root{--marge:15%;--site-w:70%}
+  :root{--marge:15%;--site-w:70%;--grille-colonnes:12;--gouttiere-grille:var(--esp-6)}
 }
 /* Tres large ecran : 20-60-20. Au-dela de cette largeur, une piste de 70 %
    rend des lignes trop longues pour etre lues d'un seul balayage de l'oeil. */
