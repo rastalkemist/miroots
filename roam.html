@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-c2AS32mnuk6uB583P2EqY5XIwUywrYwOV2adrtz0GcI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-cy3ET8rCJ/hmAxdmFIZXB/UoSg32zmpUZx6fkpQAFdQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -1729,10 +1729,31 @@
     function poser() {
       document.body.style.setProperty(
         '--propos-h', Math.ceil(g.getBoundingClientRect().height) + 'px');
+      centrerLePropos();
     }
     poser();
     if (window.ResizeObserver) new ResizeObserver(poser).observe(g);
     window.addEventListener('resize', poser);
+  }
+
+  /* LE PROPOS SE CENTRE SUR L'AXE DE LA SCENE. Les deux ancrages restent la
+     seule source de son rythme interne — la feuille les tient, ce code n'en
+     recopie aucun. Il mesure ce que le rythme laisse en haut et en bas, et
+     translate l'ensemble de la moitie de l'ecart : autant de vide au-dessus du
+     titre qu'au-dessous du geste.
+     La mesure se fait DECALAGE ANNULE, sans quoi elle se lirait elle-meme. */
+  function centrerLePropos() {
+    var dire = document.querySelector('.vedette-dire');
+    var scene = document.querySelector('.vedette-scene');
+    var titre = document.querySelector('.vedette-dire .vedette-nom');
+    var geste = document.querySelector('.vedette-bas .bouton-contour');
+    if (!dire || !scene || !titre || !geste) return;
+    dire.style.setProperty('--propos-decalage', '0px');
+    var s = scene.getBoundingClientRect();
+    if (!s.height) return;
+    var haut = titre.getBoundingClientRect().top - s.top;
+    var bas = s.bottom - geste.getBoundingClientRect().bottom;
+    dire.style.setProperty('--propos-decalage', Math.round((haut - bas) / 2) + 'px');
   }
 
   function scenesDeVedette() {
