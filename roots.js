@@ -240,20 +240,12 @@
        depuis un etat deja promu rend la mesure fausse au tour suivant. */
     var logo = barre.querySelector('.ankh-home');
     var gauche = barre.querySelector('.chrome-gauche');
-    var centre = barre.querySelector('.centre') || (gauche && gauche.querySelector('.centre'));
 
     corps.classList.remove('nav-haut', 'nav-ilot-ancre');
     if (superNav && superNav.parentNode !== haut.parentNode) {
       haut.parentNode.insertBefore(superNav, haut.nextSibling);
     }
-    /* Le logotype sort du groupe AVANT que le groupe ne disparaisse, sans quoi
-       il part avec lui. Il reprend sa place au milieu de la barre, ou la
-       colonne du centre le pose. */
-    if (gauche && logo) {
-      barre.insertBefore(logo, gauche);
-      if (centre) barre.insertBefore(centre, gauche);
-      gauche.parentNode.removeChild(gauche); gauche = null;
-    }
+    if (gauche && logo) { barre.insertBefore(logo, gauche); gauche.parentNode.removeChild(gauche); gauche = null; }
     if (ilot) { ilot.style.maxWidth = ''; ilot.classList.remove('replie'); }
     if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
     if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
@@ -284,7 +276,6 @@
     barre.insertBefore(gauche, barre.firstChild);
     gauche.appendChild(logo);
     gauche.appendChild(superNav);
-    if (centre) gauche.appendChild(centre);
 
     /* Palier 2 */
     if (ilot) {
