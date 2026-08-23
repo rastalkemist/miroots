@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-pGBecjway9yWR4my5YZIu9leRmBj4ftAEr/4rJcop+M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-bz42gJ819cJIbUF1d9rlHXThRREYA3qNvHN+ZgWGRvo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -91,21 +91,21 @@
         <li><a class="carte-bien" href="#feuilleResa" data-bien="kekeli" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/kekeli-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
-            <span class="nom-ligne"><span class="nom">Kekeli</span><span class="geste" data-t="gesteVisiter">Visiter</span></span>
+            <span class="nom-ligne"><span class="nom">Kekeli</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
             <span class="ou">Sainte-Rita, Cotonou</span>
           </span>
         </a></li>
         <li><a class="carte-bien" href="#feuilleResa" data-bien="lion-bar" data-zone="peches">
           <span class="vignette"><img src="media/lieux/lion-bar-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
-            <span class="nom-ligne"><span class="nom">Lion Bar</span><span class="geste" data-t="gesteVisiter">Visiter</span></span>
+            <span class="nom-ligne"><span class="nom">Lion Bar</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
             <span class="ou">Grand-Popo</span>
           </span>
         </a></li>
         <li><a class="carte-bien" href="#feuilleResa" data-bien="bel-ami" data-zone="ailleurs">
           <span class="vignette"><img src="media/lieux/bel-ami-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
-            <span class="nom-ligne"><span class="nom">Bel Ami sur Pilotis</span><span class="geste" data-t="gesteVisiter">Visiter</span></span>
+            <span class="nom-ligne"><span class="nom">Bel Ami sur Pilotis</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
             <span class="ou">Lac Ahémé</span>
           </span>
         </a></li>
@@ -461,7 +461,6 @@
       laNuit: function (p) { return p + ' la nuit'; },
       parNuit: 'la nuit',
       plusInfos: 'Plus d’infos',
-      plusInfosSur: function (n) { return 'Plus d’infos sur ' + n; },
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
       rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
@@ -564,7 +563,6 @@
       laNuit: function (p) { return p + ' a night'; },
       parNuit: 'a night',
       plusInfos: 'More info',
-      plusInfosSur: function (n) { return 'More about ' + n; },
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
       rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
@@ -747,13 +745,15 @@
     li.appendChild(choix);
 
     if (versFiche) {
+      /* Son nom accessible EST son texte visible, et il ne varie pas : c'est ce
+         qui en fait un composant reconnaissable, dont « Visiter » est la
+         seconde forme. Le but du lien se lit dans son CONTEXTE — l'element de
+         liste qui le porte nomme le lieu —, ce que SC 2.4.4 admet
+         explicitement au niveau A. */
       var plus = document.createElement('a');
-      plus.className = 'ilot-plus';
+      plus.className = 'ilot-plus lien-tertiaire';
       plus.href = versFiche;
       plus.textContent = t().plusInfos;
-      /* Le nom accessible porte le lieu : hors contexte, « Plus d'infos »
-         repete n fois ne dit pas de quoi. */
-      plus.setAttribute('aria-label', t().plusInfosSur(l.nom));
       li.appendChild(plus);
     }
     return li;
