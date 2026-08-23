@@ -414,10 +414,14 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 
    Un champ de la feuille ne descend pas sous 16px : en dessous, un navigateur
    mobile zoome sur la page a la mise au point et n'en revient pas seul. */
-.fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border:none;font-size:var(--t-21);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fab svg{width:26px;height:26px;stroke-width:2.6}
+.voile{z-index:12}
 .feuille-bas{overscroll-behavior:contain;position:fixed;z-index:13;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);--feuille-pose:0px;max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
 .feuille-bas::-webkit-scrollbar{display:none}
 .feuille-bas.visible{transform:translate(-50%,0)}
+.feuille-bas .groupe{margin-bottom:var(--air-i3)}
+.feuille-bas .champ{margin-bottom:var(--air-i3)}
 .feuille-bas .champ input{font-size:var(--t-16)}
 .feuille-bas .iti input[type=tel]{font-size:var(--t-16)}
 @media(min-width:500px){.feuille-bas{--feuille-pose:22px;bottom:var(--feuille-pose);border-radius:var(--rayon-carte)}}
@@ -570,9 +574,50 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 /* ---- Le geste flottant et la feuille du bas sont de la grammaire : seul ce
    qui differe de la forme commune s'ecrit ici. Le filet remplace l'aplat plein
    parce que la feuille de cet ecran s'ouvre au-dessus d'un contenu clair. */
-:where(body.p-roam) .fab{padding:0 var(--esp-6);border:var(--limite-ep) solid var(--univers);font-size:var(--t-body);gap:var(--esp-2)}
+:where(body.p-roam) .fab{border:var(--limite-ep) solid var(--univers);gap:var(--esp-2)}
+
+/* ---- La feuille d'exploration : trois pas, un seul ouvert. Un pas fermé se
+   replie sur une rangée qui montre ce qu'il porte ; le pas ouvert est une
+   carte claire posée sur le fond de la feuille. La valeur répondue passe de
+   l'encre discrète à l'encre pleine — la couleur ne porte aucun rang, c'est le
+   mot qui change, l'encre ne fait que suivre. */
+:where(body.p-roam) .explorer{display:grid;gap:var(--esp-2);margin-bottom:var(--air-i3)}
+:where(body.p-roam) .etape{background:var(--gris-ilot);border-radius:var(--rayon-carte);overflow:hidden}
+:where(body.p-roam) .etape.ouverte{background:var(--blanc);box-shadow:0 6px 18px rgba(var(--ombre-teinte),.14)}
+:where(body.p-roam) .etape-tete{display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);width:100%;min-height:var(--cible-min);padding:var(--esp-2) var(--esp-4);background:none;border:none;cursor:pointer;font-family:var(--font-corps);text-align:left}
+:where(body.p-roam) .etape-quoi{font-size:var(--t-sm);line-height:var(--lh-14);font-weight:700;color:var(--encre)}
+:where(body.p-roam) .etape-valeur{font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete);text-align:right}
+:where(body.p-roam) .etape-valeur.rempli{color:var(--encre);font-weight:700}
+:where(body.p-roam) .etape.ouverte .etape-tete{padding-bottom:0}
+:where(body.p-roam) .etape.ouverte .etape-valeur{display:none}
+:where(body.p-roam) .etape-corps{padding:var(--air-i2) var(--esp-4) var(--esp-4)}
+:where(body.p-roam) .etape-titre{margin:0 0 var(--air-i2)}
+:where(body.p-roam) .etape-corps .rangee-dates{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* ---- Le pas « Où » : les zones tiennent sur deux colonnes au lieu de défiler.
+   Repliées, elles s'atteignent toutes d'un seul appui, sans glissement — le
+   défilement latéral n'offre aucun chemin sans glisser vers ce qui sort du
+   cadre. Les quatre pastilles font alors 142 x 44 : la cible tient le plancher
+   sur toute la largeur de la demi-colonne. */
+:where(body.p-roam) .etape-corps .pastilles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));overflow-x:visible;margin-bottom:var(--air-i2)}
+:where(body.p-roam) .etape-corps .pastilles .cat{width:100%;text-align:center}
+
+/* ---- Les lieux du pas « Où » : deux colonnes, la vue d'abord. Le nom d'un
+   lieu casse en trois lignes au-delà de deux colonnes sur un écran de 360.
+   La carte retenue prend la bordure d'univers ET une pastille : la présence
+   d'une forme porte le choix, la couleur ne fait que la suivre. */
+:where(body.p-roam) .cartes-logement{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--esp-3)}
+:where(body.p-roam) .carte-logement{position:relative;padding:0;overflow:hidden}
+:where(body.p-roam) .carte-logement .vignette{display:block;aspect-ratio:4/3;background:var(--univers-e1);overflow:hidden}
+:where(body.p-roam) .carte-logement .vignette img{width:100%;height:100%;object-fit:cover;display:block}
+:where(body.p-roam) .carte-logement .tete-logement{display:block;padding:var(--esp-3) var(--esp-3) 0}
+:where(body.p-roam) .carte-logement .nom{font-size:var(--t-sm);line-height:var(--lh-14)}
+:where(body.p-roam) .carte-logement .infos{flex-direction:column;align-items:flex-start;gap:0;margin-top:2px;padding:0 var(--esp-3) var(--esp-3)}
+:where(body.p-roam) .carte-logement .marque{position:absolute;top:var(--esp-2);inset-inline-end:var(--esp-2);width:22px;height:22px;border-radius:50%;background:var(--univers);border:var(--limite-ep) solid var(--creme);display:none}
+:where(body.p-roam) .carte-logement .marque::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--creme)}
+:where(body.p-roam) .carte-logement.choisi .marque{display:block}
+:where(body.p-roam) .carte-logement.choisi{background:var(--blanc);border-color:var(--univers)}
 :where(body.p-roam) .titre-feuille{margin:0 0 var(--air-i3)}
-:where(body.p-roam) .voile{z-index:12}
 /* ======================================================================== ECRAN — accueil ======================================================================== */ :where(body.p-accueil) svg.brand{fill:currentColor;stroke:none}
 /* L'image d'attente est portee par la feuille, pas par l'element video :
    un element video ne prend qu'une seule affiche, et il en faut deux —
@@ -625,18 +670,14 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 .ligne-code .code{margin:0;line-height:var(--lh-33)}
 .geste-code-ico{display:inline-flex;align-items:center;justify-content:center;min-width:var(--cible-min);min-height:var(--cible-min);padding:0;border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-size:var(--t-note);font-weight:var(--w-bold);white-space:nowrap;cursor:pointer}
 .geste-code-ico svg.i{width:calc(var(--t-code) * .715);height:calc(var(--t-code) * .715)}
-:where(body.p-accueil) .fab{padding:0 var(--esp-8);border:none;font-size:var(--t-21)}
-:where(body.p-accueil) .fab svg{width:26px;height:26px;stroke-width:2.6}
 
 :where(body.p-accueil) main{position:relative;z-index:2;min-height:100vh}
-:where(body.p-accueil) .voile{z-index:12}
 
 :where(body.p-accueil) .onglets{display:flex;background:var(--gris-ilot);border-radius:var(--rayon-pilule);padding:3px;margin-bottom:var(--air-i3)}
 :where(body.p-accueil) .onglets button{flex:1;border:none;background:none;color:var(--encre-discrete);padding:var(--esp-2);min-height:44px;border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-size:var(--t-sm);font-weight:700;cursor:pointer}
 :where(body.p-accueil) .onglets button.actif{background:var(--univers);color:var(--blanc)}
 :where(body.p-accueil) .contenu{display:none}
 :where(body.p-accueil) .contenu.actif{display:block}
-:where(body.p-accueil) .groupe{margin-bottom:var(--air-i3)}
 :where(body.p-accueil) .selecteur-espaces{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--esp-2)}
 :where(body.p-accueil) .option-espace{background:var(--gris-ilot);border:2px solid transparent;border-radius:var(--rayon-module);padding:var(--esp-3) var(--esp-1) var(--esp-2);text-align:center;cursor:pointer;font-family:var(--font-corps)}
 :where(body.p-accueil) .option-espace .ico{display:block;height:34px;margin-bottom:var(--air-i1)}
@@ -662,7 +703,6 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 :where(body.p-accueil, body.p-roam) .stepper .max{font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);min-width:0;font-family:var(--font-chiffres)}
 :where(body.p-accueil) .art-compact .btn-plus::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px}
 :where(body.p-accueil) .art-compact .stepper-c button::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:44px}
-:where(body.p-accueil) .champ{margin-bottom:var(--air-i3)}
 :where(body.p-accueil) .champ-jour{margin-bottom:0}
 :where(body.p-accueil) .groupe-prenom{margin-bottom:var(--air-i3)}
 :where(body.p-accueil) .groupe-service{margin-top:var(--air-i3)}
@@ -1266,7 +1306,7 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
   body:not(.nav-haut) .verbe{flex:0 0 auto;padding:var(--esp-1)}
   body:not(.nav-haut) .ico-rond{width:44px;height:44px}
   body:not(.nav-haut).p-accueil .commande-video{bottom:calc(var(--esp-3) + var(--cible-min) + var(--esp-3) + var(--safe-bas))}
-  body.p-accueil .fab{font-size:var(--t-21)}
+  body .fab{font-size:var(--t-21)}
 }
 
 /* Palier 1 — le super-nav a rejoint la barre : il n'est plus une barre, il est
@@ -1306,15 +1346,15 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
    Un telephone couche tombe donc dans le second cas, pas dans le premier :
    son super-nav monte, son bas est libre, et c'est la part qui vaut — mais
    sur la part la plus courte, car sa hauteur l'est aussi. */
-:where(body.p-accueil:not(.nav-haut)) .fab{--fab-bas:calc(var(--barre-h) + var(--souffle-filet))}
+:where(body:not(.nav-haut)) .fab{--fab-bas:calc(var(--barre-h) + var(--souffle-filet))}
 @media(min-width:1024px) and (min-height:600px){
-  :where(body.p-accueil) .fab{--fab-bas:10%}
+  .fab{--fab-bas:10%}
 }
 @media(orientation:landscape) and (max-height:599px){
-  :where(body.p-accueil) .fab{--fab-bas:5%}
+  .fab{--fab-bas:5%}
 }
 @media(pointer:fine){
-  body.p-accueil.nav-haut .fab{font-size:var(--t-26);min-height:64px}
+  body.nav-haut .fab{font-size:var(--t-26);min-height:64px}
 }
 
 /* Palier 2 — l'ilot est ancre dans la barre : il ne se replie plus, et

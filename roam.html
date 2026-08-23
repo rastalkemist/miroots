@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-RSdlrkKuJ10N8bd5xm7R8CG3+rCw/3f+khPmkLKBQmg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-6AF6AfsTOKg2zHbNqqlFZSiYGLd5lYv0JbLQv1s1VOI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -75,9 +75,11 @@
                 data-al="alPause" aria-label="Mettre la vidéo en pause">
           <svg class="i" aria-hidden="true"><use href="#i-pause"/></svg></button>
       </div>
-      <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+      <div class="vedette-tete">
+        <h3 class="vedette-nom">Ahoefa<span class="vedette-ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
+        <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
+      </div>
       <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
-      <a class="bouton-contour" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
     </article>
 
     <div class="pastilles" role="group" aria-labelledby="etSejourner">
@@ -194,19 +196,32 @@
     </div>
   </section>
 
-  <!-- ══════════════ NUMÉROS ══════════════
+  <!-- ══════════════ INFOS PRATIQUES ══════════════
        Grille fixe, jamais un défilement automatique : une bande d'urgence est
        le pire endroit d'un produit pour faire courir quelqu'un après une cible
-       qui bouge. Aucun numéro n'est publié avant d'avoir été composé. -->
-  <section class="bloc-sejour" id="numeros" aria-labelledby="etNumeros">
-    <h2 class="titre-section" id="etNumeros" data-t="etNumeros">Numéros utiles</h2>
-    <p class="note-section" data-t="chapoNumeros">En construction : les numéros sont en cours de vérification, un par un.</p>
-    <ul class="grille-numeros">
+       qui bouge. Aucun numéro n'est publié avant d'avoir été composé, et chaque
+       fait porte la source qui le donne. -->
+  <section class="bloc-sejour" id="infos" aria-labelledby="etInfos">
+    <h2 class="titre-section" id="etInfos" data-t="etInfos">Infos pratiques</h2>
+    <p class="note-section" data-t="chapoInfos">Ce qu’il faut avoir en tête avant de poser ses valises.</p>
+
+    <h3 class="titre-sous" id="etAppeler" data-t="etAppeler">Qui appeler</h3>
+    <ul class="grille-numeros" aria-labelledby="etAppeler">
       <li><span class="num-quoi" data-t="numPolice">Police Républicaine</span><span class="num-tel">113</span><span class="num-repli">114</span></li>
       <li><span class="num-quoi" data-t="numPompiers">Sapeurs-Pompiers</span><span class="num-tel">115</span><span class="num-repli">—</span></li>
       <li><span class="num-quoi" data-t="numRoots">Accueil Roots</span><span class="num-tel">+229 01 46 75 55 75</span><span class="num-repli">—</span></li>
     </ul>
     <p class="note-source" data-t="noteNumeros">Relevés au plan national de numérotation de l’ARCEP, janvier 2021. Aucun n’a encore été composé.</p>
+
+    <h3 class="titre-sous" id="etSavoir" data-t="etSavoir">Bon à savoir</h3>
+    <ul class="grille-infos" aria-labelledby="etSavoir">
+      <li><span class="info-quoi" data-t="iVisaQ">Visa</span><span class="info-dit" data-t="iVisaD">Le Bénin délivre un visa électronique. La demande se fait sur evisa.bj, la plateforme officielle.</span></li>
+      <li><span class="info-quoi" data-t="iSanteQ">Santé</span><span class="info-dit" data-t="iSanteD">Un certificat de vaccination contre la fièvre jaune est exigé à l’entrée, dès 9 mois, quelle que soit la provenance.</span></li>
+      <li><span class="info-quoi" data-t="iArgentQ">Argent</span><span class="info-dit" data-t="iArgentD">La monnaie est le franc CFA (XOF).</span></li>
+      <li><span class="info-quoi" data-t="iPriseQ">Électricité</span><span class="info-dit" data-t="iPriseD">230 V, 50 Hz. Prises de type C et E — les mêmes qu’en France.</span></li>
+      <li><span class="info-quoi" data-t="iLangueQ">Langue</span><span class="info-dit" data-t="iLangueD">Le français est la langue officielle.</span></li>
+    </ul>
+    <p class="note-source" data-t="noteInfos">Sources : evisa.bj pour le visa · Institut Pasteur pour la fièvre jaune · worldstandards.eu pour le courant.</p>
   </section>
 
 </div>
@@ -416,8 +431,16 @@
       videEvt: 'Rien n’est encore inscrit. Les premiers événements du Roots et de NU arrivent.',
       videManquer: 'Rien n’est encore inscrit. Les programmes en cours arrivent.',
       videPepites: 'Rien n’est encore inscrit. Les bonnes adresses hors de Cotonou arrivent.',
-      etNumeros: 'Numéros utiles',
-      chapoNumeros: 'En construction : les numéros sont en cours de vérification, un par un.',
+      etInfos: 'Infos pratiques',
+      chapoInfos: 'Ce qu’il faut avoir en tête avant de poser ses valises.',
+      etAppeler: 'Qui appeler',
+      etSavoir: 'Bon à savoir',
+      iVisaQ: 'Visa', iVisaD: 'Le Bénin délivre un visa électronique. La demande se fait sur evisa.bj, la plateforme officielle.',
+      iSanteQ: 'Santé', iSanteD: 'Un certificat de vaccination contre la fièvre jaune est exigé à l’entrée, dès 9 mois, quelle que soit la provenance.',
+      iArgentQ: 'Argent', iArgentD: 'La monnaie est le franc CFA (XOF).',
+      iPriseQ: 'Électricité', iPriseD: '230 V, 50 Hz. Prises de type C et E — les mêmes qu’en France.',
+      iLangueQ: 'Langue', iLangueD: 'Le français est la langue officielle.',
+      noteInfos: 'Sources : evisa.bj pour le visa · Institut Pasteur pour la fièvre jaune · worldstandards.eu pour le courant.',
       numPolice: 'Police Républicaine',
       numPompiers: 'Sapeurs-Pompiers',
       numRoots: 'Accueil Roots',
@@ -501,8 +524,16 @@
       videEvt: 'Nothing listed yet. The first Roots and NU events are on their way.',
       videManquer: 'Nothing listed yet. Current programmes are on their way.',
       videPepites: 'Nothing listed yet. The good spots outside Cotonou are on their way.',
-      etNumeros: 'Useful numbers',
-      chapoNumeros: 'Under construction: the numbers are being checked, one by one.',
+      etInfos: 'Practical info',
+      chapoInfos: 'What to know before you drop your bags.',
+      etAppeler: 'Who to call',
+      etSavoir: 'Good to know',
+      iVisaQ: 'Visa', iVisaD: 'Benin issues an electronic visa. Apply on evisa.bj, the official platform.',
+      iSanteQ: 'Health', iSanteD: 'A yellow fever vaccination certificate is required on entry, from 9 months of age, whatever your country of origin.',
+      iArgentQ: 'Money', iArgentD: 'The currency is the CFA franc (XOF).',
+      iPriseQ: 'Power', iPriseD: '230 V, 50 Hz. Type C and E sockets — the same as in France.',
+      iLangueQ: 'Language', iLangueD: 'French is the official language.',
+      noteInfos: 'Sources: evisa.bj for the visa · Institut Pasteur for yellow fever · worldstandards.eu for the mains.',
       numPolice: 'Republican Police',
       numPompiers: 'Fire brigade',
       numRoots: 'Roots reception',
