@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-bz42gJ819cJIbUF1d9rlHXThRREYA3qNvHN+ZgWGRvo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-aT76+wxuXSLMf3NULYMwQExz0SsF4E+KmJqHFOTSXyI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -398,6 +398,22 @@
 
   </div>
   <p class="message-ferme" id="videDec" role="status" data-t="videDecouvrir">Aucun lieu ne porte encore de fiche. Choisir en ouvre la présentation dès qu'elles arrivent.</p>
+
+  <!-- Decouvrir, c'est planifier : la sortie se pose dans l'agenda, et l'on
+       peut y convier d'autres personnes. Le geste d'invitation est un BOUTON,
+       pas un lien — il agit sur l'ecran courant, il ne mene nulle part — mais
+       il porte la peau du lien tertiaire, qui est la forme de ce rang. -->
+  <section class="bloc-sejour">
+    <div id="invites">
+      <div class="champ groupe"><label for="nomDec" data-t="tonNom">Ton prénom</label>
+        <input id="nomDec" autocomplete="given-name" data-p="pNom" placeholder="Ton prénom"></div>
+      <div class="champ groupe"><label for="telDec" data-t="tonTel">Ton numéro (WhatsApp, si possible)</label>
+        <input type="tel" inputmode="tel" id="telDec" autocomplete="tel"></div>
+    </div>
+    <p class="etat-invites" id="etatInvites" role="status"></p>
+    <p class="ligne-inviter"><button type="button" class="lien-tertiaire" id="inviterDec" data-t="inviter">Inviter d'autres personnes</button></p>
+    <button class="bouton-confirmer" id="btnAgenda" disabled data-t="ajouterAgenda">Ajouter à mon agenda</button>
+  </section>
   </div>
 
   <div class="confirmation" id="confSejour">
@@ -461,6 +477,10 @@
       laNuit: function (p) { return p + ' la nuit'; },
       parNuit: 'la nuit',
       plusInfos: 'Plus d’infos',
+      inviter: 'Inviter d’autres personnes',
+      invitesAjoutes: function (n) { return n > 1 ? n + ' invités à renseigner.' : 'Un invité à renseigner.'; },
+      ajouterAgenda: 'Ajouter à mon agenda',
+      prenomInvite: 'Son prénom', telInvite: 'Son numéro',
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
       rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
@@ -563,6 +583,10 @@
       laNuit: function (p) { return p + ' a night'; },
       parNuit: 'a night',
       plusInfos: 'More info',
+      inviter: 'Invite other people',
+      invitesAjoutes: function (n) { return n > 1 ? n + ' guests to fill in.' : 'One guest to fill in.'; },
+      ajouterAgenda: 'Add to my calendar',
+      prenomInvite: 'Their first name', telInvite: 'Their number',
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
       rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
@@ -1352,6 +1376,7 @@
     dessinerLieuxDec();
     fermerListeDec();
     resumerDec();
+    majAgenda();
     var pas = document.querySelector('#explorerDec .etape[data-pas="quoi"]');
     if (pas) pasSuivant(pas);
   }
@@ -1369,6 +1394,57 @@
     var z = $('suggDec'), c = $('qLieuDec');
     if (!z || !c) return;
     z.hidden = true; c.setAttribute('aria-expanded', 'false');
+  }
+
+  /* Les paires d'invites. Chaque paire porte un identifiant engendre : un
+     libelle sans `for` valide ne nomme rien, et deux champs de meme identifiant
+     rendent le second inatteignable. Le champ telephonique recoit le meme
+     appareillage que celui du sejour — indicatif, drapeau, format. */
+  var nbInvites = 0;
+
+  function ajouterUnInvite() {
+    var z = $('invites');
+    if (!z) return;
+    nbInvites += 1;
+    var n = nbInvites;
+    var bloc = document.createElement('div');
+    bloc.className = 'paire-invite';
+
+    var cN = document.createElement('div');
+    cN.className = 'champ groupe';
+    var lN = document.createElement('label');
+    lN.htmlFor = 'nomInvite' + n;
+    lN.setAttribute('data-t', 'prenomInvite');
+    lN.textContent = t().prenomInvite;
+    var iN = document.createElement('input');
+    iN.id = 'nomInvite' + n;
+    iN.autocomplete = 'off';
+    cN.appendChild(lN); cN.appendChild(iN);
+
+    var cT = document.createElement('div');
+    cT.className = 'champ groupe';
+    var lT = document.createElement('label');
+    lT.htmlFor = 'telInvite' + n;
+    lT.setAttribute('data-t', 'telInvite');
+    lT.textContent = t().telInvite;
+    var iT = document.createElement('input');
+    iT.type = 'tel'; iT.inputMode = 'tel'; iT.id = 'telInvite' + n; iT.autocomplete = 'off';
+    cT.appendChild(lT); cT.appendChild(iT);
+
+    bloc.appendChild(cN); bloc.appendChild(cT);
+    z.appendChild(bloc);
+    if (Roots.initTelRoots) Roots.initTelRoots(iT);
+    iN.focus();
+    if ($('etatInvites')) $('etatInvites').textContent = t().invitesAjoutes(nbInvites);
+    majAgenda();
+  }
+
+  /* Le geste principal reste ferme tant que la sortie n'a pas de lieu et que
+     personne n'est nomme : un agenda sans quoi ni qui n'ajoute rien. */
+  function majAgenda() {
+    var b = $('btnAgenda'), n = $('nomDec');
+    if (!b) return;
+    b.disabled = !(lieuDec && n && n.value.trim());
   }
 
   function explorateurDecouvrir() {
@@ -1418,7 +1494,11 @@
       } else if (e.key === 'Escape') { e.stopPropagation(); fermerListeDec(); c.focus(); }
     });
     c.addEventListener('blur', function () { setTimeout(function () { fermerListeDec(); c.readOnly = true; }, 0); });
+    if ($('inviterDec')) $('inviterDec').addEventListener('click', ajouterUnInvite);
+    if ($('nomDec')) $('nomDec').addEventListener('input', majAgenda);
+    if ($('telDec') && Roots.initTelRoots) Roots.initTelRoots($('telDec'));
     resumerDec();
+    majAgenda();
   }
 
   /* Les onglets reprennent la mecanique de la feuille de reservation : la
