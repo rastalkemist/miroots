@@ -138,16 +138,20 @@ svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;
    veut une autre graisse la declare, et sa declaration l'emporte par l'ordre.
    Poser une taille ici sans en poser dans une section d'ecran est sans effet
    sur cette section : `:where()` ne pese rien et l'ordre tranche. */
-h1{font-size:var(--t-h1);line-height:var(--lh-38);font-family:var(--font-eclat);font-weight:var(--w-thin);color:var(--encre);text-wrap:balance}
-/* Le h1 du registre INTERFACE porte l'eclat en graisse 100 : le changement de
-   fonte marque le seuil du titre principal, et il ne se repete pas en dessous.
-   La fonte d'eclat est variable de 100 a 900, celle de corps est servie en
-   100, 200, 300, 500, 700, 900 et 950 : chaque graisse demandee vient d'un
-   fichier, aucune n'est simulee par le navigateur. Le registre EDITORIAL garde
-   les siennes — sa section les declare, et sa declaration l'emporte. */
-h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--univers);text-wrap:balance}
-/* En dessous du h1, le registre INTERFACE reste sur la fonte de corps.
-   L'encre ALTERNE — encre pleine aux rangs impairs, echelon 2
+h1{font-size:var(--t-h1);line-height:var(--lh-38);font-family:var(--font-eclat);font-weight:var(--w-light);color:var(--encre);text-wrap:balance}
+/* LES TROIS FONTES DU REGISTRE INTERFACE, en alternance de rang.
+   L'eclat aux rangs 1 et 3 ; la fonte de corps aux rangs 2, 4 et 5 ; la fonte
+   de lecture au dernier rang, en italique — la seule serif de l'arbre, et elle
+   ferme la descente. Ce n'est pas un seuil de fonte unique : trois fontes se
+   relaient, et leur releve ne tombe pas sur celle des encres.
+   Chaque graisse demandee vient d'un fichier : l'eclat est variable de 100 a
+   900, la fonte de corps est servie en 100, 200, 300, 500, 700, 900 et 950, la
+   fonte de lecture en 100, 300, 500, 700 et 900, romaine et italique. Aucune
+   n'est simulee par le navigateur.
+   Le registre EDITORIAL garde les siennes — sa section les declare, et sa
+   declaration l'emporte. */
+h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);text-wrap:balance}
+/* L'encre ALTERNE — encre pleine aux rangs impairs, echelon 2
    de l'univers aux rangs pairs : c'est le procede du registre editorial,
    transpose d'un echelon vers le fonce, ou l'echelon 3 tombait sous le
    plancher des qu'un titre se posait sur une surface autre que le papier.
@@ -158,10 +162,10 @@ h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-corps);
    Les deux derniers rangs empruntent a l'editorial ses deux marques : les
    capitales espacees, puis l'italique. L'equilibre des lignes vaut pour tous :
    un titre ne laisse pas un mot seul sur sa derniere ligne. */
-h3{font-size:var(--t-h3);line-height:var(--lh-21);font-family:var(--font-corps);font-weight:var(--w-medium);color:var(--encre);text-wrap:balance}
+h3{font-size:var(--t-h3);line-height:var(--lh-21);font-family:var(--font-eclat);font-weight:var(--w-medium);color:var(--encre);text-wrap:balance}
 h4{font-size:var(--t-h4);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);text-wrap:balance}
 h5{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--encre);text-transform:uppercase;letter-spacing:var(--lettrage-capitales);text-wrap:balance}
-h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--univers);font-style:italic;text-wrap:balance}
+h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture);font-weight:var(--w-light);color:var(--univers);font-style:italic;text-wrap:balance}
 @media(max-width:640px){h5{letter-spacing:var(--lettrage-capitales-petites)}}
 @media(min-width:1025px){
   h1{line-height:var(--lh-51)}
