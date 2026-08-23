@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-rq0gPnXD0fZxMbBvwHbpIwR5nz/IGNd+sdN/cT2u2Qw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-pGBecjway9yWR4my5YZIu9leRmBj4ftAEr/4rJcop+M='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -277,11 +277,10 @@
              ouvert a la reservation. -->
         <div class="champ champ-suggest">
           <input type="text" id="qLieu" readonly autocomplete="off" spellcheck="false"
-                 role="combobox" aria-expanded="false" aria-controls="suggLieux"
-                 aria-autocomplete="list" aria-describedby="etLogement"
+                 aria-expanded="false" aria-controls="suggLieux" aria-describedby="etLogement"
                  data-p="pLieu" placeholder="Chercher un lieu">
         </div>
-        <ul class="suggestions" id="suggLieux" role="listbox" aria-labelledby="etLogement" hidden></ul>
+        <ul class="tiroir-lieux" id="suggLieux" aria-labelledby="etLogement" hidden></ul>
         <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
       </div>
     </section>
@@ -359,11 +358,10 @@
       <div class="etape-corps" id="corpsQuoi" hidden>
         <div class="champ champ-suggest">
           <input type="text" id="qLieuDec" readonly autocomplete="off" spellcheck="false"
-                 role="combobox" aria-expanded="false" aria-controls="suggDec"
-                 aria-autocomplete="list" aria-describedby="etQuoi"
+                 aria-expanded="false" aria-controls="suggDec" aria-describedby="etQuoi"
                  data-p="pLieuDec" placeholder="Chercher un lieu, un événement">
         </div>
-        <ul class="suggestions" id="suggDec" role="listbox" aria-labelledby="etQuoi" hidden></ul>
+        <ul class="tiroir-lieux" id="suggDec" aria-labelledby="etQuoi" hidden></ul>
       </div>
     </section>
 
@@ -462,6 +460,8 @@
       tonNom: 'Ton prénom', tonTel: 'Ton numéro (WhatsApp, si possible)', pNom: 'Ton prénom',
       laNuit: function (p) { return p + ' la nuit'; },
       parNuit: 'la nuit',
+      plusInfos: 'Plus d’infos',
+      plusInfosSur: function (n) { return 'Plus d’infos sur ' + n; },
       jusqua: function (n) { return n > 1 ? 'jusqu’à ' + n + ' personnes' : '1 personne'; },
       nuits: function (n) { return n > 1 ? n + ' nuits' : '1 nuit'; },
       rTotal: 'Total du séjour', rAcompte: 'Aujourd’hui, l’acompte', rSolde: 'À l’arrivée',
@@ -563,6 +563,8 @@
       tonNom: 'Your first name', tonTel: 'Your number (WhatsApp if possible)', pNom: 'Your first name',
       laNuit: function (p) { return p + ' a night'; },
       parNuit: 'a night',
+      plusInfos: 'More info',
+      plusInfosSur: function (n) { return 'More about ' + n; },
       jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
       nuits: function (n) { return n > 1 ? n + ' nights' : '1 night'; },
       rTotal: 'Stay total', rAcompte: 'Deposit due today', rSolde: 'At check-in',
@@ -691,19 +693,25 @@
      composant que le rail de la page, memes parties, une seule taille en
      moins. Elle porte `option` parce qu'elle vit dans une boite a
      suggestions, et l'etat retenu s'y lit par `aria-selected`. */
-  /* Une option de la liste est un ILOT : la vignette a gauche, ce qui se dit a
-     droite — le nom, le lieu, le montant. AUCUN geste a l'interieur : dans une
-     boite a suggestions, l'option ENTIERE est la cible, et une commande posee
-     dedans serait une seconde commande dans une option qui en est deja une.
-     L'etat retenu se lit par `aria-selected`. */
-  function ilotOption(l, id, lieu, montant, unite) {
+  /* Un ILOT de bien, pose dans le tiroir du pas « Ou ». Il porte DEUX gestes
+     qui ne s'emboitent pas : un bouton qui couvre l'ilot et retient le lieu, et
+     un lien pose par-dessus, dans l'angle, qui mene a sa fiche. Aucun des deux
+     n'est enfant de l'autre — une commande dans une commande n'a ni cible ni
+     nom fiables.
+     Le bouton porte `aria-pressed` : le tiroir est un choix parmi n, et c'est
+     ce que l'etat d'un bouton bascule dit. */
+  function ilotBien(l, id, lieu, montant, unite, versFiche) {
     var li = document.createElement('li');
     li.className = 'ilot-lieu';
-    li.setAttribute('role', 'option');
-    li.setAttribute('aria-selected', 'false');
     li.id = id;
     li.dataset.slug = l.slug;
-    li.appendChild(vignetteDuLieu(l.slug));
+
+    var choix = document.createElement('button');
+    choix.type = 'button';
+    choix.className = 'ilot-choix';
+    choix.setAttribute('aria-pressed', 'false');
+    choix.appendChild(vignetteDuLieu(l.slug));
+
     var dire = document.createElement('span');
     dire.className = 'ilot-dire';
     var nom = document.createElement('span');
@@ -716,12 +724,11 @@
       ou.textContent = lieu;
       dire.appendChild(ou);
     }
-    li.appendChild(dire);
+    choix.appendChild(dire);
+
     /* Le montant tient la fin de la ligne : une colonne de chiffres alignes a
-       droite se compare d'un coup d'oeil, ce qu'une suite de montants poses au
-       fil du texte ne permet pas. La somme au-dessus, l'unite en dessous : la
-       colonne ne porte alors que des chiffres, et l'unite ne s'y repete pas au
-       milieu des nombres. */
+       droite se compare d'un coup d'oeil. La somme au-dessus, l'unite en
+       dessous, et la colonne ne porte alors que des nombres. */
     if (montant) {
       var m = document.createElement('span');
       m.className = 'montant';
@@ -735,9 +742,20 @@
         u.textContent = unite;
         m.appendChild(u);
       }
-      li.appendChild(m);
+      choix.appendChild(m);
     }
-    li.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
+    li.appendChild(choix);
+
+    if (versFiche) {
+      var plus = document.createElement('a');
+      plus.className = 'ilot-plus';
+      plus.href = versFiche;
+      plus.textContent = t().plusInfos;
+      /* Le nom accessible porte le lieu : hors contexte, « Plus d'infos »
+         repete n fois ne dit pas de quoi. */
+      plus.setAttribute('aria-label', t().plusInfosSur(l.nom));
+      li.appendChild(plus);
+    }
     return li;
   }
 
@@ -750,9 +768,9 @@
   }
 
   function optionLieu(l) {
-    var li = ilotOption(l, 'sugg-' + l.slug, lieuDuBien(l.slug),
-                        prix(l.prix_nuit), t().parNuit);
-    li.addEventListener('click', function () { choisir(l); });
+    var li = ilotBien(l, 'sugg-' + l.slug, lieuDuBien(l.slug),
+                      prix(l.prix_nuit), t().parNuit, '#' + l.slug);
+    li.querySelector('.ilot-choix').addEventListener('click', function () { choisir(l); });
     return li;
   }
 
@@ -798,8 +816,9 @@
     if (sejour.logement) {
       var vise = sejour.logement.slug;
       Array.prototype.forEach.call(z.children, function (c) {
-        if (!c.dataset.slug) return;
-        c.setAttribute('aria-selected', c.dataset.slug === vise ? 'true' : 'false');
+        var b = c.querySelector && c.querySelector('.ilot-choix');
+        if (!b || !c.dataset.slug) return;
+        b.setAttribute('aria-pressed', c.dataset.slug === vise ? 'true' : 'false');
       });
     }
     $('videLogements').style.display = LOGEMENTS.length ? 'none' : 'block';
@@ -1167,28 +1186,22 @@
   }
 
   /* ------------------------------------------------------------------
-     LA BOITE A SUGGESTIONS. Le champ affine vers une offre existante ; il ne
-     cherche pas un terme libre. L'appui ouvre la liste garnie de tout ce qui
-     est ouvert a la reservation ; la saisie la reordonne ; une saisie sans
-     correspondance annonce l'absence puis repropose la meme liste. Le clavier
-     la parcourt : les fleches deplacent l'option active, Entree la retient,
-     Echappement referme sans rien retenir. L'option active est designee par
-     `aria-activedescendant` — le foyer reste dans le champ, ce qui laisse la
-     saisie possible pendant qu'on parcourt.
+     LE TIROIR DU PAS « OU ». Le champ affine vers une offre existante ; il ne
+     cherche pas un terme libre. L'appui ouvre un TIROIR DANS le pas, qui
+     repousse les pas suivants vers le bas — rien ne se pose par-dessus la
+     feuille, donc rien ne masque ce qu'on vient de lire. La saisie reordonne
+     les ilots ; une saisie sans correspondance annonce l'absence puis repropose
+     la meme liste.
+     Un ilot porte DEUX gestes qui ne s'emboitent pas : le bouton retient le
+     lieu et referme le tiroir, le lien mene a la fiche. Retenir sans quitter
+     l'ecran est le chemin court vers l'engagement ; la fiche reste offerte a
+     qui la veut.
      ------------------------------------------------------------------ */
-  var actif = -1;
-
-  function optionsVues() {
-    return Array.prototype.slice.call(
-      document.querySelectorAll('#suggLieux .ilot-lieu'));
-  }
-  function marquerActif(i) {
-    var o = optionsVues();
-    if (!o.length) return;
-    actif = (i + o.length) % o.length;
-    o.forEach(function (e, k) { e.classList.toggle('actif', k === actif); });
-    $('qLieu').setAttribute('aria-activedescendant', o[actif].id);
-    o[actif].scrollIntoView({ block: 'nearest' });
+  /* Les ilots sont de vrais boutons : les fleches deplacent le FOYER, elles ne
+     designent plus une option a distance. C'est le parcours d'un groupe de
+     boutons, et il n'a besoin d'aucun etat tenu a part. */
+  function choixVus() {
+    return Array.prototype.slice.call(document.querySelectorAll('#suggLieux .ilot-choix'));
   }
   function ouvrirListe() {
     var z = $('suggLieux'), c = $('qLieu');
@@ -1196,22 +1209,12 @@
     dessinerLogements();
     z.hidden = false;
     c.setAttribute('aria-expanded', 'true');
-    actif = -1;
-    c.removeAttribute('aria-activedescendant');
   }
   function fermerListe() {
     var z = $('suggLieux'), c = $('qLieu');
     if (!z || !c) return;
     z.hidden = true;
     c.setAttribute('aria-expanded', 'false');
-    c.removeAttribute('aria-activedescendant');
-    actif = -1;
-  }
-  function retenirActif() {
-    var o = optionsVues();
-    if (actif > -1 && o[actif]) { o[actif].click(); return true; }
-    if (o.length === 1) { o[0].click(); return true; }
-    return false;
   }
 
   function boiteASuggestions() {
@@ -1246,10 +1249,23 @@
       ouvrirListe();
     });
     c.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowDown') { e.preventDefault(); if (z.hidden) ouvrirListe(); marquerActif(actif + 1); }
-      else if (e.key === 'ArrowUp') { e.preventDefault(); if (z.hidden) ouvrirListe(); marquerActif(actif - 1); }
-      else if (e.key === 'Enter') { if (!z.hidden && retenirActif()) e.preventDefault(); }
-      else if (e.key === 'Escape') { if (!z.hidden) { e.stopPropagation(); fermerListe(); } }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (z.hidden) ouvrirListe();
+        var o = choixVus(); if (o.length) o[0].focus();
+      } else if (e.key === 'Escape') {
+        if (!z.hidden) { e.stopPropagation(); fermerListe(); }
+      }
+    });
+    /* Dans le tiroir, les fleches passent d'un ilot au suivant et Echappement
+       rend le foyer au champ. */
+    z.addEventListener('keydown', function (e) {
+      var o = choixVus(), i = o.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        o[((e.key === 'ArrowDown' ? i + 1 : i - 1) + o.length) % o.length].focus();
+      } else if (e.key === 'Escape') { e.stopPropagation(); fermerListe(); c.focus(); }
     });
     c.addEventListener('blur', function () { setTimeout(function () { fermerListe(); c.readOnly = true; }, 0); });
   }
@@ -1263,7 +1279,6 @@
      retire, et l'aplat d'univers tient la place.
      ------------------------------------------------------------------ */
   var LIEUX = [];
-  var actifDec = -1;
 
   function lireLesLieuxDeLaPage() {
     var out = [];
@@ -1282,8 +1297,8 @@
   }
 
   function optionLieuDec(l) {
-    var li = ilotOption(l, 'sugd-' + l.slug, l.ou, '', '');
-    li.addEventListener('click', function () { retenirLieuDec(l); });
+    var li = ilotBien(l, 'sugd-' + l.slug, l.ou, '', '', '');
+    li.querySelector('.ilot-choix').addEventListener('click', function () { retenirLieuDec(l); });
     return li;
   }
 
@@ -1309,8 +1324,9 @@
     vus.forEach(function (o) { z.appendChild(optionLieuDec(o.l)); });
     if (lieuDec) {
       Array.prototype.forEach.call(z.children, function (c) {
-        if (!c.dataset.slug) return;
-        c.setAttribute('aria-selected', c.dataset.slug === lieuDec.slug ? 'true' : 'false');
+        var b = c.querySelector && c.querySelector('.ilot-choix');
+        if (!b || !c.dataset.slug) return;
+        b.setAttribute('aria-pressed', c.dataset.slug === lieuDec.slug ? 'true' : 'false');
       });
     }
   }
@@ -1341,20 +1357,18 @@
   }
 
   function optionsVuesDec() {
-    return Array.prototype.slice.call(document.querySelectorAll('#suggDec .ilot-lieu'));
+    return Array.prototype.slice.call(document.querySelectorAll('#suggDec .ilot-choix'));
   }
   function ouvrirListeDec() {
     var z = $('suggDec'), c = $('qLieuDec');
     if (!z || !c) return;
     dessinerLieuxDec();
     z.hidden = false; c.setAttribute('aria-expanded', 'true');
-    actifDec = -1; c.removeAttribute('aria-activedescendant');
   }
   function fermerListeDec() {
     var z = $('suggDec'), c = $('qLieuDec');
     if (!z || !c) return;
     z.hidden = true; c.setAttribute('aria-expanded', 'false');
-    c.removeAttribute('aria-activedescendant'); actifDec = -1;
   }
 
   function explorateurDecouvrir() {
@@ -1387,20 +1401,21 @@
       ouvrirListeDec();
     });
     c.addEventListener('keydown', function (e) {
-      var o = optionsVuesDec();
-      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (e.key === 'ArrowDown') {
         e.preventDefault();
-        if (z.hidden) { ouvrirListeDec(); o = optionsVuesDec(); }
-        if (!o.length) return;
-        actifDec = ((e.key === 'ArrowDown' ? actifDec + 1 : actifDec - 1) + o.length) % o.length;
-        o.forEach(function (x, k) { x.classList.toggle('actif', k === actifDec); });
-        c.setAttribute('aria-activedescendant', o[actifDec].id);
-        o[actifDec].scrollIntoView({ block: 'nearest' });
-      } else if (e.key === 'Enter') {
-        if (!z.hidden && actifDec > -1 && o[actifDec]) { e.preventDefault(); o[actifDec].click(); }
+        if (z.hidden) ouvrirListeDec();
+        var o = optionsVuesDec(); if (o.length) o[0].focus();
       } else if (e.key === 'Escape') {
         if (!z.hidden) { e.stopPropagation(); fermerListeDec(); }
       } else if (e.key.length === 1 || e.key === 'Backspace') { rendreLaSaisieDec(); }
+    });
+    z.addEventListener('keydown', function (e) {
+      var o = optionsVuesDec(), i = o.indexOf(document.activeElement);
+      if (i < 0) return;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        o[((e.key === 'ArrowDown' ? i + 1 : i - 1) + o.length) % o.length].focus();
+      } else if (e.key === 'Escape') { e.stopPropagation(); fermerListeDec(); c.focus(); }
     });
     c.addEventListener('blur', function () { setTimeout(function () { fermerListeDec(); c.readOnly = true; }, 0); });
     resumerDec();
