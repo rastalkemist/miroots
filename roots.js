@@ -250,6 +250,22 @@
     if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
     if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
     if (lecture && ilot && lecture.parentNode !== ilot) ilot.appendChild(lecture);
+    /* La quete se defait avant de se refaire : le geste focal retourne a sa
+       place dans la page, devant son voile, et la feuille reprend le bas. */
+    var fabQ = document.querySelector('.fab[aria-controls]');
+    var feuilleQ = fabQ ? document.getElementById(fabQ.getAttribute('aria-controls')) : null;
+    var voileQ = feuilleQ && feuilleQ.previousElementSibling
+      && feuilleQ.previousElementSibling.classList.contains('voile')
+      ? feuilleQ.previousElementSibling : null;
+    corps.classList.remove('nav-quete');
+    if (fabQ) {
+      fabQ.classList.remove('quete');
+      if (voileQ && fabQ.nextElementSibling !== voileQ) voileQ.parentNode.insertBefore(fabQ, voileQ);
+      if (feuilleQ) feuilleQ.removeAttribute('data-pose');
+      if (voileQ) voileQ.removeAttribute('data-pose');
+    }
+    var centreQ = barre.querySelector('.centre');
+    if (centreQ && centreQ.parentNode !== barre) barre.insertBefore(centreQ, droite);
 
 
     /* La barre est une grille dont deux colonnes s'etirent : la largeur RENDUE
@@ -330,6 +346,26 @@
           ilot.style.maxWidth = Math.max(0, Math.round(libre)) + 'px';
         }
       }
+    }
+
+    /* L'ecran de sejour monte son geste focal : pilule de quete au centre, le
+       logotype pres de la radio, l'ilot replie sur son antenne, la feuille
+       ancree a la barre. Le bouton reste LE MEME element : ses ecouteurs, son
+       etat et son nom voyagent avec lui — un second bouton divergerait. */
+    if (corps.classList.contains('p-roam') && fabQ && feuilleQ) {
+      corps.classList.add('nav-quete');
+      fabQ.classList.add('quete');
+      barre.insertBefore(fabQ, droite);
+      feuilleQ.setAttribute('data-pose', 'barre');
+      if (voileQ) voileQ.setAttribute('data-pose', 'barre');
+      if (ilot && !corps.classList.contains('nav-ilot-ancre')) {
+        corps.classList.add('nav-ilot-ancre');
+        droite.insertBefore(ilot, droite.firstChild);
+        ilot.classList.remove('cache');
+        if (antenne) ilot.appendChild(antenne);
+      }
+      if (ilot) { ilot.classList.add('replie'); ilot.style.maxWidth = ''; }
+      if (centreQ) droite.insertBefore(centreQ, droite.firstChild);
     }
 
     if (radio) radio.rendre();
@@ -1797,8 +1833,17 @@
   function accorderInerte(feuille) {
     var ouverte = feuille.classList.contains(CLASSE_OUVERTE);
     if (ouverte === !feuille.hasAttribute('inert')) return;
-    if (ouverte) feuille.removeAttribute('inert');
-    else feuille.setAttribute('inert', '');
+    if (ouverte) {
+      feuille.removeAttribute('inert');
+      /* Le foyer entre dans la feuille A L'OUVERTURE. Un script qui ouvre et
+         focalise dans le meme geste echoue : l'inertie ne tombe qu'apres son
+         tour. La garantie se pose donc ici, une fois l'inertie levee — et
+         seulement si le foyer n'est pas deja dedans. */
+      if (!feuille.contains(document.activeElement)) {
+        var premier = feuille.querySelector('input:not([hidden]),select,textarea,button:not(.fermer),[tabindex]');
+        if (premier && premier.focus) { try { premier.focus(); } catch (e) {} }
+      }
+    } else feuille.setAttribute('inert', '');
   }
 
   function poserInerte() {

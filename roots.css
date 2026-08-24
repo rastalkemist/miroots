@@ -22,8 +22,8 @@
     laquelle une ligne de texte cesse d'etre lisible. Un bandeau, une barre,
     une rangee prennent la piste ; un paragraphe prend la mesure. Confondre les
     deux, c'est soit etrangler la page, soit rendre le texte illisible. */
- --marge:5%; --site-w:90%; --col:500px;
- --marge-chrome:5%; --chrome-w:90%;
+ --marge:7.5%; --site-w:85%; --col:500px;
+ --marge-chrome:7.5%; --chrome-w:85%;
  --grille-colonnes:4; --gouttiere-grille:var(--esp-3); --carte-min:256px;
  --piste:var(--site-w);
  /* Le bord est celui du CHROME, non celui de la piste : tout ce qui flotte
@@ -1448,10 +1448,23 @@ body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--jaune-e2)}
    Le jaune suit la surface, comme l'antenne : echelon 2 sur clair, blanc ou
    film ; echelon 3 sur sombre. La commande de lecture n'est pas un texte et
    garde la sienne. */
-.languette-radio.antenne{color:var(--jaune-e2);border-color:rgba(var(--jaune-e2-rgb),.55)}
-body[data-surface="sombre"] .languette-radio.antenne{color:var(--jaune-e3);border-color:rgba(var(--jaune-e3-rgb),.55)}
+/* L'ETAT ALLUME. Les pictogrammes seuls prennent le jaune : ils disent l'etat
+   sans avoir a etre lus. Le mot d'antenne et le contour prennent l'echelon 3
+   de l'univers — c'est lui qui se lit. Le reste du texte ne bouge pas.
+   Sur une surface sans fond ou sombre, le contour reste celui de la surface :
+   sa regle est plus lourde et c'est voulu. */
+.languette-radio.antenne{border-color:var(--univers-e3)}
+.languette-radio.antenne .lecteur-etat{color:var(--univers-e3)}
+.radio-pastille.antenne,.languette-radio.antenne .lecteur-btn{color:var(--jaune-e2)}
+/* Le disque du lecteur : gris eteint au repos, univers translucide et clair
+   allume — la lumiere vient du fond, le pictogramme la porte. */
+.lecteur-btn{background:rgba(var(--gris-500-rgb),.14)}
+:where(body:not([data-surface="ambiante"]):not([data-surface="sombre"])) .languette-radio.antenne .lecteur-btn{background:color-mix(in srgb,var(--univers-e5) 35%,transparent)}
 body[data-surface="sombre"] .radio-pastille{color:var(--univers-e5)}
-body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
+/* La surface sombre porte le meme ilot que la surface sans fond : un voile de
+   l'echelon 3, flou compris. */
+body[data-surface="sombre"] .languette-radio{background:rgba(var(--univers-e3-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
+body[data-surface="sombre"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb),.22);color:var(--blanc-casse)}
 
 .radio-rangee{width:var(--chrome-w);margin:0 auto}
 /* LE LECTEUR. Une seule regle gouverne sa droite : la COMMANDE, toujours a
@@ -1472,6 +1485,10 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    rouge affichait le noir d'un autre monde. */
 .languette-radio{margin-top:var(--esp-2);margin-left:auto;width:max-content;max-width:100%;margin-right:calc(var(--cible-min) + var(--esp-2) + var(--cible-min) / 2 - (var(--esp-4) - var(--esp-3)) / 2 - (var(--t-chrome-titre) + var(--esp-3)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;gap:var(--esp-4);padding:0 calc((var(--esp-4) - var(--esp-3)) / 2 - var(--limite-ep)) 0 var(--esp-3);background:var(--gris-ilot);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--univers-e1);overflow:hidden}
 .languette-radio.cache{display:none}
+/* Sur les surfaces claires de sejour et d'itineraire, l'ilot eteint s'ecrit au
+   noir de marque : son etat calme ne porte aucune couleur. L'ecran du cafe
+   garde l'encre de son univers — son chrome est le seul a la porter partout. */
+:where(body.p-roam,body.p-plan) .languette-radio{color:var(--roots-noir)}
 /* L'ilot entre et sort au cran d'apparition d'un bandeau de l'echelle de
    mouvement. Le decalage part du haut : il descend de sous la pastille qui
    vient d'etre pressee, d'ou il vient. Le repli de la boite attend la fin de
@@ -1504,7 +1521,7 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e3)}
    paire a 3,70:1 quelle que soit l'opacite.
    Changer la teinte, l'opacite ou l'encre exige de remesurer. */
 body[data-surface="ambiante"] .languette-radio{background:rgba(var(--univers-e3-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
-.lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;background:rgba(var(--univers-rgb),.12);color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
+.lecteur-btn{width:calc(var(--t-chrome-titre) + var(--esp-3));height:calc(var(--t-chrome-titre) + var(--esp-3));border-radius:50%;border:none;color:var(--univers);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;position:relative}
 .lecteur-btn::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--cible-min);height:var(--cible-min)}
 .lecteur-btn svg{width:14px;height:14px}
 body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb),.22);color:var(--blanc-casse)}
@@ -1531,14 +1548,14 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
 
 /* DEUX ECHELLES DE MARGE, une par nature de contenu, sur les memes paliers.
    La piste de LECTURE se resserre plus vite que la barre de navigation : le
-   contenu se recentre a mesure que la fenetre s'elargit, tandis que le chrome
-   garde ses bords. Le chrome est donc toujours plus large que la piste au-dela
-   du telephone, et l'ecart croit avec l'ecran — c'est voulu, ce n'est pas un
-   desalignement.
-        piste   5-90-5 · 15-70-15 · 20-60-20 · 25-50-25
-        chrome  5-90-5 · 10-80-10 · 15-70-15 · 20-60-20
-   La condition porte la LARGEUR ET LA HAUTEUR, comme celle de la typographie :
-   un telephone couche garde les marges et les tailles du telephone.
+   contenu se recentre a mesure que la fenetre s'elargit, le chrome garde ses
+   bords. L'ecart entre les deux croit avec l'ecran — c'est voulu, ce n'est pas
+   un desalignement.
+        piste   7.5-85-7.5 · 15-70-15 · 20-60-20 · 23-54-23
+        chrome  7.5-85-7.5 · 10-80-10 · 15-70-15 · 15-70-15
+   Le chrome cesse de bouger au-dela de l'ordinateur ; la piste se resserre
+   encore d'un cran. La condition porte LARGEUR ET HAUTEUR, comme celle de la
+   typographie : un telephone couche garde les marges du telephone.
    CE QUI CASSE SI ON LE MODIFIE : le mobilier du chrome se cale sur
    `--chrome-w`, le contenu sur `--piste`. Faire pointer les deux sur le meme
    jeton supprime le recentrage et ramene une seule echelle. */
@@ -1549,7 +1566,8 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
   :root{--marge:20%;--site-w:60%;--marge-chrome:15%;--chrome-w:70%;--grille-colonnes:12;--gouttiere-grille:var(--esp-6)}
 }
 @media(min-width:1600px) and (min-height:600px){
-  :root{--marge:25%;--site-w:50%;--marge-chrome:20%;--chrome-w:60%}
+  :root{--marge:23%;--site-w:54%}
+}
 }
 
 /* Ecran couche et court : le chrome garde la taille du telephone. */
@@ -1578,6 +1596,12 @@ body.nav-haut .verbe{flex:0 0 auto;padding:0}
 :where(body){--verbe-part:.786}
 body.nav-haut .ico-rond{width:var(--cible-min);height:var(--cible-min)}
 body.nav-haut .ico-rond svg{width:calc(var(--cible-min) * var(--verbe-part));height:calc(var(--cible-min) * var(--verbe-part))}
+/* Monte sur un chrome a fond opaque, le verbe courant se marque par SON ENCRE
+   et non par un disque : la couleur d'univers le distingue seule des verbes
+   discrets. CE QUI GARDE LE DISQUE : un chrome sans fond, pose sur un film —
+   aucune encre ne se detache d'une image que rien ne contraint ; le disque y
+   est la garantie de lisibilite. La cible ne bouge pas. */
+body.nav-haut:not([data-surface="ambiante"]) .verbe.actif .ico-rond{background:none;color:var(--univers)}
 .chrome-gauche{display:flex;align-items:center;gap:var(--esp-3)}
 /* Monte dans la barre, le super-nav perd le fond blanc qui detachait ses
    verbes : sur l'ecran ambiant ils prennent donc l'encre du reste du chrome.
@@ -1749,3 +1773,33 @@ body.nav-ilot-ancre .languette-radio .radio-pastille{flex-shrink:0}
    lien, puis le filet, puis le geste flottant — le filet ferme la page au lieu
    d'ouvrir le pied. */
 :where(body.p-roam) .pied{border-top:none;border-bottom:1px solid var(--gris-service);margin-top:var(--air-i6);padding:var(--esp-1) 0 var(--esp-4)}
+
+
+/* ══════════════ LA BARRE DE QUETE ══════════════
+   Sur l'ecran de sejour au chrome monte, le geste focal quitte le bas de page
+   et devient une pilule de quete au centre de la barre : meme bouton, meme
+   porte, meme feuille — seule la peau change. Le logotype rejoint la droite,
+   l'ilot de radio se replie sur son antenne, et la feuille s'ancre a la barre.
+   CE QUI CASSE SI ON LE MODIFIE : la pilule est le geste focal DEPLACE, jamais
+   un second bouton — deux portes vers une meme feuille divergent. */
+body.nav-quete .chrome-inner{grid-template-columns:auto minmax(0,1fr) auto}
+body.nav-haut .chrome-inner>.fab.quete{justify-self:center}
+body.nav-haut .fab.quete{position:static;left:auto;bottom:auto;transform:none;z-index:auto;width:min(360px,100%);min-width:0;min-height:48px;padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);background:var(--blanc);color:var(--encre-discrete);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);white-space:nowrap;overflow:hidden;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);cursor:pointer}
+body.nav-haut .fab.quete:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
+/* Le disque a loupe, dessine aux jetons : un anneau et son manche evides dans
+   un disque d'univers. Il est decoratif — le nom du bouton reste son texte. */
+body.nav-haut .fab.quete::after{content:'';flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 20px 20px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 9px 9px/15px 15px no-repeat,var(--univers)}
+
+/* La feuille ancree a la barre : meme appareil, autre bord. Elle descend de
+   sous la barre comme le tiroir du menu, au lieu de monter du bas, et sa
+   poignee — un geste de pouce — n'a plus de sens. Son voile passe sous la
+   barre : un panneau ne couvre jamais le meuble qui l'ouvre. */
+.feuille-bas[data-pose="barre"]{bottom:auto;top:calc(var(--entete-h-rendue) + var(--esp-1));z-index:19;border-radius:var(--rayon-carte);max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-8));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-8));padding-top:var(--feuille-marge);padding-bottom:var(--esp-6);box-shadow:0 18px 44px rgba(var(--ombre-teinte),.28);transform:translate(-50%,-8px);opacity:0;pointer-events:none;transition:transform var(--mvt-apparition) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
+.feuille-bas[data-pose="barre"].visible{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.feuille-bas[data-pose="barre"] .poignee{display:none}
+.voile[data-pose="barre"]{z-index:12}
+/* Sur l'ecran a quete, l'ilot de radio tient replie sur son antenne : la barre
+   n'a la place que d'une pastille, et l'etat s'entend au pictogramme. La regle
+   est une barriere : elle tient meme si un script deplie l'ilot. */
+body.nav-quete .languette-radio{gap:0;padding-left:0}
+body.nav-quete .lecteur-texte{max-width:0;opacity:0}
