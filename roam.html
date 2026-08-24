@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-MNO0isaHklXYIMq2pCqv7GoYj8anPGev0YpK7w0D47o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-mklXFbNpeYQ1oVL6EJ5bNYo851yVflomJeVmb8HQ0CI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -76,28 +76,28 @@
     </div>
 
     <ul class="rail-piste" id="railSejour" data-rail-nom="Les biens">
-        <li><a class="carte-bien" href="#feuilleResa" data-bien="ahoefa" data-zone="cotonou">
+        <li><a class="carte-bien" href="lieu.html?l=ahoefa" data-bien="ahoefa" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/ahoefa-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
             <span class="nom-ligne"><span class="nom">Ahoefa</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
             <span class="ou" data-t="ouAhoefa">Sainte-Rita, Cotonou</span>
           </span>
         </a></li>
-        <li><a class="carte-bien" href="#feuilleResa" data-bien="kekeli" data-zone="cotonou">
+        <li><a class="carte-bien" href="lieu.html?l=kekeli" data-bien="kekeli" data-zone="cotonou">
           <span class="vignette"><img src="media/lieux/kekeli-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
             <span class="nom-ligne"><span class="nom">Kekeli</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
             <span class="ou">Sainte-Rita, Cotonou</span>
           </span>
         </a></li>
-        <li><a class="carte-bien" href="#feuilleResa" data-bien="lion-bar" data-zone="peches">
+        <li><a class="carte-bien" href="lieu.html?l=lion-bar" data-bien="lion-bar" data-zone="peches">
           <span class="vignette"><img src="media/lieux/lion-bar-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
             <span class="nom-ligne"><span class="nom">Lion Bar</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
             <span class="ou">Grand-Popo</span>
           </span>
         </a></li>
-        <li><a class="carte-bien" href="#feuilleResa" data-bien="bel-ami" data-zone="ailleurs">
+        <li><a class="carte-bien" href="lieu.html?l=bel-ami" data-bien="bel-ami" data-zone="ailleurs">
           <span class="vignette"><img src="media/lieux/bel-ami-carte.jpg" alt="" width="720" height="540" loading="lazy" decoding="async"></span>
           <span class="carte-tete">
             <span class="nom-ligne"><span class="nom">Bel Ami sur Pilotis</span><span class="geste lien-tertiaire" data-t="gesteVisiter">Visiter</span></span>
@@ -126,7 +126,7 @@
         <h3 class="vedette-nom" id="vedetteNom">Ahoefa<span class="vedette-ou" id="vedetteOu" data-t="ouAhoefa">Sainte-Rita, Cotonou</span></h3>
         <div class="vedette-bas">
           <p class="vedette-dit" data-t="accAhoefa">Tu passes à Cotonou bientôt&#8239;? Kër Yawa, c’est la base. TMTC ;)</p>
-          <a class="bouton-contour" id="vedetteGeste" href="#feuilleResa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
+          <a class="bouton-contour" id="vedetteGeste" href="lieu.html?l=ahoefa" data-bien="ahoefa" data-t="gesteVisiter">Visiter</a>
         </div>
       </div>
     </article>
@@ -1713,15 +1713,6 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && f.classList.contains('visible')) fermer();
     });
-    /* Une carte de bien ouvre la meme feuille : le lien reste un lien pour qui
-       n'a pas de script, et le geste l'intercepte pour qui en a un. */
-    Array.prototype.forEach.call(document.querySelectorAll('a[href="#feuilleResa"]'), function (a) {
-      a.addEventListener('click', function (e) {
-        e.preventDefault(); ouvrir();
-        var slug = a.getAttribute('data-bien');
-        if (slug) ouvrirSur(slug); else resumerPas();
-      });
-    });
   }
 
   /* LA SCENE DE VEDETTE, VUE PAR VUE. Une piste qui se cale sur ses vues, et
@@ -1811,6 +1802,7 @@
       ou.setAttribute('data-t', vue.dataset.ou);
       ou.textContent = (t() || {})[vue.dataset.ou] || '';
       geste.setAttribute('data-bien', vue.dataset.bien);
+      geste.setAttribute('href', ficheDuBien(vue.dataset.bien));
       if (lire) lire(i);
       if (cmds) {
         cmds.prec.setAttribute('aria-disabled', i <= 0 ? 'true' : 'false');

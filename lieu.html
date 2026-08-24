@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-R7VS+uMOGLSRfOdFO1jxz56fQxi5im9C6kYbb4w+ZCo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-PsH/JaIPwjLUp9RwotbtdKa/SlOl4Y81xrShEEXfCFc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Le lieu</title>
 <meta name="description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
 <meta property="og:type" content="website">
@@ -178,20 +178,19 @@
   }
 
   /* LES VUES D'UN LIEU. Elles ne viennent d'aucune table : le dossier porte,
-     par identifiant, une affiche de fiche, une affiche de carte et parfois un
-     film. Ce qui manque ne se demande pas au reseau — la vue n'est pas posee.
-     Le jour ou une table de medias existe, seule cette fonction change. */
+     par identifiant, une affiche et parfois un film. Ce qui manque ne se
+     demande pas au reseau — la vue n'est pas posee.
+     UNE VUE PAR IMAGE DISTINCTE, jamais deux entrees pour la meme prise :
+     l'affiche de carte est la meme photographie que celle de la fiche, en plus
+     petit, et la lister deux fois promettrait une galerie qui n'existe pas.
+     Le jour ou une table de medias existe, seule cette table change. */
   var VUES = {
     ahoefa: [{ film: 'media/lieux/ahoefa-hero.mp4', affiche: 'media/lieux/ahoefa-debut.jpg' },
-             { image: 'media/lieux/ahoefa-fiche.jpg' },
-             { image: 'media/lieux/ahoefa-carte.jpg' }],
+             { image: 'media/lieux/ahoefa-fiche.jpg' }],
     kekeli: [{ film: 'media/lieux/kekeli-hero.mp4', affiche: 'media/lieux/kekeli-debut.jpg' },
-             { film: 'media/lieux/kekeli-fiche.mp4', affiche: 'media/lieux/kekeli-fiche.jpg' },
-             { image: 'media/lieux/kekeli-carte.jpg' }],
-    'lion-bar': [{ image: 'media/lieux/lion-bar-fiche.jpg' },
-                 { image: 'media/lieux/lion-bar-carte.jpg' }],
-    'bel-ami': [{ image: 'media/lieux/bel-ami-fiche.jpg' },
-                { image: 'media/lieux/bel-ami-carte.jpg' }]
+             { film: 'media/lieux/kekeli-fiche.mp4', affiche: 'media/lieux/kekeli-fiche.jpg' }],
+    'lion-bar': [{ image: 'media/lieux/lion-bar-fiche.jpg' }],
+    'bel-ami': [{ image: 'media/lieux/bel-ami-fiche.jpg' }]
   };
 
   /* Le quartier d'un bien n'est pas en base : il vit ici, comme sur la page
@@ -298,9 +297,17 @@
     var cmds = vues.length > 1 ? commandesDeScene(scene) : null;
     var courante = 0;
 
+    /* Une seule vue ne se choisit pas : ni file, ni commandes, et la scene
+       reprend toute la piste. La classe le dit a la feuille. */
+    var seule = vues.length < 2;
+    if (seule) {
+      bandeau.hidden = true;
+      $('fiche').classList.add('une-vue');
+    }
+
     /* Les vignettes disent combien de vues existent et menent a chacune. Une
        file de pastilles ne le dit pas, et se rate au doigt. */
-    vues.forEach(function (v, i) {
+    if (!seule) vues.forEach(function (v, i) {
       var li = document.createElement('li');
       var b = document.createElement('button');
       b.type = 'button';

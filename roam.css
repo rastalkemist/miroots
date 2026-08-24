@@ -294,6 +294,7 @@ body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h)
 /* LES VIGNETTES, JAMAIS DES PASTILLES. Elles disent COMBIEN de vues existent
    et mènent à chacune ; une file de points ne le dit pas et se rate au doigt.
    La cible garde le plancher de la maison, le dessin reste petit. */
+:where(body.p-lieu) .fiche-vignettes[hidden]{display:none}
 :where(body.p-lieu) .fiche-vignettes{display:flex;gap:var(--esp-2);margin:0 0 var(--air-i6);padding:0;list-style:none;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
 :where(body.p-lieu) .fiche-vignettes::-webkit-scrollbar{display:none}
 :where(body.p-lieu) .vignette-vue{display:block;flex:0 0 auto;width:calc(var(--cible-min) + var(--esp-6));height:var(--cible-min);padding:0;border:var(--limite-ep) solid var(--limite-controle);border-radius:var(--rayon-champ);overflow:hidden;background:var(--gris-ilot);cursor:pointer}
@@ -331,22 +332,39 @@ body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h)
 :where(body.p-lieu) .fiche-gestes .bouton-confirmer{display:flex}
 
 @media(min-width:820px){
-  /* Dès que la page a des marges, la scène les prend comme le reste : elle
-     cesse de déborder et occupe TOUTE la piste. Ce qui se lit passe dessous,
-     en deux colonnes — la lecture à gauche, ce qui décide à droite.
+  /* LA GALERIE EN DEUX PARTS. La vue tenue occupe les deux tiers de la piste,
+     la file des vignettes le tiers de droite, sur la MÊME rangée : le choix des
+     vues se lit sans quitter la vue.
+     La vue est à gauche parce que c'est elle qui décide. La file, à droite,
+     garde le texte calé à gauche sous elle.
      La borne du téléphone tombe ici — elle vise l'appareil couché, où la scène
      mangerait l'écran. Il en reste une, plus haute : la scène ne dépasse jamais
      ce que la fenêtre montre, en-tête et barre déduits. */
-  :where(body.p-lieu) .fiche{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:var(--esp-8);align-items:start}
-  :where(body.p-lieu) .fiche-scene{grid-column:1 / -1;grid-row:1;margin:0 0 var(--air-i2);width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h));max-height:calc(100dvh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h))}
-  :where(body.p-lieu) .fiche-vignettes{grid-column:1 / -1;grid-row:2}
-  :where(body.p-lieu) .fiche-nom{grid-column:1;grid-row:3}
-  :where(body.p-lieu) .fiche-ou{grid-column:1;grid-row:4}
-  :where(body.p-lieu) .fiche-lire{grid-column:1;grid-row:5}
+  :where(body.p-lieu) .fiche{display:grid;grid-template-columns:2fr 1fr;column-gap:var(--esp-2);align-items:start}
+  :where(body.p-lieu) .fiche-scene{grid-column:1;grid-row:1;margin:0 0 var(--air-i6);width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h));max-height:calc(100dvh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h))}
+
+  /* La file se dresse et prend TOUTE la hauteur de la vue : les vignettes se
+     partagent la colonne à parts égales. Sa hauteur n'est pas un nombre — elle
+     se DÉDUIT de la découpe : la vue vaut deux colonnes, son rapport est 4/3,
+     donc la file vaut une colonne sur une hauteur d'une colonne et demie.
+     Les vignettes gardent le plancher de cible de la maison ; au-delà de ce que
+     la colonne peut tenir, elle défile — aucune vue n'est retirée de la file. */
+  :where(body.p-lieu) .fiche-vignettes{grid-column:2;grid-row:1;flex-direction:column;aspect-ratio:2/3;margin:0 0 var(--air-i6);overflow-x:hidden;overflow-y:auto}
+  :where(body.p-lieu) .fiche-vignettes > li{display:flex;flex:1 1 0;min-height:var(--cible-min);min-width:0}
+  :where(body.p-lieu) .vignette-vue{width:100%;height:100%;min-height:0}
+
+  :where(body.p-lieu) .fiche-nom{grid-column:1;grid-row:2}
+  :where(body.p-lieu) .fiche-ou{grid-column:1;grid-row:3}
+  :where(body.p-lieu) .fiche-lire{grid-column:1;grid-row:4}
+  :where(body.p-lieu) :is(.fiche-nom,.fiche-ou,.fiche-lire){padding-inline-end:var(--esp-8)}
 
   /* Collé sous l'en-tête, comme la barre de catégories de la maison : la même
      mécanique, la même cale. */
-  :where(body.p-lieu) .fiche-choisir{grid-column:2;grid-row:3 / 6;position:sticky;top:calc(var(--entete-h-rendue, var(--entete-h)) + var(--air-i3));margin:0}
+  :where(body.p-lieu) .fiche-choisir{grid-column:2;grid-row:2 / 5;position:sticky;top:calc(var(--entete-h-rendue, var(--entete-h)) + var(--air-i3));margin:0}
   :where(body.p-lieu) .fiche-choisir .fiche-chiffres{flex-direction:column;align-items:flex-start;gap:var(--esp-2);margin:0 0 var(--air-i3)}
   :where(body.p-lieu) .fiche-gestes{margin:0}
+
+  /* Un lieu qui n'a qu'une vue : rien à choisir, donc pas de colonne de file —
+     la vue prend toute la piste, et ce qui décide garde sa place à droite. */
+  :where(body.p-lieu) .fiche.une-vue .fiche-scene{grid-column:1 / -1}
 }

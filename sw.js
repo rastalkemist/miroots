@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '0ca786483d39ae6c';
+var VERSION   = 'e913fd868309487c';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -33,9 +33,8 @@ var REPLI = 'hors-ligne.html';
 var COQUE_FICHIERS = [
   'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'plan.html',
   'facture.html', 'paiement.html', 'confidentialite.html', 'decouvrir-plan.html', REPLI,
-  'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'plan.css', 'roam.css',
-  'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js',
-  'vendor/intlTelInput.min.css', 'vendor/intlTelInput.min.js', 'vendor/qrcode.js',
+  'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'plan.css',
+  'roots-db.js', 'roots.js', 'garde.js',
   'manifest.webmanifest', 'media/hero.jpg', 'media/hero-portrait.jpg'
 ];
 
