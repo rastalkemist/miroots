@@ -901,7 +901,7 @@
         pied.appendChild(point);
       }
       var lien = document.createElement('a');
-      lien.href = 'confidentialite.html';
+      lien.href = adresseConfidentialite();
       lien.textContent = POLITIQUE[getLangue()] || POLITIQUE.fr;
       if (ici() === 'confidentialite.html') {
         lien.classList.add('courant');
@@ -910,6 +910,17 @@
       pied.appendChild(lien);
       cont.appendChild(pied);
     }
+
+    /* La politique s'ouvre dans l'univers d'ou l'on vient : l'adresse porte le
+       monde, et la page le lit. Le tronc adresse aussi les liens ecrits dans
+       les pages — aucun ecran n'a a le savoir. */
+    function adresseConfidentialite() {
+      var m = document.body.className.match(/(?:^|\s)p-(roam|plan)(?:\s|$)/);
+      return 'confidentialite.html' + (m ? '?monde=' + m[1] : '');
+    }
+    Array.prototype.forEach.call(
+      document.querySelectorAll('a[href="confidentialite.html"]'),
+      function (a) { a.setAttribute('href', adresseConfidentialite()); });
     dessinerSections();
 
     return { toast: toast, dessinerSections: dessinerSections, fermerMenu: fermerMenu };

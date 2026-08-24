@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-qODmTynklDr9I7uJQk8rLNPGSBhttBDBZQakV4QpuTc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-qODmTynklDr9I7uJQk8rLNPGSBhttBDBZQakV4QpuTc=' 'sha256-RE9cyUbR+PNaBimKb0L6uq76pQO8RaskhxItgLGuKB8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Politique de protection des données à caractère personnel — Roots</title>
 <meta name="description" content="Ce que nous collectons, pourquoi, combien de temps nous le gardons, et comment exercer tes droits.">
 <meta property="og:type" content="website">
@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="plan.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
 <script src="roots-db.js"></script>
 <script src="roots.js"></script>
@@ -27,6 +28,15 @@
 <script src="garde.js"></script>
 </head>
 <body class="p-confidentialite" data-surface="claire">
+<script>
+/* L'univers de la page est celui d'ou l'on vient : l'adresse le porte.
+   Liste fermee — toute autre valeur laisse l'univers par defaut. La classe se
+   pose avant le premier rendu : le script est le premier enfant du corps. */
+(function () {
+  var m = new URLSearchParams(location.search).get('monde');
+  if (m === 'roam' || m === 'plan') document.body.className += ' p-' + m;
+}());
+</script>
 <script>Roots.sprite()</script>
 
 <a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
