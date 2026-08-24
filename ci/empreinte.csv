@@ -20,7 +20,7 @@ jeton,rang,valeur
 --blanc-casse,0,#FDFBF6
 --blanc-casse-rgb,0,253, 251, 246
 --blanc-rgb,0,255, 255, 255
---carte-min,0,256px
+--carte-min,0,224px
 --casse-ll-h5,0,uppercase
 --cible-min,0,44px
 --cible-plancher-aa,0,24px

@@ -390,15 +390,16 @@
                                    24 x 24 px CSS : 44 est un choix, pas un minimum */
   --cible-plancher-aa: 24px;    /* SC 2.5.8, niveau AA — plancher normatif */
   --tuile-action-min: 96px;     /* contrainte de poste, aucune source : elle n'existe pas */
-  --carte-min: 256px;           /* plancher d'une carte en grille auto-ajustee.
-                                   Derive de la mesure de lecture : une carte
-                                   vaut la moitie d'une colonne de prose,
-                                   gouttiere deduite — (540 - 24) / 2, arrondi
-                                   a la base 4. Deux cartes cote a cote font
-                                   donc la largeur d'un paragraphe. Le baisser
-                                   sous 226 ou le monter au-dela de 283 change
-                                   le nombre de colonnes servies sur grand
-                                   ecran. */
+  --carte-min: 224px;           /* plancher d'une carte en grille auto-ajustee.
+                                   Une carte occupe QUATRE colonnes de la grille
+                                   de douze au palier large : a 1280 la piste
+                                   vaut 768, la colonne 42, et quatre colonnes
+                                   gouttieres comprises font 240. Le plancher se
+                                   pose un cran d'espacement en dessous — sinon
+                                   la grille auto-ajustee tombe a egalite avec
+                                   la piste et rend une colonne de moins pour un
+                                   pixel. Le monter au-dela de 240 retire une
+                                   colonne sur grand ecran. */
 }
 
 /* ---------- 2 bis. LES TROIS JEUX D'ÉCRAN — jeux DISCRETS, jamais un
