@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-cy3ET8rCJ/hmAxdmFIZXB/UoSg32zmpUZx6fkpQAFdQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-MNO0isaHklXYIMq2pCqv7GoYj8anPGev0YpK7w0D47o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -287,10 +287,11 @@
              ouvert a la reservation. -->
         <div class="champ champ-suggest">
           <input type="text" id="qLieu" readonly autocomplete="off" spellcheck="false"
+                 role="combobox" aria-haspopup="grid" aria-autocomplete="list"
                  aria-expanded="false" aria-controls="suggLieux" aria-describedby="etLogement"
                  data-p="pLieu" placeholder="Chercher un lieu">
         </div>
-        <ul class="tiroir-lieux" id="suggLieux" aria-labelledby="etLogement" hidden></ul>
+        <ul class="tiroir-lieux" id="suggLieux" role="grid" aria-labelledby="etLogement" hidden></ul>
         <p class="message-ferme" id="videLogements" role="status" style="display:none"></p>
       </div>
     </section>
@@ -686,24 +687,36 @@
     return v;
   }
 
-  /* Une option de la liste suggeree : la vue d'abord, puis le nom, puis ce que
-     le lieu coute. Elle porte `option` et non `radio` — c'est une boite a
-     suggestions, pas un groupe de boutons —, et l'etat retenu s'y lit par
-     `aria-selected`. */
-  /* Une option de la liste est UNE CARTE DE BIEN en petit format : meme
-     composant que le rail de la page, memes parties, une seule taille en
-     moins. Elle porte `option` parce qu'elle vit dans une boite a
-     suggestions, et l'etat retenu s'y lit par `aria-selected`. */
   /* Un ILOT de bien, pose dans le tiroir du pas « Ou ». Il porte DEUX gestes
      qui ne s'emboitent pas : un bouton qui couvre l'ilot et retient le lieu, et
      un lien pose par-dessus, dans l'angle, qui mene a sa fiche. Aucun des deux
      n'est enfant de l'autre — une commande dans une commande n'a ni cible ni
      nom fiables.
      Le bouton porte `aria-pressed` : le tiroir est un choix parmi n, et c'est
-     ce que l'etat d'un bouton bascule dit. */
+     ce que l'etat d'un bouton bascule dit.
+     LA LISTE EST UNE GRILLE, PAS UNE BOITE D'OPTIONS. Une option ne peut pas
+     contenir de commande ; l'ilot en porte deux. La forme admise pour cela est
+     la grille : une rangee par ilot, une case par geste. Les cases ne changent
+     rien a la mise en page — elles ne sont la que pour porter le role. */
+  function caseDeGrille(enfant) {
+    var c = document.createElement('span');
+    c.className = 'case-ilot';
+    c.setAttribute('role', 'gridcell');
+    c.appendChild(enfant);
+    return c;
+  }
+
+  /* La fiche d'un lieu vit sur son propre ecran, et le lieu voulu se nomme
+     dans l'adresse. Un seul ecran sert tous les lieux : une route de plus,
+     pas une page de plus par bien. */
+  function ficheDuBien(slug) {
+    return slug ? 'lieu.html?l=' + encodeURIComponent(slug) : '';
+  }
+
   function ilotBien(l, id, lieu, montant, unite, versFiche) {
     var li = document.createElement('li');
     li.className = 'ilot-lieu';
+    li.setAttribute('role', 'row');
     li.id = id;
     li.dataset.slug = l.slug;
 
@@ -745,7 +758,7 @@
       }
       choix.appendChild(m);
     }
-    li.appendChild(choix);
+    li.appendChild(caseDeGrille(choix));
 
     if (versFiche) {
       /* Son nom accessible EST son texte visible, et il ne varie pas : c'est ce
@@ -757,7 +770,7 @@
       plus.className = 'ilot-plus lien-tertiaire';
       plus.href = versFiche;
       plus.textContent = t().plusInfos;
-      li.appendChild(plus);
+      li.appendChild(caseDeGrille(plus));
     }
     return li;
   }
@@ -772,7 +785,7 @@
 
   function optionLieu(l) {
     var li = ilotBien(l, 'sugg-' + l.slug, lieuDuBien(l.slug),
-                      prix(l.prix_nuit), t().parNuit, '#' + l.slug);
+                      prix(l.prix_nuit), t().parNuit, ficheDuBien(l.slug));
     li.querySelector('.ilot-choix').addEventListener('click', function () { choisir(l); });
     return li;
   }
@@ -1637,6 +1650,29 @@
     ouvrirPas(lesPas($('explorer'))[0]);
   }
 
+  /* La porte de la feuille, tenue hors de sa mecanique. Un ecran voisin qui
+     nomme un bien dans l'adresse doit pouvoir l'ouvrir sans connaitre ni le
+     geste flottant ni la couche d'historique. Vaut `null` tant que la feuille
+     n'est pas montee : l'appeler alors ne fait rien. */
+  var ouvrirLaFeuille = null;
+
+  /* UN BIEN NOMME DANS L'ADRESSE. `roam.html?bien=<identifiant>` ouvre la
+     feuille sur ce bien, premier pas deja repondu. L'adresse se nettoie apres
+     coup : rechargee, la page ne rouvre pas une feuille que personne n'a
+     demandee, et le retour ferme la feuille au lieu de quitter l'ecran.
+     Un identifiant absent du catalogue ne fait rien : pas de feuille ouverte
+     sur rien. */
+  function bienDemande() {
+    var m = /[?&]bien=([a-z0-9-]+)/i.exec(location.search || '');
+    if (!m || !ouvrirLaFeuille) return;
+    var slug = m[1].toLowerCase(), connu = false;
+    LOGEMENTS.forEach(function (x) { if (x.slug === slug) connu = true; });
+    history.replaceState(history.state, '', location.pathname + location.hash);
+    if (!connu) return;
+    ouvrirLaFeuille();
+    ouvrirSur(slug);
+  }
+
   function feuilleDeRecherche() {
     var fab = $('fabRecherche'), f = $('feuilleResa'), v = $('voileResa'), x = $('fermerResa');
     if (!fab || !f || !v) return;
@@ -1664,6 +1700,7 @@
       fab.focus();
     }
     fab.setAttribute('aria-expanded', 'false');
+    ouvrirLaFeuille = ouvrir;
     fab.addEventListener('click', ouvrir);
     /* Tout element qui porte `data-ouvre` ouvre la feuille : un geste pose
        ailleurs — dans la barre du haut sur grand ecran, par exemple — n'a rien
@@ -1990,6 +2027,7 @@
       sejour.notice = charges[1];
       if (LOGEMENTS.length === 1) sejour.logement = LOGEMENTS[0];
       appliquerLangue();
+      bienDemande();
       itiSejour = Roots.initTelRoots($('telSejour'));
       majDates();
       majPersonnes();

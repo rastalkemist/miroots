@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-R7VS+uMOGLSRfOdFO1jxz56fQxi5im9C6kYbb4w+ZCo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Le lieu</title>
+<meta name="description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi Roots">
+<meta property="og:title" content="Mi Roam — le lieu">
+<meta property="og:description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
+<meta property="og:locale" content="fr_BJ">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="theme-color" content="#9C1218">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="vendor/intlTelInput.min.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="roam.css">
+<script src="roots-db.js"></script>
+<script src="roots.js"></script>
+<script src="vendor/intlTelInput.min.js" defer></script>
+<script src="garde.js"></script>
+</head>
+<body class="p-roam p-lieu" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="roam.html">Roam</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="corps">
+
+  <!-- LA FICHE D'UN LIEU. Un seul ecran sert tous les lieux : le lieu voulu se
+       nomme dans l'adresse, `lieu.html?l=<identifiant>`. Sans table de lieu, la
+       source est celle que la page d'a cote emploie deja — la lecture publique
+       des logements — et les vues sont celles que le dossier porte.
+       Ce qui n'existe pas ne s'invente pas : un emplacement sans matiere porte
+       une ligne qui le dit, jamais un texte de remplissage. -->
+
+  <p class="fil-retour"><a class="lien-tertiaire" href="roam.html" data-t="retourRoam">Tous les lieux</a></p>
+
+  <article class="fiche" id="fiche" hidden>
+
+    <!-- La scene reprend le mecanisme de la page : une piste calee sur ses
+         vues, deux commandes de part et d'autre, et le film quand il existe.
+         Les vignettes sous la scene disent COMBIEN de vues existent : une file
+         de pastilles ne le dit pas et se rate au doigt. -->
+    <div class="fiche-scene">
+      <ul class="vedette-piste" id="pisteFiche"></ul>
+    </div>
+    <ul class="fiche-vignettes" id="vignettesFiche"></ul>
+
+    <h1 class="fiche-nom" id="ficheNom"></h1>
+    <p class="fiche-ou" id="ficheOu"></p>
+
+    <!-- CE QUI DECIDE, TENU ENSEMBLE : le prix, ce que le lieu accueille, et le
+         geste. Les trois se lisent d'un coup ; separes, ils obligent a
+         remonter. Au-dela de la bascule, ce bloc quitte le fil de lecture pour
+         la colonne de droite et y reste colle : le geste ne descend pas hors
+         du regard quand la description s'allonge. -->
+    <div class="fiche-choisir">
+      <p class="fiche-chiffres">
+        <span class="montant"><span class="somme" id="fichePrix"></span><span class="unite" data-t="parNuit">la nuit</span></span>
+        <span class="fiche-capacite" id="ficheCapacite"></span>
+      </p>
+      <div class="fiche-gestes">
+        <a class="bouton-confirmer" id="gesteReserver" href="roam.html" data-t="reserverIci">Réserver ce lieu</a>
+      </div>
+    </div>
+
+    <div class="fiche-lire">
+      <section class="fiche-pan" aria-labelledby="etDire">
+        <h2 class="titre-sous" id="etDire" data-t="ficheDire">Le lieu</h2>
+        <p class="fiche-texte" id="ficheTexte"></p>
+      </section>
+
+      <section class="fiche-pan" aria-labelledby="etEquip">
+        <h2 class="titre-sous" id="etEquip" data-t="ficheEquip">Ce qu’on y trouve</h2>
+        <p class="fiche-texte" id="ficheEquip"></p>
+      </section>
+    </div>
+
+  </article>
+
+  <p class="message-ferme" id="ficheVide" role="status" data-t="ficheInconnue">Ce lieu n’est pas au catalogue.</p>
+
+</div>
+
+<footer class="pied">
+  <a href="confidentialite.html" data-t="piedPolitique">Politique de confidentialité</a>
+</footer>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe actif" aria-current="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  function $(i) { return document.getElementById(i); }
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      retourRoam: 'Tous les lieux',
+      parNuit: 'la nuit',
+      jusqua: function (n) { return n > 1 ? 'jusqu\u2019\u00e0 ' + n + ' personnes' : '1 personne'; },
+      ficheDire: 'Le lieu',
+      ficheEquip: 'Ce qu\u2019on y trouve',
+      reserverIci: 'R\u00e9server ce lieu',
+      ficheInconnue: 'Ce lieu n\u2019est pas au catalogue.',
+      sansTexte: 'La pr\u00e9sentation de ce lieu arrive.',
+      sansEquip: 'La liste des \u00e9quipements arrive.',
+      vuePrec: 'Vue pr\u00e9c\u00e9dente', vueSuiv: 'Vue suivante',
+      alPause: 'Mettre la vid\u00e9o en pause', alLire: 'Lancer la vid\u00e9o',
+      vueRang: function (n, sur) { return 'Vue ' + n + ' sur ' + sur; },
+      toastNu: 'Le mode NU (communaut\u00e9) arrive bient\u00f4t.'
+    },
+    en: {
+      saut: 'Skip to content',
+      retourRoam: 'All places',
+      parNuit: 'a night',
+      jusqua: function (n) { return n > 1 ? 'sleeps up to ' + n : 'sleeps 1'; },
+      ficheDire: 'The place',
+      ficheEquip: 'What you\u2019ll find',
+      reserverIci: 'Book this place',
+      ficheInconnue: 'This place is not in the catalogue.',
+      sansTexte: 'The presentation of this place is coming.',
+      sansEquip: 'The list of amenities is coming.',
+      vuePrec: 'Previous view', vueSuiv: 'Next view',
+      alPause: 'Pause the video', alLire: 'Play the video',
+      vueRang: function (n, sur) { return 'View ' + n + ' of ' + sur; },
+      toastNu: 'NU, the community side of Roots, is coming soon.'
+    }
+  };
+
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
+  function t() { return T[langue] || T.fr; }
+
+  /* Le franc se lit par groupes de trois, espace insecable, comme partout
+     ailleurs dans l'application. */
+  function fcfa(v) {
+    return Number(v || 0).toLocaleString('fr-FR').replace(/[\u00a0\u202f]/g, '\u202f') + '\u202fFCFA';
+  }
+
+  /* LES VUES D'UN LIEU. Elles ne viennent d'aucune table : le dossier porte,
+     par identifiant, une affiche de fiche, une affiche de carte et parfois un
+     film. Ce qui manque ne se demande pas au reseau — la vue n'est pas posee.
+     Le jour ou une table de medias existe, seule cette fonction change. */
+  var VUES = {
+    ahoefa: [{ film: 'media/lieux/ahoefa-hero.mp4', affiche: 'media/lieux/ahoefa-debut.jpg' },
+             { image: 'media/lieux/ahoefa-fiche.jpg' },
+             { image: 'media/lieux/ahoefa-carte.jpg' }],
+    kekeli: [{ film: 'media/lieux/kekeli-hero.mp4', affiche: 'media/lieux/kekeli-debut.jpg' },
+             { film: 'media/lieux/kekeli-fiche.mp4', affiche: 'media/lieux/kekeli-fiche.jpg' },
+             { image: 'media/lieux/kekeli-carte.jpg' }],
+    'lion-bar': [{ image: 'media/lieux/lion-bar-fiche.jpg' },
+                 { image: 'media/lieux/lion-bar-carte.jpg' }],
+    'bel-ami': [{ image: 'media/lieux/bel-ami-fiche.jpg' },
+                { image: 'media/lieux/bel-ami-carte.jpg' }]
+  };
+
+  /* Le quartier d'un bien n'est pas en base : il vit ici, comme sur la page
+     d'a cote, et les deux tables tomberont ensemble le jour ou la colonne
+     existe. */
+  var OU = { ahoefa: 'Sainte-Rita, Cotonou', kekeli: 'Sainte-Rita, Cotonou',
+             'lion-bar': 'Grand-Popo', 'bel-ami': 'Lac Ah\u00e9m\u00e9' };
+
+  function slugDemande() {
+    var m = /[?&]l=([a-z0-9-]+)/i.exec(location.search || '');
+    return m ? m[1].toLowerCase() : '';
+  }
+
+  function sobre() {
+    var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    return !!((c && c.saveData) ||
+      (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches));
+  }
+
+  function mouvementDoux() {
+    return (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      ? 'auto' : 'smooth';
+  }
+
+  /* Une vue : un film avec son affiche, ou une image. Un film absent du
+     dossier retire son lecteur et laisse l'affiche. */
+  function poserLaVue(v, rang, total) {
+    var li = document.createElement('li');
+    li.className = 'vedette-vue';
+    li.setAttribute('role', 'group');
+    li.setAttribute('aria-label', t().vueRang(rang, total));
+    if (v.film) {
+      li.dataset.film = v.film;
+      var f = document.createElement('video');
+      f.muted = true; f.loop = true; f.playsInline = true;
+      f.setAttribute('muted', ''); f.setAttribute('playsinline', ''); f.setAttribute('loop', '');
+      f.preload = 'none';
+      if (v.affiche) f.poster = v.affiche;
+      f.tabIndex = 0;
+      f.setAttribute('role', 'button');
+      f.setAttribute('data-al', 'alPause');
+      f.setAttribute('aria-label', t().alPause);
+      f.addEventListener('error', function () { f.remove(); imageDeVue(li, v.affiche); });
+      li.appendChild(f);
+    } else {
+      imageDeVue(li, v.image);
+    }
+    return li;
+  }
+
+  function imageDeVue(li, src) {
+    if (!src || li.querySelector('img')) return;
+    var i = document.createElement('img');
+    i.src = src; i.alt = ''; i.loading = 'lazy'; i.decoding = 'async';
+    li.appendChild(i);
+  }
+
+  /* Les commandes prennent la peau et la place de celles de la page : une
+     seule maniere de manoeuvrer un carrousel sur tout l'univers. */
+  function commandesDeScene(scene) {
+    var faites = {};
+    ['prec', 'suiv'].forEach(function (sens) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'scene-cmd ' + sens;
+      b.setAttribute('data-al', sens === 'prec' ? 'vuePrec' : 'vueSuiv');
+      b.setAttribute('aria-label', t()[sens === 'prec' ? 'vuePrec' : 'vueSuiv']);
+      b.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-chevron"/></svg>';
+      scene.appendChild(b);
+      faites[sens] = b;
+    });
+    return faites;
+  }
+
+  function galerie(vues) {
+    var piste = $('pisteFiche'), bandeau = $('vignettesFiche');
+    var scene = piste.parentNode;
+    vues.forEach(function (v, i) { piste.appendChild(poserLaVue(v, i + 1, vues.length)); });
+
+    var lecteurs = Array.prototype.map.call(piste.children, function (element) {
+      var li = element;
+      var f = li.querySelector('video');
+      if (!f) return null;
+      function nommer(joue) {
+        var cle = joue ? 'alPause' : 'alLire';
+        f.setAttribute('data-al', cle);
+        f.setAttribute('aria-label', t()[cle]);
+      }
+      function lancer() {
+        if (sobre()) { nommer(false); return; }
+        if (!f.getAttribute('src')) f.setAttribute('src', li.dataset.film);
+        var r = f.play();
+        if (r && r['catch']) r['catch'](function () { nommer(false); });
+        nommer(true);
+      }
+      function suspendre() { if (!f.paused) { f.pause(); nommer(false); } }
+      f.addEventListener('click', function () { if (f.paused) lancer(); else suspendre(); });
+      f.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); if (f.paused) lancer(); else suspendre(); }
+      });
+      return { lancer: lancer, suspendre: suspendre };
+    });
+
+    var cmds = vues.length > 1 ? commandesDeScene(scene) : null;
+    var courante = 0;
+
+    /* Les vignettes disent combien de vues existent et menent a chacune. Une
+       file de pastilles ne le dit pas, et se rate au doigt. */
+    vues.forEach(function (v, i) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'vignette-vue';
+      b.setAttribute('aria-label', t().vueRang(i + 1, vues.length));
+      b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+      var img = document.createElement('img');
+      img.src = v.image || v.affiche || '';
+      img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+      b.appendChild(img);
+      b.addEventListener('click', function () { aller(i); });
+      li.appendChild(b);
+      bandeau.appendChild(li);
+    });
+
+    function porter(i) {
+      courante = i;
+      lecteurs.forEach(function (l, k) { if (l) { if (k === i) l.lancer(); else l.suspendre(); } });
+      Array.prototype.forEach.call(bandeau.querySelectorAll('.vignette-vue'), function (b, k) {
+        b.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+      });
+      if (cmds) {
+        cmds.prec.setAttribute('aria-disabled', i <= 0 ? 'true' : 'false');
+        cmds.suiv.setAttribute('aria-disabled', i >= vues.length - 1 ? 'true' : 'false');
+      }
+    }
+    function aller(i) {
+      i = Math.max(0, Math.min(vues.length - 1, i));
+      piste.scrollTo({ left: i * piste.clientWidth, behavior: mouvementDoux() });
+      porter(i);
+    }
+    if (cmds) {
+      cmds.prec.addEventListener('click', function () { aller(courante - 1); });
+      cmds.suiv.addEventListener('click', function () { aller(courante + 1); });
+    }
+    piste.addEventListener('scroll', function () {
+      var i = Math.max(0, Math.min(vues.length - 1,
+        Math.round(piste.scrollLeft / (piste.clientWidth || 1))));
+      if (i !== courante) porter(i);
+    }, { passive: true });
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) lecteurs.forEach(function (l) { if (l) l.suspendre(); });
+    });
+    porter(0);
+  }
+
+  function poserLaFiche(l, slug) {
+    var mots = t();
+    $('ficheNom').textContent = l.nom;
+    $('ficheOu').textContent = OU[slug] || '';
+    $('fichePrix').textContent = fcfa(l.prix_nuit);
+    $('ficheCapacite').textContent = mots.jusqua(l.capacite);
+    $('ficheTexte').textContent = mots.sansTexte;
+    $('ficheEquip').textContent = mots.sansEquip;
+    $('gesteReserver').href = 'roam.html?bien=' + encodeURIComponent(slug);
+    document.title = l.nom + ' \u2014 Mi Roots';
+    galerie(VUES[slug] || []);
+    $('fiche').hidden = false;
+    $('ficheVide').hidden = true;
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-al]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-al')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
+    });
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  }
+
+  var chrome = Roots.initChrome({ toastId: 'toast',
+    getLangue: function () { return langue; }, getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; },
+    radio: true,
+    onLangue: function () {
+      langue = (langue === 'fr') ? 'en' : 'fr';
+      Roots.retenirLangue(langue);
+      appliquerLangue();
+    }
+  });
+
+  appliquerLangue();
+
+  (function () {
+    var slug = slugDemande();
+    if (!slug) { $('ficheVide').hidden = false; return; }
+    Roots.db.logements().then(function (liste) {
+      var l = null;
+      (liste || []).forEach(function (x) { if (x.slug === slug) l = x; });
+      if (!l) { $('ficheVide').hidden = false; return; }
+      poserLaFiche(l, slug);
+    })['catch'](function () { $('ficheVide').hidden = false; });
+  })();
+})();
+</script>
+</body>
+</html>

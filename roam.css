@@ -207,9 +207,9 @@
 :where(body.p-roam) .rail-cmd,
 :where(body.p-roam) .scene-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:var(--cible-min);height:var(--cible-min);min-width:0;min-height:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:var(--limite-ep) solid var(--univers);background:rgba(var(--blanc-rgb),.2);color:var(--univers);box-shadow:none}
 :where(body.p-roam) .rail-cmd.prec,
-:where(body.p-roam) .scene-cmd.prec{left:var(--esp-2);right:auto}
+:where(body.p-roam) .scene-cmd.prec{left:var(--souffle-filet);right:auto}
 :where(body.p-roam) .rail-cmd.suiv,
-:where(body.p-roam) .scene-cmd.suiv{right:var(--esp-2);left:auto}
+:where(body.p-roam) .scene-cmd.suiv{right:var(--souffle-filet);left:auto}
 :where(body.p-roam) .rail-cmd svg.i,
 :where(body.p-roam) .scene-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
 :where(body.p-roam) .rail-cmd.prec svg.i,
@@ -256,4 +256,97 @@
    se donne au-dessous. Le sélecteur porte sa classe sans `:where` : la
    déclaration qu'il remplace vise `body` seul, et une règle de poids nul ne la
    reprend pas. */
+/* Cet écran ne porte pas de geste flottant : la réserve du bas ne garde que la
+   barre et son souffle. La règle vise `body.p-lieu` SANS `:where` — celle
+   qu'elle reprend vise `body.p-roam` seul, et une règle de poids nul ne la
+   reprendrait pas. */
+body.p-lieu{--geste-bas:var(--barre-h);padding-bottom:calc(var(--barre-h) + var(--souffle-filet) * 2 + var(--safe-bas))}
+
 body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h) + var(--souffle-filet) + var(--cible-min));padding-bottom:calc(var(--geste-bas) + var(--souffle-filet))}
+
+/* ---- LES CASES DE LA GRILLE NE DÉPLACENT RIEN. Elles portent le rôle exigé
+   par la forme du combobox à grille et s'effacent de la mise en page : leurs
+   enfants restent les enfants directs de la rangée. */
+:where(body.p-roam) .case-ilot{display:contents}
+
+
+/* ============================================================================
+   LA FICHE D'UN LIEU — `body.p-lieu`, second écran de l'univers.
+
+   Un seul défilement, une seule colonne sur téléphone : pas d'onglets, pas de
+   sous-page. Ce que la lecture du monde dit de la page de détail est net —
+   les onglets horizontaux enfouissent les sections, et découper le détail en
+   sous-pages sur mobile fait perdre ce qui décide de la confiance.
+   Au-delà, deux colonnes : les vues d'un côté, ce qui se lit de l'autre.
+   ============================================================================ */
+
+:where(body.p-lieu) .fil-retour{margin:0 0 var(--air-i3)}
+
+/* La scène reprend la MÉCANIQUE de la page — même piste, mêmes vues, mêmes
+   commandes — mais pas sa classe : celle-ci porte une hauteur prise sur la
+   fenêtre, juste pour une vedette, fausse pour une fiche où le rapport décide.
+   Sur téléphone la scène prend toute la largeur : l'écran EST la page. Sa
+   hauteur est le plus petit des deux : le rapport 4/3 de cette largeur, ou la
+   moitié de la fenêtre en-tête déduit. Le second l'emporte sur un appareil
+   couché, où le seul rapport mangerait l'écran entier. */
+:where(body.p-lieu) .fiche-scene{position:relative;overflow:hidden;background:var(--gris-ilot);margin:0 calc(50% - 50vw) var(--air-i2);width:auto;height:min(75vw, calc(50vh - var(--entete-h-rendue, var(--entete-h))));height:min(75vw, calc(50dvh - var(--entete-h-rendue, var(--entete-h))))}
+
+/* LES VIGNETTES, JAMAIS DES PASTILLES. Elles disent COMBIEN de vues existent
+   et mènent à chacune ; une file de points ne le dit pas et se rate au doigt.
+   La cible garde le plancher de la maison, le dessin reste petit. */
+:where(body.p-lieu) .fiche-vignettes{display:flex;gap:var(--esp-2);margin:0 0 var(--air-i6);padding:0;list-style:none;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none}
+:where(body.p-lieu) .fiche-vignettes::-webkit-scrollbar{display:none}
+:where(body.p-lieu) .vignette-vue{display:block;flex:0 0 auto;width:calc(var(--cible-min) + var(--esp-6));height:var(--cible-min);padding:0;border:var(--limite-ep) solid var(--limite-controle);border-radius:var(--rayon-champ);overflow:hidden;background:var(--gris-ilot);cursor:pointer}
+:where(body.p-lieu) .vignette-vue img{width:100%;height:100%;object-fit:cover;display:block}
+:where(body.p-lieu) .vignette-vue[aria-pressed="true"]{border-color:var(--univers);box-shadow:inset 0 0 0 var(--limite-ep) var(--univers)}
+
+/* Le nom est un h1 : l'échelle des titres le tient déjà, elle n'est pas
+   redite ici. Seule sa marge appartient à cet écran. */
+:where(body.p-lieu) .fiche-nom{margin:0}
+:where(body.p-lieu) .fiche-ou{margin:0 0 var(--air-i3);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+
+/* Le prix tient sa ligne avec ce que le lieu accueille : deux faits que l'on
+   compare d'un coup d'œil, et qui viennent tous deux de la base. */
+:where(body.p-lieu) .fiche-chiffres{display:flex;align-items:baseline;justify-content:space-between;gap:var(--esp-3);margin:0}
+
+/* Le prix se compose comme sur l'îlot de la page — la somme, puis l'unité
+   dessous — mais calé à gauche et à l'échelle d'un écran dont il est le sujet.
+   Hors de l'îlot, ce triplet ne porte aucune règle : sans celle-ci la somme et
+   l'unité se collent sur une même ligne. */
+:where(body.p-lieu) .fiche-chiffres .montant{display:flex;flex-direction:column;align-items:flex-start;gap:0}
+:where(body.p-lieu) .fiche-chiffres .somme{font-family:var(--font-chiffres);font-variant-numeric:tabular-nums;font-size:var(--t-h3);line-height:var(--lh-chiffre);font-weight:700;color:var(--encre);white-space:nowrap}
+:where(body.p-lieu) .fiche-chiffres .unite{font-size:var(--t-note);line-height:var(--lh-12);color:var(--encre-discrete);white-space:nowrap}
+:where(body.p-lieu) .fiche-capacite{font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
+
+/* Sur téléphone le bloc reste dans le fil : prix, capacité, geste, puis ce
+   qui se lit. Le geste haut n'est pas un raccourci — c'est ce que la scène
+   vient de justifier. */
+:where(body.p-lieu) .fiche-choisir{margin:0 0 var(--air-i6)}
+:where(body.p-lieu) .fiche-pan{margin:0 0 var(--air-i6)}
+:where(body.p-lieu) .fiche-texte{margin:0;font-size:var(--t-body);line-height:var(--lh-16);color:var(--encre);max-width:var(--col)}
+
+/* Un seul geste plein par écran : celui qui mène ailleurs. Le retour vers la
+   page est un lien, il ne prétend pas au même rang. */
+:where(body.p-lieu) .fiche-gestes{margin:var(--air-i3) 0 0}
+:where(body.p-lieu) .fiche-gestes .bouton-confirmer{display:flex}
+
+@media(min-width:820px){
+  /* Dès que la page a des marges, la scène les prend comme le reste : elle
+     cesse de déborder et occupe TOUTE la piste. Ce qui se lit passe dessous,
+     en deux colonnes — la lecture à gauche, ce qui décide à droite.
+     La borne du téléphone tombe ici — elle vise l'appareil couché, où la scène
+     mangerait l'écran. Il en reste une, plus haute : la scène ne dépasse jamais
+     ce que la fenêtre montre, en-tête et barre déduits. */
+  :where(body.p-lieu) .fiche{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:var(--esp-8);align-items:start}
+  :where(body.p-lieu) .fiche-scene{grid-column:1 / -1;grid-row:1;margin:0 0 var(--air-i2);width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h));max-height:calc(100dvh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h))}
+  :where(body.p-lieu) .fiche-vignettes{grid-column:1 / -1;grid-row:2}
+  :where(body.p-lieu) .fiche-nom{grid-column:1;grid-row:3}
+  :where(body.p-lieu) .fiche-ou{grid-column:1;grid-row:4}
+  :where(body.p-lieu) .fiche-lire{grid-column:1;grid-row:5}
+
+  /* Collé sous l'en-tête, comme la barre de catégories de la maison : la même
+     mécanique, la même cale. */
+  :where(body.p-lieu) .fiche-choisir{grid-column:2;grid-row:3 / 6;position:sticky;top:calc(var(--entete-h-rendue, var(--entete-h)) + var(--air-i3));margin:0}
+  :where(body.p-lieu) .fiche-choisir .fiche-chiffres{flex-direction:column;align-items:flex-start;gap:var(--esp-2);margin:0 0 var(--air-i3)}
+  :where(body.p-lieu) .fiche-gestes{margin:0}
+}
