@@ -1470,6 +1470,7 @@ body[data-surface="sombre"] .radio-pastille{color:var(--univers-e5)}
 body[data-surface="sombre"] .languette-radio{background:rgba(var(--univers-e3-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
 body[data-surface="sombre"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb),.22);color:var(--blanc-casse)}
 
+.radio-rangee{width:var(--chrome-w);margin:0 auto}
 /* LE LECTEUR. Une seule regle gouverne sa droite : la COMMANDE, toujours a
    droite, a son centre sur l'AXE VERTICAL de l'antenne. Ce qui depasse a
    droite est le seul souffle qui boucle la pilule. Le retrait se lit donc de
@@ -1617,6 +1618,15 @@ body.nav-haut .ico-rond svg{width:calc(var(--cible-min) * var(--verbe-part));hei
    aucune encre ne se detache d'une image que rien ne contraint ; le disque y
    est la garantie de lisibilite. La cible ne bouge pas. */
 body.nav-haut:not([data-surface="ambiante"]) .verbe.actif .ico-rond{background:none;color:var(--univers)}
+
+/* Palier 2 — l'ilot est ancre dans la barre : il ne se replie plus, et
+   l'antenne y remplace la commande de lecture. */
+body.nav-ilot-ancre .radio-rangee{display:none}
+/* Ancre, l'ilot garde la meme largeur flexible et le meme souffle : seule
+   sa marge tombe, puisque la barre le place. */
+body.nav-ilot-ancre .languette-radio{margin:0}
+body.nav-ilot-ancre .lecteur-btn{display:none}
+body.nav-ilot-ancre .languette-radio .radio-pastille{flex-shrink:0}
 .chrome-gauche{display:flex;align-items:center;gap:var(--esp-3)}
 /* Monte dans la barre, le super-nav perd le fond blanc qui detachait ses
    verbes : sur l'ecran ambiant ils prennent donc l'encre du reste du chrome.
@@ -1793,11 +1803,7 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
    l'ilot de radio se replie sur son antenne, et la feuille s'ancre a la barre.
    CE QUI CASSE SI ON LE MODIFIE : la pilule est le geste focal DEPLACE, jamais
    un second bouton — deux portes vers une meme feuille divergent. */
-body.nav-quete .chrome-inner{grid-template-columns:auto 1fr}
-/* Le logotype colle a son verbe : un demi-ecart d'icone le separe du
-   super-nav, la moitie de ce qui separe deux verbes entre eux. */
-body.nav-quete .chrome-gauche>.centre{margin-inline-start:calc(var(--esp-1) / 2 - var(--esp-3))}
-body.nav-haut .fab.quete{position:static;left:auto;bottom:auto;transform:none;z-index:auto;width:min(360px,30vw);min-width:0;min-height:48px;padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);background:var(--blanc);color:var(--encre-discrete);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);white-space:nowrap;overflow:hidden;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);cursor:pointer}
+body.nav-haut .fab.quete{position:static;left:auto;bottom:auto;transform:none;z-index:auto;width:min(288px,24vw);min-width:0;min-height:48px;padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);background:var(--blanc);color:var(--encre-discrete);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);white-space:nowrap;overflow:hidden;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);cursor:pointer}
 body.nav-haut .fab.quete:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
 /* Le disque a loupe, dessine aux jetons : un anneau et son manche evides dans
    un disque d'univers. Il est decoratif — le nom du bouton reste son texte. */

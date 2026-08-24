@@ -187,10 +187,12 @@
      plus bavard. Le nav demande donc au navigateur la place qui reste, et
      promeut en deux paliers, dans cet ordre :
 
-       un seul palier — le super-nav monte dans la barre, A GAUCHE, aux cotes
-       du logo, s'il y tient avec l'ecart minimal de part et d'autre ; le menu
-       reste a droite. La radio ne vit pas dans la barre : son ilot entier —
-       titre, etat, lecture, antenne — tient au bas du tiroir du menu.
+       palier 1 — le super-nav monte dans la barre, A GAUCHE, aux cotes du
+                  logo, s'il y tient avec l'ecart minimal de part et d'autre ;
+                  la radio et le menu restent a droite ;
+       palier 2 — l'ilot de radio se deplie a demeure s'il tient ENCORE apres,
+                  avec le meme ecart ; l'antenne descend alors dedans et la
+                  commande de lecture s'efface, puisqu'un seul bouton suffit.
 
      LA HAUTEUR NE COMMANDE PLUS LA PROMOTION, seulement la TYPOGRAPHIE : un
      ecran large et court garde la taille du telephone, mais promeut comme les
@@ -251,6 +253,10 @@
       if (centreG) barre.insertBefore(centreG, gauche);
       gauche.parentNode.removeChild(gauche); gauche = null;
     }
+    if (ilot) { ilot.style.maxWidth = ''; ilot.classList.remove('replie'); }
+    if (ilot && rangee && ilot.parentNode !== rangee) rangee.appendChild(ilot);
+    if (antenne && antenne.parentNode !== droite) droite.insertBefore(antenne, droite.firstChild);
+    if (lecture && ilot && lecture.parentNode !== ilot) ilot.appendChild(lecture);
     /* La quete se defait avant de se refaire : le geste focal retourne a sa
        place dans la page, devant son voile, et la feuille reprend le bas. */
     var fabQ = document.querySelector('.fab[aria-controls]');
@@ -294,35 +300,104 @@
     gauche.appendChild(logo);
     gauche.appendChild(superNav);
 
-    /* L'ecran de sejour monte son geste focal : la pilule de quete prend la
-       droite, devant le hamburger, et le logotype rejoint le groupe de gauche
-       — colle a son verbe, a un demi-ecart d'icone. Le bouton reste LE MEME
-       element : ses ecouteurs, son etat et son nom voyagent avec lui — un
-       second bouton divergerait. La feuille s'ancre a la barre. */
+    /* L'ecran de sejour au chrome monte : la pilule de quete prend la droite
+       devant le hamburger, a la place de la radio, dont l'ilot entier descend
+       au bas du tiroir du menu, l'antenne en bout de rangee. Le logotype
+       garde le centre. Le bouton de quete reste LE MEME element : ses
+       ecouteurs, son etat et son nom voyagent avec lui — un second bouton
+       divergerait. La feuille s'ancre a la barre. PARTOUT AILLEURS, la radio
+       garde la barre : sa rangee, son ancrage et son geste long sont ceux
+       d'origine. */
     if (corps.classList.contains('p-roam') && fabQ && feuilleQ) {
       corps.classList.add('nav-quete');
       fabQ.classList.add('quete');
       droite.insertBefore(fabQ, droite.querySelector('.chrome-burger'));
       feuilleQ.setAttribute('data-pose', 'barre');
       if (voileQ) voileQ.setAttribute('data-pose', 'barre');
-      if (centreQ) gauche.appendChild(centreQ);
+      if (ilot) {
+        var bacSections = document.getElementById('sections');
+        if (bacSections) {
+          bacSections.insertBefore(ilot, bacSections.querySelector('.pied-politique'));
+          ilot.classList.remove('cache');
+          if (antenne) ilot.appendChild(antenne);
+        }
+      }
+    }
+
+    /* Palier 2 — sans objet sur une barre a quete : l'ilot vit au tiroir. */
+    if (ilot && !corps.classList.contains('nav-quete')) {
+      /* Deplie dans sa rangee, l'ilot s'etire sur toute la largeur : sa boite
+         ne dit rien de ce qu'il lui faut. On lit donc sa largeur de contenu,
+         le temps d'une mesure.
+
+         DEUX largeurs se mesurent, pas une. La premiere est celle du texte
+         entier. La seconde est le PLANCHER : le meme ilot dont l'etat est
+         reduit a ses points de suspension — la forme la plus etroite ou il
+         reste lui-meme, puisqu'il garde son nom, sa commande, et le signe
+         qu'un etat est la mais coupe. Ce plancher n'est pas un nombre choisi,
+         c'est une mesure.
+         L'ancrage se decide sur le PLANCHER. L'ilot prend ensuite toute la
+         place que sa borne lui laisse, jusqu'a sa largeur entiere, et son
+         etat se coupe entre les deux. Decider sur la largeur entiere le
+         privait d'ancrage partout ou il aurait tenu coupe — un ecran couche,
+         par exemple. */
+      var etaitCache = ilot.classList.contains('cache');
+      ilot.classList.remove('cache');
+      var gardeMax = ilot.style.maxWidth; ilot.style.maxWidth = 'none';
+      ilot.style.width = 'max-content';
+      var largeurIlot = ilot.scrollWidth;
+      var etat = ilot.querySelector('.lecteur-etat');
+      var plancher = largeurIlot;
+      if (etat) {
+        var dit = etat.textContent;
+        etat.textContent = '\u2026';
+        plancher = ilot.scrollWidth;
+        etat.textContent = dit;
+      }
+      ilot.style.maxWidth = gardeMax; ilot.style.width = '';
+      if (etaitCache) ilot.classList.add('cache');
+      if (librePresDe() >= plancher + ECART_NAV) {
+        corps.classList.add('nav-ilot-ancre');
+        droite.insertBefore(ilot, droite.firstChild);
+        ilot.classList.remove('cache');
+        /* La commande est toujours a droite : ancree, l'antenne prend sa place,
+           donc sa place — la derniere. */
+        if (antenne) ilot.appendChild(antenne);
+
+        /* Ancre, l'ilot grandit vers la gauche, vers le logotype. Il ne doit
+           jamais l'atteindre : il s'arrete un ecart avant, et son etat se
+           coupe alors aux points de suspension. Sans cette borne, un etat
+           bavard ou une langue plus longue le pousserait sous le logotype.
+           La borne se lit apres l'ancrage : deplie dans sa rangee, l'ilot n'a
+           ni la place ni le voisin qu'il a une fois ancre. */
+        var centre = barre.querySelector('.centre');
+        if (centre) {
+          var libre = ilot.getBoundingClientRect().right
+            - (centre.getBoundingClientRect().right + ECART_NAV);
+          ilot.style.maxWidth = Math.max(0, Math.round(libre)) + 'px';
+        }
+      }
     }
 
     if (radio) radio.rendre();
   }
 
   /* ------------------------------------------------------------------
-     ROOTS RADIO. Un seul geste : l'appui bref allume ou eteint l'antenne.
-     L'ilot — titre, etat, commande de lecture, antenne — vit a demeure au bas
-     du tiroir du menu, colle a son bord pendant le defilement ; il n'y a donc
-     rien a ouvrir ni a ranger. L'etat d'antenne est retenu par le navigateur,
-     comme la langue.
+     ROOTS RADIO. Deux choix, un geste chacun : l'appui bref allume ou eteint
+     l'antenne, l'appui long ouvre ou referme le lecteur. Seul un nouvel appui
+     long replie le lecteur, et il reste deplie d'un ecran a l'autre : son etat
+     est retenu par le navigateur, comme la langue.
+
+     L'appui long n'appartient qu'au pointeur. La fleche bas, sur le bouton au
+     foyer, ouvre le meme lecteur, et l'echappement le referme : retirer ces
+     deux touches laisserait le lecteur inatteignable au clavier.
 
      L'adresse du flux est declaree ici. Vide, les commandes ne pilotent que
      l'etat affiche ; renseignee, elle doit aussi figurer dans le media-src de
      la politique de chaque page qui pose la radio.
      ------------------------------------------------------------------ */
   var FLUX_RADIO = '';
+  var APPUI_LONG = 500;
   var CLE_RADIO = 'roots.radio';
   var CLE_ANTENNE = 'roots.radio.antenne';
 
@@ -365,28 +440,28 @@
     bouton.setAttribute('aria-controls', 'languetteRadio');
     bouton.setAttribute('data-al-chrome', 'radio');
     bouton.innerHTML = '<svg class="i" aria-hidden="true"><use href="#i-radio"/></svg>';
+    droite.insertBefore(bouton, droite.firstChild);
 
-    /* Le lecteur vit AU BAS DU TIROIR, juste avant les liens de langue et de
-       politique : la radio n'occupe plus la barre. L'ilot porte tout — le
-       titre, l'etat, la lecture et l'antenne — et il est toujours visible la
-       ou il vit. */
-    var gaine = document.createElement('div');
-    gaine.innerHTML =
-      '<div class="languette-radio" id="languetteRadio" role="group" aria-label="Roots Radio">' +
+    /* Le lecteur est une rangee du chrome, pas un ilot pose dessus : la barre
+       grandit quand il s'ouvre. Sa rangee reprend la boite de `.chrome-inner`,
+       et l'ilot s'arrete a droite sur le bord de l'antenne — la largeur du
+       hamburger et son ecart sont donc retires a droite. */
+    var rangee = document.createElement('div');
+    rangee.className = 'radio-rangee';
+    rangee.innerHTML =
+      '<div class="languette-radio cache" id="languetteRadio" role="group" aria-label="Roots Radio">' +
       '<span class="lecteur-texte"><b class="lecteur-titre">Roots Radio</b>' +
       '<span class="point-pied" aria-hidden="true">\u00b7</span>' +
       '<small class="lecteur-etat"></small></span>' +
       '<button type="button" class="lecteur-btn" id="btnRadioLecture" data-al-chrome="radioLire">' +
       '<svg class="i" aria-hidden="true"><use href="#i-play"/></svg></button></div>';
-    var languette = gaine.firstChild;
-    languette.appendChild(bouton);
-    var tiroir = document.getElementById('drawer');
-    (tiroir || haut).appendChild(languette);
+    haut.appendChild(rangee);
 
     var pastille = bouton;
-    var lecture = languette.querySelector('#btnRadioLecture');
-    var etat = languette.querySelector('.lecteur-etat');
-    var son = null;
+    var languette = rangee.querySelector('#languetteRadio');
+    var lecture = rangee.querySelector('#btnRadioLecture');
+    var etat = rangee.querySelector('.lecteur-etat');
+    var son = null, minuteur = null, longFait = false;
 
     function alAntenne() { return pastille.getAttribute('aria-pressed') === 'true'; }
 
@@ -502,11 +577,50 @@
       languette.addEventListener(nom, function () { if (passager) armerPose(); });
     });
 
-    /* L'antenne ne connait qu'un geste : l'appui bref allume ou eteint.
-       L'ilot vit a demeure dans le tiroir — il n'y a plus rien a ouvrir ni a
-       ranger, donc plus de geste long, plus de touches qui le remplacent. */
-    pastille.addEventListener('click', function () { basculerAntenne(true); });
+    pastille.addEventListener('pointerdown', function () {
+      longFait = false;
+      clearTimeout(minuteur);
+      minuteur = setTimeout(function () {
+        longFait = true;
+        clearTimeout(pose);
+        /* Ancre, le geste long RANGE au lieu d'effacer : la memoire est la
+           meme, seul son rendu change d'un ecran a l'autre. */
+        if (ancre()) {
+          passager = false;
+          clearTimeout(pose);
+          var range = !languette.classList.contains('replie');
+          languette.classList.toggle('replie', range);
+          retenirLecteur(!range);
+          pastille.setAttribute('aria-expanded', range ? 'false' : 'true');
+          return;
+        }
+        montrerLecteur(languette.classList.contains('cache'));
+      }, APPUI_LONG);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (nom) {
+      pastille.addEventListener(nom, function () { clearTimeout(minuteur); });
+    });
+    /* Un appui maintenu ouvre le menu du systeme sur mobile : il avalerait le
+       geste long. */
+    pastille.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    pastille.addEventListener('click', function () {
+      if (longFait) { longFait = false; return; }
+      basculerAntenne(true);
+    });
+    pastille.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowDown') return;
+      e.preventDefault();
+      clearTimeout(pose);
+      montrerLecteur(true);
+      lecture.focus();
+    });
     lecture.addEventListener('click', function () { basculerAntenne(false); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || languette.classList.contains('cache')) return;
+      clearTimeout(pose);
+      montrerLecteur(false);
+      pastille.focus();
+    });
 
     montrerLecteur(lecteurRetenu(), false);
     pastille.setAttribute('aria-pressed', antenneRetenue() ? 'true' : 'false');
@@ -794,6 +908,7 @@
          ne se redessine, et se repose avant le pied — un element detruit perd
          ses ecouteurs, un element deplace les garde. */
       var ilotRadio = document.getElementById('languetteRadio');
+      if (ilotRadio && !ilotRadio.closest('.menu-pop')) ilotRadio = null;
       cont.innerHTML = '';
       liste.forEach(function (s) {
         var a = document.createElement(s.href ? 'a' : 'span');
