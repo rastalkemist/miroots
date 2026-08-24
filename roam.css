@@ -340,8 +340,8 @@ body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h)
      La borne du téléphone tombe ici — elle vise l'appareil couché, où la scène
      mangerait l'écran. Il en reste une, plus haute : la scène ne dépasse jamais
      ce que la fenêtre montre, en-tête et barre déduits. */
-  :where(body.p-lieu) .fiche{display:grid;grid-template-columns:2fr 1fr;column-gap:var(--esp-2);align-items:start}
-  :where(body.p-lieu) .fiche-scene{grid-column:1;grid-row:1;margin:0 0 var(--air-i6);width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h));max-height:calc(100dvh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h))}
+  :where(body.p-lieu) .fiche{display:grid;grid-template-columns:2fr 1fr;column-gap:var(--esp-6);row-gap:var(--air-i6);align-items:start}
+  :where(body.p-lieu) .fiche-scene{grid-column:1;grid-row:1;margin:0;width:100%;height:auto;aspect-ratio:4/3;max-height:calc(100vh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h));max-height:calc(100dvh - var(--entete-h-rendue, var(--entete-h)) - var(--barre-h))}
 
   /* La file se dresse et prend TOUTE la hauteur de la vue : les vignettes se
      partagent la colonne à parts égales. Sa hauteur n'est pas un nombre — elle
@@ -349,22 +349,52 @@ body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h)
      donc la file vaut une colonne sur une hauteur d'une colonne et demie.
      Les vignettes gardent le plancher de cible de la maison ; au-delà de ce que
      la colonne peut tenir, elle défile — aucune vue n'est retirée de la file. */
-  :where(body.p-lieu) .fiche-vignettes{grid-column:2;grid-row:1;flex-direction:column;aspect-ratio:2/3;margin:0 0 var(--air-i6);overflow-x:hidden;overflow-y:auto}
+  :where(body.p-lieu) .fiche-vignettes{grid-column:2;grid-row:1;flex-direction:column;aspect-ratio:2/3;gap:var(--esp-3);margin:0;overflow-x:hidden;overflow-y:auto}
   :where(body.p-lieu) .fiche-vignettes > li{display:flex;flex:1 1 0;min-height:var(--cible-min);min-width:0}
   :where(body.p-lieu) .vignette-vue{width:100%;height:100%;min-height:0}
 
-  :where(body.p-lieu) .fiche-nom{grid-column:1;grid-row:2}
-  :where(body.p-lieu) .fiche-ou{grid-column:1;grid-row:3}
-  :where(body.p-lieu) .fiche-lire{grid-column:1;grid-row:4}
-  :where(body.p-lieu) :is(.fiche-nom,.fiche-ou,.fiche-lire){padding-inline-end:var(--esp-8)}
+  /* Le nom et son quartier sont UNE chose : ils tiennent une seule rangée, sinon
+     la gouttière de grille passerait entre eux et les séparerait. */
+  :where(body.p-lieu) .fiche-tete{grid-column:1;grid-row:2}
+  :where(body.p-lieu) .fiche-lire{grid-column:1;grid-row:3}
+  :where(body.p-lieu) :is(.fiche-tete,.fiche-lire){padding-inline-end:var(--esp-6)}
 
   /* Collé sous l'en-tête, comme la barre de catégories de la maison : la même
      mécanique, la même cale. */
-  :where(body.p-lieu) .fiche-choisir{grid-column:2;grid-row:2 / 5;position:sticky;top:calc(var(--entete-h-rendue, var(--entete-h)) + var(--air-i3));margin:0}
+  :where(body.p-lieu) .fiche-choisir{grid-column:2;grid-row:2 / 4;position:sticky;top:calc(var(--entete-h-rendue, var(--entete-h)) + var(--air-i3));margin:0}
   :where(body.p-lieu) .fiche-choisir .fiche-chiffres{flex-direction:column;align-items:flex-start;gap:var(--esp-2);margin:0 0 var(--air-i3)}
   :where(body.p-lieu) .fiche-gestes{margin:0}
 
   /* Un lieu qui n'a qu'une vue : rien à choisir, donc pas de colonne de file —
      la vue prend toute la piste, et ce qui décide garde sa place à droite. */
   :where(body.p-lieu) .fiche.une-vue .fiche-scene{grid-column:1 / -1}
+}
+
+/* LA GOUTTIÈRE DE GRILLE MONTE D'UN CRAN SUR GRAND ÉCRAN, comme la gouttière
+   de page. La piste s'élargit, la respiration entre colonnes suit — sinon deux
+   colonnes larges se touchent presque. Le palier est celui de la piste. */
+@media(min-width:1280px){
+  :where(body.p-lieu) .fiche{column-gap:var(--esp-8)}
+  :where(body.p-lieu) :is(.fiche-tete,.fiche-lire){padding-inline-end:var(--esp-8)}
+}
+
+/* ============================================================================
+   CALE — L'APLAT DE SURVOL SUIT L'UNIVERS
+
+   La grammaire du survol veut que l'aplat monte d'un cran dans la FAMILLE de
+   l'écran. Le tronc pose ce cran en dur sur une seule famille ; sur un écran
+   rouge, un geste plein survolé rend donc un aplat vert.
+
+   Le cran qui convient porte déjà un nom, déclaré par univers : `--univers-e3`.
+   Sur l'univers de départ il vaut exactement ce que le tronc écrit — rien n'y
+   change ; ailleurs il rend la famille de l'écran.
+
+   La règle vit derrière « l'appareil a un vrai curseur », comme celle qu'elle
+   reprend : sans cette porte, le tactile hérite du survol et le garde collé
+   après l'appui. Elle pèse deux crans, la reprise en pèse un.
+
+   Elle tombe le jour où le tronc écrit le jeton par univers.
+   ========================================================================= */
+@media (hover:hover){
+  :where(body.p-roam) :is(.bouton-confirmer,.saut-contenu):hover{background:var(--univers-e3)}
 }
