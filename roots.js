@@ -315,7 +315,7 @@
         fabQ.setAttribute('data-fabrique', '');
         fabQ.setAttribute('href', 'roam.html#quete');
         fabQ.textContent = ((document.documentElement.lang || 'fr').slice(0, 2) === 'en')
-          ? 'Let’s roam!' : 'Je découvre';
+          ? 'Discover Benin' : 'Je découvre le Bénin';
       }
       fabQ.classList.add('quete');
       barre.insertBefore(fabQ, droite);
@@ -1078,9 +1078,30 @@
           (s.href ? '<svg class="i fleche"><use href="#i-chevron"/></svg>' : '');
         a.querySelector('.t').textContent = s.t;
         if (s.courant) { a.classList.add('courant'); a.setAttribute('aria-current', 'page'); }
-        /* Une ancre reste sur la page : le tiroir se referme de lui-meme, la
-           navigation vers une autre page l'emporte avec elle. */
-        if (s.href && s.href.charAt(0) === '#') a.addEventListener('click', fermerMenu);
+        /* Une ancre reste sur la page : le tiroir se referme, puis le geste
+           va lui-meme a sa section. Laisser l'ancre naviguer d'elle-meme la
+           met en course avec le retour que la fermeture du tiroir consomme —
+           quand ce retour gagne, la page ne bouge pas. */
+        if (s.href && s.href.charAt(0) === '#') a.addEventListener('click', function (e) {
+          e.preventDefault();
+          var but = document.getElementById(s.href.slice(1));
+          /* Le retour d'historique de la fermeture RESTAURE le defilement de
+             l'entree precedente : aller au but avant qu'il n'aboutisse serait
+             aussitot defait. On y va donc apres lui — et a defaut d'entree a
+             consommer, apres une courte pose. */
+          var fait = false;
+          var aller = function () {
+            if (fait || !but) return;
+            fait = true;
+            but.scrollIntoView({ block: 'start' });
+          };
+          window.addEventListener('popstate', function une() {
+            window.removeEventListener('popstate', une);
+            setTimeout(aller, 0);
+          });
+          setTimeout(aller, 250);
+          fermerMenu();
+        });
         cont.appendChild(a);
       });
       if (rangRadio) cont.appendChild(rangRadio);
