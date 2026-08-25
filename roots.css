@@ -475,15 +475,14 @@ body.nav-haut .chrome-gauche{gap:16px}
   body.nav-haut .verbe{margin-inline:-1.5px}
   body.nav-haut .chrome-gauche{gap:14px}
 }
-/* LA BARRE BASSE DU TELEPHONE DEBOUT : TROIS COLONNES D'UNIVERS. Chaque
-   verbe porte l'encre de SON univers, icone et legende ; le verbe courant ne
-   porte plus de pastille — c'est sa COLONNE entiere qui prend l'aplat de
-   l'univers, un echelon sous la couleur de la pastille du logotype, et son
-   encre passe au blanc. Toutes les paires gardent la meme taille et le meme
-   alignement : l'air au-dessus des dessins et sous les legendes est celui
-   juge bon (16px d'encre), l'ecart icone-legende rend ~12px d'encre. L'air
-   vit DANS les colonnes, pas sur la barre : l'aplat courant touche les deux
-   bords, zone d'encoche comprise. Valeurs mesurees au rendu. */
+/* LA BARRE BASSE DU TELEPHONE DEBOUT. Chaque verbe porte l'encre de SON
+   univers, icone et legende. Le verbe courant porte une pastille RONDE au
+   gabarit du dessin de ses voisins : le dessin dedans s'etire au plus grand
+   qui garde un souffle minime, en blanc sur l'aplat d'univers. Toutes les
+   paires gardent la meme taille et le meme alignement : l'air au-dessus des
+   dessins et sous les legendes est celui juge bon (16px d'encre), l'ecart
+   icone-legende rend ~12px d'encre. L'air vit DANS les verbes, pas sur la
+   barre. Valeurs mesurees au rendu. */
 @media(max-width:639px){
   body:not(.nav-haut) .chrome-bas{min-height:0;padding:0}
   body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:2px;padding-bottom:calc(9.5px + var(--safe-bas))}
@@ -491,8 +490,8 @@ body.nav-haut .chrome-gauche{gap:16px}
   body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2)}
   body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2)}
   body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir)}
-  body:not(.nav-haut) .verbe.actif{background:var(--univers-e1);color:var(--blanc)}
-  body:not(.nav-haut) .verbe.actif .ico-rond{background:none;color:inherit}
+  body:not(.nav-haut) .verbe.actif .ico-rond{background:radial-gradient(circle at 50% 50%,var(--univers) 16.3px,transparent 17.1px);color:var(--blanc)}
+  body:not(.nav-haut) .verbe.actif .ico-rond svg{width:38px;height:38px}
 }
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
    plancher nul, la pilule refuse de retrecir et pousse le menu hors de la
