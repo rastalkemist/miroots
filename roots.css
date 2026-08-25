@@ -488,19 +488,21 @@ body.nav-haut .chrome-gauche{gap:16px}
   body:not(.nav-haut) .chrome-bas{min-height:0;padding:0}
   body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:2px;padding-bottom:calc(9.5px + var(--safe-bas))}
   body:not(.nav-haut) .verbe .verbe-dit{margin-top:-6px}
-  /* La pastille est LE CERCLE CIRCONSCRIT au dessin visible au repos :
-     meme centre, meme rayon, mesures sur l'encre de chaque dessin. Le
-     dessin selectionne perd 2,5 de rayon et garde ce centre. Un seul centre
-     pour les deux : aucun decalage possible. */
-  body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-r:17.9px;--p-cx:1.6px;--p-cy:-.9px;--p-svg:37.9px;--p-tx:.23px;--p-ty:-.12px}
-  body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-r:19.4px;--p-cx:-.1px;--p-cy:-.4px;--p-svg:38.3px;--p-tx:-.02px;--p-ty:-.05px}
-  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:19.3px;--p-cx:-.1px;--p-cy:-.4px;--p-svg:38.3px;--p-tx:-.02px;--p-ty:-.05px}
+  /* Trois cercles, UN SEUL CENTRE : le dessin au repos s'inscrit dans un
+     cercle mesure sur son encre ; selectionne, son diametre recule de 4 ;
+     la pastille fait 6 de plus que le repos, donc 10 de plus que le dessin
+     selectionne. Le centre est le centre d'encre RENDU du dessin — celui
+     que l'oeil tient pour le centre, la ou le centre geometrique d'un
+     cercle circonscrit s'ecarte sur un dessin asymetrique. */
+  body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-r:20.9px;--p-cx:-.4px;--p-cy:.4px;--p-svg:39.1px}
+  body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-r:22.4px;--p-cx:-.3px;--p-cy:.6px;--p-svg:39.5px}
+  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:22.3px;--p-cx:-.3px;--p-cy:.4px;--p-svg:39.4px}
   body:not(.nav-haut) .verbe.actif .ico-rond{color:var(--blanc);background:none;position:relative}
   /* Le disque suit le centre d'encre du dessin, qui peut approcher le bord de
      la boite : il se peint sur un calque qui depasse la boite, sans quoi le
      fond serait rogne. */
   body:not(.nav-haut) .verbe.actif .ico-rond::before{content:'';position:absolute;inset:-8px;z-index:-1;background:radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),var(--univers) calc(var(--p-r) - .4px),transparent calc(var(--p-r) + .4px))}
-  body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p-svg);transform:translate(var(--p-tx),var(--p-ty))}
+  body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p-svg)}
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
      d'univers sous l'ombre douce que la surface donne deja a son chrome,
