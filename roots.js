@@ -766,12 +766,12 @@
   var NAV_ROAM = {
     fr: [
       { ico: 'i-sac',    t: 'Séjourner',       s: 'Les lieux et les Roots Roamer', href: '#sejourner' },
-      { ico: 'i-soleil', t: 'Découvrir',       s: 'Sorties, pépites et événements', href: '#decouvrir' },
+      { ico: 'i-ticket', t: 'Découvrir',       s: 'Sorties, pépites et événements', href: '#decouvrir' },
       { ico: 'i-carte',  t: 'Infos pratiques', s: 'Numéros utiles et repères',      href: '#infos' }
     ],
     en: [
       { ico: 'i-sac',    t: 'Stay',           s: 'The places and the Roots Roamers', href: '#sejourner' },
-      { ico: 'i-soleil', t: 'Discover',       s: 'Outings, gems and events',         href: '#decouvrir' },
+      { ico: 'i-ticket', t: 'Discover',       s: 'Outings, gems and events',         href: '#decouvrir' },
       { ico: 'i-carte',  t: 'Practical info', s: 'Useful numbers and landmarks',     href: '#infos' }
     ]
   };
@@ -1403,6 +1403,28 @@
     return true;
   }
 
+  /* UNE MODALE FIGE LA PAGE SOUS ELLE. Sans verrou, un geste pose sur le
+     voile ou sur une marge fait defiler le document sous la feuille : la
+     scene derriere bouge, la feuille non — deux mondes glissent l'un sur
+     l'autre. Le verrou se compte : deux couches ouvertes ne se rendent la
+     page qu'une fois toutes deux fermees. La compensation de gouttiere
+     retient la largeur que la barre de defilement occupait : sans elle, la
+     page saute d'un cran a chaque ouverture sur les ecrans a barre. */
+  var verrousDePage = 0;
+  function figerLaPage() {
+    verrousDePage++;
+    if (verrousDePage > 1) return;
+    var gouttiere = window.innerWidth - document.documentElement.clientWidth;
+    if (gouttiere > 0) document.body.style.paddingRight = gouttiere + 'px';
+    document.body.classList.add('page-figee');
+  }
+  function rendreLaPage() {
+    verrousDePage = Math.max(0, verrousDePage - 1);
+    if (verrousDePage) return;
+    document.body.style.paddingRight = '';
+    document.body.classList.remove('page-figee');
+  }
+
   function modale(hote, opts) {
     opts = opts || {};
     var cle = opts.cle || (hote.id || 'modale');
@@ -1418,6 +1440,7 @@
       if (ouverte) return;
       ouverte = true;
       precedent = document.activeElement;
+      figerLaPage();
       if (opts.montrer) opts.montrer();
       /* pushState echoue sur un fichier ouvert depuis le disque : on degrade
          sans bruit, le reste du comportement tient. */
@@ -1429,6 +1452,7 @@
     function fermer(parHistorique) {
       if (!ouverte) return;
       ouverte = false;
+      rendreLaPage();
       if (opts.cacher) opts.cacher();
       if (pousse && !parHistorique) { try { history.back(); } catch (e) {} }
       pousse = false;
@@ -1775,6 +1799,10 @@
   };
   global.Roots.modale = modale;
   global.Roots.retourAuClavier = retourAuClavier;
+  /* Le verrou de page s'exporte pour les feuilles qu'un ecran ouvre par son
+     propre appareil : meme verrou, meme compte, jamais un second mecanisme. */
+  global.Roots.figerLaPage = figerLaPage;
+  global.Roots.rendreLaPage = rendreLaPage;
   global.Roots.blocFacturation = blocFacturation;
   global.Roots.langueRetenue = langueRetenue;
   global.Roots.retenirLangue = retenirLangue;

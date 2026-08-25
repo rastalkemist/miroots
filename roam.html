@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-vr5elit94q7hl1nIWkP0BJNH1DQvt2VDZFp3L4kkDts='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-KD2u9MIlF6hNcllHN1GJ6UmAN0GOpXjX1HFRX4LKL8k='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -1685,6 +1685,10 @@
     var fab = $('fabRecherche'), f = $('feuilleResa'), v = $('voileResa'), x = $('fermerResa');
     if (!fab || !f || !v) return;
     function ouvrir() {
+      /* La page se fige sous la feuille : un geste sur le voile ou les marges
+         ne doit pas faire defiler la scene derriere. Le verrou se compte —
+         il ne se prend et ne se rend qu'au CHANGEMENT d'etat de la feuille. */
+      if (Roots.figerLaPage && !f.classList.contains('visible')) Roots.figerLaPage();
       f.classList.add('visible'); v.classList.add('visible');
       fab.setAttribute('aria-expanded', 'true');
       var premier = f.querySelector('input,select,button:not(.fermer),[tabindex]');
@@ -1700,6 +1704,7 @@
        se replient sans rendre d'entree, `retirerCouche` rendant les leurs avec
        celle de la feuille. */
     function fermer() {
+      if (Roots.rendreLaPage && f.classList.contains('visible')) Roots.rendreLaPage();
       retirerCouche('feuille');
       replierLesPas($('explorer'));
       replierLesPas($('explorerDec'));

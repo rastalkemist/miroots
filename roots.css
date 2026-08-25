@@ -755,6 +755,9 @@ body.nav-haut .verbe.actif .verbe-dit{view-transition-name:legende-verbe}
    la barre du haut et s'ouvre depuis elle. Le couvrir rendrait sa propre
    commande inatteignable. Il garde donc son rang sous le chrome. */
 .voile.voile-doux{z-index:12}
+/* La page figee sous une modale : le document ne defile plus, la feuille
+   garde son propre defilement interieur. */
+body.page-figee{overflow:hidden}
 .feuille-bas{overscroll-behavior:contain;position:fixed;z-index:22;left:50%;bottom:0;transform:translate(-50%,112%);width:min(450px,100%);--feuille-pose:0px;max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-3) - var(--feuille-pose));overflow-y:auto;scrollbar-width:none;background:var(--blanc);color:var(--encre);border-radius:var(--rayon-carte) var(--rayon-carte) 0 0;padding:calc(var(--feuille-marge) - var(--poignee-bloc)) var(--feuille-marge) calc(var(--esp-6) + var(--safe-bas));box-shadow:0 -12px 40px rgba(var(--ombre-teinte),.35);transition:transform var(--mvt-parcours) var(--courbe-entree)}
 .feuille-bas::-webkit-scrollbar{display:none}
 .feuille-bas.visible{transform:translate(-50%,0)}
