@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-mivB/1sDxFWdvABe4wH0OMHjGptLCHkIZK2zSzteecI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Découvrir Plan</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gHmfjp9c7yqWTq7qDCEzcRYIzGpbjmSO4uYxuUSykz4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Découvrir Mi Space</title>
+<meta name="description" content="Pose ta semaine, coche ce que tu tiens, vois où tu en es. Personne ne voit cette liste — pas même l’équipe du Roots.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi Roots">
+<meta property="og:title" content="Mi Space">
+<meta property="og:description" content="Pose ta semaine, coche ce que tu tiens, vois où tu en es. Personne ne voit cette liste — pas même l’équipe du Roots.">
+<meta property="og:locale" content="fr_BJ">
+<meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#1A1A1A">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -36,10 +43,9 @@
           <span class="nu">NU</span>
         </span>
       </div>
-      <a class="chrome-titre" href="decouvrir-space.html">Plan</a>
+      <a class="chrome-titre" href="space.html">Space</a>
     </div>
     <div class="chrome-droite">
-      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al-chrome="langue">EN</button>
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
     </div>
   </div>
@@ -64,7 +70,7 @@
       <span class="apercu-compte" data-t="apercuCompte">5 sur 8</span>
     </div>
 
-    <a class="entree-acte" href="space.html" data-t="acte">Ouvrir mon Plan</a>
+    <a class="entree-acte" href="space.html" data-t="acte">Ouvrir mon plan</a>
     <p class="entree-sous" data-t="sousActe">Tu ouvres la fenêtre quand tu veux. Jamais l'inverse.</p>
   </section>
 
@@ -80,12 +86,12 @@
   </section>
 
   <section class="entree-bloc entree-nu" aria-labelledby="etNu">
-    <span class="etiquette" id="etNu" data-t="etNu">Et bientôt, NU Plan</span>
+    <span class="etiquette" id="etNu" data-t="etNu">Et bientôt, NU Space</span>
     <p data-t="ditNu">La pastille Mi | NU, là-haut : le jour où elle bascule, ton plan devient un plan qu'on porte à plusieurs. Un binôme, un club, une action collective.</p>
   </section>
 
   <section class="entree-bloc entree-fin">
-    <a class="entree-acte" href="space.html" data-t="acte">Ouvrir mon Plan</a>
+    <a class="entree-acte" href="space.html" data-t="acte">Ouvrir mon plan</a>
     <p class="entree-sous" data-t="gratuit">Gratuit pour la communauté NU.</p>
   </section>
 
@@ -119,14 +125,14 @@
       apercuJour: 'Lundi', apercu1: 'Finir la maquette du flyer',
       apercu2: 'Appeler le studio', apercu3: 'Relire le dossier',
       apercuCompte: '5 sur 8',
-      acte: 'Ouvrir mon Plan',
+      acte: 'Ouvrir mon plan',
       sousActe: 'Tu ouvres la fenêtre quand tu veux. Jamais l’inverse.',
       etJugement: 'Sans jugement',
       ditJugement: 'Ce qui n’est pas fait ne passe pas au rouge. La semaine d’après ne traîne pas les manquements de la précédente : tu reprends ce que tu veux, tu laisses le reste.',
       etAllie: 'Un allié, si tu veux',
       ditAllie: 'Montre où tu en es à quelqu’un en qui tu as confiance : ton allié voit ton avancement, pas ce que tu écris. Tu choisis qui, tu choisis quoi, et tu refermes quand tu veux.',
       appuiAllie: 'Personne ne peut demander à voir. Ça s’offre, ça ne se réclame pas.',
-      etNu: 'Et bientôt, NU Plan',
+      etNu: 'Et bientôt, NU Space',
       ditNu: 'La pastille Mi | NU, là-haut : le jour où elle bascule, ton plan devient un plan qu’on porte à plusieurs. Un binôme, un club, une action collective.',
       gratuit: 'Gratuit pour la communauté NU.',
       piedPolitique: 'Politique de confidentialité',
@@ -139,14 +145,14 @@
       apercuJour: 'Monday', apercu1: 'Finish the flyer layout',
       apercu2: 'Call the studio', apercu3: 'Read the file again',
       apercuCompte: '5 of 8',
-      acte: 'Open my Plan',
+      acte: 'Open my plan',
       sousActe: 'You open the window when you want to. Never the other way round.',
       etJugement: 'No judgement',
       ditJugement: 'What you didn’t do doesn’t turn red. Next week doesn’t drag last week’s misses along: you pick up what you want, you leave the rest.',
       etAllie: 'An ally, if you want one',
       ditAllie: 'Show where you stand to someone you trust: your ally sees your progress, not what you write. You choose who, you choose what, and you close it whenever you like.',
       appuiAllie: 'No one can ask to see. It is offered, never claimed.',
-      etNu: 'And soon, NU Plan',
+      etNu: 'And soon, NU Space',
       ditNu: 'That Mi | NU pill up there: the day it switches, your plan becomes one you carry together. A partner, a club, a collective push.',
       gratuit: 'Free for the NU community.',
       piedPolitique: 'Privacy policy',
@@ -176,7 +182,6 @@
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
     });
-    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
     dessinerPromesse();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
@@ -186,21 +191,22 @@
     getLangue: function () { return langue; },
     getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
-    /* Le verbe de l'univers mene a l'outil ; ici on est en amont de l'outil,
-       donc il remonte la page au lieu d'y conduire quelqu'un qui n'a pas encore
-       de compte. */
-    onVerbe: function (v) {
-      if (v !== 'plan') return false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return true;
-    }
+    radio: true,
+    onLangue: function () { basculerLangue(); }
   });
+  /* Pas de crochet de verbe : le balisage marque le verbe d'univers courant
+     (aria-current), donc l'appui remonte la page au lieu de mener a l'outil —
+     l'ecran est en amont du compte. Retirer cet etat rendrait l'appui
+     navigant. */
 
-  $('btnLangue').addEventListener('click', function () {
+  /* La bascule de langue vit au tiroir : le tronc fabrique le lien quand
+     l'ecran ne porte pas de bouton de chrome, et redessine son libelle avec
+     les sections. */
+  function basculerLangue() {
     langue = (langue === 'fr') ? 'en' : 'fr';
-    Roots.retenirLangue(langue);
+    if (Roots.retenirLangue) Roots.retenirLangue(langue);
     appliquerLangue();
-  });
+  }
 
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();

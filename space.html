@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZDQtCi2L4eptNFxi4+6+/ow3HEMHXbv4+dIEEbY8QlA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Plan</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-oWlmgkv00KIBLlEMYTYddJs7KGwDelf759emloxta0A='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Plan">
+<meta property="og:title" content="Mi Space">
 <meta property="og:description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
@@ -43,7 +43,7 @@
           <span class="nu">NU</span>
         </span>
       </div>
-      <a class="chrome-titre" href="plan.html">Plan</a>
+      <a class="chrome-titre" href="space.html">Space</a>
     </div>
     <div class="chrome-droite">
       <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
@@ -368,7 +368,12 @@
      qu'elle est libre plutot que d'annoncer un montant nul. */
   function dessinerRevenus() {
     var r = PlanDonnees.revenus();
-    if (!r.revenus) { $('montant').textContent = t().sansRevenu; return; }
+    if (!r.revenus) {
+      $('montant').classList.add('sans');
+      $('montant').textContent = t().sansRevenu;
+      return;
+    }
+    $('montant').classList.remove('sans');
     var s = String(r.revenus).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
     $('montant').textContent = s + '\u00A0' + r.devise;
   }
