@@ -238,6 +238,9 @@
        piece promue — l'habiller, la completer — se cale sur cette annonce,
        jamais sur une observation du document. */
     document.dispatchEvent(new Event('chrome:barre'));
+    /* L'habillage d'une piece par l'ecran (a l'annonce ci-dessus) peut
+       changer la hauteur rendue : elle se re-publie apres lui. */
+    publierHauteur(barre, haut);
   }
 
   function promouvoirNav(radio, barre, droite, haut, superNav) {
@@ -291,6 +294,40 @@
     if (centreQ && centreQ.parentNode !== barre) barre.insertBefore(centreQ, droite);
 
 
+    /* L'ECRAN DE SEJOUR PORTE SA QUETE DANS LA BARRE, A TOUTE TAILLE. La
+       pilule prend le centre ; le groupe Mi + verbe passe a droite, devant le
+       menu ; l'ilot de la radio descend au bas du tiroir, l'antenne en bout
+       de rangee. Le geste focal ne vit plus jamais au bas de ces ecrans. Le
+       bouton reste LE MEME element : ses ecouteurs voyagent avec lui. Un
+       ecran de l'univers sans geste de quete propre recoit une pilule qui
+       MENE a la quete : un lien vers l'ecran qui la porte, ouverte a
+       l'arrivee, au libelle de la langue declaree du document. */
+    if (corps.classList.contains('p-roam')) {
+      corps.classList.add('nav-quete');
+      if (!fabQ) {
+        fabQ = document.createElement('a');
+        fabQ.className = 'fab';
+        fabQ.setAttribute('data-fabrique', '');
+        fabQ.setAttribute('href', 'roam.html#quete');
+        fabQ.textContent = ((document.documentElement.lang || 'fr').slice(0, 2) === 'en')
+          ? 'Let’s roam!' : 'Je découvre';
+      }
+      fabQ.classList.add('quete');
+      var centreQuete = barre.querySelector('.centre');
+      if (centreQuete) droite.insertBefore(centreQuete, droite.querySelector('.chrome-burger'));
+      barre.insertBefore(fabQ, droite);
+      if (feuilleQ) feuilleQ.setAttribute('data-pose', 'barre');
+      if (voileQ) voileQ.setAttribute('data-pose', 'barre');
+      if (ilot) {
+        var bacSections = document.getElementById('sections');
+        if (bacSections) {
+          bacSections.insertBefore(ilot, bacSections.querySelector('.pied-politique'));
+          ilot.classList.remove('cache');
+          if (antenne) ilot.appendChild(antenne);
+        }
+      }
+    }
+
     /* La barre est une grille dont deux colonnes s'etirent : la largeur RENDUE
        de ses enfants remplit toujours le contenant, et ne dit donc rien de la
        place libre. C'est la largeur NATURELLE de chaque contenu qu'il faut
@@ -324,32 +361,6 @@
        divergerait. La feuille s'ancre a la barre. PARTOUT AILLEURS, la radio
        garde la barre : sa rangee, son ancrage et son geste long sont ceux
        d'origine. */
-    if (corps.classList.contains('p-roam')) {
-      corps.classList.add('nav-quete');
-      /* Un ecran de l'univers sans geste de quete propre recoit une pilule
-         qui MENE a la quete : un lien vers l'ecran qui la porte, ouverte a
-         l'arrivee. Son libelle suit la langue declaree du document. */
-      if (!fabQ) {
-        fabQ = document.createElement('a');
-        fabQ.className = 'fab';
-        fabQ.setAttribute('data-fabrique', '');
-        fabQ.setAttribute('href', 'roam.html#quete');
-        fabQ.textContent = ((document.documentElement.lang || 'fr').slice(0, 2) === 'en')
-          ? 'Let’s roam!' : 'Je découvre';
-      }
-      fabQ.classList.add('quete');
-      droite.insertBefore(fabQ, droite.querySelector('.chrome-burger'));
-      if (feuilleQ) feuilleQ.setAttribute('data-pose', 'barre');
-      if (voileQ) voileQ.setAttribute('data-pose', 'barre');
-      if (ilot) {
-        var bacSections = document.getElementById('sections');
-        if (bacSections) {
-          bacSections.insertBefore(ilot, bacSections.querySelector('.pied-politique'));
-          ilot.classList.remove('cache');
-          if (antenne) ilot.appendChild(antenne);
-        }
-      }
-    }
 
     /* Palier 2 — sans objet sur une barre a quete : l'ilot vit au tiroir. */
     if (ilot && !corps.classList.contains('nav-quete')) {
@@ -1684,6 +1695,14 @@
   global.Roots.poserLibelles = poserLibelles;
   global.Roots.copier = copier;
   global.Roots.cartel = cartel;
+  /* La hauteur rendue de la barre, re-publiable par l'ecran : habiller une
+     piece de la barre hors du cycle d'arbitrage change ce que la feuille de
+     style doit lire. */
+  global.Roots.mesurerChrome = function () {
+    var barre = document.querySelector('.chrome-inner');
+    var haut = document.querySelector('.chrome-haut');
+    if (barre && haut) publierHauteur(barre, haut);
+  };
   global.Roots.modale = modale;
   global.Roots.retourAuClavier = retourAuClavier;
   global.Roots.blocFacturation = blocFacturation;

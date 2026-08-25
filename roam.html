@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Upby4m3Vbah4Ti4cmxP3NlPcahIxnP1YPyejMmYHYmM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-E9Tf0GN7zB5h2gRCiNdxKb2uaud/EJIMNIXJ0YjscjI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -1786,7 +1786,7 @@
        qui l'a taille. */
     function poserQuete() {
       var monte = document.body.classList.contains('nav-quete')
-        && fab.closest('.chrome-droite');
+        && fab.closest('.chrome-inner');
       if (!monte) {
         if (groupe && groupe.parentNode) { fermerSaisie(); groupe.parentNode.removeChild(groupe); }
         return;
@@ -1800,6 +1800,7 @@
         groupe.appendChild(fab);
         groupe.appendChild(saisie);
         groupe.appendChild(loupe);
+        if (Roots.mesurerChrome) Roots.mesurerChrome();
       }
     }
     document.addEventListener('chrome:barre', poserQuete);

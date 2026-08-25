@@ -488,33 +488,48 @@ body.nav-haut .chrome-gauche{gap:16px}
   body:not(.nav-haut) .chrome-bas{min-height:0;padding:0}
   body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:2px;padding-bottom:calc(9.5px + var(--safe-bas))}
   body:not(.nav-haut) .verbe .verbe-dit{margin-top:-6px}
-  /* Trois cercles, UN SEUL CENTRE : le dessin au repos s'inscrit dans un
-     cercle mesure sur son encre ; selectionne, son diametre recule de 4 ;
-     la pastille fait 6 de plus que le repos, donc 10 de plus que le dessin
-     selectionne. Le centre est le centre d'encre RENDU du dessin — celui
-     que l'oeil tient pour le centre, la ou le centre geometrique d'un
-     cercle circonscrit s'ecarte sur un dessin asymetrique. */
-  body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-r:20.9px;--p-cx:-.4px;--p-cy:.4px;--p-svg:39.1px}
-  body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-r:22.4px;--p-cx:-.3px;--p-cy:.6px;--p-svg:39.5px}
-  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:22.3px;--p-cx:-.3px;--p-cy:.7px;--p-svg:39.4px}
-  body:not(.nav-haut) .verbe.actif .ico-rond{color:var(--blanc);background:none;position:relative}
+}
+/* LES ENCRES DE LA BARRE BASSE VALENT POUR TOUTES SES FORMES — pleine
+   largeur comme pilule flottante : un seul systeme de cercles, jamais deux
+   rendus pour la meme piece. Trois cercles, UN SEUL CENTRE : le dessin au
+   repos s'inscrit dans un cercle mesure sur son encre ; selectionne, son
+   diametre recule de 4 ; la pastille fait 6 de plus que le repos, donc 10
+   de plus que le dessin selectionne. Le centre est le centre d'encre RENDU
+   du dessin — celui que l'oeil tient pour le centre. Valeurs mesurees. */
+body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-r:20.9px;--p-cx:-.4px;--p-cy:.4px;--p-svg:39.1px}
+body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-r:22.4px;--p-cx:-.3px;--p-cy:.6px;--p-svg:39.5px}
+body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:22.3px;--p-cx:-.3px;--p-cy:.7px;--p-svg:39.4px}
+body:not(.nav-haut) .verbe.actif .ico-rond{color:var(--blanc);background:none;position:relative}
   /* Le disque suit le centre d'encre du dessin, qui peut approcher le bord de
      la boite : il se peint sur un calque qui depasse la boite, sans quoi le
      fond serait rogne. */
-  body:not(.nav-haut) .verbe.actif .ico-rond::before{content:'';position:absolute;inset:-8px;z-index:-1;background:radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),var(--univers) calc(var(--p-r) - .4px),transparent calc(var(--p-r) + .4px))}
-  body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p-svg)}
-  /* Correction OPTIQUE, tranchee a l'oeil : le poids visuel de la pousse
-     tire a droite, son dessin recule d'un point dans sa pastille. */
-  body:not(.nav-haut) .verbe[data-verbe="roots"].actif .ico-rond svg{transform:translateX(-1px)}
+body:not(.nav-haut) .verbe.actif .ico-rond::before{content:'';position:absolute;inset:-8px;z-index:-1;background:radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),var(--univers) calc(var(--p-r) - .4px),transparent calc(var(--p-r) + .4px))}
+body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p-svg)}
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
      d'univers sous l'ombre douce que la surface donne deja a son chrome,
      la pastille du courant reste nue, et les
      CARACTERES des legendes se remplissent de blanc sous un contour a
      l'echelon profond de leur univers. Rien d'autre : ni fond, ni pilule. */
-  body[data-surface="ambiante"]:not(.nav-haut) .chrome-bas{background:none;border-top:none;box-shadow:none}
-  body[data-surface="ambiante"]:not(.nav-haut) .verbe:not(.actif) .ico-rond{filter:drop-shadow(0 1px 4px rgba(var(--ombre-teinte),.4))}
-  body[data-surface="ambiante"]:not(.nav-haut) .verbe .verbe-dit{color:var(--blanc);text-shadow:1px 0 0 var(--verbe-e1),-1px 0 0 var(--verbe-e1),0 1px 0 var(--verbe-e1),0 -1px 0 var(--verbe-e1),.7px .7px 0 var(--verbe-e1),-.7px .7px 0 var(--verbe-e1),.7px -.7px 0 var(--verbe-e1),-.7px -.7px 0 var(--verbe-e1)}
+body[data-surface="ambiante"]:not(.nav-haut) .chrome-bas{background:none;border-top:none;box-shadow:none}
+body[data-surface="ambiante"]:not(.nav-haut) .verbe:not(.actif) .ico-rond{filter:drop-shadow(0 1px 4px rgba(var(--ombre-teinte),.4))}
+body[data-surface="ambiante"]:not(.nav-haut) .verbe .verbe-dit{color:var(--blanc);text-shadow:1px 0 0 var(--verbe-e1),-1px 0 0 var(--verbe-e1),0 1px 0 var(--verbe-e1),0 -1px 0 var(--verbe-e1),.7px .7px 0 var(--verbe-e1),-.7px .7px 0 var(--verbe-e1),.7px -.7px 0 var(--verbe-e1),-.7px -.7px 0 var(--verbe-e1)}
+/* Une barre a quete redistribue sa grille : la pilule prend la colonne
+   centrale et s'y etire, le groupe Mi + verbe vit dans la colonne de droite
+   devant le menu. */
+body.nav-quete .chrome-inner{grid-template-columns:auto minmax(0,1fr) auto}
+body.nav-quete .chrome-inner>.fab.quete,body.nav-quete .chrome-inner>.quete-groupe{justify-self:center;width:100%}
+body.nav-quete .chrome-droite{gap:var(--esp-2)}
+/* Sur une barre a quete, le mot d'univers se tait : la pilule et sa phrase
+   suggeree portent le nom du monde, la pastille Mi | NU reste seule a
+   droite, a la place de la pastille de radio. */
+body.nav-quete .centre .chrome-titre{display:none}
+/* La pastille Mi | NU deployee, dans une barre a quete, ne peut plus effacer
+   sa propre colonne : la pilule et le menu s'effacent le temps du choix, et
+   le groupe reste visible. */
+@media(max-width:639px){
+  body.nav-quete .chrome-inner.deploie .chrome-droite{opacity:1;pointer-events:auto;transform:none;width:auto;min-width:0}
+  body.nav-quete .chrome-inner.deploie .chrome-burger,body.nav-quete .chrome-inner.deploie .quete-groupe,body.nav-quete .chrome-inner.deploie>.fab.quete{opacity:0;pointer-events:none}
 }
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
    plancher nul, la pilule refuse de retrecir et pousse le menu hors de la
@@ -1913,25 +1928,25 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
    l'ilot de radio se replie sur son antenne, et la feuille s'ancre a la barre.
    CE QUI CASSE SI ON LE MODIFIE : la pilule est le geste focal DEPLACE, jamais
    un second bouton — deux portes vers une meme feuille divergent. */
-body.nav-haut .fab.quete{position:static;left:auto;bottom:auto;transform:none;z-index:auto;flex:1 1 auto;max-width:288px;min-width:44px;min-width:0;min-height:48px;padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);background:var(--blanc);color:var(--encre-discrete);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);white-space:nowrap;overflow:hidden;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);cursor:pointer}
-body.nav-haut .fab.quete:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
+body.nav-quete .fab.quete{position:static;left:auto;bottom:auto;transform:none;z-index:auto;flex:1 1 auto;max-width:288px;min-width:44px;min-width:0;min-height:48px;padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);background:var(--blanc);color:var(--encre-discrete);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);white-space:nowrap;overflow:hidden;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);cursor:pointer}
+body.nav-quete .fab.quete:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
 /* LE GROUPE DE QUETE. L'ecran qui porte l'appareil de quete habille sa pilule
    en groupe : le geste (le meme bouton, toujours), un champ de saisie qui ne
    parait qu'a la demande, et le disque a loupe devenu un bouton propre —
    trois gestes distincts exigent trois cibles. La peau de pilule passe du
    bouton au groupe ; le bouton, dedans, redevient nu. Un ecran sans appareil
    garde la pilule d'une piece ci-dessus. */
-body.nav-haut .quete-groupe{display:flex;align-items:center;gap:var(--esp-2);flex:1 1 auto;max-width:288px;min-width:0;min-height:48px;padding:calc(var(--esp-1) / 2) var(--esp-1) calc(var(--esp-1) / 2) var(--esp-4);background:var(--blanc);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);overflow:hidden}
-body.nav-haut .quete-groupe:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
-body.nav-haut .quete-groupe:focus-within{border-color:var(--univers)}
-body.nav-haut .quete-groupe .fab.quete{flex:1 1 auto;min-width:0;max-width:none;min-height:44px;padding:0;border:none;background:none;box-shadow:none;justify-content:flex-start}
-body.nav-haut .quete-groupe .fab.quete::after{content:none}
-body.nav-haut .quete-groupe .fab.quete.cede{display:none}
+body.nav-quete .quete-groupe{display:flex;align-items:center;gap:var(--esp-2);flex:1 1 auto;max-width:288px;min-width:0;min-height:48px;padding:calc(var(--esp-1) / 2) var(--esp-1) calc(var(--esp-1) / 2) var(--esp-4);background:var(--blanc);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);overflow:hidden}
+body.nav-quete .quete-groupe:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
+body.nav-quete .quete-groupe:focus-within{border-color:var(--univers)}
+body.nav-quete .quete-groupe .fab.quete{flex:1 1 auto;min-width:0;max-width:none;min-height:44px;padding:0;border:none;background:none;box-shadow:none;justify-content:flex-start}
+body.nav-quete .quete-groupe .fab.quete::after{content:none}
+body.nav-quete .quete-groupe .fab.quete.cede{display:none}
 .quete-saisie{flex:1 1 auto;min-width:0;min-height:44px;border:none;background:none;font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);color:var(--encre);outline:none}
 .quete-saisie::placeholder{color:var(--encre-discrete)}
 /* Le meme disque a loupe que la pilule d'une piece, porte par un bouton :
    la cible tient le plancher de 44, le disque de 38 reste centre dedans. */
-body.nav-haut .quete-loupe{flex:0 0 auto;width:44px;height:44px;min-height:0;padding:0;border:none;border-radius:50%;cursor:pointer;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 23px 23px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 12px 12px/15px 15px no-repeat,radial-gradient(circle at 50% 50%,var(--univers) 18.6px,transparent 19.4px)}
+body.nav-quete .quete-loupe{flex:0 0 auto;width:44px;height:44px;min-height:0;padding:0;border:none;border-radius:50%;cursor:pointer;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 23px 23px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 12px 12px/15px 15px no-repeat,radial-gradient(circle at 50% 50%,var(--univers) 18.6px,transparent 19.4px)}
 /* Les champs « Ou » et « Quoi » de la feuille se sont fondus dans la barre de
    quete quand elle est montee : la saisie vit dans la barre, les listes
    restent a la feuille. Au bas de l'ecran, la feuille garde ses champs. */
@@ -1940,10 +1955,10 @@ body.nav-quete .feuille-bas[data-pose="barre"] .champ-quoi > input{display:none}
 /* Sur la largeur d'un telephone couche, la pilule cede un cinquieme de sa
    longueur au groupe central. Pose apres les regles de base : a poids egal,
    c'est l'ordre qui tranche. */
-@media(max-width:800px){body.nav-haut .quete-groupe,body.nav-haut .fab.quete{max-width:194px}}
+@media(max-width:800px){body.nav-quete .quete-groupe,body.nav-quete .fab.quete{max-width:194px}}
 /* Le disque a loupe, dessine aux jetons : un anneau et son manche evides dans
    un disque d'univers. Il est decoratif — le nom du bouton reste son texte. */
-body.nav-haut .fab.quete::after{content:'';flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 20px 20px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 9px 9px/15px 15px no-repeat,var(--univers)}
+body.nav-quete .fab.quete::after{content:'';flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 20px 20px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 9px 9px/15px 15px no-repeat,var(--univers)}
 
 /* La feuille ancree a la barre : meme appareil, autre bord. Elle descend de
    sous la barre comme le tiroir du menu, au lieu de monter du bas, et sa
