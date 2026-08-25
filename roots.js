@@ -1071,11 +1071,12 @@
         var a = document.createElement(s.href ? 'a' : 'span');
         a.className = 'lien-section' + (s.href ? '' : ' dormant');
         if (s.href) a.href = s.href;
+        /* Une entree du tiroir ne porte que son titre : la description
+           redirait ce que la section dit elle-meme en arrivant. */
         a.innerHTML = '<span class="ico"><svg class="i"><use href="#' + s.ico + '"/></svg></span>' +
-          '<span class="txt"><span class="t"></span><small></small></span>' +
+          '<span class="txt"><span class="t"></span></span>' +
           (s.href ? '<svg class="i fleche"><use href="#i-chevron"/></svg>' : '');
         a.querySelector('.t').textContent = s.t;
-        a.querySelector('small').textContent = s.s;
         if (s.courant) { a.classList.add('courant'); a.setAttribute('aria-current', 'page'); }
         /* Une ancre reste sur la page : le tiroir se referme de lui-meme, la
            navigation vers une autre page l'emporte avec elle. */

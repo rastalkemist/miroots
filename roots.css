@@ -527,6 +527,10 @@ body:not(.nav-haut) .verbe[data-verbe="space"]:not(.actif) .ico-rond svg{transfo
 body[data-surface="ambiante"]:not(.nav-haut) .chrome-bas{background:none;border-top:none;box-shadow:none}
 body[data-surface="ambiante"]:not(.nav-haut) .verbe:not(.actif) .ico-rond{filter:drop-shadow(0 1px 4px rgba(var(--ombre-teinte),.4))}
 body[data-surface="ambiante"]:not(.nav-haut) .verbe .verbe-dit{color:var(--blanc);text-shadow:1px 0 0 var(--verbe-e1),-1px 0 0 var(--verbe-e1),0 1px 0 var(--verbe-e1),0 -1px 0 var(--verbe-e1),.7px .7px 0 var(--verbe-e1),-.7px .7px 0 var(--verbe-e1),.7px -.7px 0 var(--verbe-e1),-.7px -.7px 0 var(--verbe-e1)}
+/* La legende du verbe courant du nav MONTE prend la meme peau sur la surface
+   sans fond : caracteres blancs sous un contour du premier echelon de son
+   univers — le verbe courant EST l'univers courant, son jeton est deja la. */
+body[data-surface="ambiante"].nav-haut .verbe.actif .verbe-dit{color:var(--blanc);text-shadow:1px 0 0 var(--univers-e1),-1px 0 0 var(--univers-e1),0 1px 0 var(--univers-e1),0 -1px 0 var(--univers-e1),.7px .7px 0 var(--univers-e1),-.7px .7px 0 var(--univers-e1),.7px -.7px 0 var(--univers-e1),-.7px -.7px 0 var(--univers-e1)}
 /* Une barre a quete redistribue sa grille : la pilule prend la colonne
    centrale et s'y etire, le groupe Mi + verbe vit dans la colonne de droite
    devant le menu. */
@@ -568,7 +572,6 @@ body.nav-quete .chrome-droite{min-width:0;justify-self:stretch;justify-content:f
 .lien-section .ico{width:38px;height:38px;flex-shrink:0;border-radius:12px;background:var(--univers-selection);color:var(--univers);display:flex;align-items:center;justify-content:center}
 .lien-section .ico svg{width:19px;height:19px}
 .lien-section .txt{flex:1}
-.lien-section .txt small{display:block;font-size:var(--t-sm);font-weight:500;color:var(--encre-discrete);margin-top:1px}
 .lien-section .fleche{width:16px;height:16px;color:var(--encre-discrete);flex-shrink:0}
 .toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--univers-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree);text-align:center}
 .toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
