@@ -441,11 +441,11 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .verbe.actif{color:var(--univers)}
 /* Montee dans la barre, les rapports se mesurent a L'ENCRE, pas aux boites :
    une cible de 44 loge un dessin plus etroit, et l'oeil ne compte que le
-   dessin. La boite de l'icone garde du vide a droite du dessin : l'ecart de
-   boite herite ci-dessous rend une encre icone-legende d'environ 10px,
-   nettement sous l'encre entre verbes, pour que chaque paire se lise d'un
-   bloc. Le logo se tient a une fois et demie l'encre entre verbes. */
-body.nav-haut .verbe{flex-direction:row}
+   dessin. La boite de l'icone garde du vide a droite du dessin : boites
+   collees, l'encre icone-legende rend environ 8px, nettement sous l'encre
+   entre verbes, pour que chaque paire se lise d'un bloc. Le logo se tient a
+   une fois et demie l'encre entre verbes. */
+body.nav-haut .verbe{flex-direction:row;gap:0}
 /* Montee dans la barre, seule la legende du verbe COURANT se tient en ligne.
    Les autres gardent leur nom en infobulle : posee sous l'icone, elle parait
    au survol ou au foyer clavier apres un court delai, et s'efface sans
@@ -460,8 +460,34 @@ body.nav-haut .verbe:not(.actif):focus-visible .verbe-dit{opacity:1;transition-d
    laterale rend l'ecart d'encre des verbes voisins, l'ecart interieur rend
    l'encre pastille-legende du rang des autres ecrans. Valeurs mesurees au
    rendu. */
-body[data-surface="ambiante"].nav-haut .verbe.actif{gap:9px;margin-inline:7px}
+body[data-surface="ambiante"].nav-haut .verbe.actif{gap:7px;margin-inline:7px}
 body.nav-haut .chrome-gauche{gap:calc(var(--esp-6) + var(--esp-1) / 2)}
+/* Sur la largeur d'un telephone couche, le groupe de gauche se resserre pour
+   se detacher : l'ecart entre verbes perd deux points, et le logo garde son
+   rapport d'une fois et demie sur cette encre reduite. La pilule de quete
+   cede un cinquieme de sa longueur au profit du groupe central. Valeurs
+   mesurees au rendu. */
+@media(max-width:800px){
+  body.nav-haut #superNav{gap:2px}
+  body.nav-haut .chrome-gauche{gap:19px}
+}
+/* LA BARRE BASSE DU TELEPHONE DEBOUT, REGLEE A L'ENCRE. La reference est
+   l'air entre le dessin d'une icone et le haut de la barre : 16px d'encre —
+   il se reconduit sous les legendes, avant le bord de l'ecran. La pastille
+   du verbe courant, qui emplit sa boite, s'en tient a la MOITIE en haut, et
+   sa legende a la MOITIE en bas : la paire courante est plus grande, elle
+   prend son air sur les deux bords a parts egales. Les ecarts icone-legende
+   se resserrent — 14px d'encre au repos, 5,5 sous la pastille — et l'ecart
+   pastille-legende absorbe ce que ces contraintes laissent. Les ecarts de
+   boite ci-dessous rendent ces encres-la, mesurees au rendu ; la hauteur de
+   barre en decoule au lieu de la commander. */
+@media(max-width:639px){
+  body:not(.nav-haut) .chrome-bas{min-height:0;padding-top:1px;padding-bottom:calc(0px + var(--safe-bas))}
+  body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0}
+  body:not(.nav-haut) .verbe .verbe-dit{margin-top:-3.5px}
+  body:not(.nav-haut) .verbe.actif .ico-rond{margin-top:4px}
+  body:not(.nav-haut) .verbe.actif .verbe-dit{margin-top:.5px}
+}
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
    plancher nul, la pilule refuse de retrecir et pousse le menu hors de la
    ligne du chrome sur les largeurs moyennes. */
@@ -733,7 +759,7 @@ body{--focus-trait:var(--encre)}
    la teinte d'un autre univers mentirait sur l'ecran qu'elle sert. Toute
    couleur d'une piece qui voyage entre univers se declare en jeton d'univers,
    jamais en valeur figee. */
-:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5);--ombre-teinte:var(--rouge-e1-rgb)}
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5);--ombre-teinte:var(--rouge-e1-rgb);--encre-ll-h1:var(--encre);--encre-ll-h3:var(--encre);--encre-ll-h5:var(--encre);--encre-ll-h2:var(--univers-e3);--encre-ll-h4:var(--univers-e3);--encre-ll-h6:var(--univers-e3);--encre-ll-chapo:var(--univers-e3)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
@@ -1862,6 +1888,32 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
    un second bouton — deux portes vers une meme feuille divergent. */
 body.nav-haut .fab.quete{position:static;left:auto;bottom:auto;transform:none;z-index:auto;flex:1 1 auto;max-width:288px;min-width:44px;min-width:0;min-height:48px;padding:var(--esp-1) var(--esp-1) var(--esp-1) var(--esp-4);display:flex;align-items:center;justify-content:space-between;gap:var(--esp-3);background:var(--blanc);color:var(--encre-discrete);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);white-space:nowrap;overflow:hidden;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);cursor:pointer}
 body.nav-haut .fab.quete:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
+/* LE GROUPE DE QUETE. L'ecran qui porte l'appareil de quete habille sa pilule
+   en groupe : le geste (le meme bouton, toujours), un champ de saisie qui ne
+   parait qu'a la demande, et le disque a loupe devenu un bouton propre —
+   trois gestes distincts exigent trois cibles. La peau de pilule passe du
+   bouton au groupe ; le bouton, dedans, redevient nu. Un ecran sans appareil
+   garde la pilule d'une piece ci-dessus. */
+body.nav-haut .quete-groupe{display:flex;align-items:center;gap:var(--esp-2);flex:1 1 auto;max-width:288px;min-width:0;min-height:48px;padding:calc(var(--esp-1) / 2) var(--esp-1) calc(var(--esp-1) / 2) var(--esp-4);background:var(--blanc);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);overflow:hidden}
+body.nav-haut .quete-groupe:hover{box-shadow:0 4px 16px rgba(var(--ombre-teinte),.28)}
+body.nav-haut .quete-groupe:focus-within{border-color:var(--univers)}
+body.nav-haut .quete-groupe .fab.quete{flex:1 1 auto;min-width:0;max-width:none;min-height:44px;padding:0;border:none;background:none;box-shadow:none;justify-content:flex-start}
+body.nav-haut .quete-groupe .fab.quete::after{content:none}
+body.nav-haut .quete-groupe .fab.quete.cede{display:none}
+.quete-saisie{flex:1 1 auto;min-width:0;min-height:44px;border:none;background:none;font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-sm);color:var(--encre);outline:none}
+.quete-saisie::placeholder{color:var(--encre-discrete)}
+/* Le meme disque a loupe que la pilule d'une piece, porte par un bouton :
+   la cible tient le plancher de 44, le disque de 38 reste centre dedans. */
+body.nav-haut .quete-loupe{flex:0 0 auto;width:44px;height:44px;min-height:0;padding:0;border:none;border-radius:50%;cursor:pointer;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 23px 23px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 12px 12px/15px 15px no-repeat,radial-gradient(circle at 50% 50%,var(--univers) 18.6px,transparent 19.4px)}
+/* Les champs « Ou » et « Quoi » de la feuille se sont fondus dans la barre de
+   quete quand elle est montee : la saisie vit dans la barre, les listes
+   restent a la feuille. Au bas de l'ecran, la feuille garde ses champs. */
+body.nav-quete .feuille-bas[data-pose="barre"] .champ-suggest{display:none}
+body.nav-quete .feuille-bas[data-pose="barre"] .champ-quoi > input{display:none}
+/* Sur la largeur d'un telephone couche, la pilule cede un cinquieme de sa
+   longueur au groupe central. Pose apres les regles de base : a poids egal,
+   c'est l'ordre qui tranche. */
+@media(max-width:800px){body.nav-haut .quete-groupe,body.nav-haut .fab.quete{max-width:194px}}
 /* Le disque a loupe, dessine aux jetons : un anneau et son manche evides dans
    un disque d'univers. Il est decoratif — le nom du bouton reste son texte. */
 body.nav-haut .fab.quete::after{content:'';flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 20px 20px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 9px 9px/15px 15px no-repeat,var(--univers)}

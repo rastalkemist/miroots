@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-zd9stJfGI7Sr5aklb6Hdr2I2YByA0dlgnyqzGirQ/lM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Upby4m3Vbah4Ti4cmxP3NlPcahIxnP1YPyejMmYHYmM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -518,6 +518,7 @@
       numRoots: 'Accueil Roots',
       chercher: 'Chercher un séjour',
       chercherMots: 'Je découvre',
+      loupeDit: 'Rechercher',
       alPause: 'Mettre la vidéo en pause', alLire: 'Lancer la vidéo',
       ongVisiter: 'Visiter', ongDecouvrir: 'Découvrir',
       eQuoi: 'Quoi\u202f?', eQuoiVide: 'Choisir un lieu',
@@ -622,6 +623,7 @@
       numRoots: 'Roots reception',
       chercher: 'Search for a stay',
       chercherMots: 'Let’s roam!',
+      loupeDit: 'Search',
       alPause: 'Pause the video', alLire: 'Play the video',
       ongVisiter: 'Stay', ongDecouvrir: 'Explore',
       eQuoi: 'What?', eQuoiVide: 'Pick a place',
@@ -1180,6 +1182,8 @@
 
   window.addEventListener('popstate', function () {
     if (retoursRendus > 0) { retoursRendus -= 1; return; }
+    /* Clavier leve, le retour ne ferme que lui : la couche attend le suivant. */
+    if (pileCouches.length && Roots.retourAuClavier && Roots.retourAuClavier()) return;
     var e = pileCouches.pop();
     if (e) e.fermer();
   });
@@ -1606,6 +1610,9 @@
      classe active passe d'un bouton a l'autre et d'un panneau a l'autre, rien
      de plus. */
   var ONGLET_INITIAL = 'visiter';
+  /* La barre de quete montee reapplique son affinage quand l'onglet change :
+     la poignee est posee par l'appareil de la feuille, nulle ailleurs. */
+  var rappliquerQuete = null;
 
   function ongletActif() {
     var b = document.querySelector('#onglets button.actif');
@@ -1624,6 +1631,7 @@
        debordement a annoncer. La redessiner quand son panneau parait la remet
        sous mesure — la piste observe ses propres enfants. */
     if (nom === 'decouvrir') setTimeout(dessinerLieuxDec, 0);
+    if (rappliquerQuete) rappliquerQuete();
   }
 
   /* Quitter l'onglet d'ouverture pose une couche : le retour y ramene avant
@@ -1695,13 +1703,112 @@
       retirerCouche('feuille');
       replierLesPas($('explorer'));
       replierLesPas($('explorerDec'));
+      fermerSaisie();
       f.classList.remove('visible'); v.classList.remove('visible');
       fab.setAttribute('aria-expanded', 'false');
       fab.focus();
     }
     fab.setAttribute('aria-expanded', 'false');
     ouvrirLaFeuille = ouvrir;
-    fab.addEventListener('click', ouvrir);
+
+    /* LA BARRE DE QUETE MONTEE SE PARCOURT EN TROIS APPUIS. Le premier ouvre
+       la feuille. Le deuxieme rend la saisie : le champ parait dans la barre,
+       et les champs « Ou » et « Quoi » de la feuille, fondus en lui, n'ont
+       plus a se montrer — la saisie affine la matiere de l'onglet ACTIF, par
+       le canal que chaque onglet possede deja : elle ecrit dans son champ et
+       lui annonce la saisie, rien d'autre. Le troisieme appui sur la barre
+       referme tout ; la saisie au foyer, un appui sur elle vaut ce troisieme
+       appui. Le disque a loupe mene a la saisie, puis au premier resultat.
+       Au bas de l'ecran, la pilule garde son geste d'une piece et la feuille
+       ses champs. */
+    var groupe = null, saisie = null, loupe = null;
+
+    function saisieOuverte() { return !!(saisie && !saisie.hidden); }
+
+    function appliquerFiltre() {
+      if (!saisieOuverte()) return;
+      if (ongletActif() === 'visiter') {
+        var c = $('qLieu');
+        if (!c) return;
+        var pasOu = document.querySelector('#explorer .etape[data-pas="ou"]');
+        if (pasOu && !pasOu.classList.contains('ouverte')) ouvrirPas(pasOu);
+        c.value = saisie.value;
+        c.dispatchEvent(new Event('input'));
+      } else {
+        var d = $('qLieuDec');
+        if (!d) return;
+        d.value = saisie.value;
+        d.dispatchEvent(new Event('input'));
+      }
+    }
+    rappliquerQuete = appliquerFiltre;
+
+    function ouvrirSaisie() {
+      if (!groupe || !groupe.parentNode) return;
+      fab.classList.add('cede');
+      saisie.hidden = false;
+      saisie.focus();
+      appliquerFiltre();
+    }
+
+    function fermerSaisie() {
+      if (!saisie) return;
+      saisie.hidden = true;
+      fab.classList.remove('cede');
+    }
+
+    function construireGroupe() {
+      groupe = document.createElement('div');
+      groupe.className = 'quete-groupe';
+      saisie = document.createElement('input');
+      saisie.type = 'search';
+      saisie.className = 'quete-saisie';
+      saisie.autocomplete = 'off';
+      saisie.spellcheck = false;
+      saisie.hidden = true;
+      loupe = document.createElement('button');
+      loupe.type = 'button';
+      loupe.className = 'quete-loupe';
+      saisie.addEventListener('input', appliquerFiltre);
+      saisie.addEventListener('pointerdown', function (e) {
+        if (document.activeElement === saisie) { e.preventDefault(); fermer(); }
+      });
+      loupe.addEventListener('click', function () {
+        if (!f.classList.contains('visible')) ouvrir();
+        if (!saisieOuverte()) { ouvrirSaisie(); return; }
+        var o = ongletActif() === 'visiter' ? choixVus() : optionsVuesDec();
+        if (o.length) o[0].focus();
+      });
+    }
+
+    /* Le groupe se pose a l'annonce de la barre et se retire avec elle : la
+       promotion deplace le bouton seul, l'habit reste a la charge de l'ecran
+       qui l'a taille. */
+    function poserQuete() {
+      var monte = document.body.classList.contains('nav-quete')
+        && fab.closest('.chrome-droite');
+      if (!monte) {
+        if (groupe && groupe.parentNode) { fermerSaisie(); groupe.parentNode.removeChild(groupe); }
+        return;
+      }
+      if (!groupe) construireGroupe();
+      saisie.placeholder = t().chercherMots;
+      saisie.setAttribute('aria-label', t().chercherMots);
+      loupe.setAttribute('aria-label', t().loupeDit);
+      if (fab.parentNode !== groupe) {
+        fab.parentNode.insertBefore(groupe, fab);
+        groupe.appendChild(fab);
+        groupe.appendChild(saisie);
+        groupe.appendChild(loupe);
+      }
+    }
+    document.addEventListener('chrome:barre', poserQuete);
+    poserQuete();
+
+    fab.addEventListener('click', function () {
+      if (!groupe || !groupe.parentNode || !f.classList.contains('visible')) { ouvrir(); return; }
+      ouvrirSaisie();
+    });
     /* Tout element qui porte `data-ouvre` ouvre la feuille : un geste pose
        ailleurs — dans la barre du haut sur grand ecran, par exemple — n'a rien
        a savoir de sa mecanique, et la feuille garde une seule porte. */

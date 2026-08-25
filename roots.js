@@ -234,6 +234,10 @@
     if (!barre || !droite || !haut) return;
     promouvoirNav(radio, barre, droite, haut, superNav);
     publierHauteur(barre, haut);
+    /* La barre annonce qu'elle est posee : un ecran qui compose autour d'une
+       piece promue — l'habiller, la completer — se cale sur cette annonce,
+       jamais sur une observation du document. */
+    document.dispatchEvent(new Event('chrome:barre'));
   }
 
   function promouvoirNav(radio, barre, droite, haut, superNav) {
@@ -1301,6 +1305,23 @@
              element: enveloppe, estOuvert: function () { return ouvert; } };
   }
 
+  /* LE RETOUR, CLAVIER LEVE, NE FERME QUE LE CLAVIER. Quand la saisie a le
+     foyer et que la fenetre visible est rognee — le clavier virtuel occupe le
+     bas —, un retour qui demonterait la couche jetterait ce qui est tape.
+     On rend donc le foyer, on repose l'entree d'historique consommee, et la
+     couche ne bouge pas ; le retour suivant suit la logique des couches.
+     Sur un ecran sans clavier virtuel, la fenetre n'est pas rognee et ce
+     garde-fou ne prend jamais la main. */
+  function retourAuClavier() {
+    var e = document.activeElement;
+    if (!e || (e.tagName !== 'INPUT' && e.tagName !== 'TEXTAREA')) return false;
+    var vv = window.visualViewport;
+    if (!vv || vv.height >= window.innerHeight - 80) return false;
+    e.blur();
+    try { history.pushState(history.state, ''); } catch (er) {}
+    return true;
+  }
+
   function modale(hote, opts) {
     opts = opts || {};
     var cle = opts.cle || (hote.id || 'modale');
@@ -1353,6 +1374,7 @@
     window.addEventListener('popstate', function () {
       if (!ouverte) return;
       if (popConsommeParCouche()) return;
+      if (retourAuClavier()) return;
       fermer(true);
     });
 
@@ -1663,6 +1685,7 @@
   global.Roots.copier = copier;
   global.Roots.cartel = cartel;
   global.Roots.modale = modale;
+  global.Roots.retourAuClavier = retourAuClavier;
   global.Roots.blocFacturation = blocFacturation;
   global.Roots.langueRetenue = langueRetenue;
   global.Roots.retenirLangue = retenirLangue;
@@ -1977,7 +2000,12 @@
          focalise dans le meme geste echoue : l'inertie ne tombe qu'apres son
          tour. La garantie se pose donc ici, une fois l'inertie levee — et
          seulement si le foyer n'est pas deja dedans. */
-      if (!feuille.contains(document.activeElement)) {
+      var actif = document.activeElement;
+      var saisitDeja = actif && (actif.tagName === 'INPUT' || actif.tagName === 'TEXTAREA');
+      /* Une saisie active hors de la feuille n'est jamais un foyer perdu :
+         un appareil peut ouvrir la feuille depuis son propre champ — la
+         garantie ne le lui arrache pas. */
+      if (!feuille.contains(actif) && !saisitDeja) {
         var premier = feuille.querySelector('input:not([hidden]),select,textarea,button:not(.fermer),[tabindex]');
         if (premier && premier.focus) { try { premier.focus(); } catch (e) {} }
       }

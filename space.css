@@ -40,8 +40,16 @@
   --accent-plan: var(--terre-e3);
   --finance-fond: var(--roots-jaune);
   /* L'ombre et les voiles suivent l'encre profonde de l'univers : une piece
-     partagee ne garde jamais la teinte d'un autre univers. */
+     partagee ne garde jamais la teinte d'un autre univers. Les encres de la
+     lecture longue suivent l'echelon 3 de l'univers pour la meme raison. */
   --ombre-teinte: var(--noir-rgb);
+  --encre-ll-h1: var(--encre);
+  --encre-ll-h3: var(--encre);
+  --encre-ll-h5: var(--encre);
+  --encre-ll-h2: var(--univers-e3);
+  --encre-ll-h4: var(--univers-e3);
+  --encre-ll-h6: var(--univers-e3);
+  --encre-ll-chapo: var(--univers-e3);
 }
 
 /* ---- En-tete de l'ecran --------------------------------------------------
