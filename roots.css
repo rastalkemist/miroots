@@ -488,12 +488,13 @@ body.nav-haut .chrome-gauche{gap:16px}
   body:not(.nav-haut) .chrome-bas{min-height:0;padding:0}
   body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:2px;padding-bottom:calc(9.5px + var(--safe-bas))}
   body:not(.nav-haut) .verbe .verbe-dit{margin-top:-6px}
-  /* Chaque dessin a SON diametre visible et son centre d'encre, mesures au
-     rendu : la pastille prend exactement ce disque-la — position comprise —
-     et le dessin reduit de cinq points se recentre sur lui. */
-  body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-cx:.3px;--p-cy:5.5px;--p-r:22.5px;--p-svg:39.1px;--p-tx:0px;--p-ty:.6px}
-  body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-cx:-2.3px;--p-cy:3.3px;--p-r:22.8px;--p-svg:39.2px;--p-tx:-.3px;--p-ty:.4px}
-  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-cx:0px;--p-cy:5.8px;--p-r:20.3px;--p-svg:38.6px;--p-tx:0px;--p-ty:.7px}
+  /* La pastille est LE CERCLE CIRCONSCRIT au dessin visible au repos :
+     meme centre, meme rayon, mesures sur l'encre de chaque dessin. Le
+     dessin selectionne perd 2,5 de rayon et garde ce centre. Un seul centre
+     pour les deux : aucun decalage possible. */
+  body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-r:17.9px;--p-cx:1.6px;--p-cy:-.9px;--p-svg:37.9px;--p-tx:.23px;--p-ty:-.12px}
+  body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-r:19.4px;--p-cx:-.1px;--p-cy:-.4px;--p-svg:38.3px;--p-tx:-.02px;--p-ty:-.05px}
+  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:19.3px;--p-cx:-.1px;--p-cy:-.4px;--p-svg:38.3px;--p-tx:-.02px;--p-ty:-.05px}
   body:not(.nav-haut) .verbe.actif .ico-rond{color:var(--blanc);background:none;position:relative}
   /* Le disque suit le centre d'encre du dessin, qui peut approcher le bord de
      la boite : il se peint sur un calque qui depasse la boite, sans quoi le
@@ -503,12 +504,11 @@ body.nav-haut .chrome-gauche{gap:16px}
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
      d'univers sous l'ombre douce que la surface donne deja a son chrome,
-     la pastille du courant garde un lisere blanc, et les
+     la pastille du courant reste nue, et les
      CARACTERES des legendes se remplissent de blanc sous un contour a
      l'echelon profond de leur univers. Rien d'autre : ni fond, ni pilule. */
   body[data-surface="ambiante"]:not(.nav-haut) .chrome-bas{background:none;border-top:none;box-shadow:none}
   body[data-surface="ambiante"]:not(.nav-haut) .verbe:not(.actif) .ico-rond{filter:drop-shadow(0 1px 4px rgba(var(--ombre-teinte),.4))}
-  body[data-surface="ambiante"]:not(.nav-haut) .verbe.actif .ico-rond::before{background:radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),var(--univers) calc(var(--p-r) - .4px),transparent calc(var(--p-r) + .1px)),radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),transparent calc(var(--p-r) - .1px),var(--blanc) calc(var(--p-r) + .4px) calc(var(--p-r) + 1.7px),transparent calc(var(--p-r) + 2.4px))}
   body[data-surface="ambiante"]:not(.nav-haut) .verbe .verbe-dit{color:var(--blanc);text-shadow:1px 0 0 var(--verbe-e1),-1px 0 0 var(--verbe-e1),0 1px 0 var(--verbe-e1),0 -1px 0 var(--verbe-e1),.7px .7px 0 var(--verbe-e1),-.7px .7px 0 var(--verbe-e1),.7px -.7px 0 var(--verbe-e1),-.7px -.7px 0 var(--verbe-e1)}
 }
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
