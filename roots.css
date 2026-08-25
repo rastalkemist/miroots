@@ -496,7 +496,7 @@ body.nav-haut .chrome-gauche{gap:16px}
      cercle circonscrit s'ecarte sur un dessin asymetrique. */
   body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2);--verbe-e1:var(--vert-e1);--p-r:20.9px;--p-cx:-.4px;--p-cy:.4px;--p-svg:39.1px}
   body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2);--verbe-e1:var(--rouge-e1);--p-r:22.4px;--p-cx:-.3px;--p-cy:.6px;--p-svg:39.5px}
-  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:22.3px;--p-cx:-.3px;--p-cy:.4px;--p-svg:39.4px}
+  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir);--verbe-e1:var(--noir);--p-r:22.3px;--p-cx:-.3px;--p-cy:.7px;--p-svg:39.4px}
   body:not(.nav-haut) .verbe.actif .ico-rond{color:var(--blanc);background:none;position:relative}
   /* Le disque suit le centre d'encre du dessin, qui peut approcher le bord de
      la boite : il se peint sur un calque qui depasse la boite, sans quoi le

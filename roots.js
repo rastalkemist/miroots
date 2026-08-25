@@ -877,8 +877,8 @@
        visible — une etiquette cachee qui dirait autre chose ferait diverger
        ce qu'on lit de ce qu'on entend. La legende suit la langue. */
     var LEGENDES = {
-      space: { fr: 'Organiser', en: 'Plan' },
-      roots: { fr: 'Coworking', en: 'Connect' },
+      space: { fr: 'M’organiser', en: 'Plan' },
+      roots: { fr: 'Connecter', en: 'Connect' },
       roam:  { fr: 'Voyager',   en: 'Discover' }
     };
     function poserLegendes() {
