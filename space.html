@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-oWlmgkv00KIBLlEMYTYddJs7KGwDelf759emloxta0A='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-rYtPClvbQob1cYrwnDrAiKr5NVGsel408BgsXQpvtfw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="roots.css">
 <link rel="stylesheet" href="space.css">
 <script src="roots.js"></script>
+<script src="roots-db.js"></script>
 <script src="garde.js"></script>
 </head>
 <body class="p-space" data-surface="claire">
@@ -71,7 +72,9 @@
 
   <section class="bloc-plan" aria-labelledby="etSemaine">
     <span class="etiquette" id="etSemaine" data-t="etSemaine">Ma semaine</span>
-    <div id="listeSemaine"></div>
+    <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
+<button type="button" class="bouton-contour" id="btnRecharger" hidden>Réessayer</button>
+<div id="listeSemaine"></div>
     <p class="vide" id="videSemaine" data-t="vide" hidden>Rien de posé pour l'instant. Écris un engagement là-haut — un seul suffit pour commencer.</p>
   </section>
 
@@ -118,25 +121,29 @@
 (function () {
   'use strict';
 
-  /* DECOR. Jeu de reponses fige : formes reelles, valeurs fictives. Il tient
-     la place de la source de donnees et porte exactement les champs que
-     l'ecran lit — engagement, jour, fait_le, ordre. Remplacer PlanDonnees par
-     la source reelle ne demande aucune retouche a l'ecran, a condition que
-     les memes champs soient rendus sous les memes noms.
+  /* L'ecran exige une session : sans elle, la couverture est la porte. La
+     garde vit aussi sur l'evenement — une session qui tombe en cours de
+     route renvoie a la couverture au lieu de laisser des appels refuses. */
+  if (!window.Roots || !Roots.db || !Roots.db.estConnecte()) {
+    location.replace('decouvrir-space.html');
+    return;
+  }
+  window.addEventListener('roots:session', function (e) {
+    if (!e.detail.connecte) location.replace('decouvrir-space.html');
+  });
 
-     Ce que le decor ne dit pas : le comportement reel d'une source distante,
-     ses refus et ses delais. Une affirmation sur ce comportement demande la
-     source, pas ce fichier. */
-  var DECOR = [
-    { id: 'd1', engagement: 'Finir la maquette du flyer NU Futures', jour: 0, fait_le: '2026-08-17T09:12:00Z', ordre: 1 },
-    { id: 'd2', engagement: 'Appeler le studio pour le devis',        jour: 0, fait_le: '2026-08-17T15:40:00Z', ordre: 2 },
-    { id: 'd3', engagement: 'Relire le dossier de subvention',        jour: 1, fait_le: null,                   ordre: 3 },
-    { id: 'd4', engagement: 'Atelier NU Impact — préparer 3 slides',  jour: 2, fait_le: '2026-08-19T11:05:00Z', ordre: 4 },
-    { id: 'd5', engagement: 'Envoyer la facture à Ame',               jour: 4, fait_le: null,                   ordre: 5 },
-    { id: 'd6', engagement: 'Ranger les fichiers du tournage',        jour: null, fait_le: '2026-08-18T18:20:00Z', ordre: 6 },
-    { id: 'd7', engagement: 'Lire deux chapitres',                    jour: null, fait_le: '2026-08-20T07:30:00Z', ordre: 7 },
-    { id: 'd8', engagement: 'Choisir la police du carton d’invitation', jour: null, fait_le: null,          ordre: 8 }
-  ];
+  /* La source des taches est le socle, par la passerelle : l'ecran garde une
+     copie de la semaine servie et la redessine apres chaque ecriture. Chaque
+     porte refuse sans session ; la garde en tete d'ecran s'en charge avant.
+     Ce que l'ecran exige de la reponse : taches[] portant id, engagement,
+     jour, fait_le, ordre — les noms que le socle rend. */
+  var SEMAINE = { taches: [] };
+
+  function chargerSemaine() {
+    return Roots.db.appeler('plan_ma_semaine').then(function (r) {
+      SEMAINE.taches = (r && r.taches) || [];
+    });
+  }
 
   /* Ce qui ne quitte pas l'appareil. La somme se lit et s'ecrit dans la memoire
      du navigateur ; aucune requete ne la porte, et aucune porte du socle ne
@@ -152,19 +159,7 @@
   } catch (e) {}
 
   var PlanDonnees = {
-    taches: function () { return DECOR.slice(); },
-    basculer: function (id, fait) {
-      for (var i = 0; i < DECOR.length; i++) {
-        if (DECOR[i].id === id) { DECOR[i].fait_le = fait ? new Date().toISOString() : null; return DECOR[i]; }
-      }
-      return null;
-    },
-    poser: function (engagement, jour) {
-      var t = { id: 'n' + (DECOR.length + 1), engagement: engagement, jour: jour,
-                fait_le: null, ordre: DECOR.length + 1 };
-      DECOR.push(t);
-      return t;
-    },
+    taches: function () { return SEMAINE.taches; },
     revenus: function () { return LOCAL; },
     noterRevenu: function (montant) {
       LOCAL.revenus = montant;
@@ -191,6 +186,8 @@
       ditRevenus: 'Ce chiffre ne quitte pas ton téléphone.',
       sansRevenu: 'Rien de noté cette semaine.',
       vide: 'Rien de posé pour l’instant. Écris un engagement là-haut — un seul suffit pour commencer.',
+      semaineMuette: 'La semaine n’a pas répondu.',
+      reessayer: 'Réessayer',
       piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
       jours: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
@@ -222,6 +219,8 @@
       ditRevenus: 'This figure never leaves your phone.',
       sansRevenu: 'Nothing recorded this week.',
       vide: 'Nothing set yet. Write one commitment above — one is enough to start.',
+      semaineMuette: 'The week didn’t answer.',
+      reessayer: 'Try again',
       piedPolitique: 'Privacy policy',
       toastNu: 'NU, the community side of Roots, is coming soon.',
       jours: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -419,13 +418,17 @@
     dessinerJours();
   });
 
+  /* La coche part a la porte, l'ecran suit la reponse : un refus laisse la
+     ligne dans son etat vrai au lieu d'afficher un fait que la base n'a pas. */
   $('listeSemaine').addEventListener('click', function (e) {
     var b = e.target.closest('.tache');
-    if (!b) return;
+    if (!b || b.disabled) return;
     var fait = b.getAttribute('aria-pressed') !== 'true';
-    PlanDonnees.basculer(b.dataset.id, fait);
-    dessinerSemaine();
-    dessinerProgression();
+    b.disabled = true;
+    Roots.db.appeler('plan_basculer_tache', { p_tache: b.dataset.id, p_fait: fait })
+      .then(chargerSemaine)
+      .then(function () { dessinerSemaine(); dessinerProgression(); },
+            function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 
   /* Le bouton refuse un engagement vide plutot que d'en poser un sans texte :
@@ -434,10 +437,16 @@
     var champ = $('engagement');
     var texte = champ.value.trim();
     if (!texte) { champ.focus(); return; }
-    PlanDonnees.poser(texte, jourChoisi);
-    champ.value = '';
-    dessinerSemaine();
-    dessinerProgression();
+    var b = $('btnAjouter');
+    b.disabled = true;
+    Roots.db.appeler('plan_poser_tache', { p_engagement: texte, p_jour: jourChoisi })
+      .then(chargerSemaine)
+      .then(function () {
+        b.disabled = false;
+        champ.value = '';
+        dessinerSemaine();
+        dessinerProgression();
+      }, function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 
   $('btnRevenu').addEventListener('click', function () {
@@ -457,8 +466,31 @@
     if (e.key === 'Enter') { e.preventDefault(); $('btnAjouter').click(); }
   });
 
+  /* Le premier chargement : un acces jamais ouvert renvoie a la couverture,
+     qui sait l'ouvrir ; les autres refus se disent sur place, avec le geste
+     pour reessayer. */
+  function accueillirSemaine() {
+    $('etatSemaine').hidden = true;
+    $('btnRecharger').hidden = true;
+    chargerSemaine().then(function () {
+      dessinerSemaine();
+      dessinerProgression();
+    }, function (er) {
+      if (er && (er.code === 403 || /acces a Plan non ouvert/.test(er.brut || ''))) {
+        location.replace('decouvrir-space.html');
+        return;
+      }
+      $('etatSemaine').textContent = t().semaineMuette + (er && er.message ? ' ' + er.message : '');
+      $('etatSemaine').hidden = false;
+      $('btnRecharger').textContent = t().reessayer;
+      $('btnRecharger').hidden = false;
+    });
+  }
+  $('btnRecharger').addEventListener('click', accueillirSemaine);
+
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();
+  accueillirSemaine();
 })();
 </script>
 </body>

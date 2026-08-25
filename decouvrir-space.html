@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gHmfjp9c7yqWTq7qDCEzcRYIzGpbjmSO4uYxuUSykz4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-EU+FCRUbNzVz/OwKYelCFGiqE9YYIe16htljWHdi1Ok='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Découvrir Mi Space</title>
 <meta name="description" content="Pose ta semaine, coche ce que tu tiens, vois où tu en es. Personne ne voit cette liste — pas même l’équipe du Roots.">
 <meta property="og:type" content="website">
@@ -22,6 +22,7 @@
 <link rel="stylesheet" href="roots.css">
 <link rel="stylesheet" href="space.css">
 <script src="roots.js"></script>
+<script src="roots-db.js"></script>
 <script src="garde.js"></script>
 </head>
 <body class="p-space" data-surface="claire">
@@ -53,46 +54,59 @@
 
 <div id="contenu" class="corps">
 
-  <section class="entree-haut" aria-labelledby="titrePlan">
-    <h1 id="titrePlan" data-t="titre">Pose ta semaine. Coche. Avance.</h1>
-    <p class="entree-dit" id="promesse"></p>
+  <section class="coche-scene" aria-labelledby="titreCoche">
+    <h1 id="titreCoche" data-t="titre">Ta première coche</h1>
 
-    <!-- Le fragment reprend les composants de l'ecran reel, en decor. Il est
-         retire de l'arbre d'accessibilite : ce qu'il montre est deja dit par
-         le titre et par la phrase au-dessus, et le repeter en lecture d'ecran
-         ferait entendre une liste de taches qui n'appartient a personne. -->
-    <div class="apercu" aria-hidden="true">
-      <span class="apercu-jour" data-t="apercuJour">Lundi</span>
-      <div class="apercu-ligne fait"><span class="apercu-case"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="apercu1">Finir la maquette du flyer</span></div>
-      <div class="apercu-ligne fait"><span class="apercu-case"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="apercu2">Appeler le studio</span></div>
-      <div class="apercu-ligne"><span class="apercu-case"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-t="apercu3">Relire le dossier</span></div>
-      <div class="apercu-jauge"><div class="part"></div></div>
-      <span class="apercu-compte" data-t="apercuCompte">5 sur 8</span>
+    <input type="checkbox" id="premiereCoche">
+    <label class="coche-tache" for="premiereCoche">
+      <span class="coche-case" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="coche-mot" data-t="tache">Ouvrir mon espace</span>
+    </label>
+
+    <p class="coche-fait" data-t="fait">Strictement privé — personne ne voit ce que tu y poses.</p>
+
+    <!-- La suite ne parait qu'une fois la case cochee : visibilite, foyer et
+         geste suivent l'etat de la case par la relation de voisinage. Les
+         etapes s'ouvrent une a une par le script ; une etape faite fige ses
+         commandes et remplit sa pastille. -->
+    <div class="coche-apres">
+      <ol class="coche-liste" id="listeInscription">
+        <li class="coche-etape" id="etapeCourriel" hidden>
+          <span class="coche-pastille" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div class="coche-corps">
+            <label class="coche-titre" for="courriel" data-t="tCourriel">Ton courriel</label>
+            <div class="coche-champ">
+              <input type="email" id="courriel" autocomplete="email" inputmode="email" spellcheck="false">
+              <button type="button" class="bouton-contour" id="btnCourriel" data-t="bCourriel">Recevoir le code</button>
+            </div>
+            <p class="coche-note" id="noteCourriel" role="status"></p>
+          </div>
+        </li>
+        <li class="coche-etape" id="etapeCode" hidden>
+          <span class="coche-pastille" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div class="coche-corps">
+            <label class="coche-titre" for="code" data-t="tCode">Le code reçu</label>
+            <div class="coche-champ">
+              <input type="text" id="code" autocomplete="one-time-code" inputmode="numeric" maxlength="6" spellcheck="false">
+              <button type="button" class="bouton-contour" id="btnCode" data-t="bCode">Vérifier</button>
+            </div>
+            <p class="coche-note" id="noteCode" role="status"></p>
+          </div>
+        </li>
+        <li class="coche-etape" id="etapeNotice" hidden>
+          <span class="coche-pastille" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <div class="coche-corps">
+            <span class="coche-titre" data-t="tNotice">Ton espace, à toi seul</span>
+            <p class="coche-note" id="texteNotice"></p>
+            <div class="coche-champ">
+              <button type="button" class="bouton-contour" id="btnOuvrir" data-t="bOuvrir">Ouvrir mon plan</button>
+            </div>
+            <p class="coche-note" id="noteOuvrir" role="status"></p>
+          </div>
+        </li>
+      </ol>
+      <a class="entree-acte" id="acteFinal" href="space.html" data-t="acte" hidden>C'est parti</a>
     </div>
-
-    <a class="entree-acte" href="space.html" data-t="acte">Ouvrir mon plan</a>
-    <p class="entree-sous" data-t="sousActe">Tu ouvres la fenêtre quand tu veux. Jamais l'inverse.</p>
-  </section>
-
-  <section class="entree-bloc" aria-labelledby="etJugement">
-    <span class="etiquette" id="etJugement" data-t="etJugement">Sans jugement</span>
-    <p data-t="ditJugement">Ce qui n'est pas fait ne passe pas au rouge. La semaine d'après ne traîne pas les manquements de la précédente : tu reprends ce que tu veux, tu laisses le reste.</p>
-  </section>
-
-  <section class="entree-bloc" aria-labelledby="etAllie">
-    <span class="etiquette" id="etAllie" data-t="etAllie">Un allié, si tu veux</span>
-    <p data-t="ditAllie">Montre où tu en es à quelqu'un en qui tu as confiance : ton allié voit ton avancement, pas ce que tu écris. Tu choisis qui, tu choisis quoi, et tu refermes quand tu veux.</p>
-    <p class="entree-appui" data-t="appuiAllie">Personne ne peut demander à voir. Ça s'offre, ça ne se réclame pas.</p>
-  </section>
-
-  <section class="entree-bloc entree-nu" aria-labelledby="etNu">
-    <span class="etiquette" id="etNu" data-t="etNu">Et bientôt, NU Space</span>
-    <p data-t="ditNu">La pastille Mi | NU, là-haut : le jour où elle bascule, ton plan devient un plan qu'on porte à plusieurs. Un binôme, un club, une action collective.</p>
-  </section>
-
-  <section class="entree-bloc entree-fin">
-    <a class="entree-acte" href="space.html" data-t="acte">Ouvrir mon plan</a>
-    <p class="entree-sous" data-t="gratuit">Gratuit pour la communauté NU.</p>
   </section>
 
 </div>
@@ -120,41 +134,39 @@
   var T = {
     fr: {
       saut: 'Aller au contenu',
-      titre: 'Pose ta semaine. Coche. Avance.',
-      promesseA: 'Et ', promesseB: 'personne ne voit cette liste', promesseC: ' — pas même l’équipe du Roots.',
-      apercuJour: 'Lundi', apercu1: 'Finir la maquette du flyer',
-      apercu2: 'Appeler le studio', apercu3: 'Relire le dossier',
-      apercuCompte: '5 sur 8',
-      acte: 'Ouvrir mon plan',
-      sousActe: 'Tu ouvres la fenêtre quand tu veux. Jamais l’inverse.',
-      etJugement: 'Sans jugement',
-      ditJugement: 'Ce qui n’est pas fait ne passe pas au rouge. La semaine d’après ne traîne pas les manquements de la précédente : tu reprends ce que tu veux, tu laisses le reste.',
-      etAllie: 'Un allié, si tu veux',
-      ditAllie: 'Montre où tu en es à quelqu’un en qui tu as confiance : ton allié voit ton avancement, pas ce que tu écris. Tu choisis qui, tu choisis quoi, et tu refermes quand tu veux.',
-      appuiAllie: 'Personne ne peut demander à voir. Ça s’offre, ça ne se réclame pas.',
-      etNu: 'Et bientôt, NU Space',
-      ditNu: 'La pastille Mi | NU, là-haut : le jour où elle bascule, ton plan devient un plan qu’on porte à plusieurs. Un binôme, un club, une action collective.',
-      gratuit: 'Gratuit pour la communauté NU.',
+      titre: 'Ta première coche',
+      tache: 'Ouvrir mon espace',
+      fait: 'Strictement privé — personne ne voit ce que tu y poses.',
+      acte: 'C’est parti',
+      tCourriel: 'Ton courriel',
+      bCourriel: 'Recevoir le code',
+      courrielIncomplet: 'Un courriel complet, s’il te plaît.',
+      codeParti: function (c) { return 'Le code est parti vers ' + c + '.'; },
+      tCode: 'Le code reçu',
+      bCode: 'Vérifier',
+      codeCourt: 'Le code fait six chiffres.',
+      tNotice: 'Ton espace, à toi seul',
+      bOuvrir: 'Ouvrir mon plan',
+      patiente: 'Un instant…',
       piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
     en: {
       saut: 'Skip to content',
-      titre: 'Set your week. Tick. Move on.',
-      promesseA: 'And ', promesseB: 'no one sees this list', promesseC: ' — not even the Roots team.',
-      apercuJour: 'Monday', apercu1: 'Finish the flyer layout',
-      apercu2: 'Call the studio', apercu3: 'Read the file again',
-      apercuCompte: '5 of 8',
-      acte: 'Open my plan',
-      sousActe: 'You open the window when you want to. Never the other way round.',
-      etJugement: 'No judgement',
-      ditJugement: 'What you didn’t do doesn’t turn red. Next week doesn’t drag last week’s misses along: you pick up what you want, you leave the rest.',
-      etAllie: 'An ally, if you want one',
-      ditAllie: 'Show where you stand to someone you trust: your ally sees your progress, not what you write. You choose who, you choose what, and you close it whenever you like.',
-      appuiAllie: 'No one can ask to see. It is offered, never claimed.',
-      etNu: 'And soon, NU Space',
-      ditNu: 'That Mi | NU pill up there: the day it switches, your plan becomes one you carry together. A partner, a club, a collective push.',
-      gratuit: 'Free for the NU community.',
+      titre: 'Your first tick',
+      tache: 'Open my space',
+      fait: 'Strictly private — no one sees what you put here.',
+      acte: 'Let’s go',
+      tCourriel: 'Your email',
+      bCourriel: 'Send me the code',
+      courrielIncomplet: 'A full email address, please.',
+      codeParti: function (c) { return 'The code is on its way to ' + c + '.'; },
+      tCode: 'The code you received',
+      bCode: 'Verify',
+      codeCourt: 'The code is six digits.',
+      tNotice: 'Your space, yours alone',
+      bOuvrir: 'Open my plan',
+      patiente: 'One moment…',
       piedPolitique: 'Privacy policy',
       toastNu: 'NU, the community side of Roots, is coming soon.'
     }
@@ -164,25 +176,15 @@
   var langue = Roots.langueRetenue(Roots.langueParDefaut());
   function t() { return T[langue] || T.fr; }
 
-  /* La promesse porte une moitie en gras : elle se compose en morceaux plutot
-     que par une chaine de balisage, qu'une traduction pourrait casser. */
-  function dessinerPromesse() {
-    var p = $('promesse');
-    p.textContent = '';
-    p.appendChild(document.createTextNode(t().promesseA));
-    var fort = document.createElement('strong');
-    fort.textContent = t().promesseB;
-    p.appendChild(fort);
-    p.appendChild(document.createTextNode(t().promesseC));
-  }
-
-  function appliquerLangue() {
+    function appliquerLangue() {
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
     });
-    dessinerPromesse();
+    if (inscription && inscription.notice) {
+      $('texteNotice').textContent = langue === 'en' ? inscription.notice.contenu_en : inscription.notice.contenu_fr;
+    }
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
 
@@ -207,6 +209,91 @@
     if (Roots.retenirLangue) Roots.retenirLangue(langue);
     appliquerLangue();
   }
+
+  /* ---- L'inscription, en taches ----
+     Chaque etape s'ouvre quand la precedente est faite ; une etape faite fige
+     ses commandes. La passerelle porte les appels ; l'ecran ne compose aucune
+     adresse et ne garde aucun secret. */
+  var inscription = { courriel: null, notice: null };
+
+  function etapeFaite(li) {
+    li.classList.add('faite');
+    li.querySelectorAll('input, button').forEach(function (x) { x.disabled = true; });
+  }
+  function ouvrirEtape(li, foyer) {
+    li.hidden = false;
+    if (foyer) foyer.focus();
+  }
+  function occuper(bouton, oui) {
+    bouton.disabled = oui;
+    bouton.setAttribute('aria-busy', oui ? 'true' : 'false');
+  }
+  function direNote(el, texte) { el.textContent = texte || ''; }
+
+  function demarrerInscription() {
+    if (Roots.db && Roots.db.estConnecte()) { montrerNotice(); return; }
+    ouvrirEtape($('etapeCourriel'), $('courriel'));
+  }
+
+  function montrerNotice() {
+    Roots.db.notice('plan').then(function (n) {
+      inscription.notice = n;
+      $('texteNotice').textContent = langue === 'en' ? n.contenu_en : n.contenu_fr;
+      ouvrirEtape($('etapeNotice'), $('btnOuvrir'));
+    }, function (e) { direNote($('noteOuvrir'), e.message); ouvrirEtape($('etapeNotice'), $('btnOuvrir')); });
+  }
+
+  $('btnCourriel').addEventListener('click', function () {
+    var c = $('courriel').value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c)) { direNote($('noteCourriel'), t().courrielIncomplet); $('courriel').focus(); return; }
+    direNote($('noteCourriel'), t().patiente);
+    occuper($('btnCourriel'), true);
+    Roots.db.demanderCodeCourriel(c).then(function () {
+      inscription.courriel = c;
+      direNote($('noteCourriel'), t().codeParti(c));
+      etapeFaite($('etapeCourriel'));
+      ouvrirEtape($('etapeCode'), $('code'));
+    }, function (e) {
+      occuper($('btnCourriel'), false);
+      direNote($('noteCourriel'), e.message);
+    });
+  });
+
+  $('btnCode').addEventListener('click', function () {
+    var v = $('code').value.replace(/\D/g, '');
+    if (v.length !== 6) { direNote($('noteCode'), t().codeCourt); $('code').focus(); return; }
+    direNote($('noteCode'), t().patiente);
+    occuper($('btnCode'), true);
+    Roots.db.ouvrirSessionParCode(inscription.courriel, v).then(function () {
+      direNote($('noteCode'), '');
+      etapeFaite($('etapeCode'));
+      montrerNotice();
+    }, function (e) {
+      occuper($('btnCode'), false);
+      direNote($('noteCode'), e.message);
+    });
+  });
+
+  $('btnOuvrir').addEventListener('click', function () {
+    if (!inscription.notice) { montrerNotice(); return; }
+    direNote($('noteOuvrir'), t().patiente);
+    occuper($('btnOuvrir'), true);
+    Roots.db.appeler('ouvrir_mon_acces_plan', { p_version: inscription.notice.version }).then(function () {
+      direNote($('noteOuvrir'), '');
+      etapeFaite($('etapeNotice'));
+      var a = $('acteFinal');
+      a.hidden = false;
+      a.focus();
+    }, function (e) {
+      occuper($('btnOuvrir'), false);
+      direNote($('noteOuvrir'), e.message);
+    });
+  });
+
+  var lanceur = document.getElementById('premiereCoche');
+  lanceur.addEventListener('change', function () {
+    if (lanceur.checked && $('etapeCourriel').hidden && $('etapeNotice').hidden) demarrerInscription();
+  });
 
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();

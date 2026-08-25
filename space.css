@@ -275,108 +275,71 @@
 }
 
 /* ==========================================================================
-   PAGE D'ENTREE — ce qu'on voit avant d'avoir un compte
-   ==========================================================================
-   Ce bloc sert decouvrir-plan.html, qui partage la feuille de l'outil plutot
-   que d'en charger une seconde : une page vue une fois ne justifie pas un
-   fichier de plus dans la coque.
+   PAGE D'ENTREE — LA PREMIERE COCHE
+   --------------------------------------------------------------------------
+   Une scene, une seule tache : la cocher revele l'acte. La revelation tient a
+   la relation de voisinage entre la case et le bloc qui suit — sortir l'un de
+   la section la casse. L'air vertical vient de la rampe --air-i*, les tailles
+   de la suite typographique, le mouvement des jetons de mouvement.
+   ========================================================================== */
 
-   Ce qu'il exige : que tout ce qui compte tienne au-dessus de 640 px de haut a
-   360 px de large. Ce qui suit se lit en defilant, et rien de ce qui suit n'est
-   necessaire pour comprendre l'offre.
-
-   Ce qu'il refuse : tout mouvement qui demarre seul. Aucune regle d'ici ne
-   porte d'animation ; l'apercu est fixe.
-*/
-
-:where(body.p-space) .entree-haut{ margin: 0 0 var(--air-i8) }
-
-:where(body.p-space) .entree-haut h1{
-  margin: 0 0 var(--air-i2);
-  font-family: var(--font-eclat);
-  font-weight: var(--w-xbold);
+:where(body.p-space) .coche-scene{
+  min-height: calc(100svh - var(--entete-h-rendue, 64px) - var(--barre-h, 80px));
+  display: grid; align-content: center; justify-items: center;
+  gap: var(--air-i6); text-align: center;
+  padding-block: var(--air-i8);
+}
+:where(body.p-space) .coche-scene h1{
+  font-family: var(--font-eclat); font-weight: var(--w-a-display);
   font-size: var(--t-h3);
-  line-height: var(--lh-28);
-  letter-spacing: -.02em;
-  color: var(--encre);
 }
-:where(body.p-space) .entree-dit{
-  margin: 0 0 var(--air-i6);
-  font-size: var(--t-body);
-  line-height: var(--lh-16);
-  color: var(--encre);
+:where(body.p-space) #premiereCoche{ position: absolute; opacity: 0 }
+:where(body.p-space) .coche-tache{
+  display: flex; align-items: center; gap: var(--esp-6); text-align: left;
+  background: var(--blanc); border-radius: var(--rayon-carte);
+  padding: var(--esp-6) var(--esp-8);
+  box-shadow: 0 18px 44px rgba(var(--ombre-teinte), .14);
+  cursor: pointer; max-width: 560px; width: 100%;
 }
-
-/* ---- L'apercu ------------------------------------------------------------
- * Il reprend les composants de l'ecran reel pour que ce qu'on montre soit ce
- * qu'on livre. Il n'est pas interactif : aucune de ses parties ne repond, et
- * il est hors de l'arbre d'accessibilite.
- */
-:where(body.p-space) .apercu{
-  background: var(--blanc);
-  border: var(--limite-ep) solid var(--gris-filet);
-  border-radius: var(--rayon-carte);
-  padding: var(--esp-4);
-  margin: 0 0 var(--air-i6);
+:where(body.p-space) .coche-case{
+  width: var(--cible-min); height: var(--cible-min); flex: none;
+  border-radius: var(--rayon-pilule); border: 3px solid var(--univers);
+  display: grid; place-items: center; position: relative;
+  transition: background-color var(--mvt-etat) var(--courbe-etat);
 }
-:where(body.p-space) .apercu-jour{
-  display: block;
-  margin-bottom: var(--air-i2);
-  font-size: var(--t-label);
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  font-weight: var(--w-bold);
+:where(body.p-space) .coche-case::after{
+  content: ""; position: absolute; inset: calc(-1 * var(--esp-2));
+  border-radius: var(--rayon-pilule); border: 2px solid var(--accent-plan);
+  opacity: .6;
+}
+:where(body.p-space) .coche-case svg{
+  width: var(--esp-6); height: var(--esp-6); color: var(--blanc); opacity: 0;
+}
+:where(body.p-space) .coche-mot{
+  font-family: var(--font-eclat); font-weight: var(--w-bold);
+  font-size: var(--t-h3);
+}
+:where(body.p-space) #premiereCoche:focus-visible ~ .coche-tache .coche-case{
+  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
+}
+:where(body.p-space) #premiereCoche:checked ~ .coche-tache .coche-case{ background: var(--univers) }
+:where(body.p-space) #premiereCoche:checked ~ .coche-tache .coche-case::after{ opacity: 0 }
+:where(body.p-space) #premiereCoche:checked ~ .coche-tache .coche-case svg{ opacity: 1 }
+:where(body.p-space) #premiereCoche:checked ~ .coche-tache .coche-mot{
+  text-decoration: line-through; text-decoration-thickness: 3px;
   color: var(--encre-discrete);
 }
-:where(body.p-space) .apercu-ligne{
-  display: flex;
-  align-items: center;
-  gap: var(--esp-3);
-  padding: var(--esp-2) 0;
-  font-size: var(--t-body);
-  line-height: var(--lh-16);
-  color: var(--encre);
+:where(body.p-space) .coche-fait{ font-size: var(--t-14); font-weight: var(--w-bold) }
+:where(body.p-space) .coche-apres{
+  visibility: hidden; opacity: 0; transform: translateY(var(--esp-2));
+  transition: opacity var(--mvt-apparition) var(--courbe-etat),
+              transform var(--mvt-apparition) var(--courbe-etat),
+              visibility 0s var(--mvt-apparition);
 }
-:where(body.p-space) .apercu-case{
-  flex: 0 0 auto;
-  width: var(--esp-6);
-  height: var(--esp-6);
-  border: 2px solid var(--univers);
-  border-radius: var(--rayon-champ);
-  background: var(--blanc);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-:where(body.p-space) .apercu-case svg{ width: var(--esp-4); height: var(--esp-4); display: none }
-:where(body.p-space) .apercu-ligne.fait .apercu-case{ background: var(--univers) }
-:where(body.p-space) .apercu-ligne.fait .apercu-case svg{ display: block; color: var(--blanc) }
-:where(body.p-space) .apercu-ligne.fait{ color: var(--encre-discrete) }
-:where(body.p-space) .apercu-jauge{
-  height: var(--esp-3);
-  background: var(--gris-aplat);
-  border-radius: var(--rayon-pilule);
-  overflow: hidden;
-  margin: var(--air-i3) 0 var(--air-i1);
-}
-:where(body.p-space) .apercu-jauge .part{
-  height: 100%;
-  width: 62%;
-  background: var(--univers);
-  border-radius: var(--rayon-pilule);
-}
-:where(body.p-space) .apercu-compte{
-  font-family: var(--font-chiffres);
-  font-size: var(--t-h4);
-  line-height: var(--lh-21);
-  font-weight: var(--w-bold);
-  color: var(--encre);
+:where(body.p-space) #premiereCoche:checked ~ .coche-apres{
+  visibility: visible; opacity: 1; transform: none; transition-delay: 0s;
 }
 
-/* ---- L'acte --------------------------------------------------------------
- * Un lien, pas un bouton : il conduit a un autre ecran. Son libelle nomme
- * l'acte — un libelle generique attire le clic et trompe sur la destination.
- */
 :where(body.p-space) .entree-acte{
   display: flex;
   align-items: center;
@@ -393,38 +356,69 @@
   font-size: var(--t-h4);
   text-decoration: none;
 }
-:where(body.p-space) .entree-sous{
-  margin: var(--air-i2) 0 0;
-  font-size: var(--t-sm);
-  line-height: var(--lh-14);
-  color: var(--encre-discrete);
-  text-align: center;
+
+
+/* ---- L'inscription en taches ---------------------------------------------
+ * La cascade suit la premiere coche : une etape par carte, la pastille se
+ * remplit quand l'etape est faite. Le bouton en contour est le geste sur
+ * place ; le seul bouton plein de l'ecran reste l'acte final.
+ */
+:where(body.p-space) [hidden]{ display: none !important }
+:where(body.p-space) .coche-liste{
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--air-i3);
+  width: 100%; max-width: 560px; text-align: left;
+}
+:where(body.p-space) .coche-etape{
+  display: grid; grid-template-columns: auto 1fr; gap: var(--esp-4);
+  align-items: start;
+  background: var(--blanc); border-radius: var(--rayon-carte);
+  padding: var(--esp-4) var(--esp-6);
+  box-shadow: 0 18px 44px rgba(var(--ombre-teinte), .10);
+}
+:where(body.p-space) .coche-pastille{
+  width: var(--esp-8); height: var(--esp-8); flex: none;
+  border-radius: var(--rayon-pilule); border: 2px solid var(--univers);
+  display: grid; place-items: center;
+  transition: background-color var(--mvt-etat) var(--courbe-etat);
+}
+:where(body.p-space) .coche-pastille svg{ width: var(--esp-4); height: var(--esp-4); color: var(--blanc); opacity: 0 }
+:where(body.p-space) .coche-etape.faite .coche-pastille{ background: var(--univers) }
+:where(body.p-space) .coche-etape.faite .coche-pastille svg{ opacity: 1 }
+:where(body.p-space) .coche-etape.faite .coche-titre{ color: var(--encre-discrete) }
+:where(body.p-space) .coche-corps{ display: grid; gap: var(--air-i2); min-width: 0 }
+:where(body.p-space) .coche-titre{ font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-h4) }
+:where(body.p-space) .coche-champ{ display: flex; flex-wrap: wrap; gap: var(--esp-2) }
+:where(body.p-space) .coche-champ input{
+  flex: 1 1 12ch; min-width: 0; min-height: var(--cible-min);
+  border: 2px solid var(--limite-controle); border-radius: var(--rayon-champ);
+  background: var(--blanc); color: var(--encre);
+  padding-inline: var(--esp-3); font: inherit; font-size: var(--t-body);
+}
+:where(body.p-space) .coche-champ input:focus-visible,
+:where(body.p-space) .bouton-contour:focus-visible{
+  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
+}
+:where(body.p-space) .bouton-contour{
+  min-height: var(--cible-min); padding-inline: var(--esp-4);
+  border: 2px solid var(--univers); border-radius: var(--rayon-pilule);
+  background: none; color: var(--univers);
+  font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-16);
+  cursor: pointer;
+}
+:where(body.p-space) .bouton-contour[disabled]{ opacity: .45; cursor: default }
+:where(body.p-space) .coche-note{ font-size: var(--t-14); color: var(--encre-discrete) }
+:where(body.p-space) .etat-semaine{ font-size: var(--t-14); color: var(--encre-discrete); margin-block: var(--air-i2) }
+
+@media (prefers-reduced-motion: reduce){
+  :where(body.p-space) .coche-case,
+  :where(body.p-space) .coche-pastille,
+  :where(body.p-space) .coche-apres{ transition: none }
 }
 
-/* ---- Les blocs qui suivent ---------------------------------------------- */
-:where(body.p-space) .entree-bloc{ margin: 0 0 var(--air-i8) }
-:where(body.p-space) .entree-bloc p{
-  margin: 0;
-  font-size: var(--t-body);
-  line-height: var(--lh-16);
-  color: var(--encre);
+@media (min-width: 1024px){
+  :where(body.p-space) .coche-scene h1{ font-size: var(--t-h2) }
+  :where(body.p-space) .coche-tache{ max-width: 680px; padding: var(--esp-8); gap: var(--esp-8) }
+  :where(body.p-space) .coche-mot{ font-size: var(--t-h2) }
+  :where(body.p-space) .coche-liste{ max-width: 680px }
 }
-:where(body.p-space) .entree-appui{
-  margin-top: var(--air-i2) !important;
-  font-size: var(--t-sm) !important;
-  line-height: var(--lh-14) !important;
-  color: var(--accent-plan) !important;
-  font-weight: var(--w-bold);
-}
-
-/* Le bloc qui annonce NU prend l'aplat de l'univers : ce qui n'existe pas
-   encore se distingue de ce qui existe, sans etre grise ni barre. */
-:where(body.p-space) .entree-nu{
-  background: var(--univers);
-  border-radius: var(--rayon-carte);
-  padding: var(--esp-6);
-}
-:where(body.p-space) .entree-nu > .etiquette,
-:where(body.p-space) .entree-nu p{ color: var(--blanc-casse) }
-
-:where(body.p-space) .entree-fin{ margin-bottom: var(--air-i6) }
