@@ -321,9 +321,9 @@
       barre.insertBefore(fabQ, droite);
       if (feuilleQ) feuilleQ.setAttribute('data-pose', 'barre');
       if (voileQ) voileQ.setAttribute('data-pose', 'barre');
-      /* Le lecteur et le groupe Mi | NU tiennent la meme rangee COLLANTE au
-         bas du tiroir : l'antenne vit DANS le lecteur, a la place du bouton
-         de lecture, et la marque prend la place liberee a sa droite. */
+      /* La marque Mi | NU et le lecteur tiennent la meme rangee COLLANTE au
+         bas du tiroir — la marque a gauche, le lecteur a droite, l'antenne
+         DANS le lecteur a la place du bouton de lecture. */
       var bacSections = document.getElementById('sections');
       if (bacSections) {
         var rangTiroir = bacSections.querySelector('.tiroir-radio');
@@ -332,13 +332,13 @@
           rangTiroir.className = 'tiroir-radio';
         }
         bacSections.insertBefore(rangTiroir, bacSections.querySelector('.pied-politique'));
+        var marqueQ = document.querySelector('.centre');
+        if (marqueQ) rangTiroir.appendChild(marqueQ);
         if (ilot) {
           rangTiroir.appendChild(ilot);
           ilot.classList.remove('cache');
           if (antenne) ilot.appendChild(antenne);
         }
-        var marqueQ = document.querySelector('.centre');
-        if (marqueQ) rangTiroir.appendChild(marqueQ);
       }
     }
 
@@ -882,14 +882,14 @@
       toastTimer = setTimeout(function () { el.classList.remove('visible'); }, 2600);
     }
 
-    /* Pastille Mi/NU : elle s'étire à l'ouverture et la barre passe en
-       « deploie », ce qui efface le reste du chrome le temps du choix.
-       À la fermeture, le reste du chrome ne revient qu'une fois la pastille
-       repliée — rendu ensemble, les deux se chevauchent le temps de la
-       transition. */
+    /* Pastille Mi/NU : elle s'étire à l'ouverture et, quand elle VIT DANS LA
+       BARRE, la barre passe en « deploie », ce qui efface le reste du chrome
+       le temps du choix ; à la fermeture, le reste ne revient qu'une fois la
+       pastille repliée. Déplacée hors de la barre — au tiroir —, elle ne
+       parle plus qu'à sa propre rangée : son porteur se relit à CHAQUE geste,
+       jamais retenu d'un état ancien. */
     var marque = document.getElementById('marque');
     if (marque) {
-      var inner = marque.closest('.chrome-inner');
       var sw = document.getElementById('switchMode');
       var nu = marque.querySelector('.nu');
       var repli = null;
@@ -897,6 +897,7 @@
         && matchMedia('(prefers-reduced-motion: reduce)').matches;
       var ouvrir = function (v) {
         marque.classList.toggle('ouvert', v);
+        var inner = marque.closest('.chrome-inner');
         if (!inner) return;
         clearTimeout(repli);
         if (v || calme) {
@@ -910,6 +911,7 @@
       marque.addEventListener('transitionend', function (e) {
         if (e.propertyName !== 'max-width') return;
         clearTimeout(repli);
+        var inner = marque.closest('.chrome-inner');
         if (inner && !marque.classList.contains('ouvert')) inner.classList.remove('deploie');
       });
       marque.addEventListener('click', function (e) {
@@ -1013,14 +1015,38 @@
     var minuteurNav = null;
     function replacerNav() {
       clearTimeout(minuteurNav);
-      minuteurNav = setTimeout(function () { ajusterNav(radio); }, 120);
+      minuteurNav = setTimeout(function () {
+        /* Le clavier qui se leve EST un redimensionnement : rearbitrer la
+           barre pendant qu'on ecrit dedans defait et refait le champ, le
+           foyer tombe et le clavier se referme aussitot. Tant que le foyer
+           vit dans la barre, l'arbitrage attend ; il repart au
+           redimensionnement suivant, que la fermeture du clavier declenche. */
+        var foyer = document.activeElement;
+        if (foyer && (foyer.tagName === 'INPUT' || foyer.tagName === 'TEXTAREA')
+            && foyer.closest('.chrome-inner')) return;
+        ajusterNav(radio);
+      }, 120);
     }
     window.addEventListener('resize', replacerNav);
     window.addEventListener('orientationchange', replacerNav);
     ajusterNav(radio);
-    /* La barre est arbitree : ce que la feuille retenait avant l'arbitrage
-       peut se montrer, deja a sa place. */
-    document.body.classList.add('nav-pret');
+    /* La barre ne se montre qu'ARBITREE SUR LES BONNES FONTES : mesuree sur
+       les fontes de substitution, la promotion se refuse a tort — le nav
+       parait au bas puis saute en haut, et la traversee d'univers fond vers
+       un chrome faux. Fontes deja la (navigation chaude) : le rideau se leve
+       dans le meme tour. Sinon : a leur arrivee, borne court — un rideau qui
+       attend le reseau retiendrait la page entiere. */
+    function leverLeRideau() {
+      if (document.body.classList.contains('nav-pret')) return;
+      ajusterNav(radio);
+      document.body.classList.add('nav-pret');
+    }
+    if (document.fonts && document.fonts.status !== 'loaded') {
+      document.fonts.ready.then(leverLeRideau);
+      setTimeout(leverLeRideau, 600);
+    } else {
+      document.body.classList.add('nav-pret');
+    }
 
     function dessinerSections() {
       /* Les libelles du chrome suivent la meme bascule que la liste : chaque

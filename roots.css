@@ -465,6 +465,9 @@ body[data-surface="ambiante"].nav-haut .verbe.actif{gap:7px;margin-inline:7px}
    chevauchent d'un demi-point de part et d'autre, et le logo suit son rapport
    d'une fois et demie sur cette encre reduite. Valeurs mesurees au rendu. */
 body.nav-haut .verbe{margin-inline:-.5px}
+/* La legende du verbe courant serre son icone de 3 px de plus : l'ecart visuel
+   vient du retrait du dessin dans sa boite, pas d'un ecart declare. */
+body.nav-haut .verbe.actif .verbe-dit{margin-inline-start:-3px}
 body.nav-haut .chrome-gauche{gap:16px}
 /* Sur la largeur d'un telephone couche, le groupe de gauche se resserre pour
    se detacher : l'ecart entre verbes perd deux points, et le logo garde son
@@ -509,7 +512,6 @@ body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p
    a droite, son dessin recule de deux points dans sa pastille. */
 body:not(.nav-haut) .verbe[data-verbe="roots"].actif .ico-rond svg{transform:translateX(-2px)}
 /* La paire courante se resserre de trois points de plus que les autres. */
-body:not(.nav-haut) .verbe.actif .verbe-dit{margin-top:-9px}
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
      d'univers sous l'ombre douce que la surface donne deja a son chrome,
@@ -526,16 +528,9 @@ body.nav-quete .chrome-inner{grid-template-columns:auto minmax(0,1fr) auto}
 body.nav-quete .chrome-inner>.fab.quete,body.nav-quete .chrome-inner>.quete-groupe{justify-self:center;width:100%}
 body.nav-quete .chrome-droite{gap:var(--esp-2)}
 /* Sur une barre a quete, le mot d'univers se tait : la pilule et sa phrase
-   suggeree portent le nom du monde, la pastille Mi | NU reste seule a
-   droite, a la place de la pastille de radio. */
+   suggeree portent le nom du monde — la marque vit au tiroir, dans la rangee
+   du lecteur. */
 body.nav-quete .centre .chrome-titre{display:none}
-/* La pastille Mi | NU deployee, dans une barre a quete, ne peut plus effacer
-   sa propre colonne : la pilule et le menu s'effacent le temps du choix, et
-   le groupe reste visible. */
-@media(max-width:639px){
-  body.nav-quete .chrome-inner.deploie .chrome-droite{opacity:1;pointer-events:auto;transform:none;width:auto;min-width:0}
-  body.nav-quete .chrome-inner.deploie .chrome-burger,body.nav-quete .chrome-inner.deploie .quete-groupe,body.nav-quete .chrome-inner.deploie>.fab.quete{opacity:0;pointer-events:none}
-}
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
    plancher nul, la pilule refuse de retrecir et pousse le menu hors de la
    ligne du chrome sur les largeurs moyennes. */
@@ -1634,23 +1629,44 @@ body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e2)}
    politique : il y est TOUJOURS visible — la regle prime sur l'etat range que
    le script retient pour d'autres poses — et il prend la rangee entiere,
    l'antenne au bout. */
-/* LA RANGEE COLLANTE DU TIROIR : le lecteur et le groupe Mi | NU tiennent la
-   meme ligne, collee au bas du panneau. L'antenne vit DANS le lecteur, le
-   bouton de lecture n'y a plus d'objet. Le pli est croise : la marque
-   OUVERTE replie le lecteur a gauche sur sa pastille d'antenne, et rendre la
-   marque rend le lecteur — memes jetons de pli que le logotype. */
-.menu-pop .tiroir-radio{position:sticky;bottom:var(--esp-2);z-index:1;display:flex;align-items:center;gap:var(--esp-2);margin:var(--esp-3) 0 var(--esp-1)}
+/* LA RANGEE COLLANTE DU TIROIR : la marque Mi | NU tient la GAUCHE de la
+   ligne, le lecteur la droite, colles au bas du panneau. L'antenne vit DANS
+   le lecteur, le bouton de lecture n'y a plus d'objet. Le pli est croise :
+   la marque OUVERTE replie le lecteur sur sa pastille d'antenne, et rendre
+   la marque rend le lecteur. La marque ne parle qu'a cette rangee — jamais
+   a la barre du chrome. */
+/* La rangee se tient en LEGER RETRAIT du tableau des entrees du tiroir :
+   2,5-95-2,5 contre la colonne des entrees, qui est son contenant. */
+.menu-pop .tiroir-radio{position:sticky;bottom:var(--esp-2);z-index:1;display:flex;align-items:center;gap:var(--esp-2);margin:var(--esp-3) 2.5% var(--esp-1)}
+/* La boite du centre s'efface dans la rangee : la marque devient l'enfant
+   direct de la ligne, et sa borne en pourcentage se resout contre ELLE —
+   posee sur une boite qui se mesure a son contenu, elle tournerait en rond. */
+.menu-pop .tiroir-radio .centre{display:contents}
 .menu-pop .tiroir-radio .toggle{flex:0 0 auto}
 /* Dans la rangee du tiroir, la pastille de marque prend la hauteur du
    plancher tactile : celle de l'ilot voisin, qui porte l'antenne, moins ses
    filets — deux pieces d'une meme rangee se lisent a la meme hauteur. Le mot
-   garde son corps et reste centre : seule la pastille grandit. */
+   garde son corps et reste centre : seule la pastille grandit.
+   DEPLOYEE, elle se borne a la place que la rangee lui laisse une fois
+   l'ilot replie sur son antenne : sans cette borne, son etirement creverait
+   les marges internes du panneau. Les deux bornes portent un pourcentage :
+   deux longueurs ne s'animent entre elles que si leurs unites se melangent. */
 .menu-pop .tiroir-radio .toggle{--pastille-d:var(--cible-min)}
-.menu-pop .languette-radio{display:flex;width:auto;max-width:none;margin:0;opacity:1;transform:none;flex:1 1 auto;min-width:0;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);overflow:hidden;transition:max-width var(--mvt-parcours) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
+.menu-pop .tiroir-radio .toggle.ouvert{max-width:calc(100% - var(--cible-min) - var(--limite-ep) * 2 - var(--esp-2))}
+/* Deployee dans une rangee etroite, la marque resserre son interieur : les
+   ecarts descendent d'un cran, le mot garde son corps. */
+.menu-pop .tiroir-radio .toggle .reste{gap:var(--esp-1);padding-right:var(--esp-2)}
+.menu-pop .tiroir-radio .toggle.ouvert .mot{width:calc(var(--pastille-d) - var(--esp-2))}
+.menu-pop .tiroir-radio .toggle .sub{font-size:var(--t-note)}
+/* Le pli des DEUX pieces suit la meme horloge, geste par geste : l'aller —
+   la marque s'etire, l'ilot se replie — au mouvement de parcours ; le retour
+   au mouvement d'apparition, plus court. Deux horloges differentes sur une
+   meme rangee font se chevaucher les deux pieces. */
+.menu-pop .languette-radio{display:flex;width:auto;max-width:calc(100% - var(--cible-min) - var(--esp-2));margin:0;opacity:1;transform:none;flex:1 1 auto;min-width:0;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);overflow:hidden;transition:max-width var(--mvt-apparition) var(--courbe-sortie),opacity var(--mvt-etat) var(--courbe-etat)}
 /* Replie, l'ilot se resserre sur sa seule antenne : sa largeur est celle de
    la cible plus un souffle egal des deux cotes — bornee dans les deux sens,
    sinon la rangee en flexion le retrecirait sous l'antenne et la rognerait. */
-.menu-pop .tiroir-radio:has(.toggle.ouvert) .languette-radio{min-width:calc(var(--cible-min) + var(--esp-1) * 2 + var(--limite-ep) * 2);max-width:calc(var(--cible-min) + var(--esp-1) * 2 + var(--limite-ep) * 2);opacity:.85;gap:0;padding-left:var(--esp-1);padding-right:var(--esp-1)}
+.menu-pop .tiroir-radio:has(.toggle.ouvert) .languette-radio{min-width:calc(var(--cible-min) + var(--limite-ep) * 2);max-width:calc(0% + var(--cible-min) + var(--limite-ep) * 2);opacity:.85;gap:0;padding-left:0;padding-right:0;transition:max-width var(--mvt-parcours) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
 .menu-pop .languette-radio .lecteur-btn{display:none}
 .menu-pop .languette-radio.cache{display:flex}
 .menu-pop .languette-radio.parait{opacity:1;transform:none}
@@ -1995,11 +2011,15 @@ body.nav-quete .feuille-bas[data-pose="barre"] .champ-quoi > input{display:none}
    egal, c'est l'ordre qui tranche. */
 @media(min-width:640px) and (max-width:800px){body.nav-quete .quete-groupe,body.nav-quete .fab.quete{max-width:252px}}
 /* Sur un telephone droit, la barre ne porte que trois pieces, toutes connues :
-   la pilule prend la ligne entiere et ne laisse a ses voisines qu'un ecart
-   franc de part et d'autre. */
+   la pilule prend la ligne entiere et laisse 15 px d'ENCRE A ENCRE de part et
+   d'autre — l'ecart se compte du dessin visible de ses voisines, pas de leurs
+   boites : le logo remplit presque la sienne (retrait rendu 1,25 px) quand le
+   glyphe du burger rentre de 11,25 px ; des ecarts de boite egaux paraissent
+   donc inegaux. Les deux marges portent chacune 15 moins le retrait mesure de
+   leur voisine. */
 @media(max-width:639px){
-  body.nav-quete .chrome-inner{column-gap:var(--esp-4)}
-  body.nav-quete .quete-groupe,body.nav-quete .fab.quete{max-width:none}
+  body.nav-quete .chrome-inner{column-gap:0}
+  body.nav-quete .chrome-inner > .quete-groupe,body.nav-quete .chrome-inner > .fab.quete{max-width:none;margin-left:13.75px;margin-right:3.75px;justify-self:stretch;width:auto}
 }
 /* Le disque a loupe, dessine aux jetons : un anneau et son manche evides dans
    un disque d'univers. Il est decoratif — le nom du bouton reste son texte. */
@@ -2014,9 +2034,14 @@ body.nav-quete .fab.quete::after{content:'';flex:0 0 auto;width:38px;height:38px
    la ligne du chrome, jamais plus que l'ecran ne laisse entre ses deux
    bords ; son voile passe sous la barre : un panneau ne couvre jamais le
    meuble qui l'ouvre. */
-.feuille-bas[data-pose="barre"]{bottom:auto;top:calc(var(--entete-h-rendue) + var(--esp-1));left:auto;right:var(--bord);width:min(var(--col),calc(100% - var(--bord) * 2));z-index:19;border-radius:var(--rayon-carte);max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-8));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-8));padding-top:var(--feuille-marge);padding-bottom:var(--esp-6);box-shadow:0 18px 44px rgba(var(--ombre-teinte),.28);transform-origin:top right;transform:translate(0,-8px);opacity:0;pointer-events:none;transition:transform var(--mvt-apparition) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
-.feuille-bas[data-pose="barre"].visible{transform:translate(0,0);opacity:1;pointer-events:auto}
+.feuille-bas[data-pose="barre"]{bottom:auto;top:calc(var(--entete-h-rendue) + var(--esp-1));left:50%;right:auto;width:min(var(--col),calc(100% - var(--bord) * 2));z-index:19;border-radius:var(--rayon-carte);max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-8));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-8));padding-top:var(--feuille-marge);padding-bottom:var(--esp-6);box-shadow:0 18px 44px rgba(var(--ombre-teinte),.28);transform-origin:top center;transform:translate(-50%,-8px);opacity:0;pointer-events:none;transition:transform var(--mvt-apparition) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
+.feuille-bas[data-pose="barre"].visible{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .feuille-bas[data-pose="barre"] .poignee{display:none}
+/* Sur un telephone couche, la mesure de lecture entiere mange l'ecran court :
+   la feuille se tient aux quatre cinquiemes, toujours centree sous la barre. */
+@media(min-width:640px) and (max-height:599px){
+  .feuille-bas[data-pose="barre"]{width:min(calc(var(--col) * 4 / 5),calc(100% - var(--bord) * 2))}
+}
 /* Le lien de politique se centre dans la bande qui separe le bas du geste du
    bas de la feuille : autant d'air au-dessus de lui que le creux de pied en
    laisse au-dessous. */

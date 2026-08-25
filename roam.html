@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-T0YgDcJ1lipld1h+0kom4eONxO+9TlEVsKKP6llrvhE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-vr5elit94q7hl1nIWkP0BJNH1DQvt2VDZFp3L4kkDts='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -1845,20 +1845,32 @@
     if (!f) return;
     function poser() {
       /* Ce qui est publie n'est pas la hauteur du geste mais la distance qui
-         separe le BAS DE LA FENETRE du HAUT du geste : elle contient sa
-         hauteur, son decalage — un pourcentage ici, une barre la — et l'aire
-         sure. Une seule mesure couvre donc les deux mises en page.
-         Un geste monte dans la barre du chrome ne reserve RIEN au bas : la
-         distance mesuree depuis le haut de l'ecran gonflerait le pied de la
-         page d'une fenetre entiere. */
+         separe le BAS DE LA FENETRE du HAUT de ce qui occupe le bas. Geste
+         dans la page : lui-meme — sa hauteur, son decalage, l'aire sure.
+         Geste monte dans la barre du chrome : le bas appartient alors a la
+         barre de verbes quand elle s'y tient, et c'est SON haut qui se
+         mesure — sans elle, rien, et la distance mesuree depuis le geste
+         gonflerait le pied de la page d'une fenetre entiere. */
       var auChrome = !!f.closest('.chrome-inner');
-      document.body.style.setProperty('--geste-bas', auChrome ? '0px'
-        : Math.max(0, Math.round(window.innerHeight - f.getBoundingClientRect().top)) + 'px');
+      var bas = 0;
+      if (!auChrome) {
+        bas = window.innerHeight - f.getBoundingClientRect().top;
+      } else if (!document.body.classList.contains('nav-haut')) {
+        var barreVerbes = document.querySelector('.chrome-bas');
+        if (barreVerbes && getComputedStyle(barreVerbes).display !== 'none') {
+          bas = window.innerHeight - barreVerbes.getBoundingClientRect().top;
+        }
+      }
+      document.body.style.setProperty('--geste-bas',
+        Math.max(0, Math.round(bas)) + 'px');
     }
     poser();
     if (window.ResizeObserver) new ResizeObserver(poser).observe(f);
     window.addEventListener('resize', poser);
     window.addEventListener('scroll', poser, { passive: true });
+    /* La barre annonce chaque nouvel etat — montee ou descendue, le bas de
+       la page suit dans le meme tour. */
+    document.addEventListener('chrome:barre', poser);
   }
 
   /* LA HAUTEUR RENDUE DU GROUPE DE PROPOS. Il se pose a une fraction de la
