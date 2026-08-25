@@ -461,32 +461,38 @@ body.nav-haut .verbe:not(.actif):focus-visible .verbe-dit{opacity:1;transition-d
    l'encre pastille-legende du rang des autres ecrans. Valeurs mesurees au
    rendu. */
 body[data-surface="ambiante"].nav-haut .verbe.actif{gap:7px;margin-inline:7px}
-body.nav-haut .chrome-gauche{gap:calc(var(--esp-6) + var(--esp-1) / 2)}
+/* L'intervalle d'encre entre verbes a perdu cinq points : les boites se
+   chevauchent d'un demi-point de part et d'autre, et le logo suit son rapport
+   d'une fois et demie sur cette encre reduite. Valeurs mesurees au rendu. */
+body.nav-haut .verbe{margin-inline:-.5px}
+body.nav-haut .chrome-gauche{gap:16px}
 /* Sur la largeur d'un telephone couche, le groupe de gauche se resserre pour
    se detacher : l'ecart entre verbes perd deux points, et le logo garde son
    rapport d'une fois et demie sur cette encre reduite. La pilule de quete
    cede un cinquieme de sa longueur au profit du groupe central. Valeurs
    mesurees au rendu. */
 @media(max-width:800px){
-  body.nav-haut #superNav{gap:2px}
-  body.nav-haut .chrome-gauche{gap:19px}
+  body.nav-haut .verbe{margin-inline:-1.5px}
+  body.nav-haut .chrome-gauche{gap:14px}
 }
-/* LA BARRE BASSE DU TELEPHONE DEBOUT, REGLEE A L'ENCRE. La reference est
-   l'air entre le dessin d'une icone et le haut de la barre : 16px d'encre —
-   il se reconduit sous les legendes, avant le bord de l'ecran. La pastille
-   du verbe courant, qui emplit sa boite, s'en tient a la MOITIE en haut, et
-   sa legende a la MOITIE en bas : la paire courante est plus grande, elle
-   prend son air sur les deux bords a parts egales. Les ecarts icone-legende
-   se resserrent — 14px d'encre au repos, 5,5 sous la pastille — et l'ecart
-   pastille-legende absorbe ce que ces contraintes laissent. Les ecarts de
-   boite ci-dessous rendent ces encres-la, mesurees au rendu ; la hauteur de
-   barre en decoule au lieu de la commander. */
+/* LA BARRE BASSE DU TELEPHONE DEBOUT : TROIS COLONNES D'UNIVERS. Chaque
+   verbe porte l'encre de SON univers, icone et legende ; le verbe courant ne
+   porte plus de pastille — c'est sa COLONNE entiere qui prend l'aplat de
+   l'univers, un echelon sous la couleur de la pastille du logotype, et son
+   encre passe au blanc. Toutes les paires gardent la meme taille et le meme
+   alignement : l'air au-dessus des dessins et sous les legendes est celui
+   juge bon (16px d'encre), l'ecart icone-legende rend ~12px d'encre. L'air
+   vit DANS les colonnes, pas sur la barre : l'aplat courant touche les deux
+   bords, zone d'encoche comprise. Valeurs mesurees au rendu. */
 @media(max-width:639px){
-  body:not(.nav-haut) .chrome-bas{min-height:0;padding-top:1px;padding-bottom:calc(0px + var(--safe-bas))}
-  body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0}
-  body:not(.nav-haut) .verbe .verbe-dit{margin-top:-3.5px}
-  body:not(.nav-haut) .verbe.actif .ico-rond{margin-top:4px}
-  body:not(.nav-haut) .verbe.actif .verbe-dit{margin-top:.5px}
+  body:not(.nav-haut) .chrome-bas{min-height:0;padding:0}
+  body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:2px;padding-bottom:calc(9.5px + var(--safe-bas))}
+  body:not(.nav-haut) .verbe .verbe-dit{margin-top:-6px}
+  body:not(.nav-haut) .verbe[data-verbe="roots"]{color:var(--vert-e2)}
+  body:not(.nav-haut) .verbe[data-verbe="roam"]{color:var(--rouge-e2)}
+  body:not(.nav-haut) .verbe[data-verbe="space"]{color:var(--roots-noir)}
+  body:not(.nav-haut) .verbe.actif{background:var(--univers-e1);color:var(--blanc)}
+  body:not(.nav-haut) .verbe.actif .ico-rond{background:none;color:inherit}
 }
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
    plancher nul, la pilule refuse de retrecir et pousse le menu hors de la
@@ -1661,11 +1667,10 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
 @media(min-width:640px) and (min-height:600px){
   :root{--marge:15%;--site-w:70%;--marge-chrome:10%;--chrome-w:80%;--grille-colonnes:8}
 }
+/* Des l'ordinateur, la piste tient son cran le plus serre et ne bouge plus :
+   un seul palier de 1024 aux tres grands ecrans. Le chrome garde le sien. */
 @media(min-width:1024px) and (min-height:600px){
-  :root{--marge:20%;--site-w:60%;--marge-chrome:15%;--chrome-w:70%;--grille-colonnes:12;--gouttiere-grille:var(--esp-6)}
-}
-@media(min-width:1600px) and (min-height:600px){
-  :root{--marge:23%;--site-w:54%}
+  :root{--marge:23%;--site-w:54%;--marge-chrome:15%;--chrome-w:70%;--grille-colonnes:12;--gouttiere-grille:var(--esp-6)}
 }
 }
 
@@ -1686,7 +1691,7 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
 
 /* Palier 1 — le super-nav a rejoint la barre : il n'est plus une barre, il est
    une rangee de verbes. */
-body.nav-haut .chrome-bas{position:static;left:auto;right:auto;bottom:auto;transform:none;width:auto;min-height:0;height:auto;padding:0;background:none;border:none;box-shadow:none;display:flex;align-items:center;gap:var(--esp-1)}
+body.nav-haut .chrome-bas{position:static;left:auto;right:auto;bottom:auto;transform:none;width:auto;min-height:0;height:auto;padding:0;background:none;border:none;box-shadow:none;display:flex;align-items:center;gap:0}
 body.nav-haut .verbe{flex:0 0 auto;padding:0}
 /* Monte, le disque du verbe se reduit au plancher de cible. L'encre doit se
    reduire avec lui, sinon le pictogramme touche les bords : la part qu'il
