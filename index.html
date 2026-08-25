@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ytIYxzQlJJ6rNmbKBNq3pLY5zbSJOuZuBKpM57eJODo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-tCSYUOuJmXG3WReowLLz/bedsR/WghglrPvcoMQxz7g='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="description" content="Réserver une place au jardin ou au bureau, commander à la carte, retrouver sa réservation. Le Roots, où que tu sois.">
 <meta property="og:type" content="website">
@@ -68,7 +68,7 @@
 
 <!-- Super-nav des 3 verbes -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
   <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
@@ -357,7 +357,7 @@
     }
   };
 
-  var VERBES = { plan: 'Space', roots: 'Roots', roam: 'Roam' };
+  var VERBES = { space: 'Space', roots: 'Roots', roam: 'Roam' };
   var ORDRE_CRENEAUX = ['matin', 'apres_midi', 'journee'];
   var ICONE_MODE = { coworking: 'i-esp-coworking', partage: 'i-esp-partage',
                    reunion_privee: 'i-esp-reunion_privee', prive: 'i-esp-reunion_privee' };

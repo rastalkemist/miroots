@@ -1,0 +1,247 @@
+/* Mi | NU Plan — regles propres a l'univers Plan.
+ *
+ * Cette feuille se charge APRES roots-tokens.css et roots.css et ne fait que
+ * les consommer : elle ne declare aucune valeur litterale, aucune couleur,
+ * aucune taille. Toute valeur vient d'un jeton. Les deux seules proprietes
+ * personnalisees qu'elle introduit sont des alias de ROLE — elles pointent
+ * vers un echelon existant et n'en creent aucun.
+ *
+ * Ce qu'elle exige : les jetons de rampe d'air --air-i1, i2, i3, i6, i8 — un
+ * cran hors de cette rampe casse le rythme vertical de l'interface — et les
+ * trois roles du gris, qui ne se confondent pas : --gris-aplat pour une
+ * surface, --gris-filet pour un separateur, --limite-controle pour ce qui
+ * identifie un controle. Seul le troisieme releve du seuil de 3:1.
+ *
+ * Ce qu'elle refuse : l'or en encre et l'or en filet. Sur un fond clair, aucun
+ * echelon de la famille jaune n'atteint 3:1 — un aplat jaune ne se detache pas
+ * de la page. L'or ne porte donc que du texte a l'interieur d'un aplat, et cet
+ * aplat porte un filet d'une famille qui, elle, se detache.
+ *
+ * Ce qui casserait si on le modifiait : sans son trait, l'aplat de la section
+ * financiere ne se distingue plus du fond de page ; remplacer l'encre des aplats
+ * noirs par autre chose que --blanc ferait tomber le contraste sous AA.
+ */
+
+/* ---- Univers -------------------------------------------------------------
+ * --univers pilote deja, dans le tronc commun, les aplats de bouton, les
+ * bordures de champ actives, le trait du chrome et l'element actif du menu.
+ * L'univers Plan le porte au noir ; l'encre du corps reste noire elle aussi,
+ * et le fond de page reste clair.
+ */
+:where(body.p-space){
+  --univers: var(--roots-noir);
+  --univers-e1: var(--roots-noir);
+  --univers-e3: var(--terre-e3);
+  --univers-e5: var(--gris-ilot);
+  --univers-e1-rgb: var(--noir-rgb);
+  --univers-e3-rgb: var(--terre-e3-rgb);
+  --univers-rgb: var(--noir-rgb);
+  --encre: var(--roots-noir);
+  --accent-plan: var(--terre-e3);
+  --finance-fond: var(--roots-jaune);
+}
+
+/* ---- En-tete de l'ecran --------------------------------------------------
+ * Aplat noir, encre blanche. Mesure sur les jetons : 17,40 — AAA.
+ */
+:where(body.p-space) .entete-plan{
+  background: var(--univers);
+  border-radius: var(--rayon-carte);
+  padding: var(--esp-6);
+  margin: 0 0 var(--air-i6);
+  text-align: left;
+}
+:where(body.p-space) .entete-plan h1{
+  margin: 0 0 var(--air-i2);
+  color: var(--blanc);
+  font-size: var(--t-h2);
+  line-height: var(--lh-28);
+}
+:where(body.p-space) .entete-plan .sous-titre{
+  margin: 0;
+  color: var(--blanc);
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+}
+
+/* ---- Blocs --------------------------------------------------------------- */
+:where(body.p-space) .bloc-plan{ margin: 0 0 var(--air-i8) }
+:where(body.p-space) .bloc-plan > .etiquette{ display: block }
+
+/* ---- Poseur d'engagement -------------------------------------------------
+ * Trois gestes : ecrire, choisir un jour, ajouter. Le jour est facultatif —
+ * un engagement sans jour appartient a la semaine, pas a un jour.
+ */
+:where(body.p-space) .jours{
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+  margin: var(--air-i2) 0 var(--air-i3);
+}
+:where(body.p-space) .jour{
+  min-width: var(--cible-min);
+  min-height: var(--cible-min);
+  padding: 0 var(--esp-3);
+  background: var(--gris-aplat);
+  border: var(--limite-ep) solid transparent;
+  border-radius: var(--rayon-champ);
+  font-family: var(--font-corps);
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+  font-weight: var(--w-bold);
+  color: var(--encre);
+  cursor: pointer;
+}
+:where(body.p-space) .jour[aria-pressed="true"]{
+  background: var(--univers);
+  border-color: var(--univers);
+  color: var(--blanc);
+}
+
+/* ---- Liste de la semaine -------------------------------------------------
+ * Un groupe par jour, plus un groupe pour ce qui n'a pas de jour. Un groupe
+ * vide ne se rend pas : une case vide n'informe de rien.
+ */
+:where(body.p-space) .groupe-jour{ margin: 0 0 var(--air-i6) }
+:where(body.p-space) .groupe-jour > .etiquette{ margin-bottom: var(--air-i2) }
+:where(body.p-space) .taches{ display: grid; gap: var(--esp-2); margin: 0; padding: 0; list-style: none }
+
+:where(body.p-space) .tache{
+  display: flex;
+  align-items: flex-start;
+  gap: var(--esp-3);
+  width: 100%;
+  min-height: var(--cible-min);
+  padding: var(--esp-3) var(--esp-4);
+  text-align: left;
+  background: var(--blanc);
+  border: var(--limite-ep) solid var(--gris-filet);
+  border-radius: var(--rayon-module);
+  font-family: var(--font-corps);
+  font-size: var(--t-body);
+  line-height: var(--lh-16);
+  color: var(--encre);
+  cursor: pointer;
+}
+:where(body.p-space) .tache:focus-visible{ border-color: var(--univers) }
+
+/* La case est un aplat, pas une icone du sprite commun : son bord porte
+ * l'information, donc il se detache du blanc de la carte.
+ */
+:where(body.p-space) .tache .case{
+  flex: 0 0 auto;
+  width: var(--esp-6);
+  height: var(--esp-6);
+  margin-top: var(--esp-1);
+  border: var(--limite-ep-b) solid var(--univers);
+  border-radius: var(--rayon-champ);
+  background: var(--blanc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+:where(body.p-space) .tache .case svg{ width: var(--esp-4); height: var(--esp-4); display: none }
+:where(body.p-space) .tache[aria-pressed="true"] .case{ background: var(--univers) }
+:where(body.p-space) .tache[aria-pressed="true"] .case svg{ display: block; color: var(--blanc) }
+:where(body.p-space) .tache[aria-pressed="true"] .engagement{ color: var(--encre-discrete) }
+:where(body.p-space) .engagement{ flex: 1 1 auto }
+
+/* ---- Progression ---------------------------------------------------------
+ * La jauge informe par sa longueur, donc son aplat se detache du fond de sa
+ * gouttiere. Le nombre est ecrit a cote : la couleur ne dit jamais seule.
+ */
+:where(body.p-space) .jauge{
+  height: var(--esp-3);
+  background: var(--gris-aplat);
+  border-radius: var(--rayon-pilule);
+  overflow: hidden;
+  margin: var(--air-i2) 0;
+}
+:where(body.p-space) .jauge .part{
+  height: 100%;
+  background: var(--univers);
+  border-radius: var(--rayon-pilule);
+}
+:where(body.p-space) .compte{
+  font-family: var(--font-chiffres);
+  font-size: var(--t-h4);
+  line-height: var(--lh-21);
+  font-weight: var(--w-bold);
+  color: var(--encre);
+}
+:where(body.p-space) .compte-dit{
+  display: block;
+  margin-top: var(--air-i1);
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+  color: var(--encre-discrete);
+}
+
+/* ---- Section financiere --------------------------------------------------
+ * Aplat or, encre noire : 11,26 — AAA. L'aplat lui-meme ne se detache pas du
+ * fond clair (1,49) ; le filet noir le borne, et c'est lui qui informe.
+ */
+:where(body.p-space) .bloc-finance{
+  background: var(--finance-fond);
+  border: var(--limite-ep-b) solid var(--univers);
+  border-radius: var(--rayon-carte);
+  padding: var(--esp-6);
+  color: var(--encre);
+}
+:where(body.p-space) .bloc-finance > .etiquette{ color: var(--encre) }
+:where(body.p-space) .bloc-finance .montant{
+  font-family: var(--font-chiffres);
+  font-size: var(--t-h3);
+  line-height: var(--lh-28);
+  font-weight: var(--w-bold);
+  color: var(--encre);
+  margin: var(--air-i2) 0 0;
+}
+:where(body.p-space) .bloc-finance .dit{
+  display: block;
+  margin-top: var(--air-i2);
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+  color: var(--encre);
+}
+
+/* ---- Accent -------------------------------------------------------------
+ * Le terracotta atteint 4,56 en encre sur fond clair : il porte un mot, une
+ * mention, un geste. Il ne porte pas un paragraphe de lecture longue, qui
+ * demande AAA.
+ */
+:where(body.p-space) .accent{ color: var(--accent-plan); font-weight: var(--w-bold) }
+
+/* ---- Etat vide ----------------------------------------------------------- */
+:where(body.p-space) .vide{
+  padding: var(--esp-6);
+  background: var(--gris-aplat);
+  border-radius: var(--rayon-module);
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+  color: var(--encre-discrete);
+}
+
+/* ---- Saisie dans la section financiere ----------------------------------
+ * Le montant se note sur l'aplat or : l'encre reste noire, et la limite du
+ * champ prend l'encre de son papier — ici le noir, qui rend 16,83 contre l'or.
+ */
+:where(body.p-space) .champ-finance{ margin: var(--air-i3) 0 var(--air-i2) }
+:where(body.p-space) .champ-finance label{ color: var(--encre) }
+:where(body.p-space) .champ-finance input{
+  background: var(--blanc);
+  border: var(--limite-ep) solid var(--univers);
+}
+:where(body.p-space) .bouton-finance{
+  width: 100%;
+  min-height: var(--cible-min);
+  background: var(--univers);
+  border: none;
+  border-radius: var(--rayon-pilule);
+  padding: 0 var(--esp-4);
+  font-family: var(--font-eclat);
+  font-size: var(--t-body);
+  font-weight: var(--w-medium);
+  color: var(--blanc);
+  cursor: pointer;
+}

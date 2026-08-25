@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZDQtCi2L4eptNFxi4+6+/ow3HEMHXbv4+dIEEbY8QlA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Plan</title>
+<meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi Roots">
+<meta property="og:title" content="Mi Plan">
+<meta property="og:description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
+<meta property="og:locale" content="fr_BJ">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="theme-color" content="#1A1A1A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="space.css">
+<script src="roots.js"></script>
+<script src="garde.js"></script>
+</head>
+<body class="p-space" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="plan.html">Plan</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="corps">
+
+  <header class="entete-plan">
+    <h1 data-t="titre">Ma semaine</h1>
+    <p class="sous-titre" id="sousTitre"></p>
+  </header>
+
+  <section class="bloc-plan" aria-labelledby="etPoser">
+    <span class="etiquette" id="etPoser" data-t="etPoser">Poser un engagement</span>
+    <div class="champ">
+      <label for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
+      <input type="text" id="engagement" maxlength="120" autocomplete="off" data-p="phEngagement" placeholder="Finir la maquette du flyer…">
+    </div>
+    <span class="etiquette" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
+    <div class="jours" id="jours" role="group" aria-labelledby="etQuand"></div>
+    <button class="bouton-confirmer" id="btnAjouter" data-t="ajouter">Ajouter</button>
+  </section>
+
+  <section class="bloc-plan" aria-labelledby="etSemaine">
+    <span class="etiquette" id="etSemaine" data-t="etSemaine">Ma semaine</span>
+    <div id="listeSemaine"></div>
+    <p class="vide" id="videSemaine" data-t="vide" hidden>Rien de posé pour l'instant. Écris un engagement là-haut — un seul suffit pour commencer.</p>
+  </section>
+
+  <section class="bloc-plan" id="blocOu" aria-labelledby="etOu">
+    <span class="etiquette" id="etOu" data-t="etOu">Où j'en suis</span>
+    <p class="compte" id="compte"></p>
+    <div class="jauge" id="jauge" role="progressbar" aria-labelledby="etOu" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+      <div class="part" id="jaugePart" style="width:0%"></div>
+    </div>
+    <span class="compte-dit" id="compteDit"></span>
+  </section>
+
+  <section class="bloc-plan bloc-finance" aria-labelledby="etRevenus">
+    <span class="etiquette" id="etRevenus" data-t="etRevenus">Mes revenus</span>
+    <p class="montant" id="montant"></p>
+    <div class="champ champ-finance">
+      <label for="revenu" data-t="labRevenu">Noter un montant</label>
+      <input type="text" id="revenu" inputmode="numeric" autocomplete="off" maxlength="12" data-p="phRevenu" placeholder="0">
+    </div>
+    <button class="bouton-finance" id="btnRevenu" data-t="noter">Noter</button>
+    <span class="dit" id="ditRevenus" data-t="ditRevenus">Ce chiffre ne quitte pas ton téléphone.</span>
+  </section>
+
+</div>
+
+<footer class="pied">
+  <a href="confidentialite.html" data-t="piedPolitique">Politique de confidentialité</a>
+</footer>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe actif" aria-current="true" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<template id="tplCoche"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* DECOR. Jeu de reponses fige : formes reelles, valeurs fictives. Il tient
+     la place de la source de donnees et porte exactement les champs que
+     l'ecran lit — engagement, jour, fait_le, ordre. Remplacer PlanDonnees par
+     la source reelle ne demande aucune retouche a l'ecran, a condition que
+     les memes champs soient rendus sous les memes noms.
+
+     Ce que le decor ne dit pas : le comportement reel d'une source distante,
+     ses refus et ses delais. Une affirmation sur ce comportement demande la
+     source, pas ce fichier. */
+  var DECOR = [
+    { id: 'd1', engagement: 'Finir la maquette du flyer NU Futures', jour: 0, fait_le: '2026-08-17T09:12:00Z', ordre: 1 },
+    { id: 'd2', engagement: 'Appeler le studio pour le devis',        jour: 0, fait_le: '2026-08-17T15:40:00Z', ordre: 2 },
+    { id: 'd3', engagement: 'Relire le dossier de subvention',        jour: 1, fait_le: null,                   ordre: 3 },
+    { id: 'd4', engagement: 'Atelier NU Impact — préparer 3 slides',  jour: 2, fait_le: '2026-08-19T11:05:00Z', ordre: 4 },
+    { id: 'd5', engagement: 'Envoyer la facture à Ame',               jour: 4, fait_le: null,                   ordre: 5 },
+    { id: 'd6', engagement: 'Ranger les fichiers du tournage',        jour: null, fait_le: '2026-08-18T18:20:00Z', ordre: 6 },
+    { id: 'd7', engagement: 'Lire deux chapitres',                    jour: null, fait_le: '2026-08-20T07:30:00Z', ordre: 7 },
+    { id: 'd8', engagement: 'Choisir la police du carton d’invitation', jour: null, fait_le: null,          ordre: 8 }
+  ];
+
+  /* Ce qui ne quitte pas l'appareil. La somme se lit et s'ecrit dans la memoire
+     du navigateur ; aucune requete ne la porte, et aucune porte du socle ne
+     l'accepte. La promesse affichee a l'ecran tient par la, et par rien
+     d'autre : la porter dans un envoi la romprait.
+     Le stockage peut refuser — navigation privee, quota — auquel cas la valeur
+     ne survit pas au tour et l'ecran continue sans elle. */
+  var CLE_REVENU = 'roots.plan.revenu';
+  var LOCAL = { revenus: 0, devise: 'F CFA' };
+  try {
+    var lu = localStorage.getItem(CLE_REVENU);
+    if (lu !== null && /^[0-9]{1,12}$/.test(lu)) LOCAL.revenus = parseInt(lu, 10);
+  } catch (e) {}
+
+  var PlanDonnees = {
+    taches: function () { return DECOR.slice(); },
+    basculer: function (id, fait) {
+      for (var i = 0; i < DECOR.length; i++) {
+        if (DECOR[i].id === id) { DECOR[i].fait_le = fait ? new Date().toISOString() : null; return DECOR[i]; }
+      }
+      return null;
+    },
+    poser: function (engagement, jour) {
+      var t = { id: 'n' + (DECOR.length + 1), engagement: engagement, jour: jour,
+                fait_le: null, ordre: DECOR.length + 1 };
+      DECOR.push(t);
+      return t;
+    },
+    revenus: function () { return LOCAL; },
+    noterRevenu: function (montant) {
+      LOCAL.revenus = montant;
+      try { localStorage.setItem(CLE_REVENU, String(montant)); } catch (e) {}
+      return LOCAL;
+    }
+  };
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      titre: 'Ma semaine',
+      etPoser: 'Poser un engagement',
+      labEngagement: 'Qu’est-ce que tu veux faire ?',
+      phEngagement: 'Finir la maquette du flyer…',
+      etQuand: 'Quand ? (facultatif)',
+      ajouter: 'Ajouter',
+      etSemaine: 'Ma semaine',
+      etOu: 'Où j’en suis',
+      etRevenus: 'Mes revenus',
+      labRevenu: 'Noter un montant',
+      phRevenu: '0',
+      noter: 'Noter',
+      ditRevenus: 'Ce chiffre ne quitte pas ton téléphone.',
+      sansRevenu: 'Rien de noté cette semaine.',
+      vide: 'Rien de posé pour l’instant. Écris un engagement là-haut — un seul suffit pour commencer.',
+      piedPolitique: 'Politique de confidentialité',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.',
+      jours: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      joursLongs: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
+      sansJour: 'Cette semaine',
+      mois: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
+      cadre: function (a, b) { return 'Du ' + a + ' au ' + b + '. Ce que tu poses ici ne regarde que toi.'; },
+      compte: function (f, n) { return f + ' sur ' + n; },
+      dit0: 'Rien de tenu pour l’instant, et la semaine n’est pas finie.',
+      dit1: 'Un engagement tenu.',
+      ditN: function (f) { return f + ' engagements tenus.'; },
+      ditTout: 'Tout est tenu.',
+      aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
+    },
+    en: {
+      saut: 'Skip to content',
+      titre: 'My week',
+      etPoser: 'Set a commitment',
+      labEngagement: 'What do you want to do?',
+      phEngagement: 'Finish the flyer layout…',
+      etQuand: 'When? (optional)',
+      ajouter: 'Add',
+      etSemaine: 'My week',
+      etOu: 'Where I stand',
+      etRevenus: 'My earnings',
+      labRevenu: 'Record an amount',
+      phRevenu: '0',
+      noter: 'Record',
+      ditRevenus: 'This figure never leaves your phone.',
+      sansRevenu: 'Nothing recorded this week.',
+      vide: 'Nothing set yet. Write one commitment above — one is enough to start.',
+      piedPolitique: 'Privacy policy',
+      toastNu: 'NU, the community side of Roots, is coming soon.',
+      jours: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      joursLongs: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      sansJour: 'This week',
+      mois: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      cadre: function (a, b) { return a + ' to ' + b + '. What you set here is yours alone.'; },
+      compte: function (f, n) { return f + ' of ' + n; },
+      dit0: 'Nothing kept yet, and the week is not over.',
+      dit1: 'One commitment kept.',
+      ditN: function (f) { return f + ' commitments kept.'; },
+      ditTout: 'All kept.',
+      aria: function (e, f) { return (f ? 'Kept: ' : 'Not kept yet: ') + e; }
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
+  function t() { return T[langue] || T.fr; }
+
+  var jourChoisi = null;
+
+  /* Le lundi de la semaine en cours. getDay() rend 0 pour dimanche : le
+     decalage ramene la semaine sur un debut lundi. */
+  function lundi() {
+    var d = new Date();
+    var n = (d.getDay() + 6) % 7;
+    d.setDate(d.getDate() - n);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  function jourDe(i) {
+    var d = lundi();
+    d.setDate(d.getDate() + i);
+    return d;
+  }
+
+  function bref(d) { return d.getDate() + ' ' + t().mois[d.getMonth()]; }
+
+  function dessinerJours() {
+    var z = $('jours');
+    z.textContent = '';
+    for (var i = 0; i < 7; i++) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'jour';
+      b.dataset.jour = String(i);
+      b.setAttribute('aria-pressed', jourChoisi === i ? 'true' : 'false');
+      b.textContent = t().jours[i];
+      z.appendChild(b);
+    }
+    var s = document.createElement('button');
+    s.type = 'button';
+    s.className = 'jour';
+    s.dataset.jour = '';
+    s.setAttribute('aria-pressed', jourChoisi === null ? 'true' : 'false');
+    s.textContent = t().sansJour;
+    z.appendChild(s);
+  }
+
+  /* La coche vient d'un gabarit du balisage : construite en script, elle
+     exigerait de nommer un espace de noms, et une adresse ecrite dans un
+     script se lit comme un appel sortant. */
+  function coche() {
+    return $('tplCoche').content.firstElementChild.cloneNode(true);
+  }
+
+  function ligne(tache) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'tache';
+    b.dataset.id = tache.id;
+    var fait = !!tache.fait_le;
+    b.setAttribute('aria-pressed', fait ? 'true' : 'false');
+    b.setAttribute('aria-label', t().aria(tache.engagement, fait));
+    var c = document.createElement('span');
+    c.className = 'case';
+    c.appendChild(coche());
+    var e = document.createElement('span');
+    e.className = 'engagement';
+    e.textContent = tache.engagement;
+    b.appendChild(c);
+    b.appendChild(e);
+    return b;
+  }
+
+  /* Un groupe vide ne se rend pas : une case vide n'informe de rien, et le
+     non-fait ne se met pas en scene. */
+  function dessinerSemaine() {
+    var taches = PlanDonnees.taches();
+    var z = $('listeSemaine');
+    z.textContent = '';
+    $('videSemaine').hidden = taches.length > 0;
+
+    var groupes = [];
+    for (var i = 0; i < 7; i++) groupes.push({ cle: i, titre: t().joursLongs[i] + ' ' + bref(jourDe(i)), items: [] });
+    groupes.push({ cle: null, titre: t().sansJour, items: [] });
+
+    taches.forEach(function (x) {
+      var g = groupes[x.jour === null || x.jour === undefined ? 7 : x.jour];
+      if (g) g.items.push(x);
+    });
+
+    groupes.forEach(function (g) {
+      if (!g.items.length) return;
+      var bloc = document.createElement('div');
+      bloc.className = 'groupe-jour';
+      var et = document.createElement('span');
+      et.className = 'etiquette';
+      et.textContent = g.titre;
+      var ul = document.createElement('ul');
+      ul.className = 'taches';
+      g.items.sort(function (a, b) { return a.ordre - b.ordre; });
+      g.items.forEach(function (x) {
+        var li = document.createElement('li');
+        li.appendChild(ligne(x));
+        ul.appendChild(li);
+      });
+      bloc.appendChild(et);
+      bloc.appendChild(ul);
+      z.appendChild(bloc);
+    });
+  }
+
+  /* Une section qui ne dit rien encombre : la progression ne se rend qu'a
+     partir du premier engagement pose. */
+  function dessinerProgression() {
+    var taches = PlanDonnees.taches();
+    var n = taches.length;
+    $('blocOu').hidden = n === 0;
+    if (n === 0) return;
+    var f = taches.filter(function (x) { return !!x.fait_le; }).length;
+    $('compte').textContent = t().compte(f, n);
+    var j = $('jauge');
+    j.setAttribute('aria-valuemax', String(n));
+    j.setAttribute('aria-valuenow', String(f));
+    $('jaugePart').style.width = (n ? Math.round(f * 100 / n) : 0) + '%';
+    var dit = f === 0 ? t().dit0 : (f === n ? t().ditTout : (f === 1 ? t().dit1 : t().ditN(f)));
+    $('compteDit').textContent = dit;
+  }
+
+  /* Un zero n'est pas un revenu : tant que rien n'est note, la place dit
+     qu'elle est libre plutot que d'annoncer un montant nul. */
+  function dessinerRevenus() {
+    var r = PlanDonnees.revenus();
+    if (!r.revenus) { $('montant').textContent = t().sansRevenu; return; }
+    var s = String(r.revenus).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+    $('montant').textContent = s + '\u00A0' + r.devise;
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-p]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-p')];
+      if (typeof v === 'string') el.placeholder = v;
+    });
+    $('sousTitre').textContent = t().cadre(bref(jourDe(0)), bref(jourDe(6)));
+    dessinerJours();
+    dessinerSemaine();
+    dessinerProgression();
+    dessinerRevenus();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  }
+
+  var chrome = Roots.initChrome({
+    toastId: 'toast',
+    getLangue: function () { return langue; },
+    getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; },
+    radio: true,
+    onLangue: function () { basculerLangue(); }
+  });
+
+  function basculerLangue() {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    if (Roots.retenirLangue) Roots.retenirLangue(langue);
+    appliquerLangue();
+  }
+
+  $('jours').addEventListener('click', function (e) {
+    var b = e.target.closest('.jour');
+    if (!b) return;
+    var v = b.dataset.jour;
+    jourChoisi = v === '' ? null : parseInt(v, 10);
+    dessinerJours();
+  });
+
+  $('listeSemaine').addEventListener('click', function (e) {
+    var b = e.target.closest('.tache');
+    if (!b) return;
+    var fait = b.getAttribute('aria-pressed') !== 'true';
+    PlanDonnees.basculer(b.dataset.id, fait);
+    dessinerSemaine();
+    dessinerProgression();
+  });
+
+  /* Le bouton refuse un engagement vide plutot que d'en poser un sans texte :
+     une ligne sans mot ne se relit pas. */
+  $('btnAjouter').addEventListener('click', function () {
+    var champ = $('engagement');
+    var texte = champ.value.trim();
+    if (!texte) { champ.focus(); return; }
+    PlanDonnees.poser(texte, jourChoisi);
+    champ.value = '';
+    dessinerSemaine();
+    dessinerProgression();
+  });
+
+  $('btnRevenu').addEventListener('click', function () {
+    var champ = $('revenu');
+    var brut = champ.value.replace(/[\s\u00A0]/g, '');
+    if (!/^[0-9]{1,12}$/.test(brut)) { champ.focus(); return; }
+    PlanDonnees.noterRevenu(parseInt(brut, 10));
+    champ.value = '';
+    dessinerRevenus();
+  });
+
+  $('revenu').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('btnRevenu').click(); }
+  });
+
+  $('engagement').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); $('btnAjouter').click(); }
+  });
+
+  if (Roots.poserLibelles) Roots.poserLibelles();
+  appliquerLangue();
+})();
+</script>
+</body>
+</html>

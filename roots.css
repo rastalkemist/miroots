@@ -433,13 +433,35 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:var(--filet-barre) solid var(--univers);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14)}
 .verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;color:var(--gris-500);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:calc(var(--esp-1) / 2)}
 /* La legende du verbe. En bas d'ecran elle se tient sous l'icone ; montee
-   dans la barre, a sa droite. L'ecart icone-legende vaut la MOITIE de l'ecart
-   entre verbes, et le logo se tient a une fois et demie ce meme ecart du bloc
-   des verbes. Le verbe courant porte l'encre d'univers, legende comprise. */
+   dans la barre, a sa droite. Icone et legende forment un seul bloc : leur
+   ecart d'encre reste nettement sous l'ecart entre verbes, et le logo se
+   tient a une fois et demie l'ecart d'encre entre verbes du bloc.
+   Le verbe courant porte l'encre d'univers, legende comprise. */
 .verbe-dit{font-family:var(--font-corps);font-weight:var(--w-medium);font-size:var(--t-note);line-height:var(--lh-12)}
 .verbe.actif{color:var(--univers)}
-body.nav-haut .verbe{flex-direction:row;gap:calc(var(--esp-1) / 2)}
-body.nav-haut .chrome-gauche{gap:calc(var(--esp-1) * 1.5)}
+/* Montee dans la barre, les rapports se mesurent a L'ENCRE, pas aux boites :
+   une cible de 44 loge un dessin plus etroit, et l'oeil ne compte que le
+   dessin. La boite de l'icone garde du vide a droite du dessin : l'ecart de
+   boite herite ci-dessous rend une encre icone-legende d'environ 10px,
+   nettement sous l'encre entre verbes, pour que chaque paire se lise d'un
+   bloc. Le logo se tient a une fois et demie l'encre entre verbes. */
+body.nav-haut .verbe{flex-direction:row}
+/* Montee dans la barre, seule la legende du verbe COURANT se tient en ligne.
+   Les autres gardent leur nom en infobulle : posee sous l'icone, elle parait
+   au survol ou au foyer clavier apres un court delai, et s'efface sans
+   attendre. Elle reste le texte du bouton — son nom ne change pas de bouche —
+   et, transparente, elle ne prend aucun geste. */
+body.nav-haut .verbe:not(.actif) .verbe-dit{position:absolute;top:calc(100% + var(--esp-1));left:50%;translate:-50% 0;z-index:30;padding:var(--esp-1) var(--esp-3);border-radius:var(--rayon-pilule);background:var(--encre);color:var(--blanc);white-space:nowrap;opacity:0;pointer-events:none;box-shadow:0 4px 14px rgba(var(--ombre-teinte),.28);transition:opacity var(--mvt-etat) var(--courbe-etat)}
+body.nav-haut .verbe:not(.actif):hover .verbe-dit,
+body.nav-haut .verbe:not(.actif):focus-visible .verbe-dit{opacity:1;transition-delay:.45s}
+/* Sur l'aplat transparent, le verbe courant porte sa pastille pleine : c'est
+   ELLE que l'oeil mesure, et elle emplit sa boite la ou le dessin seul s'en
+   retire. Les ecarts se recalent donc sur le bord de la pastille : la marge
+   laterale rend l'ecart d'encre des verbes voisins, l'ecart interieur rend
+   l'encre pastille-legende du rang des autres ecrans. Valeurs mesurees au
+   rendu. */
+body[data-surface="ambiante"].nav-haut .verbe.actif{gap:9px;margin-inline:7px}
+body.nav-haut .chrome-gauche{gap:calc(var(--esp-6) + var(--esp-1) / 2)}
 /* La colonne de droite d'une barre a quete accepte de se serrer : sans ce
    plancher nul, la pilule refuse de retrecir et pousse le menu hors de la
    ligne du chrome sur les largeurs moyennes. */
@@ -638,6 +660,18 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
    mobile zoome sur la page a la mise au point et n'en revient pas seul. */
 .fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border:none;font-size:var(--t-21);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .fab svg{width:26px;height:26px;stroke-width:2.6}
+/* Le geste focal ne parait qu'une fois la barre arbitree : peint d'abord au
+   bas puis remonte, il semblerait clignoter a l'ouverture. La retenue exige
+   la classe de script sur la racine — sans script, rien ne le deplacera, et
+   il se montre d'emble. */
+html.js body:not(.nav-pret) .fab{opacity:0}
+/* D'un ecran a l'autre, la pastille du verbe courant et sa legende glissent
+   vers leur nouveau porteur au lieu de sauter : la traversee de document
+   s'anime, et s'immobilise pour qui demande moins de mouvement. */
+@view-transition{navigation:auto}
+@media (prefers-reduced-motion:reduce){@view-transition{navigation:none}}
+body.nav-haut .verbe.actif .ico-rond{view-transition-name:pastille-verbe}
+body.nav-haut .verbe.actif .verbe-dit{view-transition-name:legende-verbe}
 /* LE RANG DE PILE D'UNE FEUILLE MODALE. Le voile passe au-dessus de TOUT le
    chrome — barre du bas comprise —, et la feuille au-dessus du voile. Un
    element de chrome qui surplombe une feuille `aria-modal` la rend non modale :
@@ -1520,7 +1554,7 @@ body[data-surface="sombre"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb),
 /* Sur les surfaces claires de sejour et d'itineraire, l'ilot eteint s'ecrit au
    noir de marque : son etat calme ne porte aucune couleur. L'ecran du cafe
    garde l'encre de son univers — son chrome est le seul a la porter partout. */
-:where(body.p-roam,body.p-plan) .languette-radio{color:var(--roots-noir)}
+:where(body.p-roam,body.p-space) .languette-radio{color:var(--roots-noir)}
 /* L'ilot entre et sort au cran d'apparition d'un bandeau de l'echelle de
    mouvement. Le decalage part du haut : il descend de sous la pastille qui
    vient d'etre pressee, d'ou il vient. Le repli de la boite attend la fin de

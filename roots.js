@@ -11,6 +11,14 @@
 (function (global) {
   'use strict';
 
+  /* Le document sait des le chargement qu'un script gouverne le chrome : la
+     feuille de style peut retenir un element que la promotion deplacera, au
+     lieu de le peindre a une place puis a l'autre. Sans script, la classe
+     manque et rien n'est retenu. */
+  if (global.document && document.documentElement) {
+    document.documentElement.classList.add('js');
+  }
+
   var PAYS_EPINGLES = ['bj', 'ng', 'tg', 'gh', 'ci', 'ne', 'bf', 'sn', 'fr', 'be', 'us', 'ca', 'gb', 'de'];
   var PREFIXE_BJ = '01';
 
@@ -265,6 +273,10 @@
       && feuilleQ.previousElementSibling.classList.contains('voile')
       ? feuilleQ.previousElementSibling : null;
     corps.classList.remove('nav-quete');
+    /* Une pilule fabriquee par la barre n'a pas d'adresse dans la page : elle
+       se retire, et se refabrique si la promotion la redemande. */
+    var fabFabrique = document.querySelector('.fab[data-fabrique]');
+    if (fabFabrique && fabFabrique.parentNode) fabFabrique.parentNode.removeChild(fabFabrique);
     if (fabQ) {
       fabQ.classList.remove('quete');
       if (voileQ && fabQ.nextElementSibling !== voileQ) voileQ.parentNode.insertBefore(fabQ, voileQ);
@@ -308,11 +320,22 @@
        divergerait. La feuille s'ancre a la barre. PARTOUT AILLEURS, la radio
        garde la barre : sa rangee, son ancrage et son geste long sont ceux
        d'origine. */
-    if (corps.classList.contains('p-roam') && fabQ && feuilleQ) {
+    if (corps.classList.contains('p-roam')) {
       corps.classList.add('nav-quete');
+      /* Un ecran de l'univers sans geste de quete propre recoit une pilule
+         qui MENE a la quete : un lien vers l'ecran qui la porte, ouverte a
+         l'arrivee. Son libelle suit la langue declaree du document. */
+      if (!fabQ) {
+        fabQ = document.createElement('a');
+        fabQ.className = 'fab';
+        fabQ.setAttribute('data-fabrique', '');
+        fabQ.setAttribute('href', 'roam.html#quete');
+        fabQ.textContent = ((document.documentElement.lang || 'fr').slice(0, 2) === 'en')
+          ? 'Let’s roam!' : 'Je découvre';
+      }
       fabQ.classList.add('quete');
       droite.insertBefore(fabQ, droite.querySelector('.chrome-burger'));
-      feuilleQ.setAttribute('data-pose', 'barre');
+      if (feuilleQ) feuilleQ.setAttribute('data-pose', 'barre');
       if (voileQ) voileQ.setAttribute('data-pose', 'barre');
       if (ilot) {
         var bacSections = document.getElementById('sections');
@@ -697,7 +720,7 @@
       { ico: 'i-carte',  t: 'Practical info', s: 'Useful numbers and landmarks',     href: '#infos' }
     ]
   };
-  var NAV_PLAN = {
+  var NAV_SPACE = {
     fr: [
       { ico: 'i-plan',       t: 'Dashboard', s: '' },
       { ico: 'i-calendrier', t: 'Sprints',   s: '' },
@@ -769,7 +792,7 @@
     var page = ici();
     var table = NAV;
     if (/(?:^|\s)p-roam(?:\s|$)/.test(document.body.className)) table = NAV_ROAM;
-    else if (/(?:^|\s)p-plan(?:\s|$)/.test(document.body.className)) table = NAV_PLAN;
+    else if (/(?:^|\s)p-space(?:\s|$)/.test(document.body.className)) table = NAV_SPACE;
     return (table[langue] || table.fr).map(function (e) {
       var copie = { ico: e.ico, t: e.t, s: e.s, href: e.href };
       /* Un lien vers soi AVEC parametre est une action et non une navigation :
@@ -786,7 +809,7 @@
     var getSections = opts.getSections || function () { return []; };
     var toastNu = opts.toastNu || function () { return ''; };
     var toastVerbe = opts.toastVerbe || function (l, v) { return v; };
-    var verbes = opts.verbes || { plan: 'Space', roots: 'Roots', roam: 'Roam' };
+    var verbes = opts.verbes || { space: 'Space', roots: 'Roots', roam: 'Roam' };
     var onVerbe = opts.onVerbe || null;
 
     var toastTimer = null;
@@ -850,7 +873,7 @@
        visible — une etiquette cachee qui dirait autre chose ferait diverger
        ce qu'on lit de ce qu'on entend. La legende suit la langue. */
     var LEGENDES = {
-      plan:  { fr: 'Organiser', en: 'Plan' },
+      space: { fr: 'Organiser', en: 'Plan' },
       roots: { fr: 'Coworking', en: 'Connect' },
       roam:  { fr: 'Voyager',   en: 'Discover' }
     };
@@ -870,17 +893,38 @@
       });
     }
     poserLegendes();
+    /* Un univers qui a son ecran est une destination, pas une promesse. Un
+       bouton marque dormant reste une annonce : c'est le balisage de la page,
+       et lui seul, qui decide si la destination existe pour elle. */
+    var DESTINATION = { roots: 'index.html', roam: 'roam.html', space: 'space.html' };
+    /* L'univers d'un ecran est celui de sa classe de corps — une page
+       satellite peut le recevoir a l'ouverture. Le chrome suit cette classe,
+       et elle seule : le verbe de l'univers porte l'etat actif, le logotype
+       central dit le meme univers et mene a son ecran. L'etat de page courante
+       ne se pose pas ici : il appartient au balisage de l'ecran qui EST la
+       destination ; il se retire seulement d'un verbe d'un AUTRE univers,
+       sans quoi ce verbe remonterait la page au lieu d'y mener. */
+    function poserUnivers() {
+      var u = (document.body.className.match(/\bp-(roam|space)\b/) || [null, 'roots'])[1];
+      var titre = document.querySelector('.chrome-titre');
+      if (titre && DESTINATION[u]) {
+        titre.textContent = verbes[u];
+        titre.setAttribute('href', DESTINATION[u]);
+      }
+      if (superNav) Array.prototype.forEach.call(superNav.querySelectorAll('.verbe'), function (b) {
+        var sien = b.dataset.verbe === u;
+        b.classList.toggle('actif', sien);
+        if (!sien) b.removeAttribute('aria-current');
+      });
+    }
+    poserUnivers();
     if (superNav) superNav.addEventListener('click', function (e) {
       var b = e.target.closest('.verbe'); if (!b) return;
       var v = b.dataset.verbe;
       if (onVerbe && onVerbe(v, b)) return;
 
-      /* Un univers qui a son ecran est une destination, pas une promesse : le
-         verbe y mene, sauf quand on y est deja — le bouton porte alors
-         aria-current et remonte la page. Un bouton marque dormant reste une
-         annonce : c'est le balisage de la page, et lui seul, qui decide si la
-         destination existe pour elle. */
-      var DESTINATION = { roots: 'index.html', roam: 'roam.html', plan: 'plan.html' };
+      /* Le verbe mene a son ecran, sauf quand on y est deja — le bouton porte
+         alors aria-current et remonte la page. */
       if (DESTINATION[v] && b.getAttribute('aria-disabled') !== 'true') {
         if (b.getAttribute('aria-current') === 'true') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
         global.location.assign(DESTINATION[v]);
@@ -919,6 +963,9 @@
     window.addEventListener('resize', replacerNav);
     window.addEventListener('orientationchange', replacerNav);
     ajusterNav(radio);
+    /* La barre est arbitree : ce que la feuille retenait avant l'arbitrage
+       peut se montrer, deja a sa place. */
+    document.body.classList.add('nav-pret');
 
     function dessinerSections() {
       /* Les libelles du chrome suivent la meme bascule que la liste : chaque
@@ -995,7 +1042,7 @@
        monde, et la page le lit. Le tronc adresse aussi les liens ecrits dans
        les pages — aucun ecran n'a a le savoir. */
     function adresseConfidentialite() {
-      var m = document.body.className.match(/(?:^|\s)p-(roam|plan)(?:\s|$)/);
+      var m = document.body.className.match(/(?:^|\s)p-(roam|space)(?:\s|$)/);
       return 'confidentialite.html' + (m ? '?monde=' + m[1] : '');
     }
     Array.prototype.forEach.call(

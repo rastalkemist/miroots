@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-mklXFbNpeYQ1oVL6EJ5bNYo851yVflomJeVmb8HQ0CI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-zd9stJfGI7Sr5aklb6Hdr2I2YByA0dlgnyqzGirQ/lM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -418,7 +418,7 @@
 </footer>
 
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
   <button class="verbe actif" aria-current="true" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
@@ -1713,6 +1713,9 @@
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && f.classList.contains('visible')) fermer();
     });
+    /* L'adresse `#quete` est la porte externe de la feuille : un lien venu
+       d'un autre ecran arrive quete ouverte. */
+    if (location.hash === '#quete') ouvrir();
   }
 
   /* LA SCENE DE VEDETTE, VUE PAR VUE. Une piste qui se cale sur ses vues, et

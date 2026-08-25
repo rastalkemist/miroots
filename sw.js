@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '3317c5e1da50610d';
+var VERSION   = '4c8c223044a016e5';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -31,9 +31,9 @@ var REPLI = 'hors-ligne.html';
 /* La coque : ce qui ne dit rien de personne. Aucune reponse du socle n'y
    figure, et aucune ne peut y entrer — voir le filtre du gestionnaire fetch. */
 var COQUE_FICHIERS = [
-  'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'lieu.html', 'plan.html',
-  'facture.html', 'paiement.html', 'confidentialite.html', 'decouvrir-plan.html', REPLI,
-  'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'plan.css', 'roam.css',
+  'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'lieu.html', 'space.html',
+  'facture.html', 'paiement.html', 'confidentialite.html', 'decouvrir-space.html', REPLI,
+  'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'space.css', 'roam.css',
   'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js',
   'vendor/intlTelInput.min.css', 'vendor/intlTelInput.min.js', 'vendor/qrcode.js',
   'manifest.webmanifest', 'media/hero.jpg', 'media/hero-portrait.jpg'

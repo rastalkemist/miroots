@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-BqFzVNVTtKw6+FxdsHTKcunm1TcOAr2me/tXpaJc5l4=' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-RE9cyUbR+PNaBimKb0L6uq76pQO8RaskhxItgLGuKB8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-xLlnKeGAfiqHjgmon5d/Y12mUEkxQ+XNrqS6biezZNI=' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gj2AuwdVq2LzhvZAkYmkL5HArW7IddBPsQUfJUkaokQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Politique de protection des données à caractère personnel — Roots</title>
 <meta name="description" content="Ce que nous collectons, pourquoi, combien de temps nous le gardons, et comment exercer tes droits.">
 <meta property="og:type" content="website">
@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="roots-fonts.css">
 <link rel="stylesheet" href="roots-tokens.css">
 <link rel="stylesheet" href="roots.css">
-<link rel="stylesheet" href="plan.css">
+<link rel="stylesheet" href="space.css">
 <link rel="stylesheet" href="vendor/intlTelInput.min.css">
 <script src="roots-db.js"></script>
 <script src="roots.js"></script>
@@ -34,7 +34,8 @@
    pose avant le premier rendu : le script est le premier enfant du corps. */
 (function () {
   var m = new URLSearchParams(location.search).get('monde');
-  if (m === 'roam' || m === 'plan') document.body.className += ' p-' + m;
+  if (m === 'plan') m = 'space';
+  if (m === 'roam' || m === 'space') document.body.className += ' p-' + m;
 }());
 </script>
 <script>Roots.sprite()</script>
@@ -231,7 +232,7 @@
 
 <!-- ══════════════ Super-nav + menu déroulant + toast ══════════════ -->
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe" data-verbe="plan" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe actif" aria-current="true" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
   <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
@@ -276,7 +277,7 @@
     getSections: Roots.nav,
     toastNu: function (l) { return T[l].toastNu; },
     toastVerbe: function (l, libelle) { return T[l].toastVerbe(libelle); },
-    verbes: { plan: 'Space', roots: 'Roots', roam: 'Roam' },
+    verbes: { space: 'Space', roots: 'Roots', roam: 'Roam' },
     radio: true,
     onLangue: function () { basculerLangue(); }
   });
