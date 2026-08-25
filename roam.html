@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-E9Tf0GN7zB5h2gRCiNdxKb2uaud/EJIMNIXJ0YjscjI='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-T0YgDcJ1lipld1h+0kom4eONxO+9TlEVsKKP6llrvhE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -622,7 +622,7 @@
       numPompiers: 'Fire brigade',
       numRoots: 'Roots reception',
       chercher: 'Search for a stay',
-      chercherMots: 'Let’s roam!',
+      chercherMots: 'Discover Benin',
       loupeDit: 'Search',
       alPause: 'Pause the video', alLire: 'Play the video',
       ongVisiter: 'Stay', ongDecouvrir: 'Explore',
@@ -1847,9 +1847,13 @@
       /* Ce qui est publie n'est pas la hauteur du geste mais la distance qui
          separe le BAS DE LA FENETRE du HAUT du geste : elle contient sa
          hauteur, son decalage — un pourcentage ici, une barre la — et l'aire
-         sure. Une seule mesure couvre donc les deux mises en page. */
-      document.body.style.setProperty('--geste-bas',
-        Math.max(0, Math.round(window.innerHeight - f.getBoundingClientRect().top)) + 'px');
+         sure. Une seule mesure couvre donc les deux mises en page.
+         Un geste monte dans la barre du chrome ne reserve RIEN au bas : la
+         distance mesuree depuis le haut de l'ecran gonflerait le pied de la
+         page d'une fenetre entiere. */
+      var auChrome = !!f.closest('.chrome-inner');
+      document.body.style.setProperty('--geste-bas', auChrome ? '0px'
+        : Math.max(0, Math.round(window.innerHeight - f.getBoundingClientRect().top)) + 'px');
     }
     poser();
     if (window.ResizeObserver) new ResizeObserver(poser).observe(f);

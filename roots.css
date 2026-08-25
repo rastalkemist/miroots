@@ -22,8 +22,8 @@
     laquelle une ligne de texte cesse d'etre lisible. Un bandeau, une barre,
     une rangee prennent la piste ; un paragraphe prend la mesure. Confondre les
     deux, c'est soit etrangler la page, soit rendre le texte illisible. */
- --marge:7.5%; --site-w:85%; --col:500px;
- --marge-chrome:7.5%; --chrome-w:85%;
+ --marge:5%; --site-w:90%; --col:500px;
+ --marge-chrome:5%; --chrome-w:90%;
  --grille-colonnes:4; --gouttiere-grille:var(--esp-3); --carte-min:224px;
  --piste:var(--site-w);
  /* Le bord est celui du CHROME, non celui de la piste : tout ce qui flotte
@@ -505,6 +505,11 @@ body:not(.nav-haut) .verbe.actif .ico-rond{color:var(--blanc);background:none;po
      fond serait rogne. */
 body:not(.nav-haut) .verbe.actif .ico-rond::before{content:'';position:absolute;inset:-8px;z-index:-1;background:radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),var(--univers) calc(var(--p-r) - .4px),transparent calc(var(--p-r) + .4px))}
 body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p-svg)}
+/* Correction optique, tranchee a l'oeil : le poids visuel de la pousse tire
+   a droite, son dessin recule de deux points dans sa pastille. */
+body:not(.nav-haut) .verbe[data-verbe="roots"].actif .ico-rond svg{transform:translateX(-2px)}
+/* La paire courante se resserre de trois points de plus que les autres. */
+body:not(.nav-haut) .verbe.actif .verbe-dit{margin-top:-9px}
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
      d'univers sous l'ombre douce que la surface donne deja a son chrome,
@@ -1575,26 +1580,36 @@ body[data-surface="ambiante"] .radio-pastille.antenne{color:var(--jaune-e2)}
    film ; echelon 3 sur sombre. La commande de lecture n'est pas un texte et
    garde la sienne. */
 /* L'ETAT ALLUME. Les pictogrammes seuls prennent le jaune : ils disent l'etat
-   sans avoir a etre lus. Le mot d'antenne et le contour prennent l'echelon 3
-   de l'univers — c'est lui qui se lit. Le reste du texte ne bouge pas.
-   Sur une surface sans fond ou sombre, le contour reste celui de la surface :
-   sa regle est plus lourde et c'est voulu. */
-.languette-radio.antenne{border-color:var(--univers-e3);background:color-mix(in srgb,var(--univers-e5) 20%,transparent);backdrop-filter:blur(6px)}
-.languette-radio.antenne .lecteur-etat{color:var(--univers-e3)}
+   sans avoir a etre lus. Le mot d'antenne et le contour prennent le rouge de
+   l'echelle, le fond un voile du quatrieme echelon de l'univers. Sur une
+   surface sans fond ou sombre, le contour reste celui de la surface — un
+   filet rouge ne tient pas sur une photographie — et le rouge ne s'y pose
+   que sur le mot et la commande de lecture. Le reste du texte ne bouge pas. */
+.languette-radio.antenne{border-color:var(--rouge-e3);background:color-mix(in srgb,var(--univers-e4) 20%,transparent);backdrop-filter:blur(6px)}
+.languette-radio.antenne .lecteur-etat{color:var(--rouge-e3)}
 /* Sur une surface sombre ou sans fond, le mot d'antenne monte d'un echelon de
    plus : l'echelon 3 se confond avec le voile d'ilot qui le porte. */
-body[data-surface="ambiante"] .languette-radio.antenne .lecteur-etat,
-body[data-surface="sombre"] .languette-radio.antenne .lecteur-etat{color:var(--univers-e4)}
-.radio-pastille.antenne,.languette-radio.antenne .lecteur-btn{color:var(--jaune-e2)}
+.radio-pastille.antenne{color:var(--jaune-e2)}
 /* Le disque du lecteur : gris eteint au repos, univers translucide et clair
    allume — la lumiere vient du fond, le pictogramme la porte. */
 .lecteur-btn{background:rgba(var(--gris-500-rgb),.14)}
-:where(body:not([data-surface="ambiante"]):not([data-surface="sombre"])) .languette-radio.antenne .lecteur-btn{background:color-mix(in srgb,var(--univers-e5) 35%,transparent)}
+:where(body:not([data-surface="ambiante"]):not([data-surface="sombre"])) .languette-radio.antenne .lecteur-btn{background:color-mix(in srgb,var(--univers-e4) 20%,transparent)}
 body[data-surface="sombre"] .radio-pastille{color:var(--univers-e5)}
 /* La surface sombre porte le meme ilot que la surface sans fond : un voile de
    l'echelon 3, flou compris. */
 body[data-surface="sombre"] .languette-radio{background:rgba(var(--univers-e3-rgb),.20);border-color:rgba(var(--blanc-casse-rgb),.3);color:var(--blanc-casse);backdrop-filter:blur(6px)}
 body[data-surface="sombre"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb),.22);color:var(--blanc-casse)}
+/* A l'antenne, sur les surfaces sans fond et sombres, le CONTOUR reste celui
+   de la surface : un filet rouge ne tient pas sur une photographie. Le rouge
+   ne s'y pose que sur ce qui dit l'etat — le mot d'antenne et la commande de
+   lecture — et le voile du fond suit le quatrieme echelon de l'univers. La
+   pastille d'antenne garde son jaune : il n'a plus que ce sens. */
+body[data-surface="ambiante"] .languette-radio.antenne,
+body[data-surface="sombre"] .languette-radio.antenne{background:color-mix(in srgb,var(--univers-e4) 20%,transparent)}
+body[data-surface="ambiante"] .languette-radio.antenne .lecteur-btn,
+body[data-surface="sombre"] .languette-radio.antenne .lecteur-btn{background:color-mix(in srgb,var(--univers-e4) 20%,transparent);color:var(--rouge-e3)}
+body[data-surface="ambiante"] .radio-pastille.antenne,
+body[data-surface="sombre"] .radio-pastille.antenne{color:var(--jaune-e2)}
 
 .radio-rangee{width:var(--chrome-w);margin:0 auto}
 /* LE LECTEUR. Une seule regle gouverne sa droite : la COMMANDE, toujours a
@@ -1613,13 +1628,30 @@ body[data-surface="sombre"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb),
    l'echelon 1 du monde courant, jamais l'encre de lecture : les deux se
    confondent sur un seul univers, et divergent partout ailleurs — un monde
    rouge affichait le noir d'un autre monde. */
-.languette-radio{margin-top:var(--esp-2);margin-left:auto;width:max-content;max-width:100%;margin-right:calc(var(--cible-min) + var(--esp-2) + var(--cible-min) / 2 - (var(--esp-4) - var(--esp-3)) / 2 - (var(--t-chrome-titre) + var(--esp-3)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;gap:var(--esp-4);padding:0 calc((var(--esp-4) - var(--esp-3)) / 2 - var(--limite-ep)) 0 var(--esp-3);background:var(--gris-ilot);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--univers-e1);overflow:hidden}
+.languette-radio{margin-top:var(--esp-2);margin-left:auto;width:max-content;max-width:100%;margin-right:calc(var(--cible-min) - var(--esp-3) + var(--esp-2) + var(--cible-min) / 2 - (var(--esp-4) - var(--esp-3)) / 2 - (var(--t-chrome-titre) + var(--esp-3)) / 2);min-height:calc(var(--t-chrome-titre) + var(--esp-4));display:flex;align-items:center;gap:var(--esp-4);padding:0 calc((var(--esp-4) - var(--esp-3)) / 2 - var(--limite-ep)) 0 var(--esp-3);background:var(--gris-ilot);border:var(--limite-ep) solid var(--gris-service);border-radius:var(--rayon-pilule);color:var(--univers-e1);overflow:hidden}
 .languette-radio.cache{display:none}
 /* L'ilot vit au bas du tiroir du menu, juste avant les liens de langue et de
    politique : il y est TOUJOURS visible — la regle prime sur l'etat range que
    le script retient pour d'autres poses — et il prend la rangee entiere,
    l'antenne au bout. */
-.menu-pop .languette-radio{display:flex;width:auto;max-width:none;margin:var(--esp-3) 0 var(--esp-1);margin-left:0;opacity:1;transform:none;position:sticky;bottom:var(--esp-2);z-index:1;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18)}
+/* LA RANGEE COLLANTE DU TIROIR : le lecteur et le groupe Mi | NU tiennent la
+   meme ligne, collee au bas du panneau. L'antenne vit DANS le lecteur, le
+   bouton de lecture n'y a plus d'objet. Le pli est croise : la marque
+   OUVERTE replie le lecteur a gauche sur sa pastille d'antenne, et rendre la
+   marque rend le lecteur — memes jetons de pli que le logotype. */
+.menu-pop .tiroir-radio{position:sticky;bottom:var(--esp-2);z-index:1;display:flex;align-items:center;gap:var(--esp-2);margin:var(--esp-3) 0 var(--esp-1)}
+.menu-pop .tiroir-radio .toggle{flex:0 0 auto}
+/* Dans la rangee du tiroir, la pastille de marque prend la hauteur du
+   plancher tactile : celle de l'ilot voisin, qui porte l'antenne, moins ses
+   filets — deux pieces d'une meme rangee se lisent a la meme hauteur. Le mot
+   garde son corps et reste centre : seule la pastille grandit. */
+.menu-pop .tiroir-radio .toggle{--pastille-d:var(--cible-min)}
+.menu-pop .languette-radio{display:flex;width:auto;max-width:none;margin:0;opacity:1;transform:none;flex:1 1 auto;min-width:0;box-shadow:0 2px 10px rgba(var(--ombre-teinte),.18);overflow:hidden;transition:max-width var(--mvt-parcours) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
+/* Replie, l'ilot se resserre sur sa seule antenne : sa largeur est celle de
+   la cible plus un souffle egal des deux cotes — bornee dans les deux sens,
+   sinon la rangee en flexion le retrecirait sous l'antenne et la rognerait. */
+.menu-pop .tiroir-radio:has(.toggle.ouvert) .languette-radio{min-width:calc(var(--cible-min) + var(--esp-1) * 2 + var(--limite-ep) * 2);max-width:calc(var(--cible-min) + var(--esp-1) * 2 + var(--limite-ep) * 2);opacity:.85;gap:0;padding-left:var(--esp-1);padding-right:var(--esp-1)}
+.menu-pop .languette-radio .lecteur-btn{display:none}
 .menu-pop .languette-radio.cache{display:flex}
 .menu-pop .languette-radio.parait{opacity:1;transform:none}
 .menu-pop .languette-radio .lecteur-texte{flex:1 1 auto;min-width:0}
@@ -1672,9 +1704,9 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
 .lecteur-etat{overflow:hidden;text-overflow:ellipsis}
 
 /* La bascule de langue se pose a gauche de la ligne de politique, dans le
-   meme pied et avec la meme encre. */
+   meme pied ; elle porte l'encre d'univers, comme la bascule du chrome. */
 .pied-politique .point-pied{color:var(--encre-discrete);font-size:var(--t-sm)}
-.pied-politique .lien-langue{min-height:var(--cible-min);min-width:var(--cible-min);border:none;background:none;color:var(--encre-discrete);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.pied-politique .lien-langue{min-height:var(--cible-min);min-width:var(--cible-min);border:none;background:none;color:var(--univers);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
 /* ---------- LE NAV MESURE, LA FEUILLE COMPOSE ----------
    Un ecran large mais COURT est un telephone couche, jamais un ordinateur :
@@ -1701,6 +1733,11 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
    CE QUI CASSE SI ON LE MODIFIE : le mobilier du chrome se cale sur
    `--chrome-w`, le contenu sur `--piste`. Faire pointer les deux sur le meme
    jeton supprime le recentrage et ramene une seule echelle. */
+/* Le telephone couche garde un cran a lui : plus large que debout, plus
+   serre que la tablette — piste et chrome ensemble. */
+@media(min-width:640px) and (max-height:599px){
+  :root{--marge:7.5%;--site-w:85%;--marge-chrome:7.5%;--chrome-w:85%}
+}
 @media(min-width:640px) and (min-height:600px){
   :root{--marge:15%;--site-w:70%;--marge-chrome:10%;--chrome-w:80%;--grille-colonnes:8}
 }
@@ -1952,20 +1989,37 @@ body.nav-quete .quete-loupe{flex:0 0 auto;width:44px;height:44px;min-height:0;pa
    restent a la feuille. Au bas de l'ecran, la feuille garde ses champs. */
 body.nav-quete .feuille-bas[data-pose="barre"] .champ-suggest{display:none}
 body.nav-quete .feuille-bas[data-pose="barre"] .champ-quoi > input{display:none}
-/* Sur la largeur d'un telephone couche, la pilule cede un cinquieme de sa
-   longueur au groupe central. Pose apres les regles de base : a poids egal,
-   c'est l'ordre qui tranche. */
-@media(max-width:800px){body.nav-quete .quete-groupe,body.nav-quete .fab.quete{max-width:194px}}
+/* Sur la largeur d'un telephone couche, la pilule tient un plafond a elle :
+   plus long que celui que le groupe central lui laissait, plus court que la
+   ligne entiere du telephone droit. Pose apres les regles de base : a poids
+   egal, c'est l'ordre qui tranche. */
+@media(min-width:640px) and (max-width:800px){body.nav-quete .quete-groupe,body.nav-quete .fab.quete{max-width:252px}}
+/* Sur un telephone droit, la barre ne porte que trois pieces, toutes connues :
+   la pilule prend la ligne entiere et ne laisse a ses voisines qu'un ecart
+   franc de part et d'autre. */
+@media(max-width:639px){
+  body.nav-quete .chrome-inner{column-gap:var(--esp-4)}
+  body.nav-quete .quete-groupe,body.nav-quete .fab.quete{max-width:none}
+}
 /* Le disque a loupe, dessine aux jetons : un anneau et son manche evides dans
    un disque d'univers. Il est decoratif — le nom du bouton reste son texte. */
 body.nav-quete .fab.quete::after{content:'';flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:linear-gradient(45deg,transparent calc(50% - 1.7px),var(--blanc) calc(50% - 1.7px) calc(50% + 1.7px),transparent calc(50% + 1.7px)) 20px 20px/9px 9px no-repeat,radial-gradient(circle at 50% 50%,transparent 4.2px,var(--blanc) 4.8px 7px,transparent 7.6px) 9px 9px/15px 15px no-repeat,var(--univers)}
 
-/* La feuille ancree a la barre : meme appareil, autre bord. Elle descend de
-   sous la barre comme le tiroir du menu, au lieu de monter du bas, et sa
-   poignee — un geste de pouce — n'a plus de sens. Son voile passe sous la
-   barre : un panneau ne couvre jamais le meuble qui l'ouvre. */
-.feuille-bas[data-pose="barre"]{bottom:auto;top:calc(var(--entete-h-rendue) + var(--esp-1));left:auto;right:var(--bord);width:min(var(--col),100%);z-index:19;border-radius:var(--rayon-carte);max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-8));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-8));padding-top:var(--feuille-marge);padding-bottom:var(--esp-6);box-shadow:0 18px 44px rgba(var(--ombre-teinte),.28);transform-origin:top right;transform:translate(0,-8px);opacity:0;pointer-events:none;transition:transform var(--mvt-apparition) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
+/* La feuille ancree a la barre : meme appareil, autre bord. La ou la barre
+   porte la quete — et devient champ de saisie au deuxieme appui — la feuille
+   se tire vers le bas DEPUIS elle, a toute taille : un panneau qui monte du
+   bas tournerait le dos au champ qui vient de l'appeler. Elle descend comme
+   le tiroir du menu — meme cale sous la barre, meme rayon, meme ombre — et
+   sa poignee, un geste de pouce, n'a plus de sens. Sa largeur est celle de
+   la ligne du chrome, jamais plus que l'ecran ne laisse entre ses deux
+   bords ; son voile passe sous la barre : un panneau ne couvre jamais le
+   meuble qui l'ouvre. */
+.feuille-bas[data-pose="barre"]{bottom:auto;top:calc(var(--entete-h-rendue) + var(--esp-1));left:auto;right:var(--bord);width:min(var(--col),calc(100% - var(--bord) * 2));z-index:19;border-radius:var(--rayon-carte);max-height:calc(100vh - var(--entete-h-rendue) - var(--esp-8));max-height:calc(100dvh - var(--entete-h-rendue) - var(--esp-8));padding-top:var(--feuille-marge);padding-bottom:var(--esp-6);box-shadow:0 18px 44px rgba(var(--ombre-teinte),.28);transform-origin:top right;transform:translate(0,-8px);opacity:0;pointer-events:none;transition:transform var(--mvt-apparition) var(--courbe-entree),opacity var(--mvt-etat) var(--courbe-etat)}
 .feuille-bas[data-pose="barre"].visible{transform:translate(0,0);opacity:1;pointer-events:auto}
 .feuille-bas[data-pose="barre"] .poignee{display:none}
+/* Le lien de politique se centre dans la bande qui separe le bas du geste du
+   bas de la feuille : autant d'air au-dessus de lui que le creux de pied en
+   laisse au-dessous. */
+.feuille-bas[data-pose="barre"] .consent-lien{margin-block:var(--esp-6) 0}
 .voile[data-pose="barre"]{z-index:12}
 

@@ -43,6 +43,7 @@
      partagee ne garde jamais la teinte d'un autre univers. Les encres de la
      lecture longue suivent l'echelon 3 de l'univers pour la meme raison. */
   --ombre-teinte: var(--noir-rgb);
+  --univers-e4: var(--terre-e4);
   --encre-ll-h1: var(--encre);
   --encre-ll-h3: var(--encre);
   --encre-ll-h5: var(--encre);
@@ -50,7 +51,11 @@
   --encre-ll-h4: var(--univers-e3);
   --encre-ll-h6: var(--univers-e3);
   --encre-ll-chapo: var(--univers-e3);
+  /* Les liens de la lecture longue portent l'ACCENT de l'univers, pas son
+     noir : un lien noir sur encre noire ne se distingue plus. */
+  --lien-lecture: var(--univers-e3);
 }
+:where(body.p-space) .lecture a{color:var(--univers-e3)}
 
 /* ---- En-tete de l'ecran --------------------------------------------------
  * Aplat noir, encre blanche. Mesure sur les jetons : 17,40 — AAA.

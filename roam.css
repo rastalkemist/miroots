@@ -127,41 +127,30 @@
    moitié en 5-40-5. Tout y est aligné à gauche, et le geste vient en tête —
    il tombe au premier tiers de la hauteur du film, là où le regard entre.
    Le film reste du même côté d'une vedette à l'autre : une suite de blocs dont
-   l'image alterne se balaie moins bien qu'une suite alignée. */
-@media(min-width:820px){
+   l'image alterne se balaie moins bien qu'une suite alignée.
+   Un téléphone couché prend la MÊME composition : sa fenêtre a la largeur
+   d'une tablette et la hauteur d'un bandeau — une scène pleine largeur y
+   mange l'écran, et la composition intermédiaire y casse le propos. */
+@media(min-width:820px),(min-width:640px) and (max-height:599px){
   /* Le plein bord est une figure de TÉLÉPHONE : l'écran y est la page. Dès que
      la page a des marges, la scène les prend comme tout le reste — une pièce
      qui déborde seule ne dit plus qu'elle appartient à la même page. */
   :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto;align-items:start;margin:0 0 var(--air-i8);width:auto}
   :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1;margin:0;width:100%;height:auto;aspect-ratio:4/3;align-self:start}
-  /* Le geste passe en tete de colonne : l'ordre du document garde le nom
-     d'abord, ce dont le petit ecran a besoin pour les mettre sur une ligne.
-     Il descend d'un quart de la hauteur du film. Un remplissage en pourcentage
-     se calcule sur la largeur de SA colonne : le film et la colonne font la
-     meme largeur, et le rapport 4/3 donne au film une hauteur de 75 % de cette
-     largeur — le quart de cette hauteur en vaut donc 18,75 %. */
-  /* Le propos est UN GROUPE, et il se lit comme tel. Ancrer le nom, la phrase
-     et le geste à trois hauteurs distinctes de la scène maximise la distance
-     entre des éléments qui se répondent, et la distance est ce qui dit qu'ils
-     ne vont PAS ensemble. Ils tiennent donc ensemble, séparés par des crans
-     d'air de la rampe, et le groupe se centre sur l'axe de la scène. L'ordre
-     est celui qu'on lit : ce que c'est, ce que ça vaut, ce qu'on en fait. */
-  /* DEUX ANCRAGES, ET UN SEUL GROUPE. Le nom se pose au quart de la hauteur
-     de la scène — donc aux trois quarts comptés depuis le bas. Le propos et
-     son geste tombent ensemble plus bas, séparés par un cran d'air : ils se
-     répondent, ils ne se dispersent pas. Deux ancrages tiennent le poids du
-     propos contre celui de la scène là où trois le diluaient. */
+  /* DEUX GROUPES, TROIS AIRS. Le nom et son quartier tiennent le haut de la
+     colonne, le propos et son geste tiennent le bas ; entre eux, l'air du
+     milieu — et aucun des deux ne colle a l'arete de la scène : un air borde
+     aussi le haut et le bas. Les trois airs se partagent ce que la scène
+     laisse, un-deux-un : celui du milieu pese double, c'est lui qui dit que
+     ce sont deux groupes. Ils grandissent avec la scène et gardent chacun un
+     plancher de la rampe quand elle se fait courte. */
   /* La colonne du propos prend EXACTEMENT le rapport de la scène, donc sa
-     hauteur : les deux colonnes font la même largeur. Les pourcentages se
-     comptent alors sur la hauteur de la vidéo, et les blocs suivent d'eux-mêmes
-     quand elle change de taille — aucune valeur à recalculer. */
-  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1;display:block;position:relative;width:100%;height:auto;aspect-ratio:4/3;padding:0 5vw;margin:0;transform:translateY(calc(-1 * var(--propos-decalage,0px)))}
-  :where(body.p-roam) .vedette-dire .vedette-nom{position:absolute;top:25%;left:5vw;right:5vw;margin:0;text-align:left}
-  /* L'ancrage demandé est tenu tant que la scène est assez haute pour le
-     porter ; sinon il est ramené juste ce qu'il faut pour que le groupe finisse
-     avec elle. Une pièce qui déborde sous l'image n'est pas un placement, c'est
-     un accident. */
-  :where(body.p-roam) .vedette-bas{position:absolute;top:min(70%,calc(100% - var(--propos-h)));left:5vw;right:5vw;display:block}
+     hauteur : les deux colonnes font la même largeur, et les deux groupes
+     suivent d'eux-mêmes quand elle change de taille — aucune valeur à
+     recalculer. */
+  :where(body.p-roam) .vedette-dire{grid-column:2;grid-row:1;display:grid;grid-template-rows:minmax(var(--esp-3),1fr) auto minmax(var(--esp-4),2fr) auto minmax(var(--esp-3),1fr);width:100%;height:auto;aspect-ratio:4/3;padding:0 5vw;margin:0}
+  :where(body.p-roam) .vedette-dire .vedette-nom{grid-row:2;margin:0;text-align:left}
+  :where(body.p-roam) .vedette-bas{grid-row:4;display:block}
   :where(body.p-roam) .vedette-bas .vedette-dit{margin:0;padding:0;max-width:none;text-align:left}
   :where(body.p-roam) .vedette-bas .bouton-contour{display:inline-flex;margin-top:var(--air-i6)}
   /* La note de section tient sa ligne tant que la page la porte : la mesure de

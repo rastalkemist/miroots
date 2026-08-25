@@ -207,9 +207,12 @@
      autres si la place y est. Ce qui ne peut pas monter se range aux coins
      bas, dans la gouttiere du site.
 
-     La seule valeur declaree est l'ecart minimal. Tout le reste est mesure.
+     Deux valeurs declarees : l'ecart minimal du super-nav, et le souffle
+     qui met en valeur le groupe de marque de part et d'autre. Tout le reste
+     est mesure.
      ------------------------------------------------------------------ */
   var ECART_NAV = 24;
+  var SOUFFLE_MARQUE = 40;
 
   /* LA HAUTEUR RENDUE DE LA BARRE, PUBLIEE A LA FEUILLE DE STYLE.
      Ce qui doit s'arreter sous la barre — une feuille qui monte du bas, un
@@ -290,8 +293,10 @@
       if (feuilleQ) feuilleQ.removeAttribute('data-pose');
       if (voileQ) voileQ.removeAttribute('data-pose');
     }
-    var centreQ = barre.querySelector('.centre');
+    var centreQ = document.querySelector('.centre');
     if (centreQ && centreQ.parentNode !== barre) barre.insertBefore(centreQ, droite);
+    var rangOrphelin = document.querySelector('.tiroir-radio');
+    if (rangOrphelin && !rangOrphelin.children.length) rangOrphelin.parentNode.removeChild(rangOrphelin);
 
 
     /* L'ECRAN DE SEJOUR PORTE SA QUETE DANS LA BARRE, A TOUTE TAILLE. La
@@ -313,18 +318,27 @@
           ? 'Let’s roam!' : 'Je découvre';
       }
       fabQ.classList.add('quete');
-      var centreQuete = barre.querySelector('.centre');
-      if (centreQuete) droite.insertBefore(centreQuete, droite.querySelector('.chrome-burger'));
       barre.insertBefore(fabQ, droite);
       if (feuilleQ) feuilleQ.setAttribute('data-pose', 'barre');
       if (voileQ) voileQ.setAttribute('data-pose', 'barre');
-      if (ilot) {
-        var bacSections = document.getElementById('sections');
-        if (bacSections) {
-          bacSections.insertBefore(ilot, bacSections.querySelector('.pied-politique'));
+      /* Le lecteur et le groupe Mi | NU tiennent la meme rangee COLLANTE au
+         bas du tiroir : l'antenne vit DANS le lecteur, a la place du bouton
+         de lecture, et la marque prend la place liberee a sa droite. */
+      var bacSections = document.getElementById('sections');
+      if (bacSections) {
+        var rangTiroir = bacSections.querySelector('.tiroir-radio');
+        if (!rangTiroir) {
+          rangTiroir = document.createElement('div');
+          rangTiroir.className = 'tiroir-radio';
+        }
+        bacSections.insertBefore(rangTiroir, bacSections.querySelector('.pied-politique'));
+        if (ilot) {
+          rangTiroir.appendChild(ilot);
           ilot.classList.remove('cache');
           if (antenne) ilot.appendChild(antenne);
         }
+        var marqueQ = document.querySelector('.centre');
+        if (marqueQ) rangTiroir.appendChild(marqueQ);
       }
     }
 
@@ -335,15 +349,39 @@
     function librePresDe() {
       var pris = 0;
       Array.prototype.forEach.call(barre.children, function (el) {
+        /* La pilule de quete CEDE : sa colonne se comprime jusqu'a son
+           plancher — c'est donc son plancher qui se compte, jamais sa largeur
+           naturelle, qui interdirait une promotion que l'ecran porte. */
+        if (el.classList.contains('quete-groupe') || el.classList.contains('fab')) {
+          var garde = el.style.width;
+          el.style.width = 'min-content';
+          pris += el.getBoundingClientRect().width;
+          el.style.width = garde;
+          return;
+        }
         pris += el.scrollWidth;
       });
       return barre.getBoundingClientRect().width - pris;
     }
 
-    /* Palier 1 */
+    /* Palier 1. La barre montee ne montre du super-nav que les icones et la
+       legende du verbe courant : c'est CETTE forme qui se mesure — la forme
+       du bas, legendes depliees, dirait une largeur qui n'existera pas. Le
+       souffle exige de part et d'autre depend de ce que le centre met en
+       valeur : la quete se contente de l'ecart minimal, le groupe de marque
+       demande le sien. */
     if (!superNav) { if (radio) radio.rendre(); return; }
-    var largeurNav = superNav.scrollWidth;
-    if (librePresDe() < largeurNav + ECART_NAV * 2) { if (radio) radio.rendre(); return; }
+    var largeurNav = 0;
+    Array.prototype.forEach.call(superNav.querySelectorAll('.verbe'), function (v) {
+      var ic = v.querySelector('.ico-rond');
+      largeurNav += ic ? ic.offsetWidth : v.offsetWidth;
+      if (v.classList.contains('actif')) {
+        var lg = v.querySelector('.verbe-dit');
+        if (lg) largeurNav += lg.scrollWidth;
+      }
+    });
+    var souffle = corps.classList.contains('nav-quete') ? ECART_NAV : SOUFFLE_MARQUE;
+    if (librePresDe() < largeurNav + souffle * 2) { if (radio) radio.rendre(); return; }
     corps.classList.add('nav-haut');
     /* Le logo et les verbes forment un groupe : sans lui, la barre passerait a
        quatre colonnes et le logotype central cesserait d'etre central. */
@@ -394,7 +432,9 @@
       }
       ilot.style.maxWidth = gardeMax; ilot.style.width = '';
       if (etaitCache) ilot.classList.add('cache');
-      if (librePresDe() >= plancher + ECART_NAV) {
+      /* Le voisin de l'ilot ancre est le groupe de marque : c'est donc le
+         souffle de la marque qui borne l'entree, pas l'ecart minimal. */
+      if (librePresDe() >= plancher + SOUFFLE_MARQUE) {
         corps.classList.add('nav-ilot-ancre');
         droite.insertBefore(ilot, droite.firstChild);
         ilot.classList.remove('cache');
@@ -411,7 +451,7 @@
         var centre = barre.querySelector('.centre');
         if (centre) {
           var libre = ilot.getBoundingClientRect().right
-            - (centre.getBoundingClientRect().right + ECART_NAV);
+            - (centre.getBoundingClientRect().right + SOUFFLE_MARQUE);
           ilot.style.maxWidth = Math.max(0, Math.round(libre)) + 'px';
         }
       }
@@ -992,9 +1032,12 @@
       var cont = document.getElementById('sections');
       if (!cont) return;
       var liste = getSections(getLangue()) || [];
-      /* L'ilot de radio vit dans le tiroir : il se retire avant que la liste
-         ne se redessine, et se repose avant le pied — un element detruit perd
-         ses ecouteurs, un element deplace les garde. */
+      /* Ce que la barre a pose dans le tiroir se retire avant que la liste ne
+         se redessine, et se repose avant le pied — un element detruit perd ses
+         ecouteurs, un element deplace les garde. La rangee du bas voyage
+         ENTIERE : la vider de ses occupants les detacherait du document. */
+      var rangRadio = cont.querySelector('.tiroir-radio');
+      if (rangRadio) rangRadio.parentNode.removeChild(rangRadio);
       var ilotRadio = document.getElementById('languetteRadio');
       if (ilotRadio && !ilotRadio.closest('.menu-pop')) ilotRadio = null;
       cont.innerHTML = '';
@@ -1013,7 +1056,8 @@
         if (s.href && s.href.charAt(0) === '#') a.addEventListener('click', fermerMenu);
         cont.appendChild(a);
       });
-      if (ilotRadio) cont.appendChild(ilotRadio);
+      if (rangRadio) cont.appendChild(rangRadio);
+      else if (ilotRadio) cont.appendChild(ilotRadio);
       /* La politique ferme le menu, en second niveau : une ligne soulignee,
          pas une entree de navigation. Son etiquette reprend mot pour mot celle
          que les notices de consentement emploient pour la designer ; s'en
