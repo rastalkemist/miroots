@@ -954,6 +954,18 @@
        bouton marque dormant reste une annonce : c'est le balisage de la page,
        et lui seul, qui decide si la destination existe pour elle. */
     var DESTINATION = { roots: 'index.html', roam: 'roam.html', space: 'space.html' };
+    /* Le verbe Organiser a DEUX ecrans, et l'arbitrage se rend ICI, une
+       fois : l'outil pour qui porte une session, la couverture pour qui n'en
+       porte pas. Chaque appel relit l'etat au moment du geste — un etat lu
+       une fois au chargement mentirait des la premiere connexion — et tous
+       les porteurs du verbe en heritent sans en savoir un mot. */
+    function destinationDe(v) {
+      if (v === 'space'
+          && !(global.Roots.db && global.Roots.db.estConnecte && global.Roots.db.estConnecte())) {
+        return 'decouvrir-space.html';
+      }
+      return DESTINATION[v];
+    }
     /* L'univers d'un ecran est celui de sa classe de corps — une page
        satellite peut le recevoir a l'ouverture. Le chrome suit cette classe,
        et elle seule : le verbe de l'univers porte l'etat actif, le logotype
@@ -966,7 +978,7 @@
       var titre = document.querySelector('.chrome-titre');
       if (titre && DESTINATION[u]) {
         titre.textContent = verbes[u];
-        titre.setAttribute('href', DESTINATION[u]);
+        titre.setAttribute('href', destinationDe(u));
       }
       if (superNav) Array.prototype.forEach.call(superNav.querySelectorAll('.verbe'), function (b) {
         var sien = b.dataset.verbe === u;
@@ -984,7 +996,7 @@
          alors aria-current et remonte la page. */
       if (DESTINATION[v] && b.getAttribute('aria-disabled') !== 'true') {
         if (b.getAttribute('aria-current') === 'true') { global.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-        global.location.assign(DESTINATION[v]);
+        global.location.assign(destinationDe(v));
         return;
       }
       toast(toastVerbe(getLangue(), verbes[v]));
