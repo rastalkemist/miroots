@@ -503,6 +503,9 @@ body.nav-haut .chrome-gauche{gap:16px}
      fond serait rogne. */
   body:not(.nav-haut) .verbe.actif .ico-rond::before{content:'';position:absolute;inset:-8px;z-index:-1;background:radial-gradient(circle at calc(50% + var(--p-cx)) calc(50% + var(--p-cy)),var(--univers) calc(var(--p-r) - .4px),transparent calc(var(--p-r) + .4px))}
   body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p-svg)}
+  /* Correction OPTIQUE, tranchee a l'oeil : le poids visuel de la pousse
+     tire a droite, son dessin recule d'un point dans sa pastille. */
+  body:not(.nav-haut) .verbe[data-verbe="roots"].actif .ico-rond svg{transform:translateX(-1px)}
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
      d'univers sous l'ombre douce que la surface donne deja a son chrome,
