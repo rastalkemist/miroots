@@ -511,6 +511,12 @@ body:not(.nav-haut) .verbe.actif .ico-rond svg{width:var(--p-svg);height:var(--p
 /* Correction optique, tranchee a l'oeil : le poids visuel de la pousse tire
    a droite, son dessin recule de deux points dans sa pastille. */
 body:not(.nav-haut) .verbe[data-verbe="roots"].actif .ico-rond svg{transform:translateX(-2px)}
+/* L'ecart icone-legende se regle a l'ENCRE, verbe par verbe : la carte du
+   verbe Plan rend son encre basse 0,75 px plus haut que la pousse — son
+   dessin descend d'autant, au repos seulement, pour que les deux ecarts
+   se lisent egaux. La legende, elle, ne bouge jamais : les trois partagent
+   leur ligne. */
+body:not(.nav-haut) .verbe[data-verbe="space"]:not(.actif) .ico-rond svg{transform:translateY(0.75px)}
 /* La paire courante se resserre de trois points de plus que les autres. */
   /* Sur l'aplat transparent, la barre s'efface et chaque piece porte sa
      propre frontiere, insensible au film : les dessins gardent leur encre
