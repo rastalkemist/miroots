@@ -430,7 +430,7 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
    noms desaccorderait ce qui se cale dessus. */
 :where(body){--filet-barre:2px;--pastille-verbe:52px;
  --souffle-filet:calc((var(--barre-h) - var(--filet-barre) - var(--pastille-verbe)) / 2)}
-.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:var(--filet-barre) solid var(--univers);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14)}
+.chrome-bas{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;min-height:calc(var(--barre-h) + var(--safe-bas));height:auto;padding-bottom:var(--safe-bas);background:var(--blanc);border-top:var(--filet-barre) solid var(--univers);box-shadow:0 -6px 24px rgba(var(--ombre-teinte),.14);transition:opacity var(--mvt-apparition) var(--courbe-etat)}
 .verbe{flex:1;border:none;background:none;cursor:pointer;position:relative;color:var(--gris-500);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:calc(var(--esp-1) / 2)}
 /* La legende du verbe. En bas d'ecran elle se tient sous l'icone ; montee
    dans la barre, a sa droite. Icone et legende forment un seul bloc : leur
@@ -658,13 +658,15 @@ a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-d
 
    Un champ de la feuille ne descend pas sous 16px : en dessous, un navigateur
    mobile zoome sur la page a la mise au point et n'en revient pas seul. */
-.fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border:none;font-size:var(--t-21);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fab{position:fixed;left:50%;transform:translateX(-50%);--fab-bas:7.5%;bottom:calc(var(--fab-bas) + var(--safe-bas));z-index:7;min-height:56px;padding:0 var(--esp-8);border:none;font-size:var(--t-21);border-radius:var(--rayon-pilule);background:var(--blanc);color:var(--univers);font-family:var(--font-eclat);font-weight:var(--w-bold);white-space:nowrap;box-shadow:0 12px 30px rgba(var(--ombre-teinte),.42);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity var(--mvt-apparition) var(--courbe-etat)}
 .fab svg{width:26px;height:26px;stroke-width:2.6}
 /* Le geste focal ne parait qu'une fois la barre arbitree : peint d'abord au
    bas puis remonte, il semblerait clignoter a l'ouverture. La retenue exige
    la classe de script sur la racine — sans script, rien ne le deplacera, et
-   il se montre d'emble. */
-html.js body:not(.nav-pret) .fab{opacity:0}
+   il se montre d'emble. La levee de la retenue passe par le fondu du geste,
+   jamais par une parution seche : c'est le meme fondu qui adoucit sa
+   parution sur les ecrans ou il ne bouge pas. */
+html.js body:not(.nav-pret) .fab,html.js body:not(.nav-pret) .chrome-bas{opacity:0}
 /* D'un ecran a l'autre, la pastille du verbe courant et sa legende glissent
    vers leur nouveau porteur au lieu de sauter : la traversee de document
    s'anime, et s'immobilise pour qui demande moins de mouvement. */
@@ -726,7 +728,12 @@ body.nav-haut .verbe.actif .verbe-dit{view-transition-name:legende-verbe}
    inutilisable au clavier. Elle ne s'affiche qu'au parcours clavier, jamais a
    l'appui ni au clic. */
 body{--focus-trait:var(--encre)}
-:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5)}
+/* L'ombre et les voiles portent la teinte de l'encre profonde de l'UNIVERS
+   courant : une piece partagee — voile, feuille, ombre portee — qui garderait
+   la teinte d'un autre univers mentirait sur l'ecran qu'elle sert. Toute
+   couleur d'une piece qui voyage entre univers se declare en jeton d'univers,
+   jamais en valeur figee. */
+:where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5);--ombre-teinte:var(--rouge-e1-rgb)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}

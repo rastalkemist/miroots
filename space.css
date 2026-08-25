@@ -39,6 +39,9 @@
   --encre: var(--roots-noir);
   --accent-plan: var(--terre-e3);
   --finance-fond: var(--roots-jaune);
+  /* L'ombre et les voiles suivent l'encre profonde de l'univers : une piece
+     partagee ne garde jamais la teinte d'un autre univers. */
+  --ombre-teinte: var(--noir-rgb);
 }
 
 /* ---- En-tete de l'ecran --------------------------------------------------
