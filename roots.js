@@ -786,7 +786,7 @@
     var getSections = opts.getSections || function () { return []; };
     var toastNu = opts.toastNu || function () { return ''; };
     var toastVerbe = opts.toastVerbe || function (l, v) { return v; };
-    var verbes = opts.verbes || { plan: 'Plan', roots: 'Roots', roam: 'Roam' };
+    var verbes = opts.verbes || { plan: 'Space', roots: 'Roots', roam: 'Roam' };
     var onVerbe = opts.onVerbe || null;
 
     var toastTimer = null;
@@ -845,6 +845,31 @@
     }
 
     var superNav = document.getElementById('superNav');
+    /* Chaque verbe porte sa legende : sous l'icone quand la barre tient le
+       bas, a droite quand elle est montee. Le nom du bouton devient son texte
+       visible — une etiquette cachee qui dirait autre chose ferait diverger
+       ce qu'on lit de ce qu'on entend. La legende suit la langue. */
+    var LEGENDES = {
+      plan:  { fr: 'Organiser', en: 'Plan' },
+      roots: { fr: 'Coworking', en: 'Connect' },
+      roam:  { fr: 'Voyager',   en: 'Discover' }
+    };
+    function poserLegendes() {
+      if (!superNav) return;
+      Array.prototype.forEach.call(superNav.querySelectorAll('.verbe'), function (b) {
+        var l = LEGENDES[b.dataset.verbe];
+        if (!l) return;
+        var dit = b.querySelector('.verbe-dit');
+        if (!dit) {
+          dit = document.createElement('span');
+          dit.className = 'verbe-dit';
+          b.appendChild(dit);
+          b.removeAttribute('aria-label');
+        }
+        dit.textContent = l[getLangue()] || l.fr;
+      });
+    }
+    poserLegendes();
     if (superNav) superNav.addEventListener('click', function (e) {
       var b = e.target.closest('.verbe'); if (!b) return;
       var v = b.dataset.verbe;
@@ -899,6 +924,7 @@
       /* Les libelles du chrome suivent la meme bascule que la liste : chaque
          ecran rappelle deja cette fonction au changement de langue. */
       poserLibelles(getLangue());
+      poserLegendes();
       if (radio) radio.dire();
       ajusterNav(radio);
       var cont = document.getElementById('sections');
