@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9qYbMPZohwrmrbj3AobGo7WNJXjHf98+NhHtICKchZc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gUNxy3crPaXTG9E3eQNyMBodBC7OF6tFNPDl10hPON0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
@@ -57,6 +57,8 @@
 
   <div class="hall">
 
+    <div class="hall-col">
+
     <section class="hall-bloc vedette" aria-labelledby="hSemaine">
       <div class="hall-tete">
         <h1 id="hSemaine" data-t="blocSemaine">Ma semaine</h1>
@@ -68,9 +70,20 @@
       <p class="vide" id="videSemaine" data-t="videSemaine" hidden>Rien de posé pour l’instant. Ta semaine s’écrit à côté.</p>
     </section>
 
+    <section class="hall-bloc dort" aria-labelledby="hSavoir">
+      <div class="hall-tete">
+        <h2 id="hSavoir" data-t="blocSavoir">Mon Savoir</h2>
+        <span class="bientot" data-t="bientot">Bientôt</span>
+      </div>
+    </section>
+
+    </div>
+
+    <div class="hall-col">
+
     <section class="hall-bloc" aria-labelledby="hNotes">
       <div class="hall-tete">
-        <h2 id="hNotes">Mi Notes</h2>
+        <h2 id="hNotes" data-t="blocNotes">Mes Notes</h2>
         <a class="lien-ouvre" href="notes.html" data-t="ouvreNotes">Ouvrir mes notes →</a>
       </div>
       <p class="etat-semaine" id="etatNotes" role="status" hidden></p>
@@ -78,11 +91,21 @@
       <p class="vide" id="videNotes" data-t="videNotes" hidden>Rien pour l’instant. Pose ta première note.</p>
     </section>
 
-    <div class="hall-apres">
-      <div class="hall-dort"><h2>Reporting</h2><span class="bientot" data-t="bientot">Bientôt</span></div>
-      <div class="hall-dort"><h2>Finances</h2><span class="bientot" data-t="bientot">Bientôt</span></div>
-      <div class="hall-dort"><h2>Intel</h2><span class="bientot" data-t="bientot">Bientôt</span></div>
+    <section class="hall-bloc dort" aria-labelledby="hFinances">
+      <div class="hall-tete">
+        <h2 id="hFinances" data-t="blocFinances">Finances</h2>
+        <span class="bientot" data-t="bientot">Bientôt</span>
+      </div>
+    </section>
+
     </div>
+
+    <section class="hall-bloc dort large" aria-labelledby="hBord">
+      <div class="hall-tete">
+        <h2 id="hBord" data-t="blocBord">Tableau de Bord</h2>
+        <span class="bientot" data-t="bientot">Bientôt</span>
+      </div>
+    </section>
 
   </div>
 
@@ -140,6 +163,10 @@
     fr: {
       saut: 'Aller au contenu',
       blocSemaine: 'Ma semaine',
+      blocBord: 'Tableau de Bord',
+      blocFinances: 'Finances',
+      blocSavoir: 'Mon Savoir',
+      blocNotes: 'Mes Notes',
       ouvreSemaine: 'Toute ma semaine →',
       ouvreNotes: 'Ouvrir mes notes →',
       videSemaine: 'Rien de posé pour l’instant. Ta semaine s’écrit à côté.',
@@ -160,6 +187,10 @@
     en: {
       saut: 'Skip to content',
       blocSemaine: 'My week',
+      blocBord: 'Dashboard',
+      blocFinances: 'Finances',
+      blocSavoir: 'My Knowledge',
+      blocNotes: 'My Notes',
       ouvreSemaine: 'Full week →',
       ouvreNotes: 'Open my notes →',
       videSemaine: 'Nothing set yet. Your week is written next door.',

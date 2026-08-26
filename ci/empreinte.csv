@@ -272,16 +272,16 @@ jeton,rang,valeur
 --terre-brique-cuite,0,var(--terre-e2)
 --terre-brune,0,var(--terre-e1)
 --terre-cacao,0,var(--terre-e1)
---terre-e1,0,#4C1F13
---terre-e1-rgb,0,76, 31, 19
---terre-e2,0,#83361D
---terre-e2-rgb,0,131, 54, 29
---terre-e3,0,#C1502A
---terre-e3-rgb,0,193, 80, 42
---terre-e4,0,#DE8467
---terre-e4-rgb,0,222, 132, 103
---terre-e5,0,#ECBAA9
---terre-e5-rgb,0,236, 186, 169
+--terre-e1,0,#4F1D06
+--terre-e1-rgb,0,79, 29, 6
+--terre-e2,0,#8A3003
+--terre-e2-rgb,0,138, 48, 3
+--terre-e3,0,#C2500D
+--terre-e3-rgb,0,194, 80, 13
+--terre-e4,0,#EE7C41
+--terre-e4-rgb,0,238, 124, 65
+--terre-e5,0,#F0B99F
+--terre-e5-rgb,0,240, 185, 159
 --terre-sable-rose,0,var(--terre-e5)
 --terre-terracotta,0,var(--terre-e3)
 --trait-icone,0,2

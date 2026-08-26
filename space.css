@@ -446,24 +446,49 @@
 :where(body.p-space) .lien-ouvre:focus-visible{
   outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
 }
-:where(body.p-space) .hall-apres{ display: grid; gap: var(--air-i3) }
-:where(body.p-space) .hall-dort{
-  background: var(--blanc); border-radius: var(--rayon-carte);
-  padding: var(--esp-6);
+/* Un module sans contenu porte sa carte et son nom, rien de plus : sa
+   hauteur suit ce qu'il affiche, comme celle de tout autre module. */
+:where(body.p-space) .hall-bloc.dort{
   box-shadow: 0 6px 18px rgba(var(--ombre-teinte), .10);
-  display: flex; justify-content: space-between; align-items: baseline; gap: var(--esp-3);
+  padding-block: var(--esp-4);
 }
-:where(body.p-space) .hall-dort h2{ color: var(--encre-discrete) }
+:where(body.p-space) .hall-bloc.dort .hall-tete{
+  flex-wrap: nowrap; align-items: center; gap: var(--esp-4);
+}
+:where(body.p-space) .hall-bloc.dort h2{
+  min-width: 0; font-size: var(--t-h3); text-wrap: nowrap;
+}
+:where(body.p-space) .hall-bloc.dort h2{ color: var(--encre-discrete) }
 :where(body.p-space) .bientot{
   font-size: var(--t-12); font-weight: var(--w-bold);
   letter-spacing: .08em; text-transform: uppercase; color: var(--encre-discrete);
+  white-space: nowrap;
+}
+
+/* Des que la place le permet, les quatre premiers modules forment un carre
+   sur deux colonnes — l'ordre du balisage suffit a les y poser — et le
+   cinquieme prend la largeur entiere sous eux. Les hauteurs ne sont pas
+   egalisees : chaque module tient la sienne, celle de ce qu'il a a dire. */
+/* Chaque colonne coule pour elle seule : un module suit celui du dessus a
+   la meme gouttiere que celle qui separe les deux colonnes. Sous le seuil,
+   les colonnes s'effacent et les modules reprennent l'ordre de lecture. */
+:where(body.p-space) .hall-col{ display: contents }
+@media (max-width: 767.98px){
+  :where(body.p-space) .hall-col:first-of-type > :first-child{ order: 1 }
+  :where(body.p-space) .hall-col:last-of-type > :first-child{ order: 2 }
+  :where(body.p-space) .hall-col:first-of-type > :last-child{ order: 3 }
+  :where(body.p-space) .hall-col:last-of-type > :last-child{ order: 4 }
+  :where(body.p-space) .hall-bloc.large{ order: 5 }
 }
 @media (min-width: 768px){
   :where(body.p-space) .hall{ grid-template-columns: 1fr 1fr; align-items: start }
-  :where(body.p-space) .hall-apres{ grid-column: 1 / -1; grid-template-columns: repeat(3, 1fr) }
+  :where(body.p-space) .hall-col{
+    display: grid; gap: var(--air-i6); align-content: start;
+  }
+  :where(body.p-space) .hall-bloc.large{ grid-column: 1 / -1 }
 }
 
-/* ---- Mi Notes ------------------------------------------------------------
+/* ---- Cartes de note ------------------------------------------------------
    La carte de note sert le fil, le mur et l'apercu du hall. Le contenu ne
    porte que trois formes : la note, la liste a cocher, le lien. */
 :where(body.p-space) .note-carte{
@@ -476,6 +501,18 @@
 :where(body.p-space) .note-carte .note-titre{ font-weight: var(--w-bold) }
 :where(body.p-space) .hall-bloc .note-carte{
   box-shadow: none; border: 1px solid var(--terre-e5);
+  padding: var(--esp-3); gap: 0;
+}
+/* Dans un apercu, une note se reconnait, elle ne se lit pas : deux lignes
+   suffisent a la reconnaitre, et la carte garde une hauteur previsible. */
+:where(body.p-space) .hall-bloc .note-carte p:not(.note-quand){
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+:where(body.p-space) .hall-bloc .note-rang{ margin-top: var(--air-i1) }
+:where(body.p-space) .hall-bloc .bouton-vers{
+  min-height: calc(var(--cible-min) - var(--esp-3));
+  padding-inline: var(--esp-3); font-size: var(--t-12);
 }
 :where(body.p-space) .note-carte.tenue{ border: 2px solid var(--terre-e5) }
 :where(body.p-space) .note-rang{

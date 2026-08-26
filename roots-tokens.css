@@ -56,11 +56,11 @@
   --rouge-e4: #EF777B;      /* clair · L*=64.1 */
   --rouge-e5: #F6B4B7;      /* rosé · L*=79.4 */
   /* rampe terre — é1 → é5, clarté croissante */
-  --terre-e1: #4C1F13;      /* cacao · L*=18.2 */
-  --terre-e2: #83361D;      /* brique cuite · L*=33.0 */
-  --terre-e3: #C1502A;      /* terracotta · L*=48.6 */
-  --terre-e4: #DE8467;      /* argile · L*=64.2 */
-  --terre-e5: #ECBAA9;      /* sable rosé · L*=79.5 */
+  --terre-e1: #4F1D06;      /* cacao · L*=18.2 */
+  --terre-e2: #8A3003;      /* brique cuite · L*=33.0 */
+  --terre-e3: #C2500D;      /* terracotta · L*=48.6 */
+  --terre-e4: #EE7C41;      /* argile · L*=64.1 */
+  --terre-e5: #F0B99F;      /* sable rosé · L*=79.5 */
   /* rampe jaune — é1 → é5, clarté croissante */
   --jaune-e1: #CF8F00;      /* ambre · L*=64.1 */
   --jaune-e2: #FFB000;      /* jaune pur · L*=77.5 */
@@ -126,11 +126,11 @@
   --rouge-e3-rgb: 227, 27, 35;
   --rouge-e4-rgb: 239, 119, 123;
   --rouge-e5-rgb: 246, 180, 183;
-  --terre-e1-rgb: 76, 31, 19;
-  --terre-e2-rgb: 131, 54, 29;
-  --terre-e3-rgb: 193, 80, 42;
-  --terre-e4-rgb: 222, 132, 103;
-  --terre-e5-rgb: 236, 186, 169;
+  --terre-e1-rgb: 79, 29, 6;
+  --terre-e2-rgb: 138, 48, 3;
+  --terre-e3-rgb: 194, 80, 13;
+  --terre-e4-rgb: 238, 124, 65;
+  --terre-e5-rgb: 240, 185, 159;
   --jaune-e1-rgb: 207, 143, 0;
   --jaune-e2-rgb: 255, 176, 0;
   --jaune-e3-rgb: 255, 200, 64;
@@ -535,7 +535,7 @@
   /* Encre d'aplat — FONCTION DE L'ÉCHELON sur les TROIS FAMILLES
      SOMBRES : vert, rouge, terre cuite. Calculée, pas choisie, et le
      contrôle refuse d'écrire si une famille dévie. */
-  --encre-e1: var(--blanc-casse); /* pire cas des trois familles sombres : 13.42 */
+  --encre-e1: var(--blanc-casse); /* pire cas des trois familles sombres : 13.44 */
   --encre-e2: var(--blanc-casse); /* pire cas des trois familles sombres : 8.06 */
   --encre-e3: var(--blanc);       /* pire cas des trois familles sombres : 4.72 */
   --encre-e4: var(--noir);        /* pire cas des trois familles sombres : 6.29 */
