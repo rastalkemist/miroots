@@ -14,11 +14,18 @@
    efface a la fermeture. Une reauthentification qui interrompt quelqu'un en
    cours d'usage ne lui repasse donc pas une ouverture.
 
+   Elle attend sa fonte avant de partir : une phrase de marque rendue dans une
+   fonte de substitution, puis remplacee en pleine course, montre deux fois
+   autre chose que ce qu'on voulait montrer. L'attente ne porte QUE sur les
+   graisses que l'ouverture emploie, jamais sur toutes celles du document, et
+   elle est BORNEE — passe la borne, la scene s'ouvre avec ce qu'elle a.
+
    Elle ne retient rien. Le premier geste et le premier foyer y mettent fin
    sur-le-champ, et la scene passe a son etat final. Un reglage systeme de
    mouvement reduit l'annule avant qu'elle commence.
 
-   Exige que la feuille de l'ecran porte l'etat de depart sous cette classe. */
+   Exige que la feuille de l'ecran porte l'etat de depart sous cette classe,
+   et l'etat d'attente sous la classe d'attente. */
 (function () {
   var TEMOIN = 'roots.ouverture';
   var racine = document.documentElement;
@@ -29,9 +36,28 @@
   try { sessionStorage.setItem(TEMOIN, '1'); } catch (e) {}
 
   racine.classList.add('ouv-lever');
+  racine.classList.add('ouv-attente');
+
+  /* Borne de l'attente de fonte, en ms. Elle appartient a la politique de
+     chargement, pas a la composition : au-dela, ce qui est joue l'est avec la
+     fonte disponible. */
+  var BORNE_FONTE = 2000;
+  /* Les graisses que l'ouverture emploie, dans la fonte d'eclat. */
+  var GRAISSES = ['300 1em MuseoModerno', '700 1em MuseoModerno'];
+
+  function partir() { racine.classList.remove('ouv-attente'); }
+
+  if (document.fonts && document.fonts.load) {
+    var borne = new Promise(function (r) { setTimeout(r, BORNE_FONTE); });
+    var faces = Promise.all(GRAISSES.map(function (g) { return document.fonts.load(g); }));
+    Promise.race([faces, borne]).then(partir, partir);
+  } else {
+    partir();
+  }
 
   function finir() {
     racine.classList.remove('ouv-lever');
+    racine.classList.remove('ouv-attente');
     document.removeEventListener('pointerdown', finir, true);
     document.removeEventListener('focusin', finir, true);
     document.removeEventListener('animationend', surFin, true);

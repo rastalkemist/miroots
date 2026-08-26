@@ -205,10 +205,13 @@
        de retrait ; celle-ci est la ligne d'interface, deja l'air bas de l'ecran
        du nom. */
     --ouv-plancher: var(--air-i6);
-    /* La tenue de l'appel seul, avant que le reste emerge. Elle se derive du
-       parcours pour que la somme des deux tienne sous la seconde que les
-       systemes d'exploitation posent comme plafond d'une ouverture animee. */
-    --ouv-tenue: calc(var(--mvt-parcours) * 1.5);
+    /* La tenue de l'appel seul, avant que le reste emerge, et la duree du
+       mouvement qui suit. Les deux se derivent du parcours du tronc — le plus
+       long des trois noms de duree — parce qu'aucune duree de l'echelle ne
+       couvre une piece qui traverse le tiers d'un ecran ni un temps de
+       lecture. DERIVATIONS, non actees. */
+    --ouv-tenue: calc(var(--mvt-parcours) * 2);
+    --ouv-mouvement: calc(var(--mvt-parcours) * 1.25);
     --ouv-t-second: var(--t-14);
     --ouv-lh-h1: var(--lh-38); --ouv-lh-h2: var(--lh-28) }
   /* Les interlignes basculent ou le tronc fait basculer leurs barreaux. */
@@ -222,6 +225,9 @@
       --ouv-t-second: var(--t-12); --ouv-lh-h1: var(--lh-28); --ouv-lh-h2: var(--lh-21) }
     .ouv-etiq, .ouv-aparte{ line-height: var(--lh-12) }
     .ouv-mot{ line-height: var(--lh-16) }
+    /* En fenetre courte la page reprend son flux et defile : une barre hors
+       du flux y recouvrirait le haut de la scene. */
+    :where(body.ouv-page) .chrome-haut{ position:sticky }
     .ouv-piece{ flex:none; padding: var(--air-i6) 0 var(--air-i8) }
     .ouv-tete{ flex:none; display:block }
     .ouv-cote, .ouv-reste{ display:none }
@@ -313,6 +319,17 @@
     .ouv-confirm .ouv-aparte{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
 .ouv-confirm .ouv-tache .ouv-parole{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
   }
+/* LA COTE SE PREND SUR LE CHAMP VISIBLE, ET LE CHAMP COMMENCE EN HAUT DE
+     L'ECRAN. La barre de ces ecrans ne porte ni fond, ni filet, ni ombre :
+     l'oeil n'y voit pas un bandeau mais la suite du meme champ. Une cote
+     mesuree SOUS une barre que personne ne voit descend toute la composition
+     de la hauteur de cette barre — et c'est ce que l'oeil relevait.
+     La barre sort donc du flux ; la surface ambiante du tronc emploie deja
+     cette pose, et pour la meme raison. La scene reprend la hauteur entiere,
+     et les cotes retrouvent le champ sur lequel elles ont ete arretees.
+     Le chrome rappele se pose PAR-DESSUS le sixieme haut, qui est de l'air :
+     la composition ne bouge pas quand il revient. */
+  :where(body.ouv-page) .chrome-haut{ position:fixed; left:0; right:0; top:0 }
 /* ---- L'OUVERTURE DE LA SCENE ----
      La scene arrive ENTIERE : ce qui change est son arrivee, jamais sa
      composition. L'appel se tient d'abord au milieu de la scene, seul avec la
@@ -334,11 +351,19 @@
   @keyframes ouv-monte{ from{ transform: translateY(100%) } to{ transform:none } }
 @keyframes ouv-emerge{ from{ opacity:0 } to{ opacity:1 } }
 :where(html.ouv-lever) .ouv-tete{
-    animation: ouv-monte var(--mvt-parcours) var(--courbe-entree) var(--ouv-tenue) both }
+    animation: ouv-monte var(--ouv-mouvement) var(--courbe-entree) var(--ouv-tenue) both }
 :where(html.ouv-lever) .ouv-groupe,
   :where(html.ouv-lever) .ouv-langue{
-    animation: ouv-emerge var(--mvt-parcours) var(--courbe-etat) var(--ouv-tenue) both }
+    animation: ouv-emerge var(--ouv-mouvement) var(--courbe-etat) var(--ouv-tenue) both }
 :where(html.ouv-lever) .ouv-groupe{ pointer-events:none }
+/* L'ouverture attend sa fonte. Une phrase de marque rendue dans une fonte de
+     substitution puis remplacee en pleine course montre deux fois autre chose
+     que ce qu'on voulait montrer. L'attente est BORNEE : passe la borne, la
+     scene s'ouvre avec ce qu'elle a — un rideau qui attend le reseau retient
+     la page entiere. */
+  :where(html.ouv-lever.ouv-attente) .ouv-tete,
+  :where(html.ouv-lever.ouv-attente) .ouv-groupe,
+  :where(html.ouv-lever.ouv-attente) .ouv-langue{ animation-play-state: paused }
 /* Sous une fenetre courte la scene change de regime : la bande haute n'est
      plus un tiers de la hauteur, et la deplacer d'une fois sa hauteur ne veut
      plus rien dire. L'ecran y arrive tel quel. */
