@@ -422,3 +422,250 @@
   :where(body.p-space) .coche-mot{ font-size: var(--t-h2) }
   :where(body.p-space) .coche-liste{ max-width: 680px }
 }
+
+/* ---- Le hall -------------------------------------------------------------
+   L'accueil de l'univers : chaque module dans son propre bloc, la pile sur
+   petit ecran, deux colonnes des que la place le permet. Les modules non
+   ouverts se montrent muets, sans lien. */
+:where(body.p-space) .hall{ display: grid; gap: var(--air-i6) }
+:where(body.p-space) .hall-bloc{
+  background: var(--blanc); border-radius: var(--rayon-carte);
+  padding: var(--esp-6);
+  box-shadow: 0 18px 44px rgba(var(--ombre-teinte), .14);
+  display: grid; gap: var(--air-i3); align-content: start;
+}
+:where(body.p-space) .hall-tete{
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: var(--esp-3); flex-wrap: wrap;
+}
+:where(body.p-space) .lien-ouvre{
+  font-size: var(--t-14); font-weight: var(--w-bold);
+  color: var(--accent-plan); text-decoration: none; white-space: nowrap;
+  min-height: var(--cible-min); display: inline-flex; align-items: center;
+}
+:where(body.p-space) .lien-ouvre:focus-visible{
+  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
+}
+:where(body.p-space) .hall-apres{ display: grid; gap: var(--air-i3) }
+:where(body.p-space) .hall-dort{
+  background: var(--blanc); border-radius: var(--rayon-carte);
+  padding: var(--esp-6);
+  box-shadow: 0 6px 18px rgba(var(--ombre-teinte), .10);
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--esp-3);
+}
+:where(body.p-space) .hall-dort h2{ color: var(--encre-discrete) }
+:where(body.p-space) .bientot{
+  font-size: var(--t-12); font-weight: var(--w-bold);
+  letter-spacing: .08em; text-transform: uppercase; color: var(--encre-discrete);
+}
+@media (min-width: 768px){
+  :where(body.p-space) .hall{ grid-template-columns: 1fr 1fr; align-items: start }
+  :where(body.p-space) .hall-apres{ grid-column: 1 / -1; grid-template-columns: repeat(3, 1fr) }
+}
+
+/* ---- Mi Notes ------------------------------------------------------------
+   La carte de note sert le fil, le mur et l'apercu du hall. Le contenu ne
+   porte que trois formes : la note, la liste a cocher, le lien. */
+:where(body.p-space) .note-carte{
+  background: var(--blanc); border-radius: var(--rayon-module);
+  padding: var(--esp-4);
+  box-shadow: 0 6px 18px rgba(var(--ombre-teinte), .10);
+  display: grid; gap: var(--air-i1);
+}
+:where(body.p-space) .note-carte p{ line-height: 1.5; overflow-wrap: anywhere }
+:where(body.p-space) .note-carte .note-titre{ font-weight: var(--w-bold) }
+:where(body.p-space) .hall-bloc .note-carte{
+  box-shadow: none; border: 1px solid var(--terre-e5);
+}
+:where(body.p-space) .note-carte.tenue{ border: 2px solid var(--terre-e5) }
+:where(body.p-space) .note-rang{
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: var(--esp-3); flex-wrap: wrap;
+}
+:where(body.p-space) .note-rang .note-quand{ margin-right: auto }
+:where(body.p-space) .note-quand{ font-size: var(--t-12); color: var(--encre-discrete) }
+:where(body.p-space) .bouton-vers{
+  border: 2px solid var(--accent-plan); color: var(--accent-plan);
+  background: none; border-radius: var(--rayon-pilule);
+  min-height: calc(var(--cible-min) - var(--esp-2));
+  padding-inline: var(--esp-4);
+  font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-14);
+  cursor: pointer;
+}
+:where(body.p-space) .bouton-vers[disabled]{ opacity: .45; cursor: default }
+:where(body.p-space) .bouton-vers:focus-visible,
+:where(body.p-space) .bouton-doux:focus-visible,
+:where(body.p-space) .vue:focus-visible,
+:where(body.p-space) .filtre:focus-visible,
+:where(body.p-space) .envoi:focus-visible{
+  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
+}
+:where(body.p-space) .note-posee{
+  font-size: var(--t-14); font-weight: var(--w-bold);
+  color: var(--terre-e2); background: var(--terre-e5);
+  border-radius: var(--rayon-pilule); padding: var(--esp-1) var(--esp-4);
+}
+:where(body.p-space) .bouton-doux{
+  border: 2px solid var(--limite-controle); color: var(--encre);
+  background: none; border-radius: var(--rayon-pilule);
+  min-height: calc(var(--cible-min) - var(--esp-2));
+  padding-inline: var(--esp-4); font-size: var(--t-14); cursor: pointer;
+}
+:where(body.p-space) .bouton-doux.tenu{
+  border-color: var(--accent-plan); color: var(--accent-plan);
+  font-weight: var(--w-bold);
+}
+:where(body.p-space) .bouton-doux.arme{
+  border-color: var(--accent-plan); color: var(--blanc);
+  background: var(--accent-plan); font-weight: var(--w-bold);
+}
+:where(body.p-space) .note-item{
+  display: flex; gap: var(--esp-3); align-items: center;
+  min-height: calc(var(--cible-min) / 2 + var(--esp-1));
+  border: 0; background: none; padding: 0; font: inherit; color: inherit;
+  text-align: left; cursor: pointer;
+}
+:where(body.p-space) .note-item:focus-visible{
+  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
+}
+:where(body.p-space) .note-case{
+  width: 22px; height: 22px; flex: none;
+  border: 2px solid var(--encre); border-radius: 6px;
+  display: grid; place-items: center; color: var(--blanc);
+}
+:where(body.p-space) .note-case svg{ width: 14px; height: 14px; opacity: 0 }
+:where(body.p-space) .note-item.fait .note-case{ background: var(--encre) }
+:where(body.p-space) .note-item.fait .note-case svg{ opacity: 1 }
+:where(body.p-space) .note-item.fait span:last-child{
+  text-decoration: line-through; color: var(--encre-discrete);
+}
+:where(body.p-space) .coches{ display: grid; gap: var(--air-i1) }
+:where(body.p-space) .note-lien{
+  display: flex; gap: var(--esp-3); align-items: center;
+  color: inherit; text-decoration: none;
+}
+:where(body.p-space) .note-lien-pic{
+  width: var(--cible-min); height: var(--cible-min); flex: none;
+  border-radius: var(--rayon-champ);
+  background: var(--terre-e5); color: var(--terre-e2);
+  display: grid; place-items: center; font-weight: var(--w-bold);
+}
+:where(body.p-space) .note-lien-quoi{ font-weight: var(--w-bold) }
+:where(body.p-space) .note-lien-ou,
+:where(body.p-space) .note-lien-mot{
+  font-size: var(--t-12); color: var(--encre-discrete); overflow-wrap: anywhere;
+}
+
+/* ---- L'ecran des notes ---------------------------------------------------
+   Le fil ecrit vers le bas, la saisie collee au bas de l'ecran ; le mur
+   range en colonnes. Une seule vue se montre a la fois. */
+:where(body.p-space) .entete-notes{
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: var(--esp-4); flex-wrap: wrap;
+}
+:where(body.p-space) .vues{ display: flex; gap: var(--esp-2) }
+:where(body.p-space) .vue{
+  border: 2px solid var(--limite-controle); color: var(--encre);
+  background: none; border-radius: var(--rayon-pilule);
+  min-height: var(--cible-min); padding-inline: var(--esp-6);
+  font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-14);
+  cursor: pointer;
+}
+:where(body.p-space) .vue[aria-pressed="true"]{
+  border-color: var(--terre-e5); background: var(--terre-e5); color: var(--terre-e2);
+}
+:where(body.p-space) .fil-notes{ display: grid; gap: var(--air-i3) }
+:where(body.p-space) .fil-jour{
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: var(--esp-4); margin-top: var(--air-i3);
+}
+:where(body.p-space) .fil-jour::before,
+:where(body.p-space) .fil-jour::after{
+  content: ""; height: 1px; background: var(--terre-e5);
+}
+:where(body.p-space) .fil-jour span{
+  font-size: var(--t-12); font-weight: var(--w-bold);
+  letter-spacing: .08em; text-transform: uppercase; color: var(--encre-discrete);
+}
+:where(body.p-space) .ecrire-bas{
+  position: sticky; bottom: 0; z-index: 5;
+  padding: var(--air-i3) var(--bord) var(--air-i3);
+  background: linear-gradient(to top, var(--blanc-casse) 75%, transparent);
+  display: grid; justify-items: center;
+}
+:where(body.p-space) .ecrire{
+  width: 100%; max-width: 640px;
+  display: flex; gap: var(--esp-3); align-items: flex-end;
+  background: var(--blanc); border: 2px solid var(--limite-controle);
+  border-radius: calc(var(--cible-min) / 2 + var(--esp-1));
+  padding: var(--esp-2) var(--esp-2) var(--esp-2) var(--esp-6);
+}
+:where(body.p-space) .ecrire:focus-within{ border-color: var(--accent-plan) }
+:where(body.p-space) .ecrire textarea{
+  flex: 1; border: 0; background: none; resize: none;
+  font: inherit; font-size: var(--t-16); line-height: 1.5;
+  color: var(--encre); padding-block: calc((var(--cible-min) - var(--esp-2) * 2 - 1.5em) / 2);
+  outline: none; max-height: 144px;
+}
+:where(body.p-space) .envoi{
+  width: var(--cible-min); height: var(--cible-min); flex: none;
+  border: 2px solid var(--accent-plan); color: var(--accent-plan);
+  background: none; border-radius: var(--rayon-pilule);
+  display: grid; place-items: center; cursor: pointer;
+}
+:where(body.p-space) .envoi svg{ width: 20px; height: 20px }
+:where(body.p-space) .filtres{
+  display: flex; gap: var(--esp-2); flex-wrap: wrap; margin-bottom: var(--air-i3);
+}
+:where(body.p-space) .filtre{
+  border: 2px solid var(--limite-controle); color: var(--encre);
+  background: none; border-radius: var(--rayon-pilule);
+  min-height: calc(var(--cible-min) - var(--esp-2));
+  padding-inline: var(--esp-4); font-size: var(--t-14); cursor: pointer;
+}
+:where(body.p-space) .filtre[aria-pressed="true"]{
+  border-color: var(--accent-plan); color: var(--accent-plan);
+  font-weight: var(--w-bold);
+}
+:where(body.p-space) .mur-notes{ columns: 1; column-gap: var(--esp-4) }
+:where(body.p-space) .mur-notes .note-carte{
+  break-inside: avoid; margin-bottom: var(--esp-4);
+}
+:where(body.p-space) .visuellement-cache{
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip-path: inset(50%); overflow: hidden; white-space: nowrap;
+}
+@media (min-width: 768px){
+  :where(body.p-space) .mur-notes{ columns: 2 }
+}
+@media (min-width: 1440px){
+  :where(body.p-space) .mur-notes{ columns: 3 }
+}
+
+/* Sur l'aplat sombre de l'en-tete, la pilule de vue au repos prend les
+   encres de la surface ; l'active garde les siennes. */
+:where(body.p-space) .entete-notes .vue{ border-color: var(--blanc); color: var(--blanc) }
+:where(body.p-space) .entete-notes .vue[aria-pressed="true"]{
+  border-color: var(--terre-e5); background: var(--terre-e5); color: var(--terre-e2);
+}
+
+/* La vedette du hall : la bande sombre de l'univers porte le premier
+   module, et ses cartes restent claires — elles s'y detachent d'elles-memes. */
+:where(body.p-space) .hall-bloc.vedette{ background: var(--univers) }
+:where(body.p-space) .hall-bloc.vedette .hall-tete h1{
+  margin: 0; color: var(--blanc);
+  font-family: var(--font-eclat); font-weight: var(--w-bold);
+  font-size: var(--t-h4); line-height: 1.1;
+}
+:where(body.p-space) .hall-bloc.vedette .lien-ouvre{ color: var(--terre-e4) }
+:where(body.p-space) .hall-bloc.vedette .lien-ouvre:focus-visible{
+  outline-color: var(--terre-e4);
+}
+:where(body.p-space) .hall-bloc.vedette .vide,
+:where(body.p-space) .hall-bloc.vedette .etat-semaine{
+  color: rgba(var(--blanc-rgb), .75);
+}
+:where(body.p-space) .hall-bloc.vedette .bouton-contour{
+  border-color: var(--blanc); color: var(--blanc);
+}

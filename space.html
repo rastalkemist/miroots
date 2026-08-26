@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-rYtPClvbQob1cYrwnDrAiKr5NVGsel408BgsXQpvtfw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-9qYbMPZohwrmrbj3AobGo7WNJXjHf98+NhHtICKchZc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
-<meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
+<meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
 <meta property="og:title" content="Mi Space">
-<meta property="og:description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
+<meta property="og:description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#1A1A1A">
@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="space.css">
 <script src="roots.js"></script>
 <script src="roots-db.js"></script>
+<script src="space-notes.js"></script>
 <script src="garde.js"></script>
 </head>
 <body class="p-space" data-surface="claire">
@@ -54,49 +55,36 @@
 
 <div id="contenu" class="corps">
 
-  <header class="entete-plan">
-    <h1 data-t="titre">Ma semaine</h1>
-    <p class="sous-titre" id="sousTitre"></p>
-  </header>
+  <div class="hall">
 
-  <section class="bloc-plan" aria-labelledby="etPoser">
-    <span class="etiquette" id="etPoser" data-t="etPoser">Poser un engagement</span>
-    <div class="champ">
-      <label for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
-      <input type="text" id="engagement" maxlength="120" autocomplete="off" data-p="phEngagement" placeholder="Finir la maquette du flyer…">
+    <section class="hall-bloc vedette" aria-labelledby="hSemaine">
+      <div class="hall-tete">
+        <h1 id="hSemaine" data-t="blocSemaine">Ma semaine</h1>
+        <a class="lien-ouvre" href="semaine.html" data-t="ouvreSemaine">Toute ma semaine →</a>
+      </div>
+      <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
+      <button type="button" class="bouton-contour" id="btnRecharger" hidden>Réessayer</button>
+      <ul class="taches" id="apercuSemaine"></ul>
+      <p class="vide" id="videSemaine" data-t="videSemaine" hidden>Rien de posé pour l’instant. Ta semaine s’écrit à côté.</p>
+    </section>
+
+    <section class="hall-bloc" aria-labelledby="hNotes">
+      <div class="hall-tete">
+        <h2 id="hNotes">Mi Notes</h2>
+        <a class="lien-ouvre" href="notes.html" data-t="ouvreNotes">Ouvrir mes notes →</a>
+      </div>
+      <p class="etat-semaine" id="etatNotes" role="status" hidden></p>
+      <div id="apercuNotes"></div>
+      <p class="vide" id="videNotes" data-t="videNotes" hidden>Rien pour l’instant. Pose ta première note.</p>
+    </section>
+
+    <div class="hall-apres">
+      <div class="hall-dort"><h2>Reporting</h2><span class="bientot" data-t="bientot">Bientôt</span></div>
+      <div class="hall-dort"><h2>Finances</h2><span class="bientot" data-t="bientot">Bientôt</span></div>
+      <div class="hall-dort"><h2>Intel</h2><span class="bientot" data-t="bientot">Bientôt</span></div>
     </div>
-    <span class="etiquette" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
-    <div class="jours" id="jours" role="group" aria-labelledby="etQuand"></div>
-    <button class="bouton-confirmer" id="btnAjouter" data-t="ajouter">Ajouter</button>
-  </section>
 
-  <section class="bloc-plan" aria-labelledby="etSemaine">
-    <span class="etiquette" id="etSemaine" data-t="etSemaine">Ma semaine</span>
-    <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
-<button type="button" class="bouton-contour" id="btnRecharger" hidden>Réessayer</button>
-<div id="listeSemaine"></div>
-    <p class="vide" id="videSemaine" data-t="vide" hidden>Rien de posé pour l'instant. Écris un engagement là-haut — un seul suffit pour commencer.</p>
-  </section>
-
-  <section class="bloc-plan" id="blocOu" aria-labelledby="etOu">
-    <span class="etiquette" id="etOu" data-t="etOu">Où j'en suis</span>
-    <p class="compte" id="compte"></p>
-    <div class="jauge" id="jauge" role="progressbar" aria-labelledby="etOu" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
-      <div class="part" id="jaugePart" style="width:0%"></div>
-    </div>
-    <span class="compte-dit" id="compteDit"></span>
-  </section>
-
-  <section class="bloc-plan bloc-finance" aria-labelledby="etRevenus">
-    <span class="etiquette" id="etRevenus" data-t="etRevenus">Mes revenus</span>
-    <p class="montant" id="montant"></p>
-    <div class="champ champ-finance">
-      <label for="revenu" data-t="labRevenu">Noter un montant</label>
-      <input type="text" id="revenu" inputmode="numeric" autocomplete="off" maxlength="12" data-p="phRevenu" placeholder="0">
-    </div>
-    <button class="bouton-finance" id="btnRevenu" data-t="noter">Noter</button>
-    <span class="dit" id="ditRevenus" data-t="ditRevenus">Ce chiffre ne quitte pas ton téléphone.</span>
-  </section>
+  </div>
 
 </div>
 
@@ -132,12 +120,15 @@
     if (!e.detail.connecte) location.replace('decouvrir-space.html');
   });
 
-  /* La source des taches est le socle, par la passerelle : l'ecran garde une
-     copie de la semaine servie et la redessine apres chaque ecriture. Chaque
-     porte refuse sans session ; la garde en tete d'ecran s'en charge avant.
-     Ce que l'ecran exige de la reponse : taches[] portant id, engagement,
-     jour, fait_le, ordre — les noms que le socle rend. */
+  /* Le hall montre chaque module d'un regard : la semaine servie par le
+     socle, tenue a ses premieres lignes, et les dernieres notes de la base
+     locale. La semaine entiere et le fil complet vivent sur leurs ecrans. */
+  var APERCU_TACHES = 4;
+  var APERCU_NOTES = 2;
+  var LIMITE_ENGAGEMENT = 120;
+
   var SEMAINE = { taches: [] };
+  var NOTES = [];
 
   function chargerSemaine() {
     return Roots.db.appeler('plan_ma_semaine').then(function (r) {
@@ -145,94 +136,45 @@
     });
   }
 
-  /* Ce qui ne quitte pas l'appareil. La somme se lit et s'ecrit dans la memoire
-     du navigateur ; aucune requete ne la porte, et aucune porte du socle ne
-     l'accepte. La promesse affichee a l'ecran tient par la, et par rien
-     d'autre : la porter dans un envoi la romprait.
-     Le stockage peut refuser — navigation privee, quota — auquel cas la valeur
-     ne survit pas au tour et l'ecran continue sans elle. */
-  var CLE_REVENU = 'roots.plan.revenu';
-  var LOCAL = { revenus: 0, devise: 'F CFA' };
-  try {
-    var lu = localStorage.getItem(CLE_REVENU);
-    if (lu !== null && /^[0-9]{1,12}$/.test(lu)) LOCAL.revenus = parseInt(lu, 10);
-  } catch (e) {}
-
-  var PlanDonnees = {
-    taches: function () { return SEMAINE.taches; },
-    revenus: function () { return LOCAL; },
-    noterRevenu: function (montant) {
-      LOCAL.revenus = montant;
-      try { localStorage.setItem(CLE_REVENU, String(montant)); } catch (e) {}
-      return LOCAL;
-    }
-  };
-
   var T = {
     fr: {
       saut: 'Aller au contenu',
-      titre: 'Ma semaine',
-      etPoser: 'Poser un engagement',
-      labEngagement: 'Qu’est-ce que tu veux faire ?',
-      phEngagement: 'Finir la maquette du flyer…',
-      etQuand: 'Quand ? (facultatif)',
-      ajouter: 'Ajouter',
-      etSemaine: 'Ma semaine',
-      etOu: 'Où j’en suis',
-      etRevenus: 'Mes revenus',
-      labRevenu: 'Noter un montant',
-      phRevenu: '0',
-      noter: 'Noter',
-      ditRevenus: 'Ce chiffre ne quitte pas ton téléphone.',
-      sansRevenu: 'Rien de noté cette semaine.',
-      vide: 'Rien de posé pour l’instant. Écris un engagement là-haut — un seul suffit pour commencer.',
+      blocSemaine: 'Ma semaine',
+      ouvreSemaine: 'Toute ma semaine →',
+      ouvreNotes: 'Ouvrir mes notes →',
+      videSemaine: 'Rien de posé pour l’instant. Ta semaine s’écrit à côté.',
+      videNotes: 'Rien pour l’instant. Pose ta première note.',
+      bientot: 'Bientôt',
+      vers: '→ Ma semaine',
+      posee: 'Dans ta semaine',
       semaineMuette: 'La semaine n’a pas répondu.',
+      notesMuettes: 'Les notes n’ont pas répondu.',
       reessayer: 'Réessayer',
+      coche: function (n, f) { return f + ' / ' + n + ' coché'; },
+      aujourdhui: 'Aujourd’hui',
+      hier: 'Hier',
       piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
-      jours: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
-      joursLongs: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
-      sansJour: 'Cette semaine',
-      mois: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
-      cadre: function (a, b) { return 'Du ' + a + ' au ' + b + '. Ce que tu poses ici ne regarde que toi.'; },
-      compte: function (f, n) { return f + ' sur ' + n; },
-      dit0: 'Rien de tenu pour l’instant, et la semaine n’est pas finie.',
-      dit1: 'Un engagement tenu.',
-      ditN: function (f) { return f + ' engagements tenus.'; },
-      ditTout: 'Tout est tenu.',
-      aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
+      aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
     },
     en: {
       saut: 'Skip to content',
-      titre: 'My week',
-      etPoser: 'Set a commitment',
-      labEngagement: 'What do you want to do?',
-      phEngagement: 'Finish the flyer layout…',
-      etQuand: 'When? (optional)',
-      ajouter: 'Add',
-      etSemaine: 'My week',
-      etOu: 'Where I stand',
-      etRevenus: 'My earnings',
-      labRevenu: 'Record an amount',
-      phRevenu: '0',
-      noter: 'Record',
-      ditRevenus: 'This figure never leaves your phone.',
-      sansRevenu: 'Nothing recorded this week.',
-      vide: 'Nothing set yet. Write one commitment above — one is enough to start.',
+      blocSemaine: 'My week',
+      ouvreSemaine: 'Full week →',
+      ouvreNotes: 'Open my notes →',
+      videSemaine: 'Nothing set yet. Your week is written next door.',
+      videNotes: 'Nothing yet. Set your first note down.',
+      bientot: 'Soon',
+      vers: '→ My week',
+      posee: 'In your week',
       semaineMuette: 'The week didn’t answer.',
+      notesMuettes: 'The notes didn’t answer.',
       reessayer: 'Try again',
+      coche: function (n, f) { return f + ' / ' + n + ' checked'; },
+      aujourdhui: 'Today',
+      hier: 'Yesterday',
       piedPolitique: 'Privacy policy',
       toastNu: 'NU, the community side of Roots, is coming soon.',
-      jours: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      joursLongs: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      sansJour: 'This week',
-      mois: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      cadre: function (a, b) { return a + ' to ' + b + '. What you set here is yours alone.'; },
-      compte: function (f, n) { return f + ' of ' + n; },
-      dit0: 'Nothing kept yet, and the week is not over.',
-      dit1: 'One commitment kept.',
-      ditN: function (f) { return f + ' commitments kept.'; },
-      ditTout: 'All kept.',
       aria: function (e, f) { return (f ? 'Kept: ' : 'Not kept yet: ') + e; }
     }
   };
@@ -241,140 +183,122 @@
   var langue = Roots.langueRetenue(Roots.langueParDefaut());
   function t() { return T[langue] || T.fr; }
 
-  var jourChoisi = null;
-
-  /* Le lundi de la semaine en cours. getDay() rend 0 pour dimanche : le
-     decalage ramene la semaine sur un debut lundi. */
-  function lundi() {
-    var d = new Date();
-    var n = (d.getDay() + 6) % 7;
-    d.setDate(d.getDate() - n);
-    d.setHours(0, 0, 0, 0);
-    return d;
-  }
-
-  function jourDe(i) {
-    var d = lundi();
-    d.setDate(d.getDate() + i);
-    return d;
-  }
-
-  function bref(d) { return d.getDate() + ' ' + t().mois[d.getMonth()]; }
-
-  function dessinerJours() {
-    var z = $('jours');
-    z.textContent = '';
-    for (var i = 0; i < 7; i++) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'jour';
-      b.dataset.jour = String(i);
-      b.setAttribute('aria-pressed', jourChoisi === i ? 'true' : 'false');
-      b.textContent = t().jours[i];
-      z.appendChild(b);
-    }
-    var s = document.createElement('button');
-    s.type = 'button';
-    s.className = 'jour';
-    s.dataset.jour = '';
-    s.setAttribute('aria-pressed', jourChoisi === null ? 'true' : 'false');
-    s.textContent = t().sansJour;
-    z.appendChild(s);
-  }
-
-  /* La coche vient d'un gabarit du balisage : construite en script, elle
-     exigerait de nommer un espace de noms, et une adresse ecrite dans un
-     script se lit comme un appel sortant. */
   function coche() {
     return $('tplCoche').content.firstElementChild.cloneNode(true);
   }
 
-  function ligne(tache) {
-    var b = document.createElement('button');
-    b.type = 'button';
-    b.className = 'tache';
-    b.dataset.id = tache.id;
-    var fait = !!tache.fait_le;
-    b.setAttribute('aria-pressed', fait ? 'true' : 'false');
-    b.setAttribute('aria-label', t().aria(tache.engagement, fait));
-    var c = document.createElement('span');
-    c.className = 'case';
-    c.appendChild(coche());
-    var e = document.createElement('span');
-    e.className = 'engagement';
-    e.textContent = tache.engagement;
-    b.appendChild(c);
-    b.appendChild(e);
-    return b;
+  /* L'apercu suit l'ordre de l'ecran semaine — les jours d'abord, le
+     sans-jour ensuite, l'ordre de pose au dedans — et s'arrete aux
+     premieres lignes. */
+  function apercuTaches() {
+    var copie = SEMAINE.taches.slice();
+    copie.sort(function (a, b) {
+      var ja = (a.jour === null || a.jour === undefined) ? 7 : a.jour;
+      var jb = (b.jour === null || b.jour === undefined) ? 7 : b.jour;
+      return ja - jb || a.ordre - b.ordre;
+    });
+    return copie.slice(0, APERCU_TACHES);
   }
 
-  /* Un groupe vide ne se rend pas : une case vide n'informe de rien, et le
-     non-fait ne se met pas en scene. */
   function dessinerSemaine() {
-    var taches = PlanDonnees.taches();
-    var z = $('listeSemaine');
+    var z = $('apercuSemaine');
     z.textContent = '';
-    $('videSemaine').hidden = taches.length > 0;
-
-    var groupes = [];
-    for (var i = 0; i < 7; i++) groupes.push({ cle: i, titre: t().joursLongs[i] + ' ' + bref(jourDe(i)), items: [] });
-    groupes.push({ cle: null, titre: t().sansJour, items: [] });
-
-    taches.forEach(function (x) {
-      var g = groupes[x.jour === null || x.jour === undefined ? 7 : x.jour];
-      if (g) g.items.push(x);
-    });
-
-    groupes.forEach(function (g) {
-      if (!g.items.length) return;
-      var bloc = document.createElement('div');
-      bloc.className = 'groupe-jour';
-      var et = document.createElement('span');
-      et.className = 'etiquette';
-      et.textContent = g.titre;
-      var ul = document.createElement('ul');
-      ul.className = 'taches';
-      g.items.sort(function (a, b) { return a.ordre - b.ordre; });
-      g.items.forEach(function (x) {
-        var li = document.createElement('li');
-        li.appendChild(ligne(x));
-        ul.appendChild(li);
-      });
-      bloc.appendChild(et);
-      bloc.appendChild(ul);
-      z.appendChild(bloc);
+    var liste = apercuTaches();
+    $('videSemaine').hidden = SEMAINE.taches.length > 0;
+    liste.forEach(function (x) {
+      var li = document.createElement('li');
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tache';
+      b.dataset.id = x.id;
+      var fait = !!x.fait_le;
+      b.setAttribute('aria-pressed', fait ? 'true' : 'false');
+      b.setAttribute('aria-label', t().aria(x.engagement, fait));
+      var c = document.createElement('span');
+      c.className = 'case';
+      c.appendChild(coche());
+      var e = document.createElement('span');
+      e.className = 'engagement';
+      e.textContent = x.engagement;
+      b.appendChild(c);
+      b.appendChild(e);
+      li.appendChild(b);
+      z.appendChild(li);
     });
   }
 
-  /* Une section qui ne dit rien encombre : la progression ne se rend qu'a
-     partir du premier engagement pose. */
-  function dessinerProgression() {
-    var taches = PlanDonnees.taches();
-    var n = taches.length;
-    $('blocOu').hidden = n === 0;
-    if (n === 0) return;
-    var f = taches.filter(function (x) { return !!x.fait_le; }).length;
-    $('compte').textContent = t().compte(f, n);
-    var j = $('jauge');
-    j.setAttribute('aria-valuemax', String(n));
-    j.setAttribute('aria-valuenow', String(f));
-    $('jaugePart').style.width = (n ? Math.round(f * 100 / n) : 0) + '%';
-    var dit = f === 0 ? t().dit0 : (f === n ? t().ditTout : (f === 1 ? t().dit1 : t().ditN(f)));
-    $('compteDit').textContent = dit;
+  function quand(ts) {
+    var d = new Date(ts);
+    var n = new Date();
+    var hh = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    var un = 24 * 60 * 60 * 1000;
+    var jd = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    var jn = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+    if (jd === jn) return t().aujourdhui + ', ' + hh;
+    if (jn - jd === un) return t().hier + ', ' + hh;
+    return d.toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short' }) + ', ' + hh;
   }
 
-  /* Un zero n'est pas un revenu : tant que rien n'est note, la place dit
-     qu'elle est libre plutot que d'annoncer un montant nul. */
-  function dessinerRevenus() {
-    var r = PlanDonnees.revenus();
-    if (!r.revenus) {
-      $('montant').classList.add('sans');
-      $('montant').textContent = t().sansRevenu;
-      return;
+  function texteDe(note) {
+    var s = note.type === 'lien' ? note.url
+      : (note.texte || (note.items && note.items[0] ? note.items[0].t : ''));
+    return s.length > LIMITE_ENGAGEMENT ? s.slice(0, LIMITE_ENGAGEMENT - 1) + '…' : s;
+  }
+
+  function carteNote(note) {
+    var a = document.createElement('article');
+    a.className = 'note-carte compacte';
+    if (note.type === 'lien') {
+      var l = document.createElement('p');
+      l.className = 'note-lien-mot';
+      var ou = '';
+      try { ou = new URL(note.url).hostname; } catch (e) { ou = note.url; }
+      l.textContent = '↗ ' + ou;
+      a.appendChild(l);
+    } else {
+      var p = document.createElement('p');
+      p.textContent = note.texte || (note.items[0] ? note.items[0].t : '');
+      a.appendChild(p);
+      if (note.type === 'liste') {
+        var f = note.items.filter(function (i) { return i.fait; }).length;
+        var c = document.createElement('p');
+        c.className = 'note-quand';
+        c.textContent = t().coche(note.items.length, f);
+        a.appendChild(c);
+      }
     }
-    $('montant').classList.remove('sans');
-    var s = String(r.revenus).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
-    $('montant').textContent = s + '\u00A0' + r.devise;
+    var rang = document.createElement('div');
+    rang.className = 'note-rang';
+    var q = document.createElement('span');
+    q.className = 'note-quand';
+    q.textContent = quand(note.cree);
+    rang.appendChild(q);
+    if (note.promue) {
+      var pos = document.createElement('span');
+      pos.className = 'note-posee';
+      pos.textContent = t().posee;
+      rang.appendChild(pos);
+    } else {
+      var v = document.createElement('button');
+      v.type = 'button';
+      v.className = 'bouton-vers';
+      v.dataset.id = note.id;
+      v.textContent = t().vers;
+      rang.appendChild(v);
+    }
+    a.appendChild(rang);
+    return a;
+  }
+
+  function dessinerNotes() {
+    var z = $('apercuNotes');
+    z.textContent = '';
+    $('videNotes').hidden = NOTES.length > 0;
+    NOTES.slice(0, APERCU_NOTES).forEach(function (n) { z.appendChild(carteNote(n)); });
+  }
+
+  function chargerNotes() {
+    return SpaceNotes.toutes().then(function (liste) { NOTES = liste; });
   }
 
   function appliquerLangue() {
@@ -383,15 +307,8 @@
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
     });
-    document.querySelectorAll('[data-p]').forEach(function (el) {
-      var v = t()[el.getAttribute('data-p')];
-      if (typeof v === 'string') el.placeholder = v;
-    });
-    $('sousTitre').textContent = t().cadre(bref(jourDe(0)), bref(jourDe(6)));
-    dessinerJours();
     dessinerSemaine();
-    dessinerProgression();
-    dessinerRevenus();
+    dessinerNotes();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
 
@@ -410,71 +327,41 @@
     appliquerLangue();
   }
 
-  $('jours').addEventListener('click', function (e) {
-    var b = e.target.closest('.jour');
-    if (!b) return;
-    var v = b.dataset.jour;
-    jourChoisi = v === '' ? null : parseInt(v, 10);
-    dessinerJours();
-  });
-
   /* La coche part a la porte, l'ecran suit la reponse : un refus laisse la
      ligne dans son etat vrai au lieu d'afficher un fait que la base n'a pas. */
-  $('listeSemaine').addEventListener('click', function (e) {
+  $('apercuSemaine').addEventListener('click', function (e) {
     var b = e.target.closest('.tache');
     if (!b || b.disabled) return;
     var fait = b.getAttribute('aria-pressed') !== 'true';
     b.disabled = true;
     Roots.db.appeler('plan_basculer_tache', { p_tache: b.dataset.id, p_fait: fait })
       .then(chargerSemaine)
-      .then(function () { dessinerSemaine(); dessinerProgression(); },
+      .then(function () { dessinerSemaine(); },
             function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 
-  /* Le bouton refuse un engagement vide plutot que d'en poser un sans texte :
-     une ligne sans mot ne se relit pas. */
-  $('btnAjouter').addEventListener('click', function () {
-    var champ = $('engagement');
-    var texte = champ.value.trim();
-    if (!texte) { champ.focus(); return; }
-    var b = $('btnAjouter');
+  /* La promotion pose la note dans la semaine par la porte du service ; la
+     note reste locale, seule la ligne d'engagement part. */
+  $('apercuNotes').addEventListener('click', function (e) {
+    var b = e.target.closest('.bouton-vers');
+    if (!b || b.disabled) return;
+    var note = null;
+    NOTES.forEach(function (n) { if (n.id === b.dataset.id) note = n; });
+    if (!note) return;
     b.disabled = true;
-    Roots.db.appeler('plan_poser_tache', { p_engagement: texte, p_jour: jourChoisi })
+    Roots.db.appeler('plan_poser_tache', { p_engagement: texteDe(note), p_jour: null })
+      .then(function () { return SpaceNotes.marquerPromue(note.id); })
+      .then(chargerNotes)
       .then(chargerSemaine)
-      .then(function () {
-        b.disabled = false;
-        champ.value = '';
-        dessinerSemaine();
-        dessinerProgression();
-      }, function (er) { b.disabled = false; chrome.toast(er.message); });
+      .then(function () { dessinerNotes(); dessinerSemaine(); },
+            function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 
-  $('btnRevenu').addEventListener('click', function () {
-    var champ = $('revenu');
-    var brut = champ.value.replace(/[\s\u00A0]/g, '');
-    if (!/^[0-9]{1,12}$/.test(brut)) { champ.focus(); return; }
-    PlanDonnees.noterRevenu(parseInt(brut, 10));
-    champ.value = '';
-    dessinerRevenus();
-  });
-
-  $('revenu').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); $('btnRevenu').click(); }
-  });
-
-  $('engagement').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); $('btnAjouter').click(); }
-  });
-
-  /* Le premier chargement : un acces jamais ouvert renvoie a la couverture,
-     qui sait l'ouvrir ; les autres refus se disent sur place, avec le geste
-     pour reessayer. */
   function accueillirSemaine() {
     $('etatSemaine').hidden = true;
     $('btnRecharger').hidden = true;
     chargerSemaine().then(function () {
       dessinerSemaine();
-      dessinerProgression();
     }, function (er) {
       if (er && (er.code === 403 || /acces a Plan non ouvert/.test(er.brut || ''))) {
         location.replace('decouvrir-space.html');
@@ -488,9 +375,20 @@
   }
   $('btnRecharger').addEventListener('click', accueillirSemaine);
 
+  function accueillirNotes() {
+    $('etatNotes').hidden = true;
+    chargerNotes().then(function () {
+      dessinerNotes();
+    }, function () {
+      $('etatNotes').textContent = t().notesMuettes;
+      $('etatNotes').hidden = false;
+    });
+  }
+
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();
   accueillirSemaine();
+  accueillirNotes();
 })();
 </script>
 </body>

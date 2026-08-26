@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-8nVoreqAY2uw9iujKuC5nOs/cS8ZmUPv9ZA38DvZjVU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Mi Notes</title>
+<meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi Roots">
+<meta property="og:title" content="Mi Space">
+<meta property="og:description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
+<meta property="og:locale" content="fr_BJ">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="theme-color" content="#1A1A1A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="space.css">
+<script src="roots.js"></script>
+<script src="roots-db.js"></script>
+<script src="space-notes.js"></script>
+<script src="garde.js"></script>
+</head>
+<body class="p-space" data-surface="claire">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="space.html">Space</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="corps corps-notes">
+
+  <header class="entete-plan entete-notes">
+    <h1>Mi Notes</h1>
+    <div class="vues" role="group" aria-label="Vue">
+      <button type="button" class="vue" id="vueBoutonFil" aria-pressed="true" data-t="vueFil">Fil à soi</button>
+      <button type="button" class="vue" id="vueBoutonMur" aria-pressed="false" data-t="vueMur">Mur</button>
+    </div>
+  </header>
+
+  <section id="vueFil" aria-label="Fil à soi">
+    <div class="fil-notes" id="filNotes"></div>
+    <p class="vide" id="videFil" data-t="videFil" hidden>Rien pour l’instant. Écris-toi — une idée, une liste, un lien.</p>
+  </section>
+
+  <section id="vueMur" aria-label="Mur" hidden>
+    <div class="filtres" id="filtres" role="group" aria-label="Filtrer">
+      <button type="button" class="filtre" data-filtre="tout" aria-pressed="true" data-t="fTout">Toutes</button>
+      <button type="button" class="filtre" data-filtre="epingle" aria-pressed="false" data-t="fEpingle">Épinglées</button>
+      <button type="button" class="filtre" data-filtre="liste" aria-pressed="false" data-t="fListe">Listes</button>
+      <button type="button" class="filtre" data-filtre="lien" aria-pressed="false" data-t="fLien">Liens</button>
+    </div>
+    <div class="mur-notes" id="murNotes"></div>
+    <p class="vide" id="videMur" data-t="videMur" hidden>Rien de ce côté.</p>
+  </section>
+
+</div>
+
+<div class="ecrire-bas" id="ecrireBas">
+  <div class="ecrire">
+    <label class="visuellement-cache" for="champNote" data-t="labNote">Écris-toi</label>
+    <textarea id="champNote" rows="1" maxlength="4000" data-p="phNote" placeholder="Écris-toi."></textarea>
+    <button type="button" class="envoi" id="btnPoser" aria-label="Garder" data-al="garder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div>
+
+<footer class="pied">
+  <a href="confidentialite.html" data-t="piedPolitique">Politique de confidentialité</a>
+</footer>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe actif" aria-current="true" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<template id="tplCoche"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* L'ecran exige une session : sans elle, la couverture est la porte. */
+  if (!window.Roots || !Roots.db || !Roots.db.estConnecte()) {
+    location.replace('decouvrir-space.html');
+    return;
+  }
+  window.addEventListener('roots:session', function (e) {
+    if (!e.detail.connecte) location.replace('decouvrir-space.html');
+  });
+
+  /* Deux vues sur la meme base locale : le fil, chronologique, ou l'on
+     ecrit ; le mur, filtrable, ou l'on range — l'epingle et le retrait
+     n'existent que la. Les notes ne quittent jamais l'appareil ; seule la
+     ligne promue part, par la porte du service. */
+  var LIMITE_ENGAGEMENT = 120;
+  var NOTES = [];
+  var filtre = 'tout';
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      vueFil: 'Fil à soi',
+      vueMur: 'Mur',
+      fTout: 'Toutes',
+      fEpingle: 'Épinglées',
+      fListe: 'Listes',
+      fLien: 'Liens',
+      videFil: 'Rien pour l’instant. Écris-toi — une idée, une liste, un lien.',
+      videMur: 'Rien de ce côté.',
+      labNote: 'Écris-toi',
+      phNote: 'Écris-toi.',
+      vers: '→ Ma semaine',
+      posee: 'Dans ta semaine',
+      epingler: 'Épingler',
+      desepingler: 'Épinglée',
+      retirer: 'Retirer',
+      retirerSur: 'Retirer ?',
+      notesMuettes: 'Les notes n’ont pas répondu.',
+      aujourdhui: 'Aujourd’hui',
+      hier: 'Hier',
+      coche: function (n, f) { return f + ' / ' + n + ' coché'; },
+      piedPolitique: 'Politique de confidentialité',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.'
+    },
+    en: {
+      saut: 'Skip to content',
+      vueFil: 'Feed',
+      vueMur: 'Wall',
+      fTout: 'All',
+      fEpingle: 'Pinned',
+      fListe: 'Lists',
+      fLien: 'Links',
+      videFil: 'Nothing yet. Write to yourself — an idea, a list, a link.',
+      videMur: 'Nothing on this side.',
+      labNote: 'Write to yourself',
+      phNote: 'Write to yourself.',
+      vers: '→ My week',
+      posee: 'In your week',
+      epingler: 'Pin',
+      desepingler: 'Pinned',
+      retirer: 'Remove',
+      retirerSur: 'Remove?',
+      notesMuettes: 'The notes didn’t answer.',
+      aujourdhui: 'Today',
+      hier: 'Yesterday',
+      coche: function (n, f) { return f + ' / ' + n + ' checked'; },
+      piedPolitique: 'Privacy policy',
+      toastNu: 'NU, the community side of Roots, is coming soon.'
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
+  function t() { return T[langue] || T.fr; }
+
+  function coche() {
+    return $('tplCoche').content.firstElementChild.cloneNode(true);
+  }
+
+  function jourDe(ts) {
+    var d = new Date(ts);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  }
+
+  function nomDuJour(ts) {
+    var un = 24 * 60 * 60 * 1000;
+    var ecart = jourDe(Date.now()) - jourDe(ts);
+    if (ecart === 0) return t().aujourdhui;
+    if (ecart === un) return t().hier;
+    return new Date(ts).toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB',
+      { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+
+  function heure(ts) {
+    var d = new Date(ts);
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  function texteDe(note) {
+    var s = note.type === 'lien' ? note.url
+      : (note.texte || (note.items && note.items[0] ? note.items[0].t : ''));
+    return s.length > LIMITE_ENGAGEMENT ? s.slice(0, LIMITE_ENGAGEMENT - 1) + '…' : s;
+  }
+
+  function corpsDe(note) {
+    var z = document.createDocumentFragment();
+    if (note.type === 'lien') {
+      var a = document.createElement('a');
+      a.className = 'note-lien';
+      a.href = note.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      var ou = '';
+      try { ou = new URL(note.url).hostname; } catch (e) { ou = note.url; }
+      var pic = document.createElement('span');
+      pic.className = 'note-lien-pic';
+      pic.textContent = '↗';
+      var mots = document.createElement('span');
+      var quoi = document.createElement('span');
+      quoi.className = 'note-lien-quoi';
+      quoi.textContent = ou;
+      var brut = document.createElement('span');
+      brut.className = 'note-lien-ou';
+      brut.textContent = note.url;
+      mots.appendChild(quoi);
+      mots.appendChild(document.createElement('br'));
+      mots.appendChild(brut);
+      a.appendChild(pic);
+      a.appendChild(mots);
+      z.appendChild(a);
+      return z;
+    }
+    if (note.texte) {
+      var p = document.createElement('p');
+      p.textContent = note.texte;
+      if (note.type === 'liste') p.className = 'note-titre';
+      z.appendChild(p);
+    }
+    if (note.type === 'liste') {
+      var ul = document.createElement('div');
+      ul.className = 'coches';
+      note.items.forEach(function (item, i) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'note-item' + (item.fait ? ' fait' : '');
+        b.dataset.id = note.id;
+        b.dataset.indice = String(i);
+        b.setAttribute('aria-pressed', item.fait ? 'true' : 'false');
+        var c = document.createElement('span');
+        c.className = 'note-case';
+        c.appendChild(coche());
+        var m = document.createElement('span');
+        m.textContent = item.t;
+        b.appendChild(c);
+        b.appendChild(m);
+        ul.appendChild(b);
+      });
+      z.appendChild(ul);
+    }
+    return z;
+  }
+
+  function rangDe(note, gestion) {
+    var rang = document.createElement('div');
+    rang.className = 'note-rang';
+    var q = document.createElement('span');
+    q.className = 'note-quand';
+    q.textContent = gestion ? nomDuJour(note.cree) + ', ' + heure(note.cree) : heure(note.cree);
+    rang.appendChild(q);
+    if (gestion) {
+      var ep = document.createElement('button');
+      ep.type = 'button';
+      ep.className = 'bouton-doux' + (note.epingle ? ' tenu' : '');
+      ep.dataset.geste = 'epingler';
+      ep.dataset.id = note.id;
+      ep.setAttribute('aria-pressed', note.epingle ? 'true' : 'false');
+      ep.textContent = note.epingle ? t().desepingler : t().epingler;
+      rang.appendChild(ep);
+      var re = document.createElement('button');
+      re.type = 'button';
+      re.className = 'bouton-doux';
+      re.dataset.geste = 'retirer';
+      re.dataset.id = note.id;
+      re.textContent = t().retirer;
+      rang.appendChild(re);
+    }
+    if (note.promue) {
+      var pos = document.createElement('span');
+      pos.className = 'note-posee';
+      pos.textContent = t().posee;
+      rang.appendChild(pos);
+    } else {
+      var v = document.createElement('button');
+      v.type = 'button';
+      v.className = 'bouton-vers';
+      v.dataset.geste = 'vers';
+      v.dataset.id = note.id;
+      v.textContent = t().vers;
+      rang.appendChild(v);
+    }
+    return rang;
+  }
+
+  function carte(note, gestion) {
+    var a = document.createElement('article');
+    a.className = 'note-carte' + (note.epingle && gestion ? ' tenue' : '');
+    a.appendChild(corpsDe(note));
+    a.appendChild(rangDe(note, gestion));
+    return a;
+  }
+
+  /* Le fil se lit comme on l'ecrit : les jours en descendant, le plus
+     recent au bas, pres de la saisie. */
+  function dessinerFil() {
+    var z = $('filNotes');
+    z.textContent = '';
+    $('videFil').hidden = NOTES.length > 0;
+    var croissant = NOTES.slice().sort(function (a, b) { return a.cree - b.cree; });
+    var jourCourant = null;
+    croissant.forEach(function (n) {
+      var j = jourDe(n.cree);
+      if (j !== jourCourant) {
+        jourCourant = j;
+        var sep = document.createElement('div');
+        sep.className = 'fil-jour';
+        var mot = document.createElement('span');
+        mot.textContent = nomDuJour(n.cree);
+        sep.appendChild(mot);
+        z.appendChild(sep);
+      }
+      z.appendChild(carte(n, false));
+    });
+  }
+
+  function garde(note) {
+    if (filtre === 'epingle') return note.epingle;
+    if (filtre === 'liste') return note.type === 'liste';
+    if (filtre === 'lien') return note.type === 'lien';
+    return true;
+  }
+
+  /* Le mur range : les epinglees d'abord, puis du plus recent au plus
+     ancien, sous le filtre choisi. */
+  function dessinerMur() {
+    var z = $('murNotes');
+    z.textContent = '';
+    var liste = NOTES.filter(garde).sort(function (a, b) {
+      return (b.epingle - a.epingle) || (b.cree - a.cree);
+    });
+    $('videMur').hidden = liste.length > 0;
+    liste.forEach(function (n) { z.appendChild(carte(n, true)); });
+  }
+
+  function dessiner() {
+    if ($('vueFil').hidden) dessinerMur();
+    else dessinerFil();
+  }
+
+  function charger() {
+    return SpaceNotes.toutes().then(function (liste) { NOTES = liste; });
+  }
+
+  function auBas() {
+    window.scrollTo(0, document.documentElement.scrollHeight);
+  }
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-p]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-p')];
+      if (typeof v === 'string') el.placeholder = v;
+    });
+    dessiner();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  }
+
+  var chrome = Roots.initChrome({
+    toastId: 'toast',
+    getLangue: function () { return langue; },
+    getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; },
+    radio: true,
+    onLangue: function () { basculerLangue(); }
+  });
+
+  function basculerLangue() {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    if (Roots.retenirLangue) Roots.retenirLangue(langue);
+    appliquerLangue();
+  }
+
+  function montrerVue(mur) {
+    $('vueFil').hidden = mur;
+    $('vueMur').hidden = !mur;
+    $('ecrireBas').hidden = mur;
+    $('vueBoutonFil').setAttribute('aria-pressed', mur ? 'false' : 'true');
+    $('vueBoutonMur').setAttribute('aria-pressed', mur ? 'true' : 'false');
+    dessiner();
+    if (!mur) auBas();
+  }
+  $('vueBoutonFil').addEventListener('click', function () { montrerVue(false); });
+  $('vueBoutonMur').addEventListener('click', function () { montrerVue(true); });
+
+  $('filtres').addEventListener('click', function (e) {
+    var b = e.target.closest('.filtre');
+    if (!b) return;
+    filtre = b.dataset.filtre;
+    document.querySelectorAll('.filtre').forEach(function (f) {
+      f.setAttribute('aria-pressed', f === b ? 'true' : 'false');
+    });
+    dessinerMur();
+  });
+
+  var champ = $('champNote');
+
+  function ajusterChamp() {
+    champ.style.height = 'auto';
+    champ.style.height = Math.min(champ.scrollHeight, 144) + 'px';
+  }
+  champ.addEventListener('input', ajusterChamp);
+
+  function poser() {
+    var brut = champ.value;
+    if (!brut.trim()) { champ.focus(); return; }
+    SpaceNotes.poser(brut).then(function () {
+      champ.value = '';
+      ajusterChamp();
+      return charger();
+    }).then(function () {
+      dessinerFil();
+      auBas();
+      champ.focus();
+    }, function () { chrome.toast(t().notesMuettes); });
+  }
+  $('btnPoser').addEventListener('click', poser);
+
+  /* Sur clavier physique, l'entree envoie et la ligne se demande avec la
+     majuscule ; sur l'ecran tactile, seule la commande envoie. */
+  champ.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer: fine)').matches) {
+      e.preventDefault();
+      poser();
+    }
+  });
+
+  function trouver(id) {
+    var note = null;
+    NOTES.forEach(function (n) { if (n.id === id) note = n; });
+    return note;
+  }
+
+  /* La promotion pose la ligne dans la semaine par la porte du service ;
+     un refus rend le geste et le dit. Le retrait demande deux appuis : le
+     premier arme, le second seul efface. */
+  document.getElementById('contenu').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-geste], .note-item');
+    if (!b || b.disabled) return;
+
+    if (b.classList.contains('note-item')) {
+      var fait = b.getAttribute('aria-pressed') !== 'true';
+      SpaceNotes.cocher(b.dataset.id, parseInt(b.dataset.indice, 10), fait)
+        .then(charger).then(dessiner, function () { chrome.toast(t().notesMuettes); });
+      return;
+    }
+
+    var note = trouver(b.dataset.id);
+    if (!note) return;
+
+    if (b.dataset.geste === 'vers') {
+      b.disabled = true;
+      Roots.db.appeler('plan_poser_tache', { p_engagement: texteDe(note), p_jour: null })
+        .then(function () { return SpaceNotes.marquerPromue(note.id); })
+        .then(charger)
+        .then(dessiner, function (er) { b.disabled = false; chrome.toast(er.message); });
+      return;
+    }
+
+    if (b.dataset.geste === 'epingler') {
+      SpaceNotes.epingler(note.id, !note.epingle)
+        .then(charger).then(dessiner, function () { chrome.toast(t().notesMuettes); });
+      return;
+    }
+
+    if (b.dataset.geste === 'retirer') {
+      if (!b.classList.contains('arme')) {
+        b.classList.add('arme');
+        b.textContent = t().retirerSur;
+        setTimeout(function () {
+          if (b.isConnected) { b.classList.remove('arme'); b.textContent = t().retirer; }
+        }, 3000);
+        return;
+      }
+      SpaceNotes.retirer(note.id)
+        .then(charger).then(dessiner, function () { chrome.toast(t().notesMuettes); });
+    }
+  });
+
+  if (Roots.poserLibelles) Roots.poserLibelles();
+  appliquerLangue();
+  charger().then(function () {
+    dessinerFil();
+    auBas();
+  }, function () { chrome.toast(t().notesMuettes); });
+})();
+</script>
+</body>
+</html>
