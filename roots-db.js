@@ -94,7 +94,10 @@ window.Roots = window.Roots || {};
         try { c = t ? JSON.parse(t) : null; } catch (e) {}
         if (!r.ok) {
           var brut = (c && (c.error_description || c.msg || c.error)) || t;
-          throw new ErreurRoots(traduire(brut, langueCourante()), langueCourante(), brut, r.status);
+          var motif = motifDe(c);
+          var dit = phraseDeMotif(motif, r.status, langueCourante());
+          throw new ErreurRoots(dit || traduire(brut, langueCourante()),
+                                langueCourante(), brut, r.status, motif);
         }
         return c;
       });
@@ -256,13 +259,52 @@ window.Roots = window.Roots || {};
     return connu[langue === 'en' ? 'en' : 'fr'];
   }
 
+  /* LES REFUS QUI PORTENT UN CODE STABLE.
+     Le service rend, a cote de sa phrase, un code qui ne varie pas. La phrase,
+     elle, change d'un chemin a l'autre pour un meme refus : une couverture
+     batie sur le texte se dechire en silence a la premiere mise a jour du
+     service, une couverture batie sur le code tient.
+     Cette table se lit AVANT celle des phrases, et ne la remplace pas.
+     Ce qu'elle refuse de faire : distinguer un code faux d'un code expire.
+     Le service rend deliberement le meme refus pour les deux — les separer
+     revelerait qu'un code a existe pour cette adresse. */
+  var MOTIFS = {
+    'otp_expired': {
+      fr: 'Ce code n’est plus valable. Demandes-en un nouveau.',
+      en: 'This code is no longer valid. Ask for a new one.' },
+    'over_email_send_rate_limit': {
+      fr: 'Trop de demandes d’affilée. Attends un moment avant de réessayer.',
+      en: 'Too many requests in a row. Wait a moment before trying again.' }
+  };
+
+  /* Le code du service, quel que soit le nom sous lequel il arrive. Une valeur
+     qui n'est pas une chaine n'est pas un code : elle est ignoree. */
+  function motifDe(corps) {
+    var m = corps && (corps.error_code || corps.code);
+    return (typeof m === 'string' && m) ? m : null;
+  }
+
+  /* Le statut 429 vaut le motif de trop-plein : il porte ce sens dans le
+     protocole lui-meme, et le rendre ici couvre les chemins qui refusent sans
+     nommer leur code. Aucun autre statut ne se traduit sans son code : un 403
+     ou un 422 recouvre trop de refus differents pour qu'on en devine un. */
+  function phraseDeMotif(motif, statut, langue) {
+    var l = (langue === 'en') ? 'en' : 'fr';
+    if (motif && MOTIFS[motif]) return MOTIFS[motif][l];
+    if (statut === 429) return MOTIFS['over_email_send_rate_limit'][l];
+    return null;
+  }
+
   /* ---------- Appels ---------- */
 
-  function ErreurRoots(message, langue, brut, code) {
+  function ErreurRoots(message, langue, brut, code, motif) {
     this.name = 'ErreurRoots';
     this.message = message;
     this.brut = brut;
     this.code = code;
+    /* `code` porte le statut du protocole, `motif` le code du service. Les
+       confondre casserait les ecrans qui lisent deja le statut. */
+    this.motif = motif || null;
     this.langue = langue;
   }
   ErreurRoots.prototype = Object.create(Error.prototype);
@@ -288,7 +330,10 @@ window.Roots = window.Roots || {};
 
     if (!reponse.ok) {
       var brut = (corps && (corps.message || corps.error_description || corps.error)) || texte;
-      throw new ErreurRoots(traduire(brut, langue), langue, brut, reponse.status);
+      var motif = motifDe(corps);
+      var dit = phraseDeMotif(motif, reponse.status, langue);
+      throw new ErreurRoots(dit || traduire(brut, langue), langue, brut,
+                            reponse.status, motif);
     }
     return corps;
   }
