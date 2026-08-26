@@ -1,5 +1,5 @@
 
-  /* emprunt-tronc: p-space corps lang-btn
+  /* emprunt-tronc: p-space corps
      La page ne redeclare ni taille, ni interligne, ni graisse, ni largeur de
      piste : elle prend les jetons de role et les laisse basculer aux points de
      rupture communs. Ce qui suit ne pose que ce que le tronc ne porte pas —
@@ -30,23 +30,25 @@
     --ouv-saut: calc(var(--air-i1) * 5);
     --ouv-saut-titre: calc(var(--ouv-saut) * 1.5) }
 
-  /* LES COTES VERTICALES SE TIENNENT PAR DES AIRS, NON PAR DES POSITIONS.
-     Le milieu de l'appel se pose au sixieme de la hauteur, la cote du titre aux
-     deux cinquiemes. Une cote posee en position absolue tient son rang et
-     laisse le texte sortir par le bas des que le bloc grandit ; une cote posee
-     en part de hauteur tient le meme rang tant qu'il y a de la place, puis
-     cede.
-     La bande haute vaut deux fois le sixieme et centre l'appel : le milieu de
-     l'appel tombe au sixieme quel que soit le nombre de lignes qu'il prend.
-     L'air suivant mene du bas de la bande a la cote du titre.
-     Le dernier prend le reste et ne descend pas sous le plancher : c'est lui
-     qui cede en premier ; une fois qu'il a cede, les deux autres se reduisent
-     chacun dans la proportion de sa propre cote, donc leur rapport survit a la
-     compression. La bande haute ne se reduit pas sous l'appel qu'elle porte —
-     un flex tient la taille minimale automatique de son contenu — de sorte que
-     le texte n'est jamais recouvert par le haut. */
-  .ouv-tete{ flex: 0 1 33.34%; display:grid; align-content:center }
-  .ouv-cote{ flex: 0 1 6.66%; min-height:0 }
+  /* L'AIR NE SE DECOUPE PAS EN COTES : IL SE REPARTIT, ET L'APPEL S'Y EQUILIBRE.
+     La cote du titre reste aux deux cinquiemes de la hauteur — c'est le haut du
+     bloc central, et il ne bouge pas. Ce qui precede le titre est UNE bande, et
+     l'appel s'y centre : il tient donc a egale distance du nom de la surface et
+     du titre, qu'il occupe une ligne ou deux. Aucune cote n'est posee pour lui
+     et rien n'est a reprendre s'il change de longueur ou de corps.
+     La bande se ferme sur les DEUX DESSINS qu'elle separe, jamais sur leurs
+     boites. En haut : la hauteur que la barre publie, moins l'air qu'elle
+     garde sous son logotype — la bande commence donc a la rangee du logotype,
+     et non au bord de la barre. En bas : le HAUT de la premiere ligne du titre,
+     d'ou la demi-ligne retiree — la meme qui remonte le groupe sur sa cote.
+     Aucune des deux n'est ecrite ici.
+     Le dernier air prend le reste et ne descend pas sous le plancher : c'est lui
+     qui cede en premier quand le bloc grandit. La bande ne se reduit pas sous ce
+     qu'elle porte — un flex tient la taille minimale automatique de son
+     contenu — de sorte que l'appel n'est jamais recouvert par le haut. */
+  .ouv-tete{ flex: 0 1 40%; display:grid; align-content:center;
+    padding-top: calc(var(--entete-h-rendue) - var(--esp-3));
+    padding-bottom: var(--ouv-demi-titre) }
   .ouv-reste{ flex: 1 1 0; min-height: var(--ouv-plancher) }
   .ouv-groupe{ flex:none }
   /* L'appel est un geste d'ouverture, pas un niveau de hierarchie : il prend le
@@ -58,7 +60,7 @@
   /* Le groupe est remonte d'une demi-ligne de titre : c'est le milieu de la
      premiere ligne, non le bord de la boite, qui se pose sur la cote. Un titre
      qui passe a la ligne ne fait donc pas glisser la cote. */
-  .ouv-groupe{ margin-top: calc(var(--t-h2) * var(--ouv-lh-h2) / -2) }
+  .ouv-groupe{ margin-top: calc(var(--ouv-demi-titre) * -1) }
   /* Le titre reel de la page. Il partage le barreau de l'appel et le domine par
      la graisse : c'est la graisse appuyee que le systeme prevoit pour un titre
      de premier rang qui n'est pas un geste d'ouverture. */
@@ -205,13 +207,17 @@
        de retrait ; celle-ci est la ligne d'interface, deja l'air bas de l'ecran
        du nom. */
     --ouv-plancher: var(--air-i6);
+    /* La demi-ligne du titre : la cote du titre est le milieu de sa PREMIERE
+       ligne, non le bord de sa boite. Elle sert deux fois — a remonter le
+       groupe sur sa cote, et a fermer par le haut la bande de l'appel. */
+    --ouv-demi-titre: calc(var(--t-h2) * var(--ouv-lh-h2) / 2);
     /* La tenue de l'appel seul, avant que le reste emerge, et la duree du
        mouvement qui suit. Les deux se derivent du parcours du tronc — le plus
        long des trois noms de duree — parce qu'aucune duree de l'echelle ne
        couvre une piece qui traverse le tiers d'un ecran ni un temps de
        lecture. DERIVATIONS, non actees. */
-    --ouv-tenue: calc(var(--mvt-parcours) * 2);
-    --ouv-mouvement: calc(var(--mvt-parcours) * 1.25);
+    --ouv-tenue: calc(var(--mvt-parcours) * 3);
+    --ouv-mouvement: calc(var(--mvt-parcours) * 1.5);
     --ouv-t-second: var(--t-14);
     --ouv-lh-h1: var(--lh-38); --ouv-lh-h2: var(--lh-28) }
   /* Les interlignes basculent ou le tronc fait basculer leurs barreaux. */
@@ -229,8 +235,8 @@
        du flux y recouvrirait le haut de la scene. */
     :where(body.ouv-page) .chrome-haut{ position:sticky }
     .ouv-piece{ flex:none; padding: var(--air-i6) 0 var(--air-i8) }
-    .ouv-tete{ flex:none; display:block }
-    .ouv-cote, .ouv-reste{ display:none }
+    .ouv-tete{ flex:none; display:block; padding:0 }
+    .ouv-reste{ display:none }
     .ouv-appel,.ouv-groupe{ margin-top:var(--air-i3) }
   }
 
@@ -411,23 +417,36 @@
     transition-delay: 0s, 0s }
 :where(body.ouv-page.nav-appele) .chrome-bas{ transform:none; visibility:visible;
     transition-delay: 0s, 0s }
-/* LA BASCULE DE LANGUE. C'est le bouton du tronc, sans retouche : sa forme,
-     sa taille de cible et son encre viennent de sa classe commune. Seule sa
-     POSE appartient a cet ecran — le haut de page, le bord droit de la piste du
-     chrome, l'axe horizontal de la barre.
-     Elle ne vit pas dans la barre : le groupe droit de la barre est une piece
-     d'infrastructure dont la composition est mesuree ailleurs, et un troisieme
-     bouton y decalerait l'ilot du lecteur. Elle y entre quand le chrome est
-     appele — sinon elle recouvrirait le menu qui revient — et sa pose s'efface
-     alors d'elle-meme.
-     La hauteur de barre n'est pas ecrite : elle est celle que la barre publie a
-     chaque passage. */
+/* LA BASCULE DE LANGUE DE CET ECRAN.
+     Elle n'est PAS la piece de chrome du tronc, et elle n'entre jamais dans la
+     barre : le groupe droit de la barre est une piece d'infrastructure dont la
+     composition est mesuree ailleurs. Le chrome commun garde sa propre bascule,
+     a l'endroit ou il la met de lui-meme — au pied de son tiroir — et c'est
+     celle-la qui situe l'univers quand le nav est la.
+     Celle-ci sert le seul temps ou le chrome est absent : elle porte l'encre
+     d'univers, comme tout ce qui reste visible sur cet ecran depouille, et elle
+     se retire des que le chrome revient. Jamais les deux ensemble.
+     Sa pose : la place EXACTE du menu, pour que l'un prenne la place de l'autre
+     sans que rien ne saute quand le chrome revient. Le menu deborde du groupe
+     droit de sa propre marge negative ; la pose la reprend, donc aucune valeur
+     n'est ecrite. La hauteur de barre ne l'est pas davantage — c'est celle que
+     la barre publie a chaque passage.
+     Ses valeurs de forme sont celles que le tronc emploie pour une commande de
+     langue : cible au plancher tactile, fonte de corps appuyee au corps
+     secondaire, aucune surface, encre d'univers. */
   :where(body.ouv-page) .ouv-langue{ position:fixed; z-index:21;
     top: calc(var(--entete-h-rendue) / 2); transform: translateY(-50%);
-    right: calc((100% - var(--chrome-w)) / 2);
-    display:inline-flex; align-items:center; justify-content:center }
-:where(body.ouv-page) .chrome-droite .ouv-langue{ position:static;
-    transform:none; top:auto; right:auto }
+    right: calc((100% - var(--chrome-w)) / 2 - var(--esp-3));
+    min-height: var(--cible-min); min-width: var(--cible-min);
+    padding: 0 var(--esp-1); border:none; background:none;
+    color: var(--univers); cursor:pointer;
+    font-family: var(--font-corps); font-weight:700; font-size: var(--t-sm);
+    -webkit-user-select:none; user-select:none; touch-action:manipulation;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition: opacity var(--mvt-apparition) var(--courbe-etat),
+                visibility 0s linear 0s }
+:where(body.ouv-page.nav-appele) .ouv-langue{ opacity:0; visibility:hidden;
+    pointer-events:none; transition-delay: 0s, var(--mvt-apparition) }
 /* Le nom de la surface rappelle le chrome tant qu'il est absent ; present,
      il reprend son role de lien. Le curseur le dit. */
   :where(body.ouv-page:not(.nav-appele)) .chrome-titre{ cursor:pointer }

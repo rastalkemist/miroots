@@ -75,12 +75,9 @@
 
    Le chrome commun est pose dans le balisage et masque par la feuille : il
    n'apparait pas avant d'etre appele, et rien ne se peint puis se retire a
-   l'arrivee. Ce fichier l'appelle et le retire. Il ne cree ni ne supprime aucun
-   element du chrome ; il deplace une seule piece qui ne lui appartient pas :
-   la bascule de langue de l'ecran, qui vit sur la page tant que le chrome est
-   absent et entre dans le groupe droit de la barre quand il est present —
-   sinon elle recouvrirait le menu qui revient. Un seul bouton, deux
-   emplacements ; le groupe droit de la barre le rend en partant.
+   l'arrivee. Ce fichier l'appelle et le retire, et RIEN D'AUTRE : il ne cree,
+   ne deplace ni ne supprime aucun element, du chrome ou de l'ecran. Le chrome
+   rappele est celui que le tronc produit, tel qu'il le produit.
 
    Ce qu'il capte, et seulement tant que le chrome est absent : l'activation du
    nom de la surface, le glissement vers le bas, les glissements lateraux, les
@@ -105,17 +102,13 @@
   var TENUE = 3000;    /* duree de presence du chrome avant retrait, en ms */
 
   window.Onboard = {
-    chrome: function (opts) {
+    chrome: function () {
       var corps = document.body;
-      var bascule = opts && opts.bascule ? document.getElementById(opts.bascule) : null;
-      var pose = bascule ? bascule.parentNode : null;
-      var groupe = document.querySelector('.chrome-droite');
       var minuterie = null;
 
       function present() { return corps.classList.contains('nav-appele'); }
 
       function appeler() {
-        if (bascule && groupe && bascule.parentNode !== groupe) groupe.insertBefore(bascule, groupe.firstChild);
         corps.classList.add('nav-appele');
         clearTimeout(minuterie);
         minuterie = setTimeout(retirer, TENUE);
@@ -124,7 +117,6 @@
       function retirer() {
         clearTimeout(minuterie);
         corps.classList.remove('nav-appele');
-        if (bascule && pose && bascule.parentNode !== pose) pose.appendChild(bascule);
       }
 
       /* Le nom de la surface. L'activation au clavier d'un lien emet le meme

@@ -9,7 +9,7 @@
      leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-12m3e7hc6rczl9S/I+fIxzhG75d6xfLpOC4Z1VRCwe8='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-Nkdwze4vy8qqo3S94xLvCyL2Vg8fim3ZPrf3cQ6EszE='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ton espace est prêt</title>
 <meta name="description" content="Le nom que tu liras en haut de ton espace, et ce que Roots fait de ce que tu y poses.">
 <meta property="og:type" content="website">
@@ -61,7 +61,7 @@
   </div>
 </header>
 
-<button type="button" class="lang-btn ouv-langue" id="btnLangue"></button>
+<button type="button" class="ouv-langue" id="btnLangue"></button>
 
 
 
@@ -155,7 +155,7 @@
     radio: true,
     onLangue: function () { basculerLangue(); }
   });
-  Onboard.chrome({ bascule: 'btnLangue' });
+  Onboard.chrome();
 
   var notice = null;
 
@@ -172,6 +172,11 @@
 
   function appliquerLangue() {
     document.documentElement.lang = langue;
+    /* Le chrome commun redessine ses propres libelles — sa bascule de langue
+       comprise, qui vit au pied de son tiroir. Il attend que l'ecran le lui
+       demande a chaque bascule ; sans cet appel, son lien reste sur la langue
+       precedente. */
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
