@@ -1,0 +1,287 @@
+
+  /* emprunt-tronc: p-space corps lang-btn
+     La page ne redeclare ni taille, ni interligne, ni graisse, ni largeur de
+     piste : elle prend les jetons de role et les laisse basculer aux points de
+     rupture communs. Ce qui suit ne pose que ce que le tronc ne porte pas —
+     la scene en hauteur, la pilule de tache, la sous-tache. */
+
+  /* La piece prend ce que le bandeau laisse, mesure et non supposee : aucune
+     hauteur d'en-tete n'est ecrite, donc aucune ne peut devenir fausse. */
+  body{ background: var(--blanc-casse); margin:0; min-height:100svh;
+    display:flex; flex-direction:column }
+  /* La reserve basse des feuilles communes revient a la composition ; seule
+     subsiste la marge materielle du bas d'appareil. Rendre la barre de
+     navigation sur cet ecran demanderait de la reposer. */
+  body.ouv-page{ padding-bottom: var(--safe-bas) }
+
+  .ouv-chrome{ flex:none; display:flex; align-items:center; justify-content:space-between;
+    padding: var(--esp-4) var(--bord) }
+  .ouv-chrome-cote{ display:flex; align-items:center; gap:var(--esp-4);
+    transition: opacity 320ms var(--courbe-etat) }
+  .ouv-chrome.est-depouille .ouv-chrome-cote{ opacity:0 }
+  /* Seule la bascule de langue demeure dans le bandeau depouille. Elle ne
+     recoit aucune declaration ici : son corps, sa graisse, son encre et sa
+     cible sont ceux que le tronc pose sur sa classe, et elle doit rester
+     identique a celle du nav. On ne regle que sa presence. Un contrepoids de
+     meme largeur lui fait face : sans lui, la marque cesserait d'etre au
+     centre. */
+  .ouv-contrepoids{ flex:none; width: var(--cible-min) }
+  .ouv-langue{ display:none }
+  .ouv-chrome.est-depouille .ouv-langue{ display:inline-flex; align-items:center }
+  .ouv-rond{ width:28px; height:28px; border-radius:999px; background:var(--gris-filet) }
+  .ouv-barres{ width:22px; height:2px; background:var(--encre);
+    box-shadow:0 6px 0 var(--encre),0 -6px 0 var(--encre) }
+  .ouv-marque{ font-family:var(--font-eclat); font-weight:var(--w-a-display);
+    font-size:var(--t-chrome-titre); line-height:var(--lh-soude) }
+  .ouv-marque i{ font-style:normal; background:var(--roots-noir); color:var(--blanc);
+    border-radius:999px; padding:0 var(--esp-2) }
+
+  /* La scene occupe la hauteur libre et reprend la piste du tronc. */
+  .ouv-piece{ position:relative; flex:1; width:var(--piste); max-width:100%; margin:0 auto;
+    /* Le saut interne du bloc, et le saut qui le detache de son titre : le
+       second vaut une fois et demie le premier. Le rapport est la regle ; les
+       deux valeurs en decoulent et ne se reglent pas separement. */
+    --ouv-saut: calc(var(--air-i1) * 5);
+    --ouv-saut-titre: calc(var(--ouv-saut) * 1.5) }
+
+  .ouv-appel, .ouv-groupe{ position:absolute; left:0; right:0; padding:0; margin:0 }
+  /* L'appel est un geste d'ouverture, pas un niveau de hierarchie : il prend le
+     barreau du titre sans en porter le rang. Son interligne suit le barreau et
+     bascule au meme point de rupture que lui. */
+  .ouv-appel{ top:16.67%; transform: translateY(-50%); text-align:center; margin:0;
+    font-family:var(--font-eclat); color:var(--encre); text-wrap:balance;
+    font-size: var(--t-h1); line-height: var(--ouv-lh-h1); font-weight: var(--w-light) }
+  /* Le groupe est remonte d'une demi-ligne de titre : c'est le milieu de la
+     premiere ligne, non le bord de la boite, qui se pose sur la cote. Un titre
+     qui passe a la ligne ne fait donc pas glisser la cote. */
+  .ouv-groupe{ top:40%; margin-top: calc(var(--t-h2) * var(--ouv-lh-h2) / -2) }
+  /* Le titre reel de la page. Il partage le barreau de l'appel et le domine par
+     la graisse : c'est la graisse appuyee que le systeme prevoit pour un titre
+     de premier rang qui n'est pas un geste d'ouverture. */
+  /* Le titre reel de la page. Il se tient un barreau sous l'appel et le domine
+     par la graisse : c'est la graisse appuyee que le systeme prevoit pour un
+     titre de premier rang qui n'est pas un geste d'ouverture. */
+  .ouv-titre{ margin:0; text-align:center; font-weight: var(--w-a-h1-appuye);
+    font-size: var(--t-h2); line-height: var(--ouv-lh-h2) }
+  .ouv-mission, .ouv-demande{ margin-top: var(--ouv-saut-titre) }
+
+  /* La tache prend la largeur de la piste ; son contenu s'aligne a gauche
+     dans la pilule. */
+  .ouv-geste{ display:flex; font:inherit; border:0; -webkit-appearance:none; align-items:center; gap:var(--esp-4); width:100%; margin:0;
+    background:var(--blanc); border-radius:var(--rayon-pilule);
+    padding: var(--esp-4) var(--esp-6); text-align:left;
+    box-shadow: 0 18px 44px rgba(var(--ombre-teinte),.14) }
+  /* La pastille de la tache mere porte le meme trait que celles de ses filles :
+     c'est un temoin d'etat, pas une commande, et un trait epais d'encre pleine
+     lui donnerait le poids d'un bouton qu'elle n'est pas. Seule sa taille la
+     distingue. */
+  .ouv-case-mere{ width:var(--ouv-case-mere); height:var(--ouv-case-mere); flex:none;
+    border:2px solid var(--limite-controle);
+    border-radius:999px; display:grid; place-items:center }
+  .ouv-case-mere svg{ width:16px; height:16px; opacity:0 }
+  .ouv-geste.est-faite .ouv-case-mere{ background:var(--encre); border-color:var(--encre) }
+  .ouv-geste.est-faite .ouv-case-mere svg{ opacity:1; stroke:var(--blanc) }
+  .ouv-mot{ font-family:var(--font-eclat); font-weight:var(--w-a-h2);
+    font-size:var(--t-h3); line-height:var(--lh-21) }
+  .ouv-geste.est-faite .ouv-mot{ text-decoration:line-through; color:var(--encre-discrete) }
+
+  .ouv-sous{ display:grid; gap:var(--air-i3); margin-top: var(--ouv-saut) }
+
+  /* La parole se tient sous le champ qu'elle concerne, dans sa colonne : sous
+     lui et en retrait de la pastille, elle se lit comme subordonnee a la
+     sous-tache, jamais comme un mot de la page. Sa hauteur est reservee des le
+     depart — elle ne pousse rien en apparaissant. */
+  /* La parole ne reserve rien : elle prend sa place quand elle parle, et n'en
+     tient aucune quand elle se tait. Une ligne gardee sous un champ muet ecarte
+     deux rangees qui appartiennent au meme geste. */
+  .ouv-tache .ouv-parole:empty{ display:none }
+  .ouv-tache .ouv-parole{ grid-column:2; grid-row:3;
+    margin: var(--esp-2) calc(var(--cible-min) + var(--esp-2)) 0 var(--ouv-dedans);
+    font-size: var(--ouv-t-second); line-height: var(--lh-14);
+    color: var(--encre-discrete);
+    opacity:0; transition: opacity var(--mvt-etat) var(--courbe-etat) }
+
+  .ouv-tache.est-repliee .ouv-parole{ display:none }
+  .ouv-parole.se-voit{ opacity:1 }
+  /* Ce qui appelle un geste porte l'encre de l'action ; ce qui informe reste
+     discret. Aucun etat ne se dit par la couleur seule : le mot le dit. */
+  .ouv-parole.appelle{ color: var(--terre-e3) }
+  @media (prefers-reduced-motion: reduce){ .ouv-parole{ transition:none } }
+  /* La case et le champ partagent une rangee : leurs axes horizontaux
+     coincident par construction, sans marge devinee. */
+  .ouv-tache{ display:grid; grid-template-columns:auto 1fr; align-items:center;
+    column-gap:var(--esp-4); row-gap:var(--esp-1); padding-left:var(--ouv-retrait) }
+  .ouv-tache .ouv-etiq{ grid-column:2; grid-row:1 }
+  .ouv-tache .ouv-case{ grid-column:1; grid-row:2; align-self:center }
+  .ouv-tache .ouv-rang{ grid-column:2; grid-row:2 }
+  /* Une seule sous-tache demande une saisie a la fois : celle qui attend son
+     tour et celle qui est finie tiennent sur une rangee, case et libelle. La
+     hauteur du bloc ne depend donc pas du nombre de sous-taches. */
+  .ouv-tache.est-repliee .ouv-rang{ display:none }
+  .ouv-tache.est-repliee .ouv-case{ grid-row:1 }
+  /* La sous-tache qui attend son tour n'est pas estompee : c'est le prochain
+     geste, elle doit se lire. Son etat se dit par la case vide et par
+     l'absence de champ, jamais par un voile. */
+  .ouv-case{ width:var(--ouv-case); height:var(--ouv-case); border:2px solid var(--limite-controle);
+    border-radius:999px; display:grid; place-items:center }
+  .ouv-case svg{ width:12px; height:12px; opacity:0 }
+  .ouv-tache.est-faite .ouv-case{ background:var(--encre); border-color:var(--encre) }
+  .ouv-tache.est-faite .ouv-case svg{ opacity:1; stroke:var(--blanc) }
+  .ouv-etiq{ display:block; font-size:var(--ouv-t-second); line-height:var(--lh-14);
+    color:var(--encre-discrete) }
+  .ouv-tache.est-faite .ouv-etiq{ text-decoration:line-through }
+
+  /* Une fois les deux sous-taches faites, le bloc se rallie sous la pilule.
+     Le deplacement se joue sur une transformation mesuree au moment du
+     changement d'etat : la mise en page arrive d'abord, le mouvement la
+     rattrape, de sorte qu'aucune valeur de position n'est ecrite ici. */
+  .ouv-sous.se-rallie .ouv-tache{ transition: transform var(--mvt-apparition) var(--courbe-etat) }
+  /* Ralliement centre : chaque ligne se pose sur l'axe de la pilule. */
+  .ouv-sous.au-centre .ouv-tache{ grid-template-columns:auto auto; justify-content:center;
+    padding-left:0 }
+
+  @media (prefers-reduced-motion: reduce){
+    .ouv-sous.se-rallie .ouv-tache{ transition:none }
+  }
+
+  /* Sans plancher explicite, une case de grille ne descend pas sous la largeur
+     intrinseque de ce qu'elle contient : la rangee deborderait vers la droite
+     des que le retrait la resserre. */
+  .ouv-rang{ display:flex; gap:var(--esp-2); align-items:center; min-width:0 }
+  /* Un champ ne descend pas sous le corps d'interface : en dessous, le
+     navigateur mobile agrandit la page au focus et ne la rend plus. */
+  .ouv-rang input{ flex:1; min-width:0; min-height:var(--cible-min);
+    border:var(--ouv-trait) solid var(--limite-controle); border-radius:var(--rayon-champ);
+    padding-inline:var(--esp-3); font-family:inherit;
+    font-size:var(--t-body); line-height:var(--lh-16);
+    background:var(--blanc); color:var(--encre) }
+  /* Un champ porte deja un trait : lui ajouter un anneau en poserait deux l'un
+     dans l'autre. Le foyer se dit donc sur le trait du champ lui-meme, qui
+     change d'encre — un seul contour, contraste mesure. La commande, elle, n'a
+     pas de trait propre et garde l'anneau du systeme. */
+  .ouv-rang input:focus-visible{ outline:none; border-color: var(--terre-e3);
+    box-shadow: 0 0 0 1px var(--terre-e3) }
+  .ouv-go{ width:var(--cible-min); height:var(--cible-min); flex:none;
+    border:2px solid var(--terre-e3); color:var(--terre-e3); background:none;
+    border-radius:999px; display:grid; place-items:center }
+  .ouv-go svg{ width:20px; height:20px; stroke:currentColor; stroke-width:2.5;
+    fill:none; stroke-linecap:round; stroke-linejoin:round }
+
+  .ouv-demande .ouv-etiq{ margin-bottom: var(--esp-1) }
+  /* La description se detache du champ d'un quart de saut de plus que le saut
+     interne du bloc. Sa mesure est plafonnee a la colonne de note : sans plafond,
+     elle atteint cent cinquante signes par ligne sur un grand ecran, soit prés du
+     double du plafond que la doctrine pose. L'interligne monte d'un cran au-dessus
+     de celui qu'indexe son barreau — motif : c'est de la prose suivie, pas une
+     etiquette, et elle se lit en gris. */
+  .ouv-aparte{ margin: calc(var(--ouv-saut) * 1.25) 0 0; max-width: var(--col);
+    font-size: var(--ouv-t-second); line-height: var(--lh-aere);
+    color: var(--encre-discrete) }
+
+  /* Le corps secondaire de ces ecrans, pose une fois pour qu'un seul cran le
+     fasse descendre. */
+  .ouv-page{ --ouv-case-mere: 28px;
+    /* Le retrait de tabulation se deduit de la pilule : son propre retrait,
+       la pastille, et l'ecart qui les separe. Si l'un des trois change, le
+       retrait suit — il n'y a pas de nombre a tenir a jour. */
+    --ouv-case: 22px; --ouv-trait: 2px;
+    /* Le retrait interieur d'un champ : son trait plus son air. Ce qui doit
+       s'aligner sur le texte saisi s'y reporte, sans le recalculer. */
+    --ouv-dedans: calc(var(--ouv-trait) + var(--esp-3));
+    /* Les trois pastilles partagent un axe vertical : celui de la pastille de la
+       tache mere. Les filles etant plus petites, leur retrait compense la moitie
+       de la difference — la colonne est centree, pas alignee par le bord. */
+    --ouv-retrait: calc(var(--esp-6) + (var(--ouv-case-mere) - var(--ouv-case)) / 2);
+    --ouv-t-second: var(--t-14);
+    --ouv-lh-h1: var(--lh-38); --ouv-lh-h2: var(--lh-28) }
+  /* Les interlignes basculent ou le tronc fait basculer leurs barreaux. */
+  @media (min-width: 1025px){ .ouv-page{ --ouv-lh-h1: var(--lh-51); --ouv-lh-h2: var(--lh-38) } }
+
+  /* Sous une fenetre trop courte, chaque role descend d'un barreau et la page
+     reprend son flux. Le champ de saisie ne suit pas : il reste au corps
+     d'interface, plancher au-dessous duquel le navigateur agrandit la page. */
+  @media (max-height: 679px){
+    .ouv-page{ --t-h1: var(--t-28); --t-h2: var(--t-21); --t-h3: var(--t-16);
+      --ouv-t-second: var(--t-12); --ouv-lh-h1: var(--lh-28); --ouv-lh-h2: var(--lh-21) }
+    .ouv-etiq, .ouv-aparte{ line-height: var(--lh-12) }
+    .ouv-mot{ line-height: var(--lh-16) }
+    .ouv-piece{ flex:none; padding: var(--air-i6) 0 var(--air-i8) }
+    .ouv-appel,.ouv-groupe{ position:static; transform:none; margin-top:var(--air-i3) }
+  }
+
+  
+
+  /* ---- Ce qui n'appartient qu'a l'ecran du nom ---- */
+/* ---- Ce qui n'appartient qu'a l'ecran du nom ---- */
+  /* L'air ne se decoupe pas en cotes : il se repartit. Les respirations de bord
+     et celle qui isole l'appel s'etirent selon des poids ; celles qui disent
+     l'appartenance gardent leur cote a toutes les hauteurs. */
+  .ouv-confirm .ouv-piece{ display:flex; flex-direction:column; align-items:stretch }
+.ouv-confirm .ouv-air{ flex-grow: var(--part); flex-basis:0; min-height:0 }
+.ouv-confirm .ouv-air.ouv-avant{ --part: 3 }
+.ouv-confirm .ouv-air.ouv-entre{ --part: 4 }
+.ouv-confirm .ouv-air.ouv-apres{ --part: 3 }
+/* Le texte d'information ferme la page par le bas. Il n'est pas une note :
+     il doit etre lu, et sa lecture est enregistree — il reste donc au corps
+     secondaire et ne descend pas au barreau de la note. Sur telephone portrait
+     il prend la piste entiere ; des que la piste depasse la mesure de lecture,
+     il s'arrete a la colonne de note. */
+  /* Un texte ne touche pas le bord de l'ecran : une ligne d'interface l'en
+     separe, en plus de la marge materielle de l'appareil. */
+  .ouv-confirm .ouv-notice{ flex:none; margin:0 auto var(--air-i6); max-width: var(--col);
+    text-align:center;
+    font-size: var(--ouv-t-second); line-height: var(--lh-aere);
+    color: var(--encre-discrete) }
+.ouv-confirm .ouv-air.ouv-question{ flex:none;
+    height: calc(var(--ouv-saut-titre) - var(--ouv-t-second) * var(--lh-14) - var(--esp-1)) }
+/* La description rejoint son champ au meme cran que les paroles des
+     sous-taches : ce qui se lit sous un champ s'y attache de la meme facon
+     partout sur la page. */
+  .ouv-confirm .ouv-air.ouv-note{ flex:none; height: var(--esp-2) }
+/* Des que la piste s'elargit, le titre remonte de deux crans d'espacement et la
+     respiration qui le suit reprend exactement ce cran : le titre monte, le
+     champ ne bouge pas, et la hauteur du groupe reste la meme — les
+     respirations elastiques ne sont donc pas touchees. */
+  @media (min-width: 641px){
+    .ouv-confirm .ouv-titre{ margin-top: calc(var(--esp-8) * -1) }
+.ouv-confirm .ouv-air.ouv-question{ height: calc(var(--ouv-saut-titre) - var(--ouv-t-second) * var(--lh-14) - var(--esp-1) + var(--esp-8)) }
+  }
+.ouv-confirm .ouv-appel, .ouv-confirm .ouv-groupe{ position:static; transform:none; margin:0 }
+.ouv-confirm .ouv-appel{ text-align:center }
+.ouv-confirm .ouv-groupe{ flex:none }
+/* Le bloc du nom se plafonne a la colonne de note : au-dela, ni le champ ni la
+     description n'ont de raison de s'etendre — un prenom tient en vingt signes,
+     et la prose passerait le plafond de mesure. */
+  /* Le bloc du nom se plafonne a la colonne de note et se centre : sur une
+     piste large, le champ partage l'axe des titres et de la notice au lieu de
+     s'ancrer a gauche. La cote qui le detache de son titre est portee par la
+     respiration, pas par une marge — sans quoi les deux s'ajoutent. */
+  .ouv-confirm .ouv-demande{ max-width: var(--col); margin: 0 auto }
+/* La parole de cet ecran vit hors d'une sous-tache : elle prend le meme corps,
+     le meme interligne et les memes bords que celle des sous-taches, sinon elle
+     retombe aux valeurs du navigateur, qui ne sont sur aucun barreau. */
+  .ouv-confirm .ouv-demande .ouv-parole{ margin: var(--esp-2) calc(var(--cible-min) + var(--esp-2)) 0 var(--ouv-dedans);
+    font-size: var(--ouv-t-second); line-height: var(--lh-14); color: var(--encre-discrete) }
+.ouv-confirm .ouv-demande .ouv-parole:empty{ display:none }
+@media (min-width: 641px){
+    .ouv-confirm .ouv-demande .ouv-parole{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
+  }
+/* La description commence ou commence le texte saisi et s'arrete au bord de
+     l'ilot : elle appartient au champ par la gauche, elle en epouse la boite par
+     la droite. Les deux retraits se deduisent du champ et de son voisin. */
+  .ouv-confirm .ouv-aparte{ margin:0; margin-left: var(--ouv-dedans);
+    margin-right: calc(var(--cible-min) + var(--esp-2));
+    line-height: var(--lh-aere) }
+@media (max-height: 679px){
+    .ouv-confirm .ouv-air{ flex-grow:0; min-height: var(--air-i6) }
+.ouv-confirm .ouv-air.ouv-question, .ouv-confirm .ouv-air.ouv-note{ min-height:0 }
+  }
+/* Sur grand ecran, la description se retire du meme air a droite qu'a gauche :
+     elle s'inscrit alors dans l'ilot, a egale distance de ses deux bords. Sur
+     un ecran etroit ce retrait couterait de la mesure, donc elle y garde le
+     bord de l'ilot. Le seuil est celui ou le systeme change de jeu de tailles :
+     au-dela, la place ne manque plus. */
+  @media (min-width: 641px){
+    .ouv-confirm .ouv-aparte{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
+.ouv-confirm .ouv-tache .ouv-parole{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
+  }
