@@ -1757,13 +1757,6 @@ body[data-surface="ambiante"] .lecteur-btn{background:rgba(var(--blanc-casse-rgb
    meme pied ; elle porte l'encre d'univers, comme la bascule du chrome. */
 .pied-politique .point-pied{color:var(--encre-discrete);font-size:var(--t-sm)}
 .pied-politique .lien-langue{min-height:var(--cible-min);min-width:var(--cible-min);border:none;background:none;color:var(--univers);font-family:var(--font-corps);font-weight:700;font-size:var(--t-sm);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
-/* UN UNIVERS DONT L'ENCRE PROFONDE EST LE NOIR ne distingue plus sa bascule de
-   langue d'un mot de texte : elle y prend l'ACCENT de l'univers, porte par son
-   echelon 3. Les univers dont l'encre est deja saturee gardent la leur.
-   La portee reste nulle : une surface sans fond passe avant, et doit passer
-   avant — sur une photographie, la bascule se lit en clair. */
-:where(body.p-space) .pied-politique .lien-langue,
-:where(body.p-space) .lang-btn{color:var(--univers-e3)}
 
 /* ---------- LE NAV MESURE, LA FEUILLE COMPOSE ----------
    Un ecran large mais COURT est un telephone couche, jamais un ordinateur :
