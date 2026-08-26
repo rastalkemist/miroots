@@ -1,3 +1,50 @@
+/* L'ouverture de la scene.
+
+   La classe se pose sur la RACINE, depuis l'en-tete du document, donc avant la
+   premiere image : l'ecran ne se peint jamais dans un etat pour sauter dans
+   l'autre. L'ecran qui veut l'ouverture le declare par un attribut sur sa
+   racine ; les autres ne la portent pas et ce fichier les laisse intacts.
+
+   La duree, la tenue et la courbe vivent dans la feuille : ici, aucune valeur
+   de temps. Ce qui est decide ici est SI la scene s'ouvre, jamais COMMENT.
+
+   Elle ne se rejoue pas dans une meme execution de l'application. Le temoin est
+   un temoin de session : vide au lancement de l'application ou a l'ouverture
+   d'un onglet, conserve d'un ecran a l'autre et a travers un rechargement,
+   efface a la fermeture. Une reauthentification qui interrompt quelqu'un en
+   cours d'usage ne lui repasse donc pas une ouverture.
+
+   Elle ne retient rien. Le premier geste et le premier foyer y mettent fin
+   sur-le-champ, et la scene passe a son etat final. Un reglage systeme de
+   mouvement reduit l'annule avant qu'elle commence.
+
+   Exige que la feuille de l'ecran porte l'etat de depart sous cette classe. */
+(function () {
+  var TEMOIN = 'roots.ouverture';
+  var racine = document.documentElement;
+
+  if (!racine.hasAttribute('data-ouverture')) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  try { if (sessionStorage.getItem(TEMOIN) === '1') return; } catch (e) {}
+  try { sessionStorage.setItem(TEMOIN, '1'); } catch (e) {}
+
+  racine.classList.add('ouv-lever');
+
+  function finir() {
+    racine.classList.remove('ouv-lever');
+    document.removeEventListener('pointerdown', finir, true);
+    document.removeEventListener('focusin', finir, true);
+    document.removeEventListener('animationend', surFin, true);
+  }
+  /* Seule la fin du mouvement de l'appel retire la classe : les deux
+     animations partagent la meme duree, mais une seule doit conclure. */
+  function surFin(e) { if (e.animationName === 'ouv-monte') finir(); }
+
+  document.addEventListener('pointerdown', finir, true);
+  document.addEventListener('focusin', finir, true);
+  document.addEventListener('animationend', surFin, true);
+})();
+
 /* Rappel du chrome sur les ecrans d'ouverture.
 
    Le chrome commun est pose dans le balisage et masque par la feuille : il
