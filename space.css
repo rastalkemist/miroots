@@ -319,8 +319,14 @@
   font-family: var(--font-eclat); font-weight: var(--w-bold);
   font-size: var(--t-h3);
 }
+/* La case est le MANDATAIRE visible d'une commande retiree de la vue : le
+   foyer se poserait sur une boite d'un pixel que personne ne voit. La regle
+   du socle est donc reportee ici telle quelle, sur le mandataire, et sans
+   rien y ajouter — l'aplat de l'univers, et le lisere de son encre. Cochee,
+   la case porte deja l'aplat : c'est le lisere qui parle. */
 :where(body.p-space) #premiereCoche:focus-visible ~ .coche-tache .coche-case{
-  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
+  background-color: var(--foyer-fond);
+  box-shadow: inset 0 0 0 var(--foyer-lisere) var(--foyer-encre);
 }
 :where(body.p-space) #premiereCoche:checked ~ .coche-tache .coche-case{ background: var(--univers) }
 :where(body.p-space) #premiereCoche:checked ~ .coche-tache .coche-case::after{ opacity: 0 }
@@ -356,7 +362,6 @@
   font-size: var(--t-h4);
   text-decoration: none;
 }
-
 
 /* ---- L'inscription en taches ---------------------------------------------
  * La cascade suit la premiere coche : une etape par carte, la pastille se
@@ -394,10 +399,6 @@
   border: 2px solid var(--limite-controle); border-radius: var(--rayon-champ);
   background: var(--blanc); color: var(--encre);
   padding-inline: var(--esp-3); font: inherit; font-size: var(--t-body);
-}
-:where(body.p-space) .coche-champ input:focus-visible,
-:where(body.p-space) .bouton-contour:focus-visible{
-  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
 }
 :where(body.p-space) .bouton-contour{
   min-height: var(--cible-min); padding-inline: var(--esp-4);
@@ -442,9 +443,6 @@
   font-size: var(--t-14); font-weight: var(--w-bold);
   color: var(--accent-plan); text-decoration: none; white-space: nowrap;
   min-height: var(--cible-min); display: inline-flex; align-items: center;
-}
-:where(body.p-space) .lien-ouvre:focus-visible{
-  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
 }
 /* Un module sans contenu porte sa carte et son nom, rien de plus : sa
    hauteur suit ce qu'il affiche, comme celle de tout autre module. */
@@ -533,13 +531,6 @@
   cursor: pointer;
 }
 :where(body.p-space) .bouton-vers[disabled]{ opacity: .45; cursor: default }
-:where(body.p-space) .bouton-vers:focus-visible,
-:where(body.p-space) .bouton-doux:focus-visible,
-:where(body.p-space) .vue:focus-visible,
-:where(body.p-space) .filtre:focus-visible,
-:where(body.p-space) .envoi:focus-visible{
-  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
-}
 :where(body.p-space) .note-posee{
   font-size: var(--t-14); font-weight: var(--w-bold);
   color: var(--terre-e2); background: var(--terre-e5);
@@ -564,9 +555,6 @@
   min-height: calc(var(--cible-min) / 2 + var(--esp-1));
   border: 0; background: none; padding: 0; font: inherit; color: inherit;
   text-align: left; cursor: pointer;
-}
-:where(body.p-space) .note-item:focus-visible{
-  outline: 3px solid var(--accent-plan); outline-offset: var(--esp-1);
 }
 :where(body.p-space) .note-case{
   width: 22px; height: 22px; flex: none;
@@ -699,9 +687,6 @@
   font-size: var(--t-h4); line-height: 1.1;
 }
 :where(body.p-space) .hall-bloc.vedette .lien-ouvre{ color: var(--terre-e4) }
-:where(body.p-space) .hall-bloc.vedette .lien-ouvre:focus-visible{
-  outline-color: var(--terre-e4);
-}
 :where(body.p-space) .hall-bloc.vedette .vide,
 :where(body.p-space) .hall-bloc.vedette .etat-semaine{
   color: rgba(var(--blanc-rgb), .75);

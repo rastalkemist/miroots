@@ -24,6 +24,10 @@ jeton,rang,valeur
 --casse-ll-h5,0,uppercase
 --cible-min,0,44px
 --cible-plancher-aa,0,24px
+--coche-fond,0,var(--blanc)
+--coche-fond,1,var(--vert-e2)
+--coche-fond,2,var(--gris-ilot)
+--coche-fond,3,var(--noir)
 --courbe-a,0,cubic-bezier(0.4, 0.14, 0.3, 1)
 --courbe-a-entree,0,cubic-bezier(0, 0, 0.3, 1)
 --courbe-a-sortie,0,cubic-bezier(0.4, 0.14, 1, 1)
@@ -67,17 +71,26 @@ jeton,rang,valeur
 --esp-6,0,24px
 --esp-7,0,28px
 --esp-8,0,32px
+--eteint-encre,0,var(--neutre-e2)
+--eteint-fond,0,var(--neutre-e5)
 --focus-degagement-bas,0,calc(var(--barre-h) + var(--esp-3))
 --focus-degagement-haut,0,calc(var(--entete-h) + var(--esp-3))
---focus-ep,0,3px
---focus-retrait,0,2px
---focus-trait,0,var(--encre)
---focus-trait,1,var(--blanc-casse)
 --font-chiffres,0,'Museo Slab', 'Roboto Slab', 'Rockwell', serif
 --font-cooper,0,'Cooper Black', 'Cooper Std', 'Cooper BT', serif
 --font-corps,0,'Museo Sans', 'Roboto', system-ui, sans-serif
 --font-eclat,0,'MuseoModerno', var(--font-corps)
 --font-lecture,0,'Museo', 'Roboto Serif', Georgia, serif
+--foyer-encre,0,var(--encre-bouton)
+--foyer-encre,1,var(--univers)
+--foyer-encre,2,var(--encre)
+--foyer-encre,3,var(--encre)
+--foyer-fond,0,var(--tuile-fond)
+--foyer-fond,1,var(--univers)
+--foyer-fond,2,var(--blanc-casse)
+--foyer-fond,3,var(--module-actif)
+--foyer-fond,4,var(--vert-selection)
+--foyer-fond,5,var(--tuile-fond)
+--foyer-lisere,0,calc(var(--limite-ep) * 2)
 --gris-500,0,#635E53
 --gris-500-rgb,0,99, 94, 83
 --gris-aplat,0,var(--gris-ilot)
@@ -146,6 +159,21 @@ jeton,rang,valeur
 --mvt-long,0,400ms
 --mvt-moyen,0,150ms
 --mvt-parcours,0,var(--mvt-long)
+--neutre-ardoise,0,var(--neutre-e2)
+--neutre-calcaire,0,var(--neutre-e5)
+--neutre-cendre,0,var(--neutre-e3)
+--neutre-e1,0,#2B2B2B
+--neutre-e1-rgb,0,43, 43, 43
+--neutre-e2,0,#4E4E4E
+--neutre-e2-rgb,0,78, 78, 78
+--neutre-e3,0,#737373
+--neutre-e3-rgb,0,115, 115, 115
+--neutre-e4,0,#9B9B9B
+--neutre-e4-rgb,0,155, 155, 155
+--neutre-e5,0,#C5C5C5
+--neutre-e5-rgb,0,197, 197, 197
+--neutre-fumee,0,var(--neutre-e1)
+--neutre-poussiere,0,var(--neutre-e4)
 --noir,0,#1A1A1A
 --noir-rgb,0,26, 26, 26
 --ombre-carte,0,var(--ombre-posee)
@@ -287,9 +315,19 @@ jeton,rang,valeur
 --trait-icone,0,2
 --trait-logo,0,1
 --tuile-action-min,0,96px
+--tuile-fond,0,var(--gris-ilot)
+--tuile-fond,1,var(--rouge-e3)
+--tuile-fond,2,var(--vert-e2)
+--tuile-fond,3,var(--univers-e3)
+--tuile-fond,4,var(--univers-e1)
 --tuile-gouttiere,0,4px
 --tuile-lisere-etat,0,3px
 --tuile-pas,0,96px
+--univers,0,var(--roots-vert)
+--univers-e1,0,var(--vert-e1)
+--univers-e3,0,var(--vert-e3)
+--univers-e4,0,var(--vert-e4)
+--univers-e5,0,var(--vert-e5)
 --vert-clair,0,var(--vert-e4)
 --vert-e1,0,#0C321A
 --vert-e1-rgb,0,12, 50, 26

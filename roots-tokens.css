@@ -67,6 +67,12 @@
   --jaune-e3: #FFC840;      /* Jaune Roots · L*=83.4 */
   --jaune-e4: #FFDE8B;      /* paille · L*=89.6 */
   --jaune-e5: #FFF0C9;      /* voile · L*=95.1 */
+  /* rampe neutre — é1 → é5, clarté croissante */
+  --neutre-e1: #2B2B2B;     /* fumée · L*=17.5 */
+  --neutre-e2: #4E4E4E;     /* ardoise · L*=33.2 */
+  --neutre-e3: #737373;     /* cendre · L*=48.4 */
+  --neutre-e4: #9B9B9B;     /* poussière · L*=64.0 */
+  --neutre-e5: #C5C5C5;     /* calcaire · L*=79.5 */
 
   /* Neutres — hors rampe. Le gris 500 est le seul gris d'encre ; l'îlot est le
      seul gris de surface. */
@@ -103,6 +109,11 @@
   --jaune-jaune-roots: var(--jaune-e3);
   --jaune-paille: var(--jaune-e4);
   --jaune-voile: var(--jaune-e5);
+  --neutre-fumee: var(--neutre-e1);
+  --neutre-ardoise: var(--neutre-e2);
+  --neutre-cendre: var(--neutre-e3);
+  --neutre-poussiere: var(--neutre-e4);
+  --neutre-calcaire: var(--neutre-e5);
 
   /* Encre de texte sur fond clair, et sa version discrète. */
   --encre: var(--vert-e1);
@@ -136,6 +147,11 @@
   --jaune-e3-rgb: 255, 200, 64;
   --jaune-e4-rgb: 255, 222, 139;
   --jaune-e5-rgb: 255, 240, 201;
+  --neutre-e1-rgb: 43, 43, 43;
+  --neutre-e2-rgb: 78, 78, 78;
+  --neutre-e3-rgb: 115, 115, 115;
+  --neutre-e4-rgb: 155, 155, 155;
+  --neutre-e5-rgb: 197, 197, 197;
   --noir-rgb: 26, 26, 26;
   --gris-ilot-rgb: 228, 225, 218;
   --creme-rgb: 248, 237, 218;
@@ -536,9 +552,9 @@
      SOMBRES : vert, rouge, terre cuite. Calculée, pas choisie, et le
      contrôle refuse d'écrire si une famille dévie. */
   --encre-e1: var(--blanc-casse); /* pire cas des trois familles sombres : 13.44 */
-  --encre-e2: var(--blanc-casse); /* pire cas des trois familles sombres : 8.06 */
+  --encre-e2: var(--blanc-casse); /* pire cas des trois familles sombres : 8.05 */
   --encre-e3: var(--blanc);       /* pire cas des trois familles sombres : 4.72 */
-  --encre-e4: var(--noir);        /* pire cas des trois familles sombres : 6.29 */
+  --encre-e4: var(--noir);        /* pire cas des trois familles sombres : 6.26 */
   --encre-e5: var(--noir);        /* pire cas des trois familles sombres : 10.05 */
 
   /* LE JAUNE N'A PAS DE BASCULE — loi 3 de la pièce actée : « la famille
@@ -569,6 +585,11 @@
 .a-jaune-3 { background: var(--jaune-e3); color: var(--noir); }
 .a-jaune-4 { background: var(--jaune-e4); color: var(--noir); }
 .a-jaune-5 { background: var(--jaune-e5); color: var(--noir); }
+.a-neutre-1 { background: var(--neutre-e1); color: var(--blanc-casse); }
+.a-neutre-2 { background: var(--neutre-e2); color: var(--blanc-casse); }
+.a-neutre-3 { background: var(--neutre-e3); color: var(--blanc); }
+.a-neutre-4 { background: var(--neutre-e4); color: var(--noir); }
+.a-neutre-5 { background: var(--neutre-e5); color: var(--noir); }
 
 /* ---------- 5. COMPOSANTS — DIALECTE A (rond / ambiant · PUBLIC) ---------- */
 
@@ -730,7 +751,7 @@
   justify-content: space-between; gap: var(--esp-2); padding: var(--esp-3);
   border: none; border-radius: var(--rayon-tuile);
   min-width: var(--tuile-action-min); min-height: var(--tuile-action-min);
-  background: var(--vert-e2); color: var(--encre-bouton);
+  background: var(--tuile-fond); color: var(--encre-bouton);
   font-family: var(--font-corps); font-weight: 700;
   font-size: var(--t-tuile-libelle); line-height: 1.15; text-align: left;
   cursor: pointer;
@@ -745,11 +766,11 @@
 .tuile .tuile-valeur { font-family: var(--font-chiffres); font-size: var(--t-h3);
                        line-height: var(--lh-chiffre); }
 .tuile:active { filter: brightness(0.86); }
-.tuile:focus-visible { outline: var(--tuile-lisere-etat) solid var(--noir); outline-offset: 2px; }
+.tuile:focus-visible { --foyer-fond: var(--tuile-fond); }
 .tuile[aria-pressed="true"], .tuile.selectionnee {
   box-shadow: inset 0 0 0 var(--tuile-lisere-etat) var(--blanc-casse); }
 .tuile[disabled], .tuile.inactive { opacity: 0.4; cursor: not-allowed; }
-.tuile.a-neutre { background: var(--gris-ilot); color: var(--encre); }
+.tuile.a-neutre { --tuile-fond: var(--gris-ilot); color: var(--encre); }
 
 /* UNE TUILE DIT UNE ACTION ; UN STATUT SE PORTE PAR UNE PASTILLE RONDE, posée
    dans la tuile ou à côté d'elle. La tuile qui porte un statut prend donc une
@@ -765,7 +786,8 @@
    n'a pas été déclaré opérationnel. Un dispositif que l'on croit opérationnel
    sans qu'il le soit est plus dangereux que son absence. */
 .tuile-secours {
-  background: var(--rouge-e3); color: var(--encre-bouton);
+  --tuile-fond: var(--rouge-e3);
+  background: var(--tuile-fond); color: var(--encre-bouton);
   border: none; border-radius: var(--rayon-tuile); min-height: 160px; width: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--esp-3); font-family: var(--font-corps); font-weight: 800;
@@ -859,14 +881,25 @@
    SC 2.5.5 (AAA), et c'est la valeur retenue. */
 
 :root {
-  /* ANNEAU DE FOCUS. Mesuré contre SC 2.4.13 (AAA), qui demande au moins
-     l'aire d'un périmètre de 2 px CSS et 3:1 entre l'état focalisé et non
-     focalisé. ⚠ Il est en ENCRE, jamais en couleur directrice : c'est ce qui
-     lui permet d'être le même dans les quatre mondes. Le retrait lui donne un
-     contraste des deux côtés ; un anneau collé n'en a que d'un. */
-  --focus-trait: var(--encre);
-  --focus-ep: 3px;
-  --focus-retrait: 2px;
+  /* LE FOYER — SC 2.4.7 (AA) : « un indicateur de foyer clavier visible ».
+     La norme exige un INDICATEUR, pas un anneau. Le critere qui decrit un
+     anneau, 2.4.13, est de niveau AAA et n'est pas le plancher. Ce qui
+     oblige au plancher est 1.4.11 : 3,0:1 contre les couleurs adjacentes.
+     Le foyer se dit donc par la SURFACE de l'element, et rien ne se pose
+     autour de lui. Aucune valeur n'est ecrite : le fond et l'encre sont
+     ceux de l'univers courant, le lisere est le trait de limite DOUBLE —
+     un trait simple ne se distingue pas d'une limite, un trait double si.
+     Une surface qui renverse sa polarite redefinit la PAIRE, jamais la
+     regle.
+     ⚠ Le trio du foyer ne peut PAS vivre ici : une propriete calculee sur la
+     racine y fige l'univers, et la valeur figee descend telle quelle. Elle se
+     declare sur la surface, plus bas. Ce qui reste ici est l'univers par
+     defaut, que chaque monde reprend sur sa propre surface. */
+    --univers: var(--roots-vert);
+  --univers-e1: var(--vert-e1);
+  --univers-e3: var(--vert-e3);
+  --univers-e4: var(--vert-e4);
+  --univers-e5: var(--vert-e5);
 
   /* DÉGAGEMENT DU FOCUS — SC 2.4.11 (AA). Un pied ou un en-tête collant peut
      recouvrir entièrement l'élément qui reçoit le focus ; la parade est le
@@ -914,16 +947,71 @@
   --ll-rythme: var(--esp-7);
 }
 
-/* L'anneau, et son dégagement. Sans le second, le premier ne se voit pas. */
+/* Le foyer, declare UNE fois pour tout le systeme, et nulle part ailleurs.
+   Ce qui est creux se remplit de son univers et son encre s'inverse ; ce qui
+   est deja plein ne change pas de fond, et le lisere interieur porte seul
+   l'etat. Toute surface focalisable est couverte, presente ou future.
+   Le poids est FORCE, et c'est le seul de la feuille a l'etre : la regle est
+   posee a specificite nulle pour n'entrer en conflit avec rien, ce qui la
+   rendrait perdante contre la moindre classe declaree plus loin. Mesure a
+   l'appui : sans le forcage, l'etat ne se voyait sur aucun des trente-deux
+   elements atteints au clavier.
+   L'echappement existe et il est unique : un element qui possede son propre
+   aplat redefinit `--foyer-fond` sur lui-meme. Il redefinit la PAIRE, jamais
+   la regle. */
+/* Le trio du foyer se declare sur la surface : une propriete personnalisee se
+   resout la ou elle est ecrite, et l'univers n'est connu qu'ici. Declaree plus
+   haut, elle descendrait figee sur le monde par defaut — mesure sur le rendu :
+   le fond revenait vide, donc transparent, sur deux mondes sur trois. */
+body {
+  --foyer-fond: var(--univers);
+  --foyer-encre: var(--encre-bouton);
+  --foyer-lisere: calc(var(--limite-ep) * 2);
+
+  /* L'ETEINT — une paire, nommee, la meme dans les deux dialectes et dans les
+     trois univers. Elle se mesure une fois : 4,94. */
+  --eteint-fond: var(--neutre-e5);
+  --eteint-encre: var(--neutre-e2);
+
+  /* L'aplat de la tuile porte un nom : le foyer et l'eteint le reprennent au
+     lieu de le remplacer, et le controle des couples peut le resoudre. */
+  --tuile-fond: var(--vert-e2);
+}
+/* L'anneau n'existe jamais, quel que soit le geste — y compris celui que le
+   navigateur dessinerait de lui-meme. Cette ligne n'est pas conditionnee. */
 :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-  outline: var(--focus-ep) solid var(--focus-trait);
-  outline-offset: var(--focus-retrait);
+  outline: none !important;
+}
+/* Le foyer ne se MONTRE qu'au clavier. `au-clavier` est pose sur la racine du
+   document par une touche qui deplace le foyer, et retire par tout geste de
+   pointage. Une pression du doigt ou un clic ne montre donc rien, sur aucun
+   element — pas meme un champ de texte, que `:focus-visible` retient pourtant
+   au clic. Les deux conditions valent ensemble : le mode, et le foyer. */
+:where(html.au-clavier) :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  background-color: var(--foyer-fond) !important;
+  color: var(--foyer-encre) !important;
+  box-shadow: inset 0 0 0 var(--foyer-lisere) var(--foyer-encre) !important;
+}
+/* On n'inverse pas ce qu'on est en train de lire : le champ garde son fond
+   et prend le trait de son univers. Meme specificite que la regle ci-dessus,
+   posee apres elle — c'est l'ordre qui tranche, et il est intentionnel. */
+:where(html.au-clavier) :where(input, textarea, select):focus-visible {
+  background-color: var(--blanc) !important;
+  color: var(--encre) !important;
+  border-color: var(--foyer-fond) !important;
+  box-shadow: none !important;
 }
 html {
   scroll-padding-top: var(--focus-degagement-haut);
   scroll-padding-bottom: var(--focus-degagement-bas);
 }
-body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
+/* La surface ambiante renverse sa polarite : son encre est claire et son
+   fond est une image. Elle redefinit donc la PAIRE, et la regle ne change pas
+   d'une lettre. Le clair est le seul aplat garanti opaque devant un film. */
+body[data-surface="ambiante"] {
+  --foyer-fond: var(--blanc-casse);
+  --foyer-encre: var(--univers);
+}
 
 /* LE SURVOL — la règle du socle, exprimée à travers la table d'échelon.
    Aucune valeur n'est écrite : l'aplat monte d'un cran, et l'encre suit
@@ -950,6 +1038,11 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   .a-jaune-3:hover { background: var(--jaune-e4); color: var(--noir); }
   .a-jaune-4:hover { background: var(--jaune-e5); color: var(--noir); }
   .a-jaune-5:hover { background: var(--jaune-e4); color: var(--noir); }
+  .a-neutre-1:hover { background: var(--neutre-e2); color: var(--blanc-casse); }
+  .a-neutre-2:hover { background: var(--neutre-e3); color: var(--blanc); }
+  .a-neutre-3:hover { background: var(--neutre-e4); color: var(--noir); }
+  .a-neutre-4:hover { background: var(--neutre-e5); color: var(--noir); }
+  .a-neutre-5:hover { background: var(--neutre-e4); color: var(--noir); }
 }
 
 /* ---------- 6 ter. LES COMPOSANTS DE FORMULAIRE ET D'ÉTAT ----------
@@ -1067,14 +1160,15 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   appearance: none; margin: 0; flex: none;
   width: var(--cible-plancher-aa); height: var(--cible-plancher-aa);
   border: var(--limite-ep-b) solid var(--limite-controle);
-  background: var(--blanc);
+  --coche-fond: var(--blanc);
+  background: var(--coche-fond);
   transition: background var(--mvt-etat) var(--courbe-etat),
               border-color var(--mvt-etat) var(--courbe-etat);
 }
 .controle-choix input[type="radio"] { border-radius: var(--rayon-pilule); }
 .controle-choix input[type="checkbox"] { border-radius: var(--rayon-champ); }
-.controle-choix input:checked { background: var(--vert-e2); border-color: var(--vert-e2); }
-.controle-choix input:disabled { background: var(--gris-ilot); border-color: var(--gris-500); }
+.controle-choix input:checked { --coche-fond: var(--vert-e2); border-color: var(--vert-e2); }
+.controle-choix input:disabled { --coche-fond: var(--gris-ilot); border-color: var(--gris-500); }
 /* L'état coché ne se dit PAS par la seule couleur (SC 1.4.1) : la marque est une
    forme, tracée à l'encre du bouton plein. */
 .controle-choix input:checked::after {
@@ -1087,7 +1181,7 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
 .controle-choix input[type="checkbox"]:checked::after { --marque-cochee: var(--marque-coche); }
 /* Dialecte B : mêmes règles, angle nul et trait franc. */
 .dialecte-b .controle-choix input { border-color: var(--noir); border-radius: var(--rayon-tuile); }
-.dialecte-b .controle-choix input:checked { background: var(--noir); border-color: var(--noir); }
+.dialecte-b .controle-choix input:checked { --coche-fond: var(--noir); border-color: var(--noir); }
 
 /* Liste déroulante — le `select` NATIF, habillé. On ne réécrit pas un select :
    le natif porte le clavier, la recherche à la frappe et le sélecteur du
@@ -1210,6 +1304,82 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
   --marque-point: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='12' cy='12' r='6' fill='black'/></svg>");
 }
 
+/* CE QUI PORTE DEJA UN ETAT DANS SON APLAT GARDE SON APLAT.
+   La regle du foyer remplit l'element de son univers. Sur un element dont
+   l'aplat DIT quelque chose — coche cochee, module choisi, filtre choisi —
+   ce remplissage efface l'information : deux etats differents rendent la meme
+   image. Ces elements redefinissent donc la PAIRE sur eux-memes, jamais la
+   regle, et le foyer y parle par le TRAIT.
+   La coche n'a pas de lisere : sur une cible de 24 px il recouvre la marque,
+   et la marque est de la meme encre que lui — une encre ne se pose jamais sur
+   un voile de sa propre teinte. */
+html.au-clavier .controle-choix input:focus-visible {
+  background-color: var(--coche-fond) !important;
+  box-shadow: none !important;
+  border-color: var(--foyer-fond) !important;
+  border-width: var(--foyer-lisere) !important;
+}
+.module-a.actif:focus-visible {
+  --foyer-fond: var(--module-actif);
+  --foyer-encre: var(--encre);
+}
+.puce-filtre[aria-pressed="true"]:focus-visible {
+  --foyer-fond: var(--vert-selection);
+  --foyer-encre: var(--encre);
+}
+
+/* ============================================================================
+   LA GRAMMAIRE D'ETATS — une seule idee, prise dans la table d'echelon.
+
+   AU SURVOL L'APLAT MONTE D'UN CRAN. SOUS LE DOIGT IL DESCEND D'UN CRAN.
+   Ce qui est CREUX s'annonce en se remplissant. Ce qui est DESACTIVE sort de
+   sa famille et prend un aplat NEUTRE nomme — jamais une opacite, qui rend le
+   contraste dependant du fond et donc mesurable nulle part.
+
+   Aucune valeur n'est ecrite : tout est un echelon de l'univers courant ou de
+   la rampe neutre. L'ecart percu d'un cran a l'autre vaut 1,7, identique dans
+   les trois univers.
+   ⚠ Le survol ne se pose que la ou un dispositif de pointage existe.
+   ============================================================================ */
+@media (hover: hover) {
+  .btn-principal:hover, .pastille-flottante:hover {
+    background: var(--univers-e3);
+  }
+  /* Le dialecte B ne quitte pas sa famille : son aplat est neutre, il monte
+     et descend sur la rampe neutre. Un bouton de console qui virerait au vert
+     au survol changerait de dialecte sous le doigt. */
+  .btn-b:hover { background: var(--neutre-e2); }
+  .chip:hover { background: var(--terre-e5); }
+  .module-a:hover { background: var(--univers-e5); }
+  .puce-filtre:hover { background: var(--univers-e5); }
+  .tuile:hover { --tuile-fond: var(--univers-e3); }
+}
+.btn-principal:active, .pastille-flottante:active {
+  background: var(--univers-e1);
+}
+.btn-b:active { background: var(--noir);
+                box-shadow: inset 0 0 0 var(--foyer-lisere) var(--neutre-e3); }
+.chip:active { background: var(--terre-e4); }
+.module-a:active, .puce-filtre:active { background: var(--univers-e4); }
+/* Le dialecte B est plat : il ne s'enfonce pas par une ombre, il descend d'un
+   cran et prend un lisere interieur. */
+.tuile:active { --tuile-fond: var(--univers-e1); filter: none;
+                box-shadow: inset 0 0 0 var(--foyer-lisere) var(--univers-e3); }
+
+/* L'ETEINT — un aplat nomme, la meme image partout, mesuree une fois.
+   ⚠ Un element eteint est exempte du plancher de contraste par SC 1.4.3 ;
+   celui-ci le tient quand meme, a 4,94. */
+:where(.btn-principal, .pastille-flottante, .chip, .module-a, .btn-b,
+       .puce-filtre, .tuile, .compteur-gros button, .pave-num button):disabled,
+:where(.tuile, .btn-b)[disabled] {
+  background: var(--eteint-fond) !important;
+  color: var(--eteint-encre) !important;
+  border-color: var(--eteint-fond) !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
 /* ---------- 7. ACCESSIBILITÉ — UNIVERSELLE, LES DEUX DIALECTES ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1218,11 +1388,11 @@ body[data-surface="ambiante"] { --focus-trait: var(--blanc-casse); }
     transition-duration: 0.01ms !important; scroll-behavior: auto !important;
   }
 }
-.btn-principal:focus-visible, .pastille-flottante:focus-visible, .chip:focus-visible,
-.module-a:focus-visible, .btn-b:focus-visible, .compteur-gros button:focus-visible,
-.tuile-secours:focus-visible {
-  outline: 3px solid var(--vert-e2); outline-offset: 2px;
-}
+/* Ces sept composants etaient couverts par un anneau propre, en valeurs
+   ecrites, et en vert quel que soit l'univers. La regle du socle les couvre
+   tous : celui qui possede son aplat redefinit `--foyer-fond`, les autres
+   s'inversent. */
+.tuile-secours:focus-visible { --foyer-fond: var(--tuile-fond); }
 .annonce-vocale {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;

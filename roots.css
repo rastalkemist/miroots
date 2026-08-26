@@ -323,11 +323,38 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .bouton-plein,.bouton-contour{display:inline-flex;align-items:center;justify-content:center;gap:var(--esp-2);min-height:var(--cible-min);padding:0 var(--esp-5);border-radius:var(--rayon-pilule);font-family:var(--font-corps);font-weight:var(--w-bold);font-size:var(--t-body);text-decoration:none;cursor:pointer}
 .bouton-plein{background:var(--univers);color:var(--blanc);border:none}
 .bouton-contour{background:var(--blanc);color:var(--univers);border:var(--limite-ep) solid var(--univers)}
+/* ---- LA GRAMMAIRE D'ETATS, appliquee aux deux boutons publics. L'aplat monte
+   d'un cran au survol, descend d'un cran sous le doigt ; le creux s'annonce en
+   se remplissant. Aucune valeur n'est ecrite : tout est un echelon.
+   L'eteint sort de la famille et prend la paire nommee du socle. ---- */
+@media (hover:hover){
+  .bouton-plein:hover{background:var(--univers-e3)}
+  .bouton-contour:hover{background:var(--univers);color:var(--encre-bouton);border-color:var(--univers)}
+}
+.bouton-plein:active{background:var(--univers-e1)}
+.bouton-contour:active{background:var(--univers-e1);color:var(--encre-bouton);border-color:var(--univers-e1)}
+.bouton-plein:disabled,.bouton-plein[disabled],
+.bouton-contour:disabled,.bouton-contour[disabled]{
+  background:var(--eteint-fond);color:var(--eteint-encre);border-color:var(--eteint-fond);
+  cursor:not-allowed}
+/* ---- LE LIEN NU. Il n'avait aucune couleur : il rendait au bleu du
+   navigateur. Tout se joue sur LE TRAIT DES CARACTERES, jamais sur un fond :
+   echelon 3 au repos, echelon 2 sous le doigt. Au foyer le texte ne bouge pas
+   — une bordure de l'echelon 1 l'entoure, posee en ombre portee pour ne rien
+   deplacer dans la ligne.
+   ⚠ Une encre plus CLAIRE que l'echelon 3 tombe sous le plancher de 4,5 sur
+   les trois fonds clairs — l'echelon 4 rend 2,68. Un lien reste du texte dans
+   tous ses etats : son encre ne monte pas. Le soulignement du socle epaissit
+   au survol. ---- */
+:where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]){color:var(--univers-e3)}
+:where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):active{color:var(--univers)}
+html.au-clavier :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):focus-visible{
+  background-color:transparent!important;color:var(--univers-e3)!important;
+  box-shadow:0 0 0 var(--foyer-lisere) var(--univers-e1)!important;
+  border-radius:var(--rayon-champ)}
 .champ .iti{width:100%;display:block;background:var(--gris-ilot);border:1.5px solid transparent;border-radius:var(--rayon-champ);height:48px}
 .champ .iti:focus-within{border-color:var(--univers);background:var(--blanc)}
 .iti input[type=tel]{width:100%;height:100%;background:transparent;border:none;color:var(--encre);font-family:var(--font-corps);font-size:var(--t-16);padding:0 var(--esp-3)}
-.iti input[type=tel]:focus{outline:none}
-.iti input[type=tel]:focus-visible{outline:var(--focus-ep) solid var(--focus-trait);outline-offset:var(--focus-retrait)}
 .iti__country-container{display:flex;align-items:center;padding:0 var(--esp-1)}
 .iti__selected-country{display:flex;align-items:center;height:100%;background:transparent}
 .iti__selected-dial-code{font-family:var(--font-corps);color:var(--encre);font-weight:500;font-size:var(--t-16);padding:0 var(--esp-1)}
@@ -340,10 +367,8 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 .chrome-inner>.ankh-home{justify-self:start}
 .chrome-inner>.centre{justify-self:center}
 .chrome-inner>.chrome-droite{justify-self:end}
-/* --- Socle : focus et survol. Poses avant tout le reste pour qu'une regle
-   d'ecran puisse les redefinir si elle en a la raison. --- */
-:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{
-  outline:var(--focus-ep) solid var(--focus-trait);outline-offset:var(--focus-retrait)}
+/* --- Socle : le SURVOL. Le foyer n'est pas ici : il est declare une seule
+   fois dans la feuille socle, et aucune feuille ne le redefinit. --- */
 .chrome-inner{transition:grid-template-columns var(--mvt-parcours) var(--courbe-entree)}
 .chrome-titre{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
 .chrome-droite{transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-etat)}
@@ -661,15 +686,12 @@ body[data-surface="ambiante"] .bandeau-phase{margin-top:var(--entete-h-ambiante)
 .stepper button::after{top:50%;height:44px;width:44px;left:50%;content:'';position:absolute;transform:translate(-50%,-50%)}
 .champ label{margin-bottom:var(--air-i1);display:block;font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
 .champ input{padding:var(--esp-3) var(--esp-3);border:1.5px solid transparent;font-size:var(--t-16);border-radius:var(--rayon-champ);color:var(--encre);font-family:var(--font-corps);width:100%;background:var(--gris-ilot);min-height:44px}
-.champ input:focus{border-color:var(--univers);outline:none;background:var(--blanc)}
 /* La zone de texte suit la grammaire du champ : meme ilot, meme focus. Sa
    hauteur se tire a la main, jamais en largeur — la colonne est la colonne. */
 .champ textarea{padding:var(--esp-3) var(--esp-3);border:1.5px solid transparent;font-size:var(--t-16);border-radius:var(--rayon-champ);color:var(--encre);font-family:var(--font-corps);width:100%;background:var(--gris-ilot);min-height:76px;resize:vertical}
-.champ textarea:focus{border-color:var(--univers);outline:none;background:var(--blanc)}
 /* Un lien habille en bouton plein reste un lien : le style est celui du
    bouton, la semantique celle de la navigation — il mene ailleurs. */
 a.bouton-confirmer{display:flex;align-items:center;justify-content:center;text-decoration:none;box-sizing:border-box}
-.champ input:focus-visible{outline:var(--focus-ep) solid var(--focus-trait);outline-offset:var(--focus-retrait)}
 .iti--fullscreen-popup{z-index:10000}
 /* Le bloc de confidentialite ferme le panneau, sous l'action : la notice puis
    son lien. Les ecarts de ce groupe sont des multiples du pas de 8. */
@@ -808,7 +830,7 @@ body.page-figee{overflow:hidden}
    CE QU'ELLE REFUSE : disparaitre. Un foyer qui ne se voit pas rend l'interface
    inutilisable au clavier. Elle ne s'affiche qu'au parcours clavier, jamais a
    l'appui ni au clic. */
-body{--focus-trait:var(--encre)}
+
 /* L'ombre et les voiles portent la teinte de l'encre profonde de l'UNIVERS
    courant : une piece partagee — voile, feuille, ombre portee — qui garderait
    la teinte d'un autre univers mentirait sur l'ecran qu'elle sert. Toute

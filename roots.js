@@ -19,6 +19,31 @@
     document.documentElement.classList.add('js');
   }
 
+  /* LE MODE CLAVIER. `html.au-clavier` marque que le foyer a ete deplace par
+     une TOUCHE. `:focus-visible` ne suffit pas a ce marquage : il correspond
+     aussi au CLIC sur un champ de texte.
+
+     Arme : les touches qui deplacent le foyer, elles seules.
+     Desarme : tout geste de pointage, doigt compris.
+     Exige : la feuille de style ne peint le foyer que sous cette classe.
+     Casse si retire : le foyer ne se peint plus nulle part. Casse si la classe
+     est posee autrement : le foyer se peint au clic et au doigt. */
+  (function () {
+    if (!global.document || !document.documentElement) { return; }
+    var DEPLACENT = {
+      Tab: 1, ArrowUp: 1, ArrowDown: 1, ArrowLeft: 1, ArrowRight: 1,
+      Home: 1, End: 1, PageUp: 1, PageDown: 1
+    };
+    var racine = document.documentElement;
+    global.addEventListener('keydown', function (e) {
+      if (DEPLACENT[e.key]) { racine.classList.add('au-clavier'); }
+    }, true);
+    function desarmer() { racine.classList.remove('au-clavier'); }
+    global.addEventListener('pointerdown', desarmer, true);
+    global.addEventListener('mousedown', desarmer, true);
+    global.addEventListener('touchstart', desarmer, true);
+  }());
+
   var PAYS_EPINGLES = ['bj', 'ng', 'tg', 'gh', 'ci', 'ne', 'bf', 'sn', 'fr', 'be', 'us', 'ca', 'gb', 'de'];
   var PREFIXE_BJ = '01';
 
