@@ -7,54 +7,58 @@
 
   /* La piece prend ce que le bandeau laisse, mesure et non supposee : aucune
      hauteur d'en-tete n'est ecrite, donc aucune ne peut devenir fausse. */
-  body{ background: var(--blanc-casse); margin:0; min-height:100svh;
+  /* La hauteur est ARRETEE, pas seulement plancheree : une part de hauteur ne
+     se resout que contre une hauteur definie, et une piece qui tire sa taille
+     d'un conteneur au plancher souple n'en offre pas. Les cotes verticales de
+     la scene en dependent entierement. La petite hauteur de fenetre est celle
+     qui ignore les barres escamotables du navigateur : la scene ne bouge donc
+     pas quand elles se retirent. Ce qui deborde defile. */
+  body{ background: var(--blanc-casse); margin:0; height:100svh;
     display:flex; flex-direction:column }
   /* La reserve basse des feuilles communes revient a la composition ; seule
      subsiste la marge materielle du bas d'appareil. Rendre la barre de
      navigation sur cet ecran demanderait de la reposer. */
   body.ouv-page{ padding-bottom: var(--safe-bas) }
 
-  .ouv-chrome{ flex:none; display:flex; align-items:center; justify-content:space-between;
-    padding: var(--esp-4) var(--bord) }
-  .ouv-chrome-cote{ display:flex; align-items:center; gap:var(--esp-4);
-    transition: opacity 320ms var(--courbe-etat) }
-  .ouv-chrome.est-depouille .ouv-chrome-cote{ opacity:0 }
-  /* Seule la bascule de langue demeure dans le bandeau depouille. Elle ne
-     recoit aucune declaration ici : son corps, sa graisse, son encre et sa
-     cible sont ceux que le tronc pose sur sa classe, et elle doit rester
-     identique a celle du nav. On ne regle que sa presence. Un contrepoids de
-     meme largeur lui fait face : sans lui, la marque cesserait d'etre au
-     centre. */
-  .ouv-contrepoids{ flex:none; width: var(--cible-min) }
-  .ouv-langue{ display:none }
-  .ouv-chrome.est-depouille .ouv-langue{ display:inline-flex; align-items:center }
-  .ouv-rond{ width:28px; height:28px; border-radius:999px; background:var(--gris-filet) }
-  .ouv-barres{ width:22px; height:2px; background:var(--encre);
-    box-shadow:0 6px 0 var(--encre),0 -6px 0 var(--encre) }
-  .ouv-marque{ font-family:var(--font-eclat); font-weight:var(--w-a-display);
-    font-size:var(--t-chrome-titre); line-height:var(--lh-soude) }
-  .ouv-marque i{ font-style:normal; background:var(--roots-noir); color:var(--blanc);
-    border-radius:999px; padding:0 var(--esp-2) }
 
   /* La scene occupe la hauteur libre et reprend la piste du tronc. */
-  .ouv-piece{ position:relative; flex:1; width:var(--piste); max-width:100%; margin:0 auto;
+  .ouv-piece{ flex:1; width:var(--piste); max-width:100%; margin:0 auto;
+    display:flex; flex-direction:column;
     /* Le saut interne du bloc, et le saut qui le detache de son titre : le
        second vaut une fois et demie le premier. Le rapport est la regle ; les
        deux valeurs en decoulent et ne se reglent pas separement. */
     --ouv-saut: calc(var(--air-i1) * 5);
     --ouv-saut-titre: calc(var(--ouv-saut) * 1.5) }
 
-  .ouv-appel, .ouv-groupe{ position:absolute; left:0; right:0; padding:0; margin:0 }
+  /* LES COTES VERTICALES SE TIENNENT PAR DES AIRS, NON PAR DES POSITIONS.
+     Le milieu de l'appel se pose au sixieme de la hauteur, la cote du titre aux
+     deux cinquiemes. Une cote posee en position absolue tient son rang et
+     laisse le texte sortir par le bas des que le bloc grandit ; une cote posee
+     en part de hauteur tient le meme rang tant qu'il y a de la place, puis
+     cede.
+     La bande haute vaut deux fois le sixieme et centre l'appel : le milieu de
+     l'appel tombe au sixieme quel que soit le nombre de lignes qu'il prend.
+     L'air suivant mene du bas de la bande a la cote du titre.
+     Le dernier prend le reste et ne descend pas sous le plancher : c'est lui
+     qui cede en premier ; une fois qu'il a cede, les deux autres se reduisent
+     chacun dans la proportion de sa propre cote, donc leur rapport survit a la
+     compression. La bande haute ne se reduit pas sous l'appel qu'elle porte —
+     un flex tient la taille minimale automatique de son contenu — de sorte que
+     le texte n'est jamais recouvert par le haut. */
+  .ouv-tete{ flex: 0 1 33.34%; display:grid; align-content:center }
+  .ouv-cote{ flex: 0 1 6.66%; min-height:0 }
+  .ouv-reste{ flex: 1 1 0; min-height: var(--ouv-plancher) }
+  .ouv-groupe{ flex:none }
   /* L'appel est un geste d'ouverture, pas un niveau de hierarchie : il prend le
      barreau du titre sans en porter le rang. Son interligne suit le barreau et
      bascule au meme point de rupture que lui. */
-  .ouv-appel{ top:16.67%; transform: translateY(-50%); text-align:center; margin:0;
+  .ouv-appel{ text-align:center; margin:0;
     font-family:var(--font-eclat); color:var(--encre); text-wrap:balance;
     font-size: var(--t-h1); line-height: var(--ouv-lh-h1); font-weight: var(--w-light) }
   /* Le groupe est remonte d'une demi-ligne de titre : c'est le milieu de la
      premiere ligne, non le bord de la boite, qui se pose sur la cote. Un titre
      qui passe a la ligne ne fait donc pas glisser la cote. */
-  .ouv-groupe{ top:40%; margin-top: calc(var(--t-h2) * var(--ouv-lh-h2) / -2) }
+  .ouv-groupe{ margin-top: calc(var(--t-h2) * var(--ouv-lh-h2) / -2) }
   /* Le titre reel de la page. Il partage le barreau de l'appel et le domine par
      la graisse : c'est la graisse appuyee que le systeme prevoit pour un titre
      de premier rang qui n'est pas un geste d'ouverture. */
@@ -95,7 +99,11 @@
      tient aucune quand elle se tait. Une ligne gardee sous un champ muet ecarte
      deux rangees qui appartiennent au meme geste. */
   .ouv-tache .ouv-parole:empty{ display:none }
-  .ouv-tache .ouv-parole{ grid-column:2; grid-row:3;
+  /* La mesure de la parole est plafonnee a la colonne de note, comme celle de
+     la description : sans plafond elle depasse cent signes par ligne des que la
+     piste s'ouvre, soit au-dela du plafond que la doctrine pose. Le bord gauche
+     ne bouge pas — c'est la mesure qui s'arrete, pas l'attache. */
+  .ouv-tache .ouv-parole{ grid-column:2; grid-row:3; max-width: var(--col);
     margin: var(--esp-2) calc(var(--cible-min) + var(--esp-2)) 0 var(--ouv-dedans);
     font-size: var(--ouv-t-second); line-height: var(--lh-14);
     color: var(--encre-discrete);
@@ -192,6 +200,11 @@
        tache mere. Les filles etant plus petites, leur retrait compense la moitie
        de la difference — la colonne est centree, pas alignee par le bord. */
     --ouv-retrait: calc(var(--esp-6) + (var(--ouv-case-mere) - var(--ouv-case)) / 2);
+    /* L'air minimal sous le texte le plus bas. Il ne se compose pas : il se
+       garde. Une valeur hors base huit existe au tronc mais porte une mention
+       de retrait ; celle-ci est la ligne d'interface, deja l'air bas de l'ecran
+       du nom. */
+    --ouv-plancher: var(--air-i6);
     --ouv-t-second: var(--t-14);
     --ouv-lh-h1: var(--lh-38); --ouv-lh-h2: var(--lh-28) }
   /* Les interlignes basculent ou le tronc fait basculer leurs barreaux. */
@@ -206,7 +219,9 @@
     .ouv-etiq, .ouv-aparte{ line-height: var(--lh-12) }
     .ouv-mot{ line-height: var(--lh-16) }
     .ouv-piece{ flex:none; padding: var(--air-i6) 0 var(--air-i8) }
-    .ouv-appel,.ouv-groupe{ position:static; transform:none; margin-top:var(--air-i3) }
+    .ouv-tete{ flex:none; display:block }
+    .ouv-cote, .ouv-reste{ display:none }
+    .ouv-appel,.ouv-groupe{ margin-top:var(--air-i3) }
   }
 
   
@@ -246,9 +261,10 @@
     .ouv-confirm .ouv-titre{ margin-top: calc(var(--esp-8) * -1) }
 .ouv-confirm .ouv-air.ouv-question{ height: calc(var(--ouv-saut-titre) - var(--ouv-t-second) * var(--lh-14) - var(--esp-1) + var(--esp-8)) }
   }
-.ouv-confirm .ouv-appel, .ouv-confirm .ouv-groupe{ position:static; transform:none; margin:0 }
+/* Cet ecran ne pose pas la cote du titre par une demi-ligne : sa respiration
+     la porte. La marge negative de la base est donc annulee. */
+  .ouv-confirm .ouv-appel, .ouv-confirm .ouv-groupe{ margin:0 }
 .ouv-confirm .ouv-appel{ text-align:center }
-.ouv-confirm .ouv-groupe{ flex:none }
 /* Le bloc du nom se plafonne a la colonne de note : au-dela, ni le champ ni la
      description n'ont de raison de s'etendre — un prenom tient en vingt signes,
      et la prose passerait le plafond de mesure. */
@@ -276,6 +292,14 @@
     .ouv-confirm .ouv-air{ flex-grow:0; min-height: var(--air-i6) }
 .ouv-confirm .ouv-air.ouv-question, .ouv-confirm .ouv-air.ouv-note{ min-height:0 }
   }
+/* Des l'ordinateur, la scene tient la moitie de l'ecran. Le seuil est celui
+     ou le tronc arrete sa piste et ne la bouge plus : au-dela, une piste qui
+     continuerait de s'ouvrir etirerait la mesure des lignes sans rien donner de
+     plus a lire. L'ecran du nom garde la piste commune — son contenu est deja
+     plafonne a la colonne de note. */
+  @media (min-width: 1024px) and (min-height: 600px){
+    body.ouv-page:not(.ouv-confirm) .ouv-piece{ width: 50% }
+  }
 /* Sur grand ecran, la description se retire du meme air a droite qu'a gauche :
      elle s'inscrit alors dans l'ilot, a egale distance de ses deux bords. Sur
      un ecran etroit ce retrait couterait de la mesure, donc elle y garde le
@@ -285,27 +309,68 @@
     .ouv-confirm .ouv-aparte{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
 .ouv-confirm .ouv-tache .ouv-parole{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
   }
-/* ---- Le chrome du tronc, pose mais jamais montre avant d'etre appele ----
-     Il est masque par la feuille, donc des la premiere peinture : rien
-     n'apparait puis ne disparait. Ce qui est masque quitte aussi le parcours au
-     clavier. L'en-tete se fond dans le fond ; le bandeau bas se retire vers le
-     rebord bas — deux departs distincts, comme deux arrivees. */
-  :where(body.ouv-page) .chrome-haut{ opacity:0; visibility:hidden;
+/* ---- Le chrome du tronc, dépouillé puis rappelé ----
+     Il n'y a qu'une barre : celle du tronc. Rien n'est imite, rien n'est
+     clone. A l'arrivee, seuls demeurent la pastille d'univers, le nom de la
+     surface et la bascule de langue ; l'ancre d'accueil, la pastille de radio
+     et sa rangee, le menu, le filet et le bandeau bas sont masques par la
+     feuille, donc des la premiere peinture.
+     Ce qui est masque quitte aussi le parcours au clavier.
+     L'appel les rend : l'en-tete reprend son filet en se fondant, le bandeau
+     bas remonte depuis le rebord — deux retours distincts. */
+  :where(body.ouv-page) .chrome-haut{ border-bottom:0; background:transparent;
+    transition: background var(--mvt-apparition) var(--courbe-etat),
+                border-color var(--mvt-apparition) var(--courbe-etat) }
+:where(body.ouv-page) .ankh-home,
+  :where(body.ouv-page) .radio-pastille,
+  :where(body.ouv-page) .languette-radio,
+  :where(body.ouv-page) .chrome-burger{ opacity:0; visibility:hidden;
     transition: opacity var(--mvt-apparition) var(--courbe-etat),
                 visibility 0s linear var(--mvt-apparition) }
+/* La rangee du lecteur vit SOUS la barre : masquee par l'opacite seule, elle
+     garderait sa hauteur et ferait descendre la scene. Elle se retire donc du
+     flux tant que le chrome est absent. L'ilot du lecteur, lui, ne suit pas
+     toujours sa rangee — la barre promue le reprend dans son groupe droit — et
+     se masque donc pour lui-meme, la ou qu'il vive. */
+  :where(body.ouv-page:not(.nav-appele)) .radio-rangee{ display:none }
 :where(body.ouv-page) .chrome-bas{ transform: translateY(100%); visibility:hidden;
     transition: transform var(--mvt-apparition) var(--courbe-etat),
                 visibility 0s linear var(--mvt-apparition) }
-:where(body.ouv-page.nav-appele) .chrome-haut{ opacity:1; visibility:visible;
+:where(body.ouv-page.nav-appele) .ankh-home,
+  :where(body.ouv-page.nav-appele) .radio-pastille,
+  :where(body.ouv-page.nav-appele) .languette-radio,
+  :where(body.ouv-page.nav-appele) .chrome-burger{ opacity:1; visibility:visible;
     transition-delay: 0s, 0s }
 :where(body.ouv-page.nav-appele) .chrome-bas{ transform:none; visibility:visible;
     transition-delay: 0s, 0s }
-/* La barre depouillee cede la place des que le chrome est appele. */
-  :where(body.ouv-page.nav-appele) .ouv-chrome{ display:none }
+/* LA BASCULE DE LANGUE. C'est le bouton du tronc, sans retouche : sa forme,
+     sa taille de cible et son encre viennent de sa classe commune. Seule sa
+     POSE appartient a cet ecran — le haut de page, le bord droit de la piste du
+     chrome, l'axe horizontal de la barre.
+     Elle ne vit pas dans la barre : le groupe droit de la barre est une piece
+     d'infrastructure dont la composition est mesuree ailleurs, et un troisieme
+     bouton y decalerait l'ilot du lecteur. Elle y entre quand le chrome est
+     appele — sinon elle recouvrirait le menu qui revient — et sa pose s'efface
+     alors d'elle-meme.
+     La hauteur de barre n'est pas ecrite : elle est celle que la barre publie a
+     chaque passage. */
+  :where(body.ouv-page) .ouv-langue{ position:fixed; z-index:21;
+    top: calc(var(--entete-h-rendue) / 2); transform: translateY(-50%);
+    right: calc((100% - var(--chrome-w)) / 2);
+    display:inline-flex; align-items:center; justify-content:center }
+:where(body.ouv-page) .chrome-droite .ouv-langue{ position:static;
+    transform:none; top:auto; right:auto }
+/* Le nom de la surface rappelle le chrome tant qu'il est absent ; present,
+     il reprend son role de lien. Le curseur le dit. */
+  :where(body.ouv-page:not(.nav-appele)) .chrome-titre{ cursor:pointer }
 /* Le glissement vers le bas sert a rappeler le chrome : il ne doit pas
      declencher le rechargement de la page. */
   :where(body.ouv-page){ overscroll-behavior-y: contain }
 @media (prefers-reduced-motion: reduce){
     :where(body.ouv-page) .chrome-haut,
+    :where(body.ouv-page) .ankh-home,
+    :where(body.ouv-page) .radio-pastille,
+    :where(body.ouv-page) .languette-radio,
+    :where(body.ouv-page) .chrome-burger,
     :where(body.ouv-page) .chrome-bas{ transition:none }
   }
