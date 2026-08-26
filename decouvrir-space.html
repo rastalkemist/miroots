@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-EU+FCRUbNzVz/OwKYelCFGiqE9YYIe16htljWHdi1Ok='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-mDgTaHCgmlxOP7/PmsUAyX+AatKyRvUmwRaOJ5O6uas='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Découvrir Mi Space</title>
 <meta name="description" content="Pose ta semaine, coche ce que tu tiens, vois où tu en es. Personne ne voit cette liste — pas même l’équipe du Roots.">
 <meta property="og:type" content="website">
@@ -148,6 +148,8 @@
       tNotice: 'Ton espace, à toi seul',
       bOuvrir: 'Ouvrir mon plan',
       patiente: 'Un instant…',
+      noticeMuette: 'La notice n’est pas arrivée. Recharge la page.',
+      bRecharger: 'Recharger',
       piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
@@ -167,6 +169,8 @@
       tNotice: 'Your space, yours alone',
       bOuvrir: 'Open my plan',
       patiente: 'One moment…',
+      noticeMuette: 'The notice didn’t arrive. Reload the page.',
+      bRecharger: 'Reload',
       piedPolitique: 'Privacy policy',
       toastNu: 'NU, the community side of Roots, is coming soon.'
     }
@@ -183,7 +187,11 @@
       if (typeof v === 'string') el.textContent = v;
     });
     if (inscription && inscription.notice) {
-      $('texteNotice').textContent = langue === 'en' ? inscription.notice.contenu_en : inscription.notice.contenu_fr;
+      $('texteNotice').textContent = Roots.db.texteNotice(inscription.notice, langue);
+    }
+    if ($('btnOuvrir').dataset.geste === 'recharger') {
+      $('btnOuvrir').textContent = t().bRecharger;
+      direNote($('noteOuvrir'), t().noticeMuette);
     }
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
@@ -237,8 +245,19 @@
 
   function montrerNotice() {
     Roots.db.notice('plan').then(function (n) {
-      inscription.notice = n;
-      $('texteNotice').textContent = langue === 'en' ? n.contenu_en : n.contenu_fr;
+      inscription.notice = n || null;
+      $('texteNotice').textContent = Roots.db.texteNotice(n, langue);
+      /* La passerelle garde les notices en memoire des le premier
+         chargement : une table vide le reste pour la page entiere. Un
+         reessai sur place ne peut donc rien ramener, et le geste offert
+         devient le seul qui aboutisse. */
+      if (!n) {
+        direNote($('noteOuvrir'), t().noticeMuette);
+        var b = $('btnOuvrir');
+        b.removeAttribute('data-t');
+        b.dataset.geste = 'recharger';
+        b.textContent = t().bRecharger;
+      }
       ouvrirEtape($('etapeNotice'), $('btnOuvrir'));
     }, function (e) { direNote($('noteOuvrir'), e.message); ouvrirEtape($('etapeNotice'), $('btnOuvrir')); });
   }
@@ -275,6 +294,7 @@
   });
 
   $('btnOuvrir').addEventListener('click', function () {
+    if ($('btnOuvrir').dataset.geste === 'recharger') { location.reload(); return; }
     if (!inscription.notice) { montrerNotice(); return; }
     direNote($('noteOuvrir'), t().patiente);
     occuper($('btnOuvrir'), true);
