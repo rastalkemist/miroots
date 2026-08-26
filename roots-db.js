@@ -36,10 +36,11 @@ window.Roots = window.Roots || {};
        — un seul etat lisible, par un evenement, pour qu'aucun ecran ne
          reinvente sa lecture.
 
-     CE QUI N'EST PAS TENU ICI : le moyen de preuve. `ouvrirSession` prend le
-     nom du don et ses champs ; elle ne choisit pas entre un mot de passe, un
-     code a usage unique ou un lien. Ce choix se tranche ailleurs, et ce fichier
-     n'a pas a changer quand il tombe.
+     LE MOYEN DE PREUVE. `ouvrirSession` reste agnostique : elle prend le nom
+     du don et ses champs, et ne choisit ni mot de passe, ni code, ni lien.
+     A cote d'elle, deux portes nommees servent le code par courriel, qui
+     n'emprunte pas le chemin des dons. Un moyen de plus s'ajoute de la meme
+     maniere : a cote, jamais dedans.
 
      UN RENOUVELLEMENT A LA FOIS. Deux appels simultanes qui renouvellent tous
      les deux invalident le premier jeton rendu : la promesse en cours se
@@ -82,8 +83,8 @@ window.Roots = window.Roots || {};
     return session.expire - (marge || 0) <= Math.floor(Date.now() / 1000);
   }
 
-  function don(type, champs) {
-    return fetch(BASE + '/auth/v1/token?grant_type=' + type, {
+  function postAuth(chemin, champs) {
+    return fetch(BASE + chemin, {
       method: 'POST',
       headers: { 'apikey': CLE, 'Content-Type': 'application/json' },
       body: JSON.stringify(champs)
@@ -98,6 +99,10 @@ window.Roots = window.Roots || {};
         return c;
       });
     });
+  }
+
+  function don(type, champs) {
+    return postAuth('/auth/v1/token?grant_type=' + type, champs);
   }
 
   function renouveler() {
@@ -830,11 +835,28 @@ window.Roots = window.Roots || {};
       });
     },
 
-    /* Les cinq gestes de session. `ouvrirSession` prend le NOM du don et ses
-       champs : elle ne choisit pas le moyen de preuve, et ce fichier ne change
-       pas le jour ou ce choix tombe. */
+    /* Les sept gestes de session. `ouvrirSession` prend le NOM du don et ses
+       champs : elle ne choisit aucun moyen de preuve. Les deux portes qui
+       suivent en servent un — le code par courriel — sans rien lui imposer. */
     ouvrirSession: function (typeDeDon, champs) {
       return don(typeDeDon, champs || {}).then(poserSession);
+    },
+
+    /* Le courriel est la premiere preuve : un code part vers l'adresse, puis
+       il s'echange contre une session. Les deux chemins du service ne sont pas
+       des dons — ils ne passent pas par `grant_type` —, d'ou l'appel direct.
+       La creation du compte au premier code est ce qui fait qu'une inscription
+       et une connexion sont le meme geste : la retirer exige de creer les
+       comptes par un autre chemin, sans quoi le premier code d'un inconnu est
+       refuse. */
+    demanderCodeCourriel: function (courriel) {
+      return postAuth('/auth/v1/otp', { email: courriel, create_user: true })
+        .then(function () { return { envoye: true }; });
+    },
+
+    ouvrirSessionParCode: function (courriel, code) {
+      return postAuth('/auth/v1/verify', { type: 'email', email: courriel, token: code })
+        .then(poserSession);
     },
 
     fermerSession: function () {
