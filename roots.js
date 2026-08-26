@@ -987,7 +987,7 @@
     function destinationDe(v) {
       if (v === 'space'
           && !(global.Roots.db && global.Roots.db.estConnecte && global.Roots.db.estConnecte())) {
-        return 'decouvrir-space.html';
+        return 'onboard.html';
       }
       return DESTINATION[v];
     }

@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '815a9e7667289250';
+var VERSION   = '2141ca138f3db39e';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -36,7 +36,7 @@ var COQUE_FICHIERS = [
   'onboard.html', 'confirm.html', 'decouvrir-space.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'space.css', 'roam.css',
   'onboard.css',
-  'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js', 'space-notes.js',
+  'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js', 'space-notes.js', 'onboard.js',
   'vendor/intlTelInput.min.css', 'vendor/intlTelInput.min.js', 'vendor/qrcode.js',
   'manifest.webmanifest', 'media/hero.jpg', 'media/hero-portrait.jpg'
 ];
