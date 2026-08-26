@@ -285,3 +285,27 @@
     .ouv-confirm .ouv-aparte{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
 .ouv-confirm .ouv-tache .ouv-parole{ margin-right: calc(var(--cible-min) + var(--esp-2) + var(--ouv-dedans)) }
   }
+/* ---- Le chrome du tronc, pose mais jamais montre avant d'etre appele ----
+     Il est masque par la feuille, donc des la premiere peinture : rien
+     n'apparait puis ne disparait. Ce qui est masque quitte aussi le parcours au
+     clavier. L'en-tete se fond dans le fond ; le bandeau bas se retire vers le
+     rebord bas — deux departs distincts, comme deux arrivees. */
+  :where(body.ouv-page) .chrome-haut{ opacity:0; visibility:hidden;
+    transition: opacity var(--mvt-apparition) var(--courbe-etat),
+                visibility 0s linear var(--mvt-apparition) }
+:where(body.ouv-page) .chrome-bas{ transform: translateY(100%); visibility:hidden;
+    transition: transform var(--mvt-apparition) var(--courbe-etat),
+                visibility 0s linear var(--mvt-apparition) }
+:where(body.ouv-page.nav-appele) .chrome-haut{ opacity:1; visibility:visible;
+    transition-delay: 0s, 0s }
+:where(body.ouv-page.nav-appele) .chrome-bas{ transform:none; visibility:visible;
+    transition-delay: 0s, 0s }
+/* La barre depouillee cede la place des que le chrome est appele. */
+  :where(body.ouv-page.nav-appele) .ouv-chrome{ display:none }
+/* Le glissement vers le bas sert a rappeler le chrome : il ne doit pas
+     declencher le rechargement de la page. */
+  :where(body.ouv-page){ overscroll-behavior-y: contain }
+@media (prefers-reduced-motion: reduce){
+    :where(body.ouv-page) .chrome-haut,
+    :where(body.ouv-page) .chrome-bas{ transition:none }
+  }

@@ -4,12 +4,12 @@
 <!-- emprunt-tronc: p-space corps lang-btn saut-contenu chrome-haut chrome-inner
      chrome-bas chrome-titre chrome-burger chrome-droite ankh-home centre toggle
      mot reste sub switch knob nu i ico-rond verbe menu-pop voile-menu tete
-     fermer toast actif — la barre, le tiroir et le bandeau sont des pieces
-     d'infrastructure : ils gardent leurs noms et leurs regles, seule leur
-     presentation change ici. -->
+     fermer toast actif garde-banniere — la barre, le tiroir et le bandeau sont
+     des pieces d'infrastructure : ils gardent leurs noms et leurs regles, seule
+     leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-8HBar42a0kyS55poZn13vhaSZJfUnsbGTbyVPBkR5ac='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-12m3e7hc6rczl9S/I+fIxzhG75d6xfLpOC4Z1VRCwe8='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ton espace est prêt</title>
 <meta name="description" content="Le nom que tu liras en haut de ton espace, et ce que Roots fait de ce que tu y poses.">
 <meta property="og:type" content="website">
@@ -31,8 +31,35 @@
 <script src="roots.js"></script>
 <script src="roots-db.js"></script>
 <script src="garde.js"></script>
+<script src="onboard.js"></script>
 </head>
 <body class="p-space ouv-page ouv-confirm" data-surface="claire">
+
+
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="space.html">Space</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
 
 <div class="ouv-chrome est-depouille">
   <span class="ouv-contrepoids" aria-hidden="true"></span>
@@ -63,6 +90,18 @@
   <div class="ouv-air ouv-apres"></div>
   <p class="ouv-notice" id="texteNotice"></p>
 </main>
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe actif" aria-current="true" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 
 <script>
 (function () {
@@ -81,8 +120,10 @@
       prenomVide: 'Entre le nom qu’on doit utiliser.',
       patiente: 'Un instant…',
       langue: 'Langue',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.',
       noticeMuette: 'Le texte d’information n’est pas arrivé. Recharge la page.',
-      langue: 'Langue'
+      langue: 'Langue',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
     en: {
       appel: 'Your space is ready',
@@ -93,14 +134,31 @@
       prenomVide: 'Enter the name we should use.',
       patiente: 'One moment…',
       langue: 'Language',
+      toastNu: 'NU, the community side of Roots, is coming soon.',
       noticeMuette: 'The information text didn’t arrive. Reload the page.',
-      langue: 'Language'
+      langue: 'Language',
+      toastNu: 'NU, the community side of Roots, is coming soon.'
     }
   };
+
+  /* Les symboles du tronc sont poses par le script de la page : un second
+     script en ligne demanderait un second condensat a la politique. */
+  Roots.sprite();
 
   function $(id) { return document.getElementById(id); }
   var langue = Roots.langueRetenue(Roots.langueParDefaut());
   function t() { return T[langue] || T.fr; }
+
+  var chrome = Roots.initChrome({
+    toastId: 'toast',
+    getLangue: function () { return langue; },
+    getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; },
+    radio: true,
+    onLangue: function () { basculerLangue(); }
+  });
+  Onboard.chrome({ bascule: 'btnLangue' });
+
   var notice = null;
 
   /* Cet ecran suppose un compte ouvert : sans session, l'ouverture de l'acces
