@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = '380af89e2e8c75e6';
+var VERSION   = 'efde3dbf80d2851f';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -32,7 +32,8 @@ var REPLI = 'hors-ligne.html';
    figure, et aucune ne peut y entrer — voir le filtre du gestionnaire fetch. */
 var COQUE_FICHIERS = [
   'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'lieu.html', 'space.html',
-  'facture.html', 'paiement.html', 'confidentialite.html', 'decouvrir-space.html', REPLI,
+  'facture.html', 'paiement.html', 'confidentialite.html',
+  'onboard.html', 'confirm.html', 'decouvrir-space.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'space.css', 'roam.css',
   'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js', 'space-notes.js',
   'vendor/intlTelInput.min.css', 'vendor/intlTelInput.min.js', 'vendor/qrcode.js',

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-8nVoreqAY2uw9iujKuC5nOs/cS8ZmUPv9ZA38DvZjVU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-3mBaAK9gnTFRu4XfTXdGImo+IpAsAtqejLzGiGMPgfw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -112,11 +112,11 @@
 
   /* L'ecran exige une session : sans elle, la couverture est la porte. */
   if (!window.Roots || !Roots.db || !Roots.db.estConnecte()) {
-    location.replace('decouvrir-space.html');
+    location.replace('onboard.html');
     return;
   }
   window.addEventListener('roots:session', function (e) {
-    if (!e.detail.connecte) location.replace('decouvrir-space.html');
+    if (!e.detail.connecte) location.replace('onboard.html');
   });
 
   /* Deux vues sur la meme base locale : le fil, chronologique, ou l'on

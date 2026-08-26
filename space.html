@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gUNxy3crPaXTG9E3eQNyMBodBC7OF6tFNPDl10hPON0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-HFBPCWy0Ra2bJB4A6+lAsZxItEBI7f4cOtnDAFy8414='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
@@ -136,11 +136,11 @@
      garde vit aussi sur l'evenement — une session qui tombe en cours de
      route renvoie a la couverture au lieu de laisser des appels refuses. */
   if (!window.Roots || !Roots.db || !Roots.db.estConnecte()) {
-    location.replace('decouvrir-space.html');
+    location.replace('onboard.html');
     return;
   }
   window.addEventListener('roots:session', function (e) {
-    if (!e.detail.connecte) location.replace('decouvrir-space.html');
+    if (!e.detail.connecte) location.replace('onboard.html');
   });
 
   /* Le hall montre chaque module d'un regard : la semaine servie par le
@@ -395,7 +395,7 @@
       dessinerSemaine();
     }, function (er) {
       if (er && (er.code === 403 || /acces a Plan non ouvert/.test(er.brut || ''))) {
-        location.replace('decouvrir-space.html');
+        location.replace('onboard.html');
         return;
       }
       $('etatSemaine').textContent = t().semaineMuette + (er && er.message ? ' ' + er.message : '');
