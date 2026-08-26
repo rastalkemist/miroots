@@ -481,9 +481,12 @@
   :where(body.p-space) .hall-bloc.large{ order: 5 }
 }
 @media (min-width: 768px){
-  :where(body.p-space) .hall{ grid-template-columns: 1fr 1fr; align-items: start }
+  :where(body.p-space) .hall{ grid-template-columns: 1fr 1fr }
+  /* Les deux colonnes prennent la meme hauteur, et le module du bas occupe
+     ce que celui du haut laisse : les quatre bords exterieurs se ferment,
+     et la masse du bas est l'inverse de celle du haut. */
   :where(body.p-space) .hall-col{
-    display: grid; gap: var(--air-i6); align-content: start;
+    display: grid; grid-template-rows: auto 1fr; gap: var(--air-i6);
   }
   :where(body.p-space) .hall-bloc.large{ grid-column: 1 / -1 }
 }
