@@ -745,7 +745,7 @@
 :where(body.p-space) .intel-joue{
   position: absolute; inset: 0; margin: auto;
   width: calc(var(--cible-min) * 0.75); height: calc(var(--cible-min) * 0.75);
-  border-radius: 50%; background: rgba(255, 255, 255, .92);
+  border-radius: 50%; background: rgba(var(--blanc-rgb), .92);
   display: flex; align-items: center; justify-content: center;
 }
 :where(body.p-space) .intel-joue::after{
@@ -761,6 +761,28 @@
   display: flex; gap: var(--esp-2);
   margin: 0 0 var(--air-i3);
 }
+/* Les commandes de la rangee. La feuille les tient hors des ecrans ou le
+   balayage au doigt est le geste naturel ; elles paraissent au cran ou la
+   piste arrete ses marges, et y restent visibles en permanence. */
+:where(body.p-space) .intel-fleches{ display: none; gap: var(--esp-2); margin-left: auto }
+:where(body.p-space) .intel-fleche{
+  width: var(--cible-min); height: var(--cible-min);
+  border-radius: 50%; border: 1.5px solid var(--gris-service);
+  background: var(--blanc); color: var(--encre);
+  font-size: var(--t-h4); line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* Au cran ou la piste tient ses marges definitives, la bande perd son aplat :
+   le carrousel seul, aligne a la piste. Retirer ces regles rendrait au tres
+   large ecran une bande sombre d'un bord a l'autre de la fenetre. */
+@media(min-width:1024px) and (min-height:600px){
+  :where(body.p-space) .intel-bande{ margin-inline: 0; background: none; padding: 0 }
+  :where(body.p-space) .intel-rangee{ padding-inline: 0 }
+  :where(body.p-space) .intel-vignette{ width: calc(var(--cible-min) * 4) }
+  :where(body.p-space) .intel-tube-tete .intel-fleches{ display: flex }
+}
+
 :where(body.p-space) .intel-filtres .vue{
   flex: 1; white-space: nowrap;
   display: inline-flex; align-items: center; justify-content: center;

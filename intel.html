@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://www.youtube-nocookie.com; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-MyJrMP5UG01zJyMSM7SuO7mFdPfHioe2rdAVYBp5u1c=';  style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://www.youtube-nocookie.com; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-eZRCLHc/6rrxylslLNvfrcNDioJSh4iHNQxXxwmT9YQ=';  style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Intel</title>
 <meta name="description" content="Ce que tes liens capturés deviennent : lectures, formats longs, formats courts — rangés, sur ton appareil.">
 <meta property="og:type" content="website">
@@ -59,6 +59,10 @@
     <div class="intel-tube-tete">
       <h2 id="hTube">Mi Tube</h2>
       <span class="intel-compte" id="compteTube"></span>
+      <span class="intel-fleches">
+        <button type="button" class="intel-fleche" data-sens="-1" data-tl="reculer">&#8249;</button>
+        <button type="button" class="intel-fleche" data-sens="1" data-tl="avancer">&#8250;</button>
+      </span>
     </div>
     <div class="intel-bande hors-piste" id="bandeTube" hidden>
       <div class="intel-rangee" id="rangeeTube"></div>
@@ -131,6 +135,7 @@
         learn: { attente: 'à voir', cours: 'en cours', fait: 'terminé' },
         tube: { attente: 'à voir', cours: 'vu', fait: 'vu' }
       },
+      reculer: 'Précédent', avancer: 'Suivant',
       alFait: 'Marquer terminé',
       aujourdHui: 'aujourd’hui', hier: 'hier',
       aVoir: 'à voir',
@@ -154,6 +159,7 @@
         learn: { attente: 'to watch', cours: 'in progress', fait: 'done' },
         tube: { attente: 'to watch', cours: 'watched', fait: 'watched' }
       },
+      reculer: 'Previous', avancer: 'Next',
       alFait: 'Mark done',
       aujourdHui: 'today', hier: 'yesterday',
       aVoir: 'to watch',
@@ -544,6 +550,10 @@
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
     });
+    document.querySelectorAll('[data-tl]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-tl')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
+    });
     dessinerTout();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
@@ -566,6 +576,16 @@
     if (Roots.retenirLangue) Roots.retenirLangue(langue);
     appliquerLangue();
   }
+
+  /* Les commandes de la rangee avancent d'un pas de quatre cinquiemes de la
+     fenetre visible ; la feuille decide seule des tailles d'ecran ou elles se
+     montrent. */
+  document.querySelectorAll('.intel-fleche').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var r = document.getElementById('rangeeTube');
+      r.scrollBy({ left: r.clientWidth * 0.8 * Number(b.dataset.sens), behavior: 'smooth' });
+    });
+  });
 
   if (Roots.poserLibelles) Roots.poserLibelles();
   charger().then(function () {
