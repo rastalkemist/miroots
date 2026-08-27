@@ -9,7 +9,7 @@
      leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-ZknuCDPLfX3QUDZs2HilqTAKY6sWcTaiJEVHWsVx+fE='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-WR8EsJ/gChQVP7+O6C1z3OE+CueyW8f+16T6QCxz2H4='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ouvrir Mi Space</title>
 <meta name="description" content="Ouvre ton espace en deux gestes : ton adresse, le code reçu. Personne ne voit ce que tu y poses.">
 <meta property="og:type" content="website">
@@ -70,7 +70,7 @@
     <p class="ouv-appel" data-t="appel">Ton quotidien, simplifié</p>
   </div>
   <div class="ouv-groupe">
-    <h1 class="ouv-titre" data-t="mission">Accomplis ta première mission&nbsp;:</h1>
+    <h1 class="ouv-titre" data-t="mission">Accomplis une première mission</h1>
 
     <div class="ouv-mission">
       <button type="button" class="ouv-geste" id="mere" aria-describedby="etatMere">
@@ -130,7 +130,7 @@
   var T = {
     fr: {
       appel: 'Ton quotidien, simplifié',
-      mission: 'Accomplis ta première mission :',
+      mission: 'Accomplis une première mission',
       tache: 'Ouvrir mon espace',
       tCourriel: 'Ton adresse courriel',
       tCode: 'Le code reçu dans ta boîte',
@@ -155,7 +155,7 @@
     },
     en: {
       appel: 'Daily life made simple',
-      mission: 'Complete your first task:',
+      mission: 'Complete a first task',
       tache: 'Open my space',
       tCourriel: 'Your email address',
       tCode: 'The code in your inbox',
@@ -239,14 +239,32 @@
     return null;
   }
 
-  /* Un geste incomplet ne se refuse pas : il ouvre le geste suivant et y pose
-     le curseur. Aucune commande n'est desactivee. */
-  $('mere').addEventListener('click', function () {
+  /* Un geste incomplet ne se refuse pas : il ouvre le geste EN COURS et y pose
+     le curseur. Aucune commande n'est desactivee, et rien ne dit non.
+     Une sous-tache dont ce n'est pas encore le tour repond de la meme facon :
+     elle n'ouvre pas son propre champ, elle ramene au geste en cours. Ce que
+     l'on touche n'est jamais mort. Une sous-tache faite ne repond pas — il n'y
+     a rien a y reprendre.
+     Ce raccourci ne cree aucune fonction propre : la meme orientation est
+     atteinte au clavier par la tache mere, qui est une commande. */
+  function orienter() {
     var e = courante();
     if (!e) return;
     ouvrir(e, e.querySelector('input'));
     if (e.id === 'st1') dire('paroleCourriel', t().orienteCourriel, true);
     else dire('paroleCode', t().orienteCode, true);
+  }
+
+  $('mere').addEventListener('click', orienter);
+
+  ['st1', 'st2'].forEach(function (id) {
+    var li = $(id);
+    li.addEventListener('click', function (ev) {
+      if (!li.classList.contains('est-repliee')) return;
+      if (li.classList.contains('est-faite')) return;
+      ev.preventDefault();
+      orienter();
+    });
   });
 
   function finAttente() {
