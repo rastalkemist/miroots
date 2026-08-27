@@ -694,3 +694,131 @@
 :where(body.p-space) .hall-bloc.vedette .bouton-contour{
   border-color: var(--blanc); color: var(--blanc);
 }
+
+/* ---- Ce qui n'appartient qu'a l'ecran du Savoir ---- */
+/* La tete de la salle des formats courts, puis la bande sombre qui les
+   porte : elle traverse la piste par le mecanisme commun des pleines
+   largeurs, et sa rangee defile au doigt — rien n'y avance seul. */
+:where(body.p-space) .intel-tube-tete{
+  display: flex; align-items: baseline; gap: var(--esp-2);
+  margin: 0 0 var(--air-i2);
+}
+:where(body.p-space) .intel-tube-tete h2{ margin: 0 }
+:where(body.p-space) .intel-compte{ color: var(--encre-discrete); font-size: var(--t-sm) }
+:where(body.p-space) .intel-bande{
+  background: var(--univers);
+  padding: var(--esp-4) 0;
+  margin-bottom: var(--air-i3);
+}
+:where(body.p-space) .intel-rangee{
+  display: flex; gap: var(--esp-3);
+  overflow-x: auto;
+  padding-inline: max(var(--esp-4), calc(50vw - 50%));
+  scrollbar-width: none;
+}
+:where(body.p-space) .intel-rangee::-webkit-scrollbar{ display: none }
+/* La vignette d'un format court garde le portrait des ecrans qui le
+   produisent ; sa largeur derive du plancher tactile et cede sous les
+   fenetres etroites. */
+:where(body.p-space) .intel-vignette{
+  flex: none;
+  width: min(30vw, calc(var(--cible-min) * 3));
+  aspect-ratio: 9 / 16;
+  border: none; padding: 0;
+  border-radius: var(--rayon-module);
+  overflow: hidden; position: relative;
+  background: var(--neutre-e1); color: var(--blanc);
+  cursor: pointer;
+}
+:where(body.p-space) .intel-vignette img{
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+:where(body.p-space) .intel-vignette iframe{
+  position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+}
+:where(body.p-space) .intel-vignette.est-jouee{ cursor: default }
+:where(body.p-space) .intel-vignette-hote{
+  position: absolute; inset: auto var(--esp-2) var(--esp-2);
+  font-size: var(--t-sm); font-weight: var(--w-bold);
+  overflow-wrap: anywhere;
+}
+:where(body.p-space) .intel-joue{
+  position: absolute; inset: 0; margin: auto;
+  width: calc(var(--cible-min) * 0.75); height: calc(var(--cible-min) * 0.75);
+  border-radius: 50%; background: rgba(255, 255, 255, .92);
+  display: flex; align-items: center; justify-content: center;
+}
+:where(body.p-space) .intel-joue::after{
+  content: ''; margin-left: 2px;
+  border-style: solid; border-width: 7px 0 7px 11px;
+  border-color: transparent transparent transparent var(--univers);
+}
+:where(body.p-space) .intel-vignette.est-jouee .intel-joue{ display: none }
+
+/* La ligne des salles introduit le module : une seule ligne, la largeur
+   de la page, chaque pilule a part egale. */
+:where(body.p-space) .intel-filtres{
+  display: flex; gap: var(--esp-2);
+  margin: 0 0 var(--air-i3);
+}
+:where(body.p-space) .intel-filtres .vue{
+  flex: 1; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding-inline: var(--esp-3);
+}
+
+/* La fiche d'un lien : deux rangs, et l'ombre en deux couches — une de
+   contact qui pose, une ambiante qui detache — a la place de tout trait. */
+:where(body.p-space) .intel-fiche{
+  background: var(--blanc);
+  border-radius: var(--rayon-module);
+  padding: var(--esp-3) var(--esp-4);
+  display: grid; gap: var(--esp-1);
+  box-shadow: 0 1px 2px rgba(var(--ombre-teinte), .08),
+              0 8px 24px rgba(var(--ombre-teinte), .12);
+}
+:where(body.p-space) .intel-fiche + .intel-fiche{ margin-top: var(--air-i2) }
+:where(body.p-space) .intel-titre{
+  font-weight: var(--w-bold); color: var(--encre);
+  text-decoration: none; line-height: 1.35; overflow-wrap: anywhere;
+}
+:where(body.p-space) .intel-meta{
+  margin: 0; display: flex; align-items: center; gap: var(--esp-2);
+  flex-wrap: wrap; color: var(--encre-discrete); font-size: var(--t-sm);
+}
+:where(body.p-space) .intel-pousse{
+  margin-left: auto; display: inline-flex; gap: var(--esp-2);
+}
+/* Une action en lettres : la cible tactile s'etend sans pousser le rang. */
+:where(body.p-space) .intel-lien-action{
+  background: none; border: none; cursor: pointer;
+  color: var(--terre-e3); font-family: var(--font-corps);
+  font-weight: var(--w-bold); font-size: var(--t-sm);
+  padding: 0 var(--esp-1); position: relative;
+}
+:where(body.p-space) .intel-lien-action::after{
+  content: ''; position: absolute; left: 0; right: 0;
+  top: 50%; transform: translateY(-50%); height: var(--cible-min);
+}
+:where(body.p-space) .salle-chip{
+  display: inline-flex; align-items: center;
+  border-radius: var(--rayon-pilule);
+  background: var(--terre-e5); color: var(--terre-e2);
+  font-family: var(--font-eclat); font-weight: var(--w-bold);
+  font-size: var(--t-sm); padding: .05em .6em; white-space: nowrap;
+}
+:where(body.p-space) .salle-chip.est-question{
+  background: var(--jaune-e4); color: var(--terre-e1);
+}
+:where(body.p-space) .intel-choix{
+  display: flex; gap: var(--esp-2); flex-wrap: wrap;
+  margin-top: var(--air-i1);
+}
+:where(body.p-space) .intel-choix .vue{
+  padding-inline: var(--esp-4); font-size: var(--t-sm); white-space: nowrap;
+}
+:where(body.p-space) .intel-toujours{
+  margin: var(--air-i1) 0 0; display: flex; align-items: center;
+  gap: var(--esp-3); flex-wrap: wrap;
+  color: var(--encre); font-size: var(--t-sm);
+}

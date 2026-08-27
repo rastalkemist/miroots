@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src https://www.youtube-nocookie.com; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-MyJrMP5UG01zJyMSM7SuO7mFdPfHioe2rdAVYBp5u1c=';  style-src 'self' 'unsafe-inline'; img-src 'self' data: https://i.ytimg.com; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roots — Mi Intel</title>
+<meta name="description" content="Ce que tes liens capturés deviennent : lectures, formats longs, formats courts — rangés, sur ton appareil.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi Roots">
+<meta property="og:title" content="Mi Space">
+<meta property="og:description" content="Ce que tes liens capturés deviennent : lectures, formats longs, formats courts — rangés, sur ton appareil.">
+<meta property="og:locale" content="fr_BJ">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="theme-color" content="#1A1A1A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="space.css">
+<script src="roots.js"></script>
+<script src="roots-db.js"></script>
+<script src="space-notes.js"></script>
+<script src="garde.js"></script>
+</head>
+<body class="p-space" data-surface="claire" data-module="Intel">
+
+<script>Roots.sprite()</script>
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <a class="ankh-home" href="index.html" aria-label="Accueil" data-al-chrome="accueil"><svg viewBox="0 0 110 111" role="img" aria-hidden="true"><use href="#i-ankh"/></svg></a>
+    <div class="centre">
+      <div class="toggle" id="marque">
+        <span class="mot" id="motMode">Mi</span>
+        <span class="reste">
+          <span class="sub">(solo)</span>
+          <span class="switch" id="switchMode" aria-label="Basculer Mi / NU" data-al-chrome="mode"><span class="knob"></span></span>
+          <span class="sub">(social)</span>
+          <span class="nu">NU</span>
+        </span>
+      </div>
+      <a class="chrome-titre" href="space.html">Space</a>
+    </div>
+    <div class="chrome-droite">
+      <button class="chrome-burger" id="btnBurger" aria-expanded="false" aria-controls="drawer" aria-label="Menu" data-al-chrome="menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="corps corps-intel">
+
+  <section class="intel-tube" aria-labelledby="hTube">
+    <div class="intel-tube-tete">
+      <h2 id="hTube">Mi Tube</h2>
+      <span class="intel-compte" id="compteTube"></span>
+    </div>
+    <div class="intel-bande hors-piste" id="bandeTube" hidden>
+      <div class="intel-rangee" id="rangeeTube"></div>
+    </div>
+    <p class="vide" id="videTube" data-t="videTube" hidden>Aucun format court pour l’instant.</p>
+  </section>
+
+  <div class="intel-filtres" role="group" aria-label="Filtre" id="filtresIntel">
+    <button type="button" class="vue" data-filtre="tout" aria-pressed="true" data-t="fTout">Tout</button>
+    <button type="button" class="vue" data-filtre="read" aria-pressed="false">Read Now</button>
+    <button type="button" class="vue" data-filtre="learn" aria-pressed="false">iLearn</button>
+  </div>
+
+  <div class="intel-fiches" id="fiches"></div>
+  <p class="vide" id="videIntel" hidden></p>
+
+</div>
+
+<footer class="pied">
+  <a href="confidentialite.html" data-t="piedPolitique">Politique de confidentialité</a>
+</footer>
+
+<nav class="chrome-bas" id="superNav">
+  <button class="verbe actif" aria-current="true" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
+  <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
+</nav>
+<div class="voile-menu" id="voileMenu"></div>
+<div class="menu-pop" id="drawer">
+  <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
+  <div id="sections"></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* L'ecran exige une session : sans elle, la couverture est la porte. */
+  if (!window.Roots || !Roots.db || !Roots.db.estConnecte()) {
+    location.replace('onboard.html');
+    return;
+  }
+  window.addEventListener('roots:session', function (e) {
+    if (!e.detail.connecte) location.replace('onboard.html');
+  });
+
+  /* Le Savoir est la salle de lecture des liens captures dans Mes Notes :
+     il n'a aucune saisie propre. Le rangement lit l'adresse, puis les
+     regles apprises des corrections ; ce que l'adresse ne dit pas se
+     demande, jamais ne se devine. Tout vit sur l'appareil. */
+
+  var SALLES = { read: 'Read Now', learn: 'iLearn', tube: 'Mi Tube' };
+  var REGLES_CLE = 'roots.savoir.regles';
+  var TITRES_CLE = 'roots.savoir.titres';
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu',
+      fTout: 'Tout',
+      videTube: 'Aucun format court pour l’instant.',
+      videIntel: 'Colle ou partage une adresse dans Mes Notes : elle arrive ici, rangée.',
+      videFiltre: 'Rien dans cette salle pour l’instant.',
+      aRanger: 'à ranger',
+      deplacer: 'Déplacer',
+      oui: 'Oui', non: 'Non',
+      toujours: function (h, s) { return 'Toujours ranger ' + h + ' dans ' + s + ' ?'; },
+      etats: {
+        read: { attente: 'à lire', cours: 'en cours', fait: 'lu' },
+        learn: { attente: 'à voir', cours: 'en cours', fait: 'terminé' },
+        tube: { attente: 'à voir', cours: 'vu', fait: 'vu' }
+      },
+      alFait: 'Marquer terminé',
+      aujourdHui: 'aujourd’hui', hier: 'hier',
+      aVoir: 'à voir',
+      langue: 'Langue',
+      toastNu: 'Le mode NU (communauté) arrive bientôt.',
+      intelMuet: 'Le stockage ne répond pas. Réessaie.',
+      piedPolitique: 'Politique de confidentialité'
+    },
+    en: {
+      saut: 'Skip to content',
+      fTout: 'All',
+      videTube: 'No short formats yet.',
+      videIntel: 'Paste or share a link in Notes: it lands here, sorted.',
+      videFiltre: 'Nothing in this room yet.',
+      aRanger: 'to sort',
+      deplacer: 'Move',
+      oui: 'Yes', non: 'No',
+      toujours: function (h, s) { return 'Always file ' + h + ' under ' + s + '?'; },
+      etats: {
+        read: { attente: 'to read', cours: 'reading', fait: 'read' },
+        learn: { attente: 'to watch', cours: 'in progress', fait: 'done' },
+        tube: { attente: 'to watch', cours: 'watched', fait: 'watched' }
+      },
+      alFait: 'Mark done',
+      aujourdHui: 'today', hier: 'yesterday',
+      aVoir: 'to watch',
+      langue: 'Language',
+      toastNu: 'NU, the community side of Roots, is coming soon.',
+      intelMuet: 'Storage did not answer. Try again.',
+      piedPolitique: 'Privacy policy'
+    }
+  };
+
+  function $(id) { return document.getElementById(id); }
+  var langue = Roots.langueRetenue(Roots.langueParDefaut());
+  function t() { return T[langue] || T.fr; }
+
+  /* ---- Le rangement du Smart URL Catcher ---- */
+
+  function hote(u) {
+    try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; }
+  }
+
+  function lireJson(cle) {
+    try { return JSON.parse(localStorage.getItem(cle) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function ecrireJson(cle, v) {
+    try { localStorage.setItem(cle, JSON.stringify(v)); } catch (e) {}
+  }
+
+  /* L'adresse porte le type dans la plupart des cas ; ce qu'elle ne dit
+     pas rend « inconnu », et la carte demande. */
+  function classerParAdresse(u) {
+    var h = hote(u), p = '';
+    try { p = new URL(u).pathname; } catch (e) {}
+    if (/(^|\.)youtube\.com$/.test(h)) return p.indexOf('/shorts/') === 0 ? 'tube' : 'learn';
+    if (h === 'youtu.be') return 'inconnu';
+    if (/(^|\.)tiktok\.com$/.test(h)) return 'tube';
+    if (/(^|\.)instagram\.com$/.test(h) && /\/reels?\//.test(p)) return 'tube';
+    if (/(^|\.)facebook\.com$/.test(h) && /\/reel/.test(p)) return 'tube';
+    if (/(^|\.)vimeo\.com$/.test(h)) return 'learn';
+    if (h === 'open.spotify.com' && /\/(episode|show)\//.test(p)) return 'learn';
+    if (/(^|\.)podcasts\.apple\.com$/.test(h)) return 'learn';
+    if (/(^|\.)dailymotion\.com$/.test(h)) return 'learn';
+    return 'read';
+  }
+
+  /* Une regle apprise d'une correction prime sur la lecture de l'adresse. */
+  function classer(u) {
+    var h = hote(u);
+    var regles = lireJson(REGLES_CLE);
+    if (h && regles[h] && SALLES[regles[h]]) return regles[h];
+    return classerParAdresse(u);
+  }
+
+  function youtubeId(u) {
+    try {
+      var x = new URL(u), h = x.hostname.replace(/^www\./, '');
+      if (h === 'youtu.be') return (x.pathname.slice(1).split('/')[0] || '');
+      if (/(^|\.)youtube\.com$/.test(h)) {
+        if (x.pathname.indexOf('/shorts/') === 0) return (x.pathname.split('/')[2] || '');
+        return x.searchParams.get('v') || '';
+      }
+    } catch (e) {}
+    return '';
+  }
+
+  /* ---- Le classement retenu sur l'appareil ----
+     Ce magasin ne porte que la lecture : la salle choisie, l'etat, le
+     titre pose a la main. La note elle-meme vit dans la base des notes
+     et n'est jamais recopiee. */
+
+  var BASE = 'roots-intel';
+  var MAGASIN = 'classement';
+  var VERSION = 1;
+
+  function ouvrirBase() {
+    return new Promise(function (rendre, refuser) {
+      if (!window.indexedDB) { refuser(new Error('stockage indisponible')); return; }
+      var d = indexedDB.open(BASE, VERSION);
+      d.onupgradeneeded = function () {
+        var db = d.result;
+        if (!db.objectStoreNames.contains(MAGASIN)) db.createObjectStore(MAGASIN, { keyPath: 'id' });
+      };
+      d.onsuccess = function () { rendre(d.result); };
+      d.onerror = function () { refuser(d.error || new Error('stockage refusé')); };
+    });
+  }
+
+  function transaction(mode, geste) {
+    return ouvrirBase().then(function (db) {
+      return new Promise(function (rendre, refuser) {
+        var tx = db.transaction(MAGASIN, mode);
+        var sortie = geste(tx.objectStore(MAGASIN));
+        tx.oncomplete = function () { db.close(); rendre(sortie && 'result' in sortie ? sortie.result : undefined); };
+        tx.onerror = function () { db.close(); refuser(tx.error || new Error('stockage refusé')); };
+        tx.onabort = function () { db.close(); refuser(tx.error || new Error('stockage refusé')); };
+      });
+    });
+  }
+
+  function classements() {
+    return transaction('readonly', function (m) { return m.getAll(); })
+      .then(function (l) {
+        var table = {};
+        (l || []).forEach(function (c) { table[c.id] = c; });
+        return table;
+      });
+  }
+
+  function poserClassement(id, champs) {
+    return transaction('readwrite', function (m) {
+      m.get(id).onsuccess = function (e) {
+        var c = e.target.result || { id: id };
+        Object.keys(champs).forEach(function (k) { c[k] = champs[k]; });
+        m.put(c);
+      };
+    });
+  }
+
+  /* ---- L'etat de l'ecran ---- */
+
+  var LIENS = [];       /* les notes de type lien, jointes a leur classement */
+  var filtre = 'tout';
+
+  function charger() {
+    return Promise.all([SpaceNotes.toutes(), classements()]).then(function (r) {
+      var titres = lireJson(TITRES_CLE);
+      LIENS = r[0].filter(function (n) { return n.type === 'lien' && n.url; })
+        .map(function (n) {
+          var c = r[1][n.id] || {};
+          var salle = c.salle || classer(n.url);
+          return {
+            id: n.id, url: n.url, cree: n.cree,
+            salle: salle,
+            choisie: !!c.salle,
+            etat: c.etat || 'attente',
+            titre: c.titre || titres[n.url] || ''
+          };
+        });
+    });
+  }
+
+  function quand(ts) {
+    var d = new Date(ts), n = new Date();
+    var a = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var b = new Date(n.getFullYear(), n.getMonth(), n.getDate());
+    var ecart = Math.round((b - a) / 86400000);
+    if (ecart <= 0) return t().aujourdHui;
+    if (ecart === 1) return t().hier;
+    return d.toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short' });
+  }
+
+  /* ---- La bande Mi Tube ---- */
+
+  function dessinerTube() {
+    var courts = LIENS.filter(function (l) { return l.salle === 'tube'; });
+    $('compteTube').textContent = courts.length
+      ? '· ' + courts.length + ' ' + (courts.length > 1 ? t().aVoir : t().aVoir) : '';
+    $('bandeTube').hidden = !courts.length;
+    $('videTube').hidden = !!courts.length;
+    var z = $('rangeeTube');
+    z.textContent = '';
+    courts.sort(function (a, b) { return b.cree - a.cree; }).forEach(function (l) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'intel-vignette';
+      b.dataset.id = l.id;
+      b.setAttribute('aria-label', l.titre || hote(l.url));
+      var id = youtubeId(l.url);
+      if (id) {
+        b.dataset.yt = id;
+        var img = document.createElement('img');
+        img.alt = '';
+        img.loading = 'lazy';
+        img.src = 'https://i.ytimg.com/vi/' + id + '/oardefault.jpg';
+        img.onerror = function () {
+          img.onerror = function () {
+            var m = document.createElement('span');
+            m.className = 'intel-vignette-hote';
+            m.textContent = 'youtube.com';
+            img.replaceWith(m);
+          };
+          img.src = 'https://i.ytimg.com/vi/' + id + '/hqdefault.jpg';
+        };
+        b.appendChild(img);
+      } else {
+        var m = document.createElement('span');
+        m.className = 'intel-vignette-hote';
+        m.textContent = hote(l.url);
+        b.appendChild(m);
+      }
+      var joue = document.createElement('span');
+      joue.className = 'intel-joue';
+      joue.setAttribute('aria-hidden', 'true');
+      b.appendChild(joue);
+      z.appendChild(b);
+    });
+  }
+
+  /* Le lecteur du tiers n'est cree qu'a l'appui sur lecture : avant le
+     geste, la bande ne montre que des images. */
+  function jouer(b) {
+    var id = b.dataset.yt;
+    var l = trouver(b.dataset.id);
+    if (l) poserClassement(l.id, { etat: 'fait', salle: l.salle }).then(charger).then(dessinerFiches);
+    if (!id) { window.open(l ? l.url : '#', '_blank', 'noopener'); return; }
+    var cadre = document.createElement('iframe');
+    cadre.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&playsinline=1';
+    cadre.allow = 'autoplay; encrypted-media; fullscreen';
+    cadre.setAttribute('allowfullscreen', '');
+    cadre.title = b.getAttribute('aria-label') || 'Mi Tube';
+    var place = document.createElement('div');
+    place.className = 'intel-vignette est-jouee';
+    place.appendChild(cadre);
+    b.replaceWith(place);
+  }
+
+  $('rangeeTube').addEventListener('click', function (e) {
+    var b = e.target.closest('.intel-vignette');
+    if (b && !b.classList.contains('est-jouee')) jouer(b);
+  });
+
+  /* ---- Les fiches ---- */
+
+  function trouver(id) {
+    var lien = null;
+    LIENS.forEach(function (l) { if (l.id === id) lien = l; });
+    return lien;
+  }
+
+  function garde(l) {
+    if (l.salle === 'tube') return false;
+    if (filtre === 'read') return l.salle === 'read';
+    if (filtre === 'learn') return l.salle === 'learn';
+    return true;
+  }
+
+  function chipSalle(l) {
+    var s = document.createElement('span');
+    if (l.salle === 'inconnu') {
+      s.className = 'salle-chip est-question';
+      s.textContent = t().aRanger;
+    } else {
+      s.className = 'salle-chip';
+      s.textContent = SALLES[l.salle];
+    }
+    return s;
+  }
+
+  function rangDeChoix(l, apresChoix) {
+    var z = document.createElement('div');
+    z.className = 'intel-choix';
+    ['read', 'learn', 'tube'].forEach(function (s) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'vue';
+      b.textContent = SALLES[s];
+      b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', function () {
+        poserClassement(l.id, { salle: s })
+          .then(function () { apresChoix(s); }, function () { chrome.toast(t().intelMuet); });
+      });
+      z.appendChild(b);
+    });
+    return z;
+  }
+
+  /* Une correction enseigne : elle propose, une fois, la regle du domaine.
+     La regle ne s'ecrit que sur un oui. */
+  function questionToujours(l, salle) {
+    var h = hote(l.url);
+    var z = document.createElement('p');
+    z.className = 'intel-toujours';
+    var q = document.createElement('span');
+    q.textContent = t().toujours(h, SALLES[salle]);
+    z.appendChild(q);
+    [['oui', function () {
+      var r = lireJson(REGLES_CLE); r[h] = salle; ecrireJson(REGLES_CLE, r);
+      z.remove();
+    }], ['non', function () { z.remove(); }]].forEach(function (p) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'intel-lien-action';
+      b.textContent = t()[p[0]];
+      b.addEventListener('click', p[1]);
+      z.appendChild(b);
+    });
+    return z;
+  }
+
+  function fiche(l) {
+    var art = document.createElement('article');
+    art.className = 'intel-fiche';
+
+    var a = document.createElement('a');
+    a.className = 'intel-titre';
+    a.href = l.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = l.titre || l.url.replace(/^https?:\/\//, '').slice(0, 64);
+    a.addEventListener('click', function () {
+      if (l.etat === 'attente') {
+        poserClassement(l.id, { etat: 'cours' })
+          .then(charger).then(dessinerFiches);
+      }
+    });
+    art.appendChild(a);
+
+    var meta = document.createElement('p');
+    meta.className = 'intel-meta';
+    meta.appendChild(chipSalle(l));
+    var d = document.createElement('span');
+    d.textContent = hote(l.url) + ' · ' + quand(l.cree);
+    meta.appendChild(d);
+
+    if (l.salle !== 'inconnu') {
+      var e = document.createElement('span');
+      e.textContent = '· ' + t().etats[l.salle][l.etat === 'fait' ? 'fait' : (l.etat === 'cours' ? 'cours' : 'attente')];
+      meta.appendChild(e);
+    }
+
+    var pousse = document.createElement('span');
+    pousse.className = 'intel-pousse';
+    if (l.salle !== 'inconnu') {
+      if (l.etat !== 'fait') {
+        var fait = document.createElement('button');
+        fait.type = 'button';
+        fait.className = 'intel-lien-action';
+        fait.textContent = '✓';
+        fait.setAttribute('aria-label', t().alFait);
+        fait.addEventListener('click', function () {
+          poserClassement(l.id, { etat: 'fait', salle: l.salle })
+            .then(charger).then(dessinerTout, function () { chrome.toast(t().intelMuet); });
+        });
+        pousse.appendChild(fait);
+      }
+      var dep = document.createElement('button');
+      dep.type = 'button';
+      dep.className = 'intel-lien-action';
+      dep.textContent = t().deplacer;
+      dep.addEventListener('click', function () {
+        if (art.querySelector('.intel-choix')) return;
+        art.appendChild(rangDeChoix(l, function (salle) {
+          charger().then(function () {
+            dessinerTout();
+            var neuve = document.querySelector('.intel-fiche[data-id="' + l.id + '"]');
+            if (neuve && hote(l.url)) neuve.appendChild(questionToujours(l, salle));
+          });
+        }));
+      });
+      pousse.appendChild(dep);
+    }
+    meta.appendChild(pousse);
+    art.appendChild(meta);
+    art.dataset.id = l.id;
+
+    if (l.salle === 'inconnu') {
+      art.appendChild(rangDeChoix(l, function () { charger().then(dessinerTout); }));
+    }
+    return art;
+  }
+
+  function dessinerFiches() {
+    var z = $('fiches');
+    z.textContent = '';
+    var liste = LIENS.filter(garde).sort(function (a, b) {
+      return ((b.salle === 'inconnu') - (a.salle === 'inconnu')) || (b.cree - a.cree);
+    });
+    var aucune = LIENS.filter(function (l) { return l.salle !== 'tube'; }).length === 0;
+    $('videIntel').hidden = liste.length > 0;
+    $('videIntel').textContent = aucune ? t().videIntel : t().videFiltre;
+    liste.forEach(function (l) { z.appendChild(fiche(l)); });
+  }
+
+  function dessinerTout() { dessinerTube(); dessinerFiches(); }
+
+  $('filtresIntel').addEventListener('click', function (e) {
+    var b = e.target.closest('.vue');
+    if (!b) return;
+    filtre = b.dataset.filtre;
+    document.querySelectorAll('#filtresIntel .vue').forEach(function (f) {
+      f.setAttribute('aria-pressed', f === b ? 'true' : 'false');
+    });
+    dessinerFiches();
+  });
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    dessinerTout();
+    if (chrome && chrome.dessinerSections) chrome.dessinerSections();
+  }
+
+  var chrome = Roots.initChrome({
+    toastId: 'toast',
+    getLangue: function () { return langue; },
+    getSections: Roots.nav,
+    toastNu: function (l) { return T[l].toastNu; },
+    radio: true,
+    onLangue: function () { basculerLangue(); }
+  });
+
+  /* Le nav de cette page porte le nom du module. */
+  var nomModule = document.querySelector('.chrome-titre');
+  if (nomModule) nomModule.textContent = 'Intel';
+
+  function basculerLangue() {
+    langue = (langue === 'fr') ? 'en' : 'fr';
+    if (Roots.retenirLangue) Roots.retenirLangue(langue);
+    appliquerLangue();
+  }
+
+  if (Roots.poserLibelles) Roots.poserLibelles();
+  charger().then(function () {
+    appliquerLangue();
+  }, function () { chrome.toast(t().intelMuet); });
+})();
+</script>
+</body>
+</html>

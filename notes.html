@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-3mBaAK9gnTFRu4XfTXdGImo+IpAsAtqejLzGiGMPgfw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-xijCVOuetwME+Pp4ouTAhIVjG2d8M/G9M64+5InXQFM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -109,6 +109,18 @@
 <script>
 (function () {
   'use strict';
+
+  /* Une adresse partagee par le systeme se garde sur l'appareil avant
+     tout renvoi, puis se consomme a la premiere ouverture en session :
+     le geste de capture survit a la couverture. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    var p = { titre: q.get('titre') || '', texte: q.get('texte') || '', adresse: q.get('adresse') || '' };
+    if (p.titre || p.texte || p.adresse) {
+      try { localStorage.setItem('roots.partage.attente', JSON.stringify(p)); } catch (e) {}
+      try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    }
+  })();
 
   /* L'ecran exige une session : sans elle, la couverture est la porte. */
   if (!window.Roots || !Roots.db || !Roots.db.estConnecte()) {
@@ -510,9 +522,32 @@
     }
   });
 
+  /* La capture en attente se pose par le mecanisme ordinaire ; le titre
+     partage se garde a part, pour la salle de lecture. */
+  function consommerPartage() {
+    var p = null;
+    try {
+      p = JSON.parse(localStorage.getItem('roots.partage.attente') || 'null');
+      localStorage.removeItem('roots.partage.attente');
+    } catch (e) {}
+    if (!p) return Promise.resolve();
+    var url = p.adresse;
+    if (!url) { var m = (p.texte || '').match(/https?:\/\/\S+/); if (m) url = m[0]; }
+    var matiere = url || p.texte || p.titre;
+    if (!matiere) return Promise.resolve();
+    if (url && p.titre) {
+      try {
+        var t2 = JSON.parse(localStorage.getItem('roots.savoir.titres') || '{}');
+        t2[url] = p.titre;
+        localStorage.setItem('roots.savoir.titres', JSON.stringify(t2));
+      } catch (e) {}
+    }
+    return SpaceNotes.poser(matiere).then(function () {}, function () {});
+  }
+
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();
-  charger().then(function () {
+  consommerPartage().then(charger).then(function () {
     dessinerFil();
     auBas();
   }, function () { chrome.toast(t().notesMuettes); });
