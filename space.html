@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-HFBPCWy0Ra2bJB4A6+lAsZxItEBI7f4cOtnDAFy8414='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Uo1B9bRNc6+qEzYWQDalHDcmANSewlZ/MY/vlw9qhr4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
@@ -61,8 +61,8 @@
 
     <section class="hall-bloc vedette" aria-labelledby="hSemaine">
       <div class="hall-tete">
-        <h1 id="hSemaine" data-t="blocSemaine">Ma semaine</h1>
-        <a class="lien-ouvre" href="semaine.html" data-t="ouvreSemaine">Toute ma semaine →</a>
+        <h1 id="hSemaine"><a class="lien-module" href="semaine.html" data-t="blocSemaine">Ma Semaine</a></h1>
+        <a class="ouvre-module est-geste" href="semaine.html#engagement" data-tl="ajoutRapide" aria-label="Ajouter un engagement"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></a>
       </div>
       <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
       <button type="button" class="bouton-contour" id="btnRecharger" hidden>Réessayer</button>
@@ -70,11 +70,13 @@
       <p class="vide" id="videSemaine" data-t="videSemaine" hidden>Rien de posé pour l’instant. Ta semaine s’écrit à côté.</p>
     </section>
 
-    <section class="hall-bloc dort" aria-labelledby="hSavoir">
+    <section class="hall-bloc" aria-labelledby="hSavoir">
       <div class="hall-tete">
-        <h2 id="hSavoir" data-t="blocSavoir">Mon Savoir</h2>
-        <span class="bientot" data-t="bientot">Bientôt</span>
+        <h2 id="hSavoir"><a class="lien-module" href="intel.html" data-t="blocSavoir">Savoir</a></h2>
+        <span class="ouvre-module" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </div>
+      <p class="intel-compte" id="compteSavoir" hidden></p>
+      <p class="vide" id="videSavoir" data-t="videSavoir" hidden>Rien de rangé pour l’instant. Colle une adresse dans tes notes.</p>
     </section>
 
     </div>
@@ -83,12 +85,17 @@
 
     <section class="hall-bloc" aria-labelledby="hNotes">
       <div class="hall-tete">
-        <h2 id="hNotes" data-t="blocNotes">Mes Notes</h2>
-        <a class="lien-ouvre" href="notes.html" data-t="ouvreNotes">Ouvrir mes notes →</a>
+        <h2 id="hNotes"><a class="lien-module" href="notes.html" data-t="blocNotes">Notes</a></h2>
+        <span class="ouvre-module" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </div>
       <p class="etat-semaine" id="etatNotes" role="status" hidden></p>
-      <div id="apercuNotes"></div>
+      <ul class="hall-lignes" id="apercuNotes"></ul>
       <p class="vide" id="videNotes" data-t="videNotes" hidden>Rien pour l’instant. Pose ta première note.</p>
+      <div class="ecrire ecrire-court">
+        <label class="visuellement-cache" for="champHall" data-t="labNote">Écris-toi</label>
+        <textarea id="champHall" rows="1" maxlength="4000" data-p="phHall" placeholder="Une note rapide…"></textarea>
+        <button type="button" class="envoi" id="btnPoserHall" aria-label="Garder" data-tl="garder"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
     </section>
 
     <section class="hall-bloc dort" aria-labelledby="hFinances">
@@ -147,8 +154,7 @@
      socle, tenue a ses premieres lignes, et les dernieres notes de la base
      locale. La semaine entiere et le fil complet vivent sur leurs ecrans. */
   var APERCU_TACHES = 4;
-  var APERCU_NOTES = 2;
-  var LIMITE_ENGAGEMENT = 120;
+  var APERCU_NOTES = 5;
 
   var SEMAINE = { taches: [] };
   var NOTES = [];
@@ -162,17 +168,19 @@
   var T = {
     fr: {
       saut: 'Aller au contenu',
-      blocSemaine: 'Ma semaine',
-      blocBord: 'Tableau de Bord',
+      blocSemaine: 'Ma Semaine',
+      blocBord: 'Tableau de bord',
       blocFinances: 'Finances',
-      blocSavoir: 'Mon Savoir',
-      blocNotes: 'Mes Notes',
-      ouvreSemaine: 'Toute ma semaine →',
-      ouvreNotes: 'Ouvrir mes notes →',
+      blocSavoir: 'Savoir',
+      blocNotes: 'Notes',
+      ajoutRapide: 'Ajouter un engagement',
       videSemaine: 'Rien de posé pour l’instant. Ta semaine s’écrit à côté.',
       videNotes: 'Rien pour l’instant. Pose ta première note.',
+      labNote: 'Écris-toi', phHall: 'Une note rapide…', garder: 'Garder',
+      videSavoir: 'Rien de rangé pour l’instant. Colle une adresse dans tes notes.',
+      compteSavoir: function (n) { return n + (n > 1 ? ' adresses rangées' : ' adresse rangée'); },
       bientot: 'Bientôt',
-      vers: '→ Ma semaine',
+      vers: '→ Ma Semaine',
       posee: 'Dans ta semaine',
       semaineMuette: 'La semaine n’a pas répondu.',
       notesMuettes: 'Les notes n’ont pas répondu.',
@@ -189,12 +197,14 @@
       blocSemaine: 'My week',
       blocBord: 'Dashboard',
       blocFinances: 'Finances',
-      blocSavoir: 'My Knowledge',
-      blocNotes: 'My Notes',
-      ouvreSemaine: 'Full week →',
-      ouvreNotes: 'Open my notes →',
+      blocSavoir: 'Knowledge',
+      blocNotes: 'Notes',
+      ajoutRapide: 'Add a commitment',
       videSemaine: 'Nothing set yet. Your week is written next door.',
       videNotes: 'Nothing yet. Set your first note down.',
+      labNote: 'Write to yourself', phHall: 'A quick note…', garder: 'Keep',
+      videSavoir: 'Nothing filed yet. Paste a link into your notes.',
+      compteSavoir: function (n) { return n + (n > 1 ? ' links filed' : ' link filed'); },
       bientot: 'Soon',
       vers: '→ My week',
       posee: 'In your week',
@@ -270,62 +280,93 @@
     return d.toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'short' }) + ', ' + hh;
   }
 
-  function texteDe(note) {
-    var s = note.type === 'lien' ? note.url
-      : (note.texte || (note.items && note.items[0] ? note.items[0].t : ''));
-    return s.length > LIMITE_ENGAGEMENT ? s.slice(0, LIMITE_ENGAGEMENT - 1) + '…' : s;
+  /* Ce que le Savoir tient se compte sur les memes notes que l'apercu
+     voisin : aucune base de plus, aucun appel de plus. */
+  function dessinerSavoir() {
+    var n = NOTES.filter(function (x) { return x.type === 'lien'; }).length;
+    var c = $('compteSavoir');
+    c.textContent = t().compteSavoir(n);
+    c.hidden = n === 0;
+    $('videSavoir').hidden = n > 0;
   }
 
-  function carteNote(note) {
-    var a = document.createElement('article');
-    a.className = 'note-carte compacte';
+  /* Dans le hall, une note tient sur UNE ligne : son titre, ou ses premiers
+     mots. Ce qui se lit d'un coup d'oeil, c'est le nombre de notes, pas leur
+     contenu — celui-ci vit sur la page du module. */
+  function jourDe(ts) {
+    var d = new Date(ts), n = new Date();
+    var jd = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    var jn = new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime();
+    var un = 24 * 60 * 60 * 1000;
+    if (jd === jn) return t().aujourdhui;
+    if (jn - jd === un) return t().hier;
+    return d.toLocaleDateString(langue === 'fr' ? 'fr-FR' : 'en-GB',
+      { day: 'numeric', month: 'short' });
+  }
+
+  function heureDe(ts) {
+    var d = new Date(ts);
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  function ligneNote(note) {
+    var li = document.createElement('li');
+    li.className = 'hall-ligne';
+    var txt = document.createElement('span');
+    txt.className = 'fil-dit';
     if (note.type === 'lien') {
-      var l = document.createElement('p');
-      l.className = 'note-lien-mot';
       var ou = '';
       try { ou = new URL(note.url).hostname; } catch (e) { ou = note.url; }
-      l.textContent = '↗ ' + ou;
-      a.appendChild(l);
+      txt.textContent = '↗ ' + ou;
     } else {
-      var p = document.createElement('p');
-      p.textContent = note.texte || (note.items[0] ? note.items[0].t : '');
-      a.appendChild(p);
-      if (note.type === 'liste') {
-        var f = note.items.filter(function (i) { return i.fait; }).length;
-        var c = document.createElement('p');
-        c.className = 'note-quand';
-        c.textContent = t().coche(note.items.length, f);
-        a.appendChild(c);
-      }
+      txt.textContent = note.texte || (note.items && note.items[0] ? note.items[0].t : '');
     }
-    var rang = document.createElement('div');
-    rang.className = 'note-rang';
-    var q = document.createElement('span');
-    q.className = 'note-quand';
-    q.textContent = quand(note.cree);
-    rang.appendChild(q);
-    if (note.promue) {
-      var pos = document.createElement('span');
-      pos.className = 'note-posee';
-      pos.textContent = t().posee;
-      rang.appendChild(pos);
-    } else {
-      var v = document.createElement('button');
-      v.type = 'button';
-      v.className = 'bouton-vers';
-      v.dataset.id = note.id;
-      v.textContent = t().vers;
-      rang.appendChild(v);
-    }
-    a.appendChild(rang);
-    return a;
+    var h = document.createElement('span');
+    h.className = 'fil-heure';
+    h.textContent = heureDe(note.cree);
+    li.appendChild(txt);
+    li.appendChild(h);
+    return li;
   }
 
+  /* Le fil dit le jour une fois, puis les heures : c'est ce qui le distingue
+     d'une liste — on y relit sa propre journee. */
   function dessinerNotes() {
     var z = $('apercuNotes');
     z.textContent = '';
     $('videNotes').hidden = NOTES.length > 0;
-    NOTES.slice(0, APERCU_NOTES).forEach(function (n) { z.appendChild(carteNote(n)); });
+    var jour = null;
+    NOTES.slice(0, APERCU_NOTES).forEach(function (n) {
+      var j = jourDe(n.cree);
+      if (j !== jour) {
+        var s = document.createElement('li');
+        s.className = 'fil-jour';
+        s.textContent = j;
+        z.appendChild(s);
+        jour = j;
+      }
+      z.appendChild(ligneNote(n));
+    });
+  }
+
+  /* Une note posee depuis le hall est une note comme les autres : meme base,
+     meme porte. Le champ court ne fait que la poser au plus vite. */
+  function poserDuHall() {
+    var champ = $('champHall');
+    var brut = champ.value;
+    if (!brut.trim()) { champ.focus(); return; }
+    var b = $('btnPoserHall');
+    b.disabled = true;
+    SpaceNotes.poser(brut).then(function () {
+      champ.value = '';
+      marquerChampHall();
+      return chargerNotes();
+    }).then(function () {
+      b.disabled = false;
+      dessinerNotes();
+      dessinerSavoir();
+      champ.focus();
+    }, function () { b.disabled = false; chrome.toast(t().notesMuettes); });
   }
 
   function chargerNotes() {
@@ -334,12 +375,21 @@
 
   function appliquerLangue() {
     document.documentElement.lang = langue;
+    document.querySelectorAll('[data-tl]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-tl')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
+    });
+    document.querySelectorAll('[data-p]').forEach(function (el) {
+      var v = t()[el.getAttribute('data-p')];
+      if (typeof v === 'string') el.setAttribute('placeholder', v);
+    });
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
     });
     dessinerSemaine();
     dessinerNotes();
+    dessinerSavoir();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
 
@@ -371,22 +421,6 @@
             function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 
-  /* La promotion pose la note dans la semaine par la porte du service ; la
-     note reste locale, seule la ligne d'engagement part. */
-  $('apercuNotes').addEventListener('click', function (e) {
-    var b = e.target.closest('.bouton-vers');
-    if (!b || b.disabled) return;
-    var note = null;
-    NOTES.forEach(function (n) { if (n.id === b.dataset.id) note = n; });
-    if (!note) return;
-    b.disabled = true;
-    Roots.db.appeler('plan_poser_tache', { p_engagement: texteDe(note), p_jour: null })
-      .then(function () { return SpaceNotes.marquerPromue(note.id); })
-      .then(chargerNotes)
-      .then(chargerSemaine)
-      .then(function () { dessinerNotes(); dessinerSemaine(); },
-            function (er) { b.disabled = false; chrome.toast(er.message); });
-  });
 
   function accueillirSemaine() {
     $('etatSemaine').hidden = true;
@@ -410,11 +444,28 @@
     $('etatNotes').hidden = true;
     chargerNotes().then(function () {
       dessinerNotes();
+    dessinerSavoir();
+      dessinerSavoir();
     }, function () {
       $('etatNotes').textContent = t().notesMuettes;
       $('etatNotes').hidden = false;
     });
   }
+
+  /* Le contenant porte la marque du champ non vide : elle commande l'aplat de
+     la pastille, qui annonce qu'il y a de quoi envoyer. Les espaces seuls ne
+     comptent pas — l'envoi les refuse. */
+  function marquerChampHall() {
+    var champ = $('champHall');
+    champ.closest('.ecrire').classList.toggle('a-du-texte', champ.value.trim() !== '');
+  }
+  $('champHall').addEventListener('input', marquerChampHall);
+  marquerChampHall();
+
+  $('btnPoserHall').addEventListener('click', poserDuHall);
+  $('champHall').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); poserDuHall(); }
+  });
 
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();

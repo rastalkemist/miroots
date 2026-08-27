@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Uo7trlsx1+s1JYMylmmlSLmCASWsdDEXeGaeVbTkoRk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-6ohjlTKahE6dFZxgf18wWB1jnDifXS6xVEP4FhLmwJc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ma semaine</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
@@ -433,6 +433,15 @@
 
   /* Le bouton refuse un engagement vide plutot que d'en poser un sans texte :
      une ligne sans mot ne se relit pas. */
+  /* Arrive avec l'ancre du champ, l'ecran pose le foyer dessus : le geste
+     d'ajout rapide du hall se termine ici, clavier ouvert. */
+  if (location.hash === '#engagement') {
+    requestAnimationFrame(function () {
+      var ch = $('engagement');
+      if (ch) { ch.focus(); ch.scrollIntoView({ block: 'center' }); }
+    });
+  }
+
   $('btnAjouter').addEventListener('click', function () {
     var champ = $('engagement');
     var texte = champ.value.trim();

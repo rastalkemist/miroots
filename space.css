@@ -726,6 +726,25 @@
 :where(body.p-space) .envoi::after{
   content: ''; position: absolute; inset: calc(var(--esp-2) / -2);
 }
+/* A une ligne, la commande occupe le bout rond du cadre et sa proportion tient.
+   Des la deuxieme ligne ce bout rond n'existe plus et elle se retrouve dans un
+   angle : elle recule alors d'un cran d'air sur les deux axes, ce qui double
+   l'air de ses trois cotes libres sans changer la hauteur de la boite. Le
+   deplacement porte sur la commande seule, pas sur le cadre : la boite grandit
+   deja d'une ligne au meme instant, et deux croissances simultanees se lisent
+   comme un a-coup. La zone atteinte suit le dessin. */
+:where(body.p-space) .envoi{
+  transition: transform var(--mvt-etat) var(--courbe-etat);
+}
+:where(body.p-space) .ecrire-bas .ecrire.est-longue .envoi{
+  transform: translate(calc(var(--esp-1) * -1), calc(var(--esp-1) * -1));
+}
+/* Le recul rapproche la commande du texte d'autant qu'il l'eloigne du bord :
+   l'ecart de la rangee le compense, pour que les deux cotes verticaux gardent
+   la meme valeur. */
+:where(body.p-space) .ecrire-bas .ecrire.est-longue{
+  gap: calc(var(--esp-2) + var(--esp-1));
+}
 :where(body.p-space) .envoi svg{ width: 18px; height: 18px }
 
 /* Le champ court du hall : une note rapide s'y ecrit et s'y garde. Sa forme
@@ -762,15 +781,17 @@
 /* Trois etats, un seul recit. Au repos la limite est grise et la pastille
    attend, bordee. Le champ qui a la main porte la limite d'accent. Du texte
    entre remplit la pastille : il y a desormais de quoi envoyer, et la limite
-   reste d'accent tant que rien n'est parti. Declare APRES l'etat actif : meme
+   reste d'accent tant que rien n'est parti. `a-du-texte` est posee par le
+   script sur le contenant : un champ qui ne porte que des espaces n'a rien a
+   envoyer et ne doit donc pas s'allumer. Declaree APRES l'etat actif : meme
    specificite, c'est l'ordre qui tranche. */
-:where(body.p-space) .ecrire:has(textarea:not(:placeholder-shown)){
+:where(body.p-space) .ecrire.a-du-texte{
   border-color: var(--accent-plan);
 }
-:where(body.p-space) .ecrire:has(textarea:not(:placeholder-shown)) .envoi{
+:where(body.p-space) .ecrire.a-du-texte .envoi{
   background: var(--accent-plan); color: var(--blanc);
 }
-:where(body.p-space) .hall-bloc .ecrire:has(textarea:not(:placeholder-shown))::after{
+:where(body.p-space) .hall-bloc .ecrire.a-du-texte::after{
   border-bottom-color: var(--accent-plan);
 }
 :where(body.p-space) .filtres{

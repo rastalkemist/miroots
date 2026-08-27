@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-xijCVOuetwME+Pp4ouTAhIVjG2d8M/G9M64+5InXQFM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-j9ptFC5JSedn3W0I7Ak668rrVzfQsGPZBe4l6452Dko='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -152,7 +152,7 @@
       videMur: 'Rien de ce côté.',
       labNote: 'Écris-toi',
       phNote: 'Écris-toi.',
-      vers: '→ Ma semaine',
+      vers: '→ Ma Semaine',
       posee: 'Dans ta semaine',
       epingler: 'Épingler',
       desepingler: 'Épinglée',
@@ -440,11 +440,24 @@
 
   var champ = $('champNote');
 
+  /* La hauteur suit le texte. Le contenant porte deux marques : le champ non
+     vide, qui commande l'aplat de la pastille et annonce qu'il y a de quoi
+     envoyer — les espaces seuls ne comptent pas, l'envoi les refuse ; et le
+     passage de la premiere ligne, qui fait reculer la commande de son angle.
+     La hauteur d'une ligne se mesure sur le champ vide au premier passage :
+     elle depend de la fonte servie et ne s'ecrit pas. */
+  var hauteurUneLigne = 0;
   function ajusterChamp() {
     champ.style.height = 'auto';
-    champ.style.height = Math.min(champ.scrollHeight, 144) + 'px';
+    if (!hauteurUneLigne) hauteurUneLigne = champ.scrollHeight;
+    var pleine = champ.scrollHeight;
+    champ.style.height = Math.min(pleine, 144) + 'px';
+    var cadre = champ.closest('.ecrire');
+    cadre.classList.toggle('a-du-texte', champ.value.trim() !== '');
+    cadre.classList.toggle('est-longue', pleine > hauteurUneLigne);
   }
   champ.addEventListener('input', ajusterChamp);
+  ajusterChamp();
 
   function poser() {
     var brut = champ.value;
