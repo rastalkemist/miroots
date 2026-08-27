@@ -89,9 +89,12 @@
    systeme.
 
    Le geste de retour n'est pas interceptable directement : une entree
-   d'historique est empilee, et le retour est rattrape puis annule tant que le
-   chrome est absent. Le bouton precedent du navigateur s'en trouve affecte le
-   temps d'un geste.
+   d'historique est empilee, et le retour est rattrape puis annule TANT QUE LE
+   CHROME EST ABSENT — chaque rattrapage rempile, de sorte que le geste rappelle
+   le chrome autant de fois qu'il est fait.
+   Le chrome present, le geste reprend son sens ; mais le pas qu'il vient de
+   faire a consomme l'entree empilee, non celle de la page. Ce pas est donc
+   rendu, sinon il en faudrait deux pour partir.
 
    Exige que la page porte la classe qui masque le chrome et que le chrome
    commun soit present dans le document. */
@@ -105,6 +108,13 @@
     chrome: function () {
       var corps = document.body;
       var minuterie = null;
+      /* Un geste de bord fait naitre DEUX signaux : le glissement, puis le pas
+         d'historique. Ce temoin les rend solidaires sans mesurer aucun delai :
+         il est pose quand le glissement a rappele le chrome, consomme par le
+         pas d'historique qui suit, et efface des que le geste suivant commence
+         ou que le chrome se retire. Sans lui, un seul geste rappellerait le
+         chrome puis conclurait a l'inverse et quitterait la page. */
+      var parGlissement = false;
 
       function present() { return corps.classList.contains('nav-appele'); }
 
@@ -117,6 +127,7 @@
       function retirer() {
         clearTimeout(minuterie);
         corps.classList.remove('nav-appele');
+        parGlissement = false;
       }
 
       /* Le nom de la surface. L'activation au clavier d'un lien emet le meme
@@ -135,6 +146,7 @@
       var y0 = 0, x0 = 0;
       document.addEventListener('touchstart', function (e) {
         y0 = e.touches[0].clientY; x0 = e.touches[0].clientX;
+        parGlissement = false;
       }, { passive: true });
 
       document.addEventListener('touchend', function (e) {
@@ -143,7 +155,7 @@
         var dy = t.clientY - y0, dx = t.clientX - x0;
         var bas = dy > SEUIL && dy > Math.abs(dx);
         var cote = Math.abs(dx) > SEUIL && Math.abs(dx) > Math.abs(dy);
-        if (bas || cote) appeler();
+        if (bas || cote) { appeler(); parGlissement = true; }
       }, { passive: true });
 
       /* La touche d'echappement et la barre d'espace rappellent le chrome. La
@@ -159,7 +171,20 @@
 
       try { history.pushState({ ouv: 1 }, ''); } catch (err) {}
       window.addEventListener('popstate', function () {
-        if (present()) return;
+        if (parGlissement) {
+          /* Meme geste que le glissement qui vient de rappeler le chrome : le
+             second signal ne conclut pas a l'inverse du premier. */
+          parGlissement = false;
+          try { history.pushState({ ouv: 1 }, ''); } catch (err) {}
+          return;
+        }
+        if (present()) {
+          /* Rendre le pas pris : le geste doit partir, pas revenir sur place.
+             Differe d'un tour, un pas d'historique demande depuis la reponse a
+             un pas d'historique n'etant pas garanti. */
+          setTimeout(function () { try { history.back(); } catch (err) {} }, 0);
+          return;
+        }
         try { history.pushState({ ouv: 1 }, ''); } catch (err) {}
         appeler();
       });

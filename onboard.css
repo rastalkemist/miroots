@@ -239,6 +239,12 @@
        ou l'appel repartira : il monte en paraissant, se tient, puis monte
        encore. Un seul geste, en trois temps. */
     --ouv-arrivee: calc(var(--t-h1) * var(--ouv-lh-h1) / 4);
+    /* LE VOILE DE L'ARRIVEE. L'appel ne se pose pas net : il vient au point.
+       Une encre qui se precise se lit comme une chose qui arrive, la ou une
+       encre qui se remplit se lit comme une chose qu'on allume. La quantite se
+       derive du corps de l'appel — un sixieme — pour qu'elle suive le barreau
+       aux points de rupture au lieu d'etre reglee une fois. */
+    --ouv-voile: calc(var(--t-h1) / 6);
     /* QUAND LE RESTE PARAIT. Jamais pendant que l'appel traverse la place qu'il
        va leur laisser : deux encres qui se croisent au meme endroit se lisent
        comme un melange, pas comme une arrivee. La regle commune veut que ce qui
@@ -413,11 +419,21 @@
   :where(html.ouv-lever.ouv-attente) .ouv-tete,
   :where(html.ouv-lever.ouv-attente) .ouv-groupe,
   :where(html.ouv-lever.ouv-attente) .ouv-langue{ animation-play-state: paused }
+/* L'ARRIVEE EST UNE ANIMATION, JAMAIS UNE TRANSITION. Une transition ne part
+     que si le navigateur a peint l'etat de depart : quand la fonte est deja en
+     cache, l'attente se leve dans la meme image ou elle a ete posee, l'etat de
+     depart n'est jamais peint, et l'appel se pose net — c'est exactement ce
+     qu'on voulait eviter. Une animation retenue puis relachee part toujours de
+     sa premiere image.
+     Elle prend la duree du mouvement qui suivra : l'appel vient au point, se
+     tient, puis monte, sur une seule horloge. */
+  @keyframes ouv-parait{
+    from{ opacity:0; filter: blur(var(--ouv-voile));
+          transform: translateY(var(--ouv-arrivee)) }
+    to{ opacity:1; filter: blur(0); transform:none } }
 :where(html.ouv-lever) .ouv-appel{
-    transition: opacity var(--mvt-parcours) var(--courbe-entree),
-                transform var(--mvt-parcours) var(--courbe-entree) }
-:where(html.ouv-lever.ouv-attente) .ouv-appel{
-    opacity:0; transform: translateY(var(--ouv-arrivee)) }
+    animation: ouv-parait var(--ouv-mouvement) var(--courbe-entree) both }
+:where(html.ouv-lever.ouv-attente) .ouv-appel{ animation-play-state: paused }
 /* Sous une fenetre courte la scene change de regime : la bande haute n'est
      plus un tiers de la hauteur, et la deplacer d'une fois sa hauteur ne veut
      plus rien dire. L'ecran y arrive tel quel. */
@@ -430,7 +446,7 @@
     :where(html.ouv-lever) .ouv-tete,
     :where(html.ouv-lever) .ouv-groupe,
     :where(html.ouv-lever) .ouv-langue{ animation:none }
-:where(html.ouv-lever) .ouv-appel{ transition:none }
+:where(html.ouv-lever) .ouv-appel{ animation:none }
   }
 /* ---- Le chrome du tronc, dépouillé puis rappelé ----
      Il n'y a qu'une barre : celle du tronc. Rien n'est imite, rien n'est
