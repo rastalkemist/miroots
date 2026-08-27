@@ -21,7 +21,7 @@
  */
 'use strict';
 
-var VERSION   = 'f6a88f9be33eb64f';
+var VERSION   = '84018f3628f22c34';
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -33,7 +33,7 @@ var REPLI = 'hors-ligne.html';
 var COQUE_FICHIERS = [
   'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'lieu.html', 'space.html',
   'facture.html', 'paiement.html', 'confidentialite.html',
-  'onboard.html', 'confirm.html', 'decouvrir-space.html', REPLI,
+  'onboard.html', 'confirm.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'space.css', 'roam.css',
   'onboard.css',
   'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js', 'space-notes.js', 'onboard.js',
