@@ -261,7 +261,7 @@
        une piece qui traverse le tiers d'un ecran, ni un temps de lecture.
        La tenue se compte en pas entiers de ce parcours ; elle ne se regle pas
        en millisecondes. DERIVATIONS, non actees. */
-    --ouv-tenue: calc(var(--mvt-parcours) * 4);
+    --ouv-tenue: calc(var(--mvt-parcours) * 5);
     --ouv-mouvement: calc(var(--mvt-parcours) * 1.5);
     --ouv-t-second: var(--t-14);
     --ouv-lh-h1: var(--lh-38); --ouv-lh-h2: var(--lh-28) }
