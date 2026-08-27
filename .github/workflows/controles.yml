@@ -14,6 +14,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   controles:
     runs-on: ubuntu-latest
@@ -27,6 +30,34 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # La VERSION de la coque suit les octets des fichiers qu'elle sert.
+      # Elle se recalcule ici à chaque poussée, et l'écart se corrige par un
+      # commit du robot. Ce commit ne touche que sw.js : un second passage
+      # recalcule la même valeur et ne commet rien — la boucle s'arrête
+      # d'elle-même. Sur une proposition de fusion, rien ne s'écrit : l'écart
+      # est seulement signalé, et il rougit.
+      - name: Version de la coque
+        run: |
+          set -e
+          if [ "${{ github.event_name }}" = "push" ]; then
+            python ci/empreinte_coque.py | tee coque.txt
+            if ! git diff --quiet -- sw.js; then
+              git config user.name  "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add sw.js
+              git commit -m "Version de la coque"
+              git push
+            fi
+          else
+            python ci/empreinte_coque.py --verifier | tee coque.txt
+          fi
+          {
+            echo '## Version de la coque'
+            echo '```'
+            cat coque.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # Le contrôle doit d'abord prouver qu'il voit ce qu'il prétend voir.
       # Un contrôle qui ne sait plus refuser passe tout en vert.
