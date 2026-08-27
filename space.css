@@ -383,7 +383,7 @@
 }
 :where(body.p-space) .coche-pastille{
   width: var(--esp-8); height: var(--esp-8); flex: none;
-  border-radius: var(--rayon-pilule); border: 2px solid var(--univers);
+  border-radius: var(--rayon-pilule); border: var(--limite-ep) solid var(--univers);
   display: grid; place-items: center;
   transition: background-color var(--mvt-etat) var(--courbe-etat);
 }
@@ -396,13 +396,13 @@
 :where(body.p-space) .coche-champ{ display: flex; flex-wrap: wrap; gap: var(--esp-2) }
 :where(body.p-space) .coche-champ input{
   flex: 1 1 12ch; min-width: 0; min-height: var(--cible-min);
-  border: 2px solid var(--limite-controle); border-radius: var(--rayon-champ);
+  border: var(--limite-ep) solid var(--limite-controle); border-radius: var(--rayon-champ);
   background: var(--blanc); color: var(--encre);
   padding-inline: var(--esp-3); font: inherit; font-size: var(--t-body);
 }
 :where(body.p-space) .bouton-contour{
   min-height: var(--cible-min); padding-inline: var(--esp-4);
-  border: 2px solid var(--univers); border-radius: var(--rayon-pilule);
+  border: var(--limite-ep) solid var(--univers); border-radius: var(--rayon-pilule);
   background: none; color: var(--univers);
   font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-16);
   cursor: pointer;
@@ -585,7 +585,7 @@
 :where(body.p-space) .hall-bloc .bouton-vers{
   padding-inline: var(--esp-3); font-size: var(--t-12);
 }
-:where(body.p-space) .note-carte.tenue{ border: 2px solid var(--terre-e5) }
+:where(body.p-space) .note-carte.tenue{ border: var(--limite-ep) solid var(--terre-e5) }
 :where(body.p-space) .note-rang{
   display: flex; align-items: center; justify-content: flex-end;
   gap: var(--esp-3); flex-wrap: wrap;
@@ -593,7 +593,7 @@
 :where(body.p-space) .note-rang .note-quand{ margin-right: auto }
 :where(body.p-space) .note-quand{ font-size: var(--t-12); color: var(--encre-discrete) }
 :where(body.p-space) .bouton-vers{
-  border: 2px solid var(--accent-plan); color: var(--accent-plan);
+  border: var(--limite-ep) solid var(--accent-plan); color: var(--accent-plan);
   background: none; border-radius: var(--rayon-pilule);
   /* Ce qui se touche tient le plancher : une pilule raccourcie d'un cran
      d'air rend une cible sous le plancher, sur tous les ecrans. */
@@ -609,7 +609,7 @@
   border-radius: var(--rayon-pilule); padding: var(--esp-1) var(--esp-4);
 }
 :where(body.p-space) .bouton-doux{
-  border: 2px solid var(--limite-controle); color: var(--encre);
+  border: var(--limite-ep) solid var(--limite-controle); color: var(--encre);
   background: none; border-radius: var(--rayon-pilule);
   min-height: calc(var(--cible-min) - var(--esp-2));
   padding-inline: var(--esp-4); font-size: var(--t-14); cursor: pointer;
@@ -630,7 +630,7 @@
 }
 :where(body.p-space) .note-case{
   width: 22px; height: 22px; flex: none;
-  border: 2px solid var(--encre); border-radius: 6px;
+  border: var(--limite-ep) solid var(--encre); border-radius: 6px;
   display: grid; place-items: center; color: var(--blanc);
 }
 :where(body.p-space) .note-case svg{ width: 14px; height: 14px; opacity: 0 }
@@ -665,7 +665,7 @@
 }
 :where(body.p-space) .vues{ display: flex; gap: var(--esp-2) }
 :where(body.p-space) .vue{
-  border: 2px solid var(--limite-controle); color: var(--encre);
+  border: var(--limite-ep) solid var(--limite-controle); color: var(--encre);
   background: none; border-radius: var(--rayon-pilule);
   min-height: var(--cible-min); padding-inline: var(--esp-6);
   font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-14);
@@ -745,17 +745,39 @@
   border: 0; background: none; border-radius: 0;
   padding: 0; gap: var(--esp-3);
 }
-:where(body.p-space) .hall-bloc .ecrire textarea{
+/* La limite se porte sur le contenant, pas sur le champ : le trait du foyer
+   au clavier est declare sur les champs eux-memes et prime, ce qui donnerait
+   deux couleurs pour un meme etat selon le geste. Elle s'arrete avant la
+   pastille — largeur du dessin plus l'ecart qui l'en separe. */
+:where(body.p-space) .hall-bloc .ecrire{ position: relative }
+:where(body.p-space) .hall-bloc .ecrire::after{
+  content: ''; position: absolute; left: 0; bottom: 0;
+  right: calc(var(--cible-min) - var(--esp-2) + var(--esp-3));
   border-bottom: var(--limite-ep) solid var(--limite-controle);
 }
-:where(body.p-space) .hall-bloc .ecrire:focus-within textarea{
+:where(body.p-space) .hall-bloc .ecrire:focus-within::after{
+  border-bottom-color: var(--accent-plan);
+}
+
+/* Trois etats, un seul recit. Au repos la limite est grise et la pastille
+   attend, bordee. Le champ qui a la main porte la limite d'accent. Du texte
+   entre remplit la pastille : il y a desormais de quoi envoyer, et la limite
+   reste d'accent tant que rien n'est parti. Declare APRES l'etat actif : meme
+   specificite, c'est l'ordre qui tranche. */
+:where(body.p-space) .ecrire:has(textarea:not(:placeholder-shown)){
+  border-color: var(--accent-plan);
+}
+:where(body.p-space) .ecrire:has(textarea:not(:placeholder-shown)) .envoi{
+  background: var(--accent-plan); color: var(--blanc);
+}
+:where(body.p-space) .hall-bloc .ecrire:has(textarea:not(:placeholder-shown))::after{
   border-bottom-color: var(--accent-plan);
 }
 :where(body.p-space) .filtres{
   display: flex; gap: var(--esp-2); flex-wrap: wrap; margin-bottom: var(--air-i3);
 }
 :where(body.p-space) .filtre{
-  border: 2px solid var(--limite-controle); color: var(--encre);
+  border: var(--limite-ep) solid var(--limite-controle); color: var(--encre);
   background: none; border-radius: var(--rayon-pilule);
   min-height: calc(var(--cible-min) - var(--esp-2));
   padding-inline: var(--esp-4); font-size: var(--t-14); cursor: pointer;
