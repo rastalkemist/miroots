@@ -22,7 +22,7 @@
 
 
   /* La scene occupe la hauteur libre et reprend la piste du tronc. */
-  .ouv-piece{ flex:1; width:var(--piste); max-width:100%; margin:0 auto;
+  .ouv-piece{ flex:1; width:var(--ouv-piste); max-width:100%; margin:0 auto;
     display:flex; flex-direction:column;
     /* Le saut interne du bloc, et le saut qui le detache de son titre : le
        second vaut une fois et demie le premier. Le rapport est la regle ; les
@@ -210,6 +210,11 @@
        de retrait ; celle-ci est la ligne d'interface, deja l'air bas de l'ecran
        du nom. */
     --ouv-plancher: var(--air-i6);
+    /* LA PISTE DE CET ECRAN. La scene et ce qui se pose sur elle prennent la
+       MEME largeur, et elle se declare une seule fois : sans quoi la bascule
+       s'alignerait sur la piste du chrome, qui est plus large, et se
+       retrouverait hors de la composition. */
+    --ouv-piste: var(--piste);
     /* La demi-ligne du titre : la cote du titre est le milieu de sa PREMIERE
        ligne, non le bord de sa boite. Elle sert deux fois — a remonter le
        groupe sur sa cote, et a fermer par le bas la bande de l'appel. */
@@ -227,6 +232,22 @@
        moitie. Aucune cote n'est ecrite ici, et la bande peut changer de part
        sans que ce depart mente. */
     --ouv-depart: calc(75% - (var(--ouv-bande-haut) - var(--ouv-demi-titre)) / 2);
+    /* L'ARRIVEE DE L'APPEL. Une encre qui passe de rien a tout ne parait pas :
+       elle s'allume. Ce qui parait se deplace un peu — assez pour qu'on lise un
+       mouvement, trop peu pour qu'on le regarde. La course se derive du barreau
+       de l'appel : un quart de sa propre ligne. Elle vient du BAS, dans le sens
+       ou l'appel repartira : il monte en paraissant, se tient, puis monte
+       encore. Un seul geste, en trois temps. */
+    --ouv-arrivee: calc(var(--t-h1) * var(--ouv-lh-h1) / 4);
+    /* QUAND LE RESTE PARAIT. Jamais pendant que l'appel traverse la place qu'il
+       va leur laisser : deux encres qui se croisent au meme endroit se lisent
+       comme un melange, pas comme une arrivee. La regle commune veut que ce qui
+       sort finisse avant que ce qui entre commence.
+       La courbe d'entree du tronc donne l'essentiel de la course tot : a la
+       moitie du temps, l'appel a deja passe la cote du titre et degage la
+       place. Le reste parait donc a partir de la — la tenue, plus la moitie du
+       mouvement — et rien ne se superpose. */
+    --ouv-emergence: calc(var(--ouv-tenue) + var(--ouv-mouvement) / 2);
     /* La tenue de l'appel seul, avant que le reste emerge, et la duree du
        mouvement qui suit. Les deux se derivent du PARCOURS du tronc — le plus
        long des trois noms de duree, et le seul pas que le systeme nomme
@@ -332,7 +353,7 @@
      plus a lire. L'ecran du nom garde la piste commune — son contenu est deja
      plafonne a la colonne de note. */
   @media (min-width: 1024px) and (min-height: 600px){
-    body.ouv-page:not(.ouv-confirm) .ouv-piece{ width: 50% }
+    body.ouv-page:not(.ouv-confirm){ --ouv-piste: 50% }
   }
 /* Sur grand ecran, la description se retire du meme air a droite qu'a gauche :
      elle s'inscrit alors dans l'ilot, a egale distance de ses deux bords. Sur
@@ -378,7 +399,7 @@
     animation: ouv-monte var(--ouv-mouvement) var(--courbe-entree) var(--ouv-tenue) both }
 :where(html.ouv-lever) .ouv-groupe,
   :where(html.ouv-lever) .ouv-langue{
-    animation: ouv-emerge var(--ouv-mouvement) var(--courbe-etat) var(--ouv-tenue) both }
+    animation: ouv-emerge var(--ouv-mouvement) var(--courbe-entree) var(--ouv-emergence) both }
 :where(html.ouv-lever) .ouv-groupe{ pointer-events:none }
 /* L'ouverture attend sa fonte, ET L'APPEL AVEC ELLE. Retenir la seule
      animation ne suffit pas : le texte, lui, se peint dans la fonte de
@@ -393,8 +414,10 @@
   :where(html.ouv-lever.ouv-attente) .ouv-groupe,
   :where(html.ouv-lever.ouv-attente) .ouv-langue{ animation-play-state: paused }
 :where(html.ouv-lever) .ouv-appel{
-    transition: opacity var(--mvt-apparition) var(--courbe-etat) }
-:where(html.ouv-lever.ouv-attente) .ouv-appel{ opacity:0 }
+    transition: opacity var(--mvt-parcours) var(--courbe-entree),
+                transform var(--mvt-parcours) var(--courbe-entree) }
+:where(html.ouv-lever.ouv-attente) .ouv-appel{
+    opacity:0; transform: translateY(var(--ouv-arrivee)) }
 /* Sous une fenetre courte la scene change de regime : la bande haute n'est
      plus un tiers de la hauteur, et la deplacer d'une fois sa hauteur ne veut
      plus rien dire. L'ecran y arrive tel quel. */
@@ -452,23 +475,24 @@
      Celle-ci sert le seul temps ou le chrome est absent : elle porte l'encre
      d'univers, comme tout ce qui reste visible sur cet ecran depouille, et elle
      se retire des que le chrome revient. Jamais les deux ensemble.
-     Sa pose : la place EXACTE du menu, pour que l'un prenne la place de l'autre
-     sans que rien ne saute quand le chrome revient. Le menu deborde du groupe
-     droit de sa propre marge negative ; la pose la reprend, donc aucune valeur
-     n'est ecrite. La hauteur de barre ne l'est pas davantage — c'est celle que
-     la barre publie a chaque passage.
+     Sa pose : le bord droit de LA PISTE DE CET ECRAN, jamais celle du chrome —
+     qui est plus large et la sortirait de la composition. Son encre s'y arrete
+     a plomb, comme celle de tout ce qui vit sur cette piste ; la cible garde
+     son plancher tactile en s'etendant vers l'interieur, ou elle ne rencontre
+     rien. En hauteur, l'axe de la barre : la hauteur n'est pas ecrite, c'est
+     celle que la barre publie a chaque passage.
      Ses valeurs de forme sont celles que le tronc emploie pour une commande de
      langue : cible au plancher tactile, fonte de corps appuyee au corps
      secondaire, aucune surface, encre d'univers. */
   :where(body.ouv-page) .ouv-langue{ position:fixed; z-index:21;
     top: calc(var(--entete-h-rendue) / 2); transform: translateY(-50%);
-    right: calc((100% - var(--chrome-w)) / 2 - var(--esp-3));
+    right: calc((100% - var(--ouv-piste)) / 2);
     min-height: var(--cible-min); min-width: var(--cible-min);
-    padding: 0 var(--esp-1); border:none; background:none;
+    padding: 0 0 0 var(--esp-1); border:none; background:none;
     color: var(--univers); cursor:pointer;
     font-family: var(--font-corps); font-weight:700; font-size: var(--t-sm);
     -webkit-user-select:none; user-select:none; touch-action:manipulation;
-    display:inline-flex; align-items:center; justify-content:center;
+    display:inline-flex; align-items:center; justify-content:flex-end;
     transition: opacity var(--mvt-apparition) var(--courbe-etat),
                 visibility 0s linear 0s }
 :where(body.ouv-page.nav-appele) .ouv-langue{ opacity:0; visibility:hidden;
