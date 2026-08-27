@@ -55,6 +55,15 @@
 
 <div id="contenu" class="corps corps-intel">
 
+  <div class="intel-filtres" role="group" aria-label="Filtre" id="filtresIntel">
+    <button type="button" class="vue" data-filtre="tout" aria-pressed="true" data-t="fTout">Tout</button>
+    <button type="button" class="vue" data-filtre="read" aria-pressed="false">Read Now</button>
+    <button type="button" class="vue" data-filtre="learn" aria-pressed="false">iLearn</button>
+  </div>
+
+  <div class="intel-fiches" id="fiches"></div>
+  <p class="vide" id="videIntel" hidden></p>
+
   <section class="intel-tube" aria-labelledby="hTube">
     <div class="intel-tube-tete">
       <h2 id="hTube">Mi Tube</h2>
@@ -69,15 +78,6 @@
     </div>
     <p class="vide" id="videTube" data-t="videTube" hidden>Aucun format court pour l’instant.</p>
   </section>
-
-  <div class="intel-filtres" role="group" aria-label="Filtre" id="filtresIntel">
-    <button type="button" class="vue" data-filtre="tout" aria-pressed="true" data-t="fTout">Tout</button>
-    <button type="button" class="vue" data-filtre="read" aria-pressed="false">Read Now</button>
-    <button type="button" class="vue" data-filtre="learn" aria-pressed="false">iLearn</button>
-  </div>
-
-  <div class="intel-fiches" id="fiches"></div>
-  <p class="vide" id="videIntel" hidden></p>
 
 </div>
 

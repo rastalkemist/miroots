@@ -699,6 +699,11 @@
 /* La tete de la salle des formats courts, puis la bande sombre qui les
    porte : elle traverse la piste par le mecanisme commun des pleines
    largeurs, et sa rangee defile au doigt — rien n'y avance seul. */
+/* La salle des formats courts ferme la page : elle est une rupture de
+   section, pas la suite de la liste. Elle prend le cran d'air que le tronc
+   pose entre deux gabarits — sans lui, son titre se colle a la derniere
+   fiche. */
+:where(body.p-space) .intel-tube{ margin-top: var(--air-i8) }
 :where(body.p-space) .intel-tube-tete{
   display: flex; align-items: baseline; gap: var(--esp-2);
   margin: 0 0 var(--air-i2);
@@ -773,20 +778,30 @@
   display: flex; align-items: center; justify-content: center;
 }
 
+
+:where(body.p-space) .intel-filtres .vue{
+  flex: 1; white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center;
+  padding-inline: var(--esp-3);
+}
+
 /* Au cran ou la piste tient ses marges definitives, la bande perd son aplat :
    le carrousel seul, aligne a la piste. Retirer ces regles rendrait au tres
    large ecran une bande sombre d'un bord a l'autre de la fenetre. */
 @media(min-width:1024px) and (min-height:600px){
   :where(body.p-space) .intel-bande{ margin-inline: 0; background: none; padding: 0 }
   :where(body.p-space) .intel-rangee{ padding-inline: 0 }
-  :where(body.p-space) .intel-vignette{ width: calc(var(--cible-min) * 4) }
+  /* La vignette ne grandit jamais avec la fenetre : la piste s'elargit, la
+     rangee en montre davantage. Au portrait 9/16, une largeur qui suit la
+     page rendrait une bande plus haute que le contenu qu'elle accompagne. */
+  :where(body.p-space) .intel-vignette{ width: calc(var(--cible-min) * 2.5) }
   :where(body.p-space) .intel-tube-tete .intel-fleches{ display: flex }
-}
-
-:where(body.p-space) .intel-filtres .vue{
-  flex: 1; white-space: nowrap;
-  display: inline-flex; align-items: center; justify-content: center;
-  padding-inline: var(--esp-3);
+  /* Le nom du site, qui remplace une vignette absente, descend d'un cran :
+     a cette largeur il se couperait au milieu d'un mot. */
+  :where(body.p-space) .intel-vignette-hote{ font-size: var(--t-note) }
+  /* La ligne des salles cesse de s'etirer : chaque pilule reprend la largeur
+     de son texte, et la ligne se range a gauche comme le reste de la page. */
+  :where(body.p-space) .intel-filtres .vue{ flex: 0 0 auto }
 }
 
 /* La fiche d'un lien : deux rangs, et l'ombre en deux couches — une de
