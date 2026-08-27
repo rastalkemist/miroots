@@ -218,19 +218,15 @@
        moins l'air qu'elle garde sous son logotype. La bande commence donc a la
        rangee du logotype, jamais au bord de la barre. */
     --ouv-bande-haut: calc(var(--entete-h-rendue) - var(--esp-3));
-    /* LE DEPART DE L'OUVERTURE. L'appel s'y tient sur LA COTE DU TITRE — celle
-       que le titre prendra quand il arrivera —, seul avec la barre ; puis il la
-       cede et rejoint sa propre place. Le milieu geometrique d'un ecran se lit
-       toujours trop bas ; les deux cinquiemes sont la cote que cette
-       composition porte deja, et ils tombent au centre optique, un cheveu
-       au-dessus de la section doree.
+    /* LE DEPART DE L'OUVERTURE. L'appel s'y tient au MILIEU DE LA SCENE, seul
+       avec le nom de la surface, puis remonte a sa place.
        Le deplacement se deduit : la bande vaut deux cinquiemes de la scene, son
        milieu est donc au cinquieme, et l'appel s'y decale de la moitie de ce qui
-       separe ses deux fermetures. Descendre l'ensemble d'un cinquieme de la
-       scene — soit la moitie de la bande — pose le milieu de l'appel sur les
-       deux cinquiemes. Aucune cote n'est ecrite ici, et la bande peut changer de
-       part sans que ce depart mente. */
-    --ouv-depart: calc(50% - (var(--ouv-bande-haut) - var(--ouv-demi-titre)) / 2);
+       separe ses deux fermetures. Descendre l'ensemble de trois dixiemes de la
+       scene — soit trois quarts de la bande — pose le milieu de l'appel a la
+       moitie. Aucune cote n'est ecrite ici, et la bande peut changer de part
+       sans que ce depart mente. */
+    --ouv-depart: calc(75% - (var(--ouv-bande-haut) - var(--ouv-demi-titre)) / 2);
     /* La tenue de l'appel seul, avant que le reste emerge, et la duree du
        mouvement qui suit. Les deux se derivent du PARCOURS du tronc — le plus
        long des trois noms de duree, et le seul pas que le systeme nomme
