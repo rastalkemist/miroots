@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-j9ptFC5JSedn3W0I7Ak668rrVzfQsGPZBe4l6452Dko='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-TnvAnogwAGkcu13hi86jRei+8m2Ibknw5oyN8wr45Ko='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -55,33 +55,24 @@
 
 <div id="contenu" class="corps corps-notes">
 
-  <header class="entete-plan entete-notes">
-    <h1>Mes Notes</h1>
-    <div class="vues" role="group" aria-label="Vue">
-      <button type="button" class="vue" id="vueBoutonFil" aria-pressed="true" data-t="vueFil">Fil à soi</button>
-      <button type="button" class="vue" id="vueBoutonMur" aria-pressed="false" data-t="vueMur">Mur</button>
-    </div>
-  </header>
+  <div class="vues" role="group" aria-label="Vue">
+    <button type="button" class="vue" id="vueBoutonFil" aria-pressed="false" data-t="vueFil">Fil à soi</button>
+    <button type="button" class="vue" id="vueBoutonMur" aria-pressed="true" data-t="vueMur">Mur</button>
+  </div>
 
-  <section id="vueFil" aria-label="Fil à soi">
+  <section id="vueFil" aria-label="Fil à soi" hidden>
     <div class="fil-notes" id="filNotes"></div>
     <p class="vide" id="videFil" data-t="videFil" hidden>Rien pour l’instant. Écris-toi — une idée, une liste, un lien.</p>
   </section>
 
-  <section id="vueMur" aria-label="Mur" hidden>
-    <div class="filtres" id="filtres" role="group" aria-label="Filtrer">
-      <button type="button" class="filtre" data-filtre="tout" aria-pressed="true" data-t="fTout">Toutes</button>
-      <button type="button" class="filtre" data-filtre="epingle" aria-pressed="false" data-t="fEpingle">Épinglées</button>
-      <button type="button" class="filtre" data-filtre="liste" aria-pressed="false" data-t="fListe">Listes</button>
-      <button type="button" class="filtre" data-filtre="lien" aria-pressed="false" data-t="fLien">Liens</button>
-    </div>
+  <section id="vueMur" aria-label="Mur">
     <div class="mur-notes" id="murNotes"></div>
     <p class="vide" id="videMur" data-t="videMur" hidden>Rien de ce côté.</p>
   </section>
 
 </div>
 
-<div class="ecrire-bas" id="ecrireBas">
+<div class="ecrire-bas" id="ecrireBas" hidden>
   <div class="ecrire">
     <label class="visuellement-cache" for="champNote" data-t="labNote">Écris-toi</label>
     <textarea id="champNote" rows="1" maxlength="4000" data-p="phNote" placeholder="Écris-toi."></textarea>
@@ -428,16 +419,6 @@
   $('vueBoutonFil').addEventListener('click', function () { montrerVue(false); });
   $('vueBoutonMur').addEventListener('click', function () { montrerVue(true); });
 
-  $('filtres').addEventListener('click', function (e) {
-    var b = e.target.closest('.filtre');
-    if (!b) return;
-    filtre = b.dataset.filtre;
-    document.querySelectorAll('.filtre').forEach(function (f) {
-      f.setAttribute('aria-pressed', f === b ? 'true' : 'false');
-    });
-    dessinerMur();
-  });
-
   var champ = $('champNote');
 
   /* La hauteur suit le texte. Le contenant porte deux marques : le champ non
@@ -467,7 +448,7 @@
       ajusterChamp();
       return charger();
     }).then(function () {
-      dessinerFil();
+      dessiner();
       auBas();
       champ.focus();
     }, function () { chrome.toast(t().notesMuettes); });
@@ -561,8 +542,10 @@
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();
   consommerPartage().then(charger).then(function () {
-    dessinerFil();
-    auBas();
+    /* La vue courante est celle que porte le document : l'ouverture dessine
+       celle-la, et ne descend au bas que pour le fil, qui se lit vers le bas. */
+    dessiner();
+    if (!$('vueFil').hidden) auBas();
   }, function () { chrome.toast(t().notesMuettes); });
 })();
 </script>

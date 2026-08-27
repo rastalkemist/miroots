@@ -513,7 +513,6 @@
   color: var(--encre-discrete);
   padding-top: var(--air-i2); padding-bottom: var(--air-i1);
 }
-:where(body.p-space) .hall-ligne + .fil-jour{ border-top: 1px solid var(--gris-service) }
 
 /* Un module sans contenu porte sa carte et son nom, rien de plus : sa
    hauteur suit ce qu'il affiche, comme celle de tout autre module. */
@@ -659,11 +658,13 @@
 /* ---- L'ecran des notes ---------------------------------------------------
    Le fil ecrit vers le bas, la saisie collee au bas de l'ecran ; le mur
    range en colonnes. Une seule vue se montre a la fois. */
-:where(body.p-space) .entete-notes{
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: var(--esp-4); flex-wrap: wrap;
+/* La page d'un module ne porte plus de titre : son nom prend la place du mot
+   d'univers dans la barre. Les vues ouvrent donc l'ecran, sur une seule ligne
+   de la largeur de la page, comme la ligne de filtres du Savoir. */
+:where(body.p-space) .vues{
+  display: flex; gap: var(--esp-2);
+  margin: 0 0 var(--air-i3);
 }
-:where(body.p-space) .vues{ display: flex; gap: var(--esp-2) }
 :where(body.p-space) .vue{
   border: var(--limite-ep) solid var(--limite-controle); color: var(--encre);
   background: none; border-radius: var(--rayon-pilule);
@@ -671,8 +672,11 @@
   font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-14);
   cursor: pointer;
 }
+/* La vue choisie prend le meme etat que la puce de filtre : meme famille de
+   pilule sur la meme surface claire, donc meme traitement. L'aplat clair qui
+   la marquait servait sur un fond sombre et ne tient pas la limite ici. */
 :where(body.p-space) .vue[aria-pressed="true"]{
-  border-color: var(--terre-e5); background: var(--terre-e5); color: var(--terre-e2);
+  border-color: var(--accent-plan); color: var(--accent-plan);
 }
 :where(body.p-space) .fil-notes{ display: grid; gap: var(--air-i3) }
 :where(body.p-space) .fil-jour{
@@ -821,13 +825,6 @@
 }
 @media (min-width: 1440px){
   :where(body.p-space) .mur-notes{ columns: 3 }
-}
-
-/* Sur l'aplat sombre de l'en-tete, la pilule de vue au repos prend les
-   encres de la surface ; l'active garde les siennes. */
-:where(body.p-space) .entete-notes .vue{ border-color: var(--blanc); color: var(--blanc) }
-:where(body.p-space) .entete-notes .vue[aria-pressed="true"]{
-  border-color: var(--terre-e5); background: var(--terre-e5); color: var(--terre-e2);
 }
 
 /* La vedette du hall : la bande sombre de l'univers porte le premier

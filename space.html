@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Uo1B9bRNc6+qEzYWQDalHDcmANSewlZ/MY/vlw9qhr4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-W4ZhL3L0B4/xB7JNHGp6j6SfCSSHsXUoL03gQvO3g00='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
@@ -335,8 +335,12 @@
     var z = $('apercuNotes');
     z.textContent = '';
     $('videNotes').hidden = NOTES.length > 0;
+    /* Les plus recentes se lisent EN BAS, contre le champ qui les ecrit : le
+       fil se parcourt comme un journal, du plus ancien au plus recent. La base
+       rend l'ordre inverse — on prend donc les plus recentes, puis on les
+       remet dans l'ordre du temps. */
     var jour = null;
-    NOTES.slice(0, APERCU_NOTES).forEach(function (n) {
+    NOTES.slice(0, APERCU_NOTES).reverse().forEach(function (n) {
       var j = jourDe(n.cree);
       if (j !== jour) {
         var s = document.createElement('li');
