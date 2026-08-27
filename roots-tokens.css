@@ -596,14 +596,6 @@
 .roots-base { font-family: var(--font-corps); color: var(--encre); background: var(--creme); }
 .roots-console { font-family: var(--font-corps); color: var(--encre); background: var(--blanc-casse); }
 
-.btn-principal {
-  background: var(--vert-e2); color: var(--encre-bouton);
-  border: none; border-radius: var(--rayon-pilule); padding: var(--esp-4);
-  font-family: var(--font-corps); font-weight: 700;
-  font-size: var(--t-sm);
-  cursor: pointer; width: 100%; min-height: var(--cible-min);
-}
-.btn-principal:disabled { opacity: 0.35; cursor: not-allowed; }
 
 .pastille-flottante {
   background: var(--creme); color: var(--encre);
@@ -1345,7 +1337,7 @@ html.au-clavier .controle-choix input:focus-visible {
    ⚠ Le survol ne se pose que la ou un dispositif de pointage existe.
    ============================================================================ */
 @media (hover: hover) {
-  .btn-principal:hover, .pastille-flottante:hover {
+  .pastille-flottante:hover {
     background: var(--univers-e3);
   }
   /* Le dialecte B ne quitte pas sa famille : son aplat est neutre, il monte
@@ -1357,7 +1349,7 @@ html.au-clavier .controle-choix input:focus-visible {
   .puce-filtre:hover { background: var(--univers-e5); }
   .tuile:hover { --tuile-fond: var(--univers-e3); }
 }
-.btn-principal:active, .pastille-flottante:active {
+.pastille-flottante:active {
   background: var(--univers-e1);
 }
 .btn-b:active { background: var(--noir);
@@ -1372,7 +1364,7 @@ html.au-clavier .controle-choix input:focus-visible {
 /* L'ETEINT — un aplat nomme, la meme image partout, mesuree une fois.
    ⚠ Un element eteint est exempte du plancher de contraste par SC 1.4.3 ;
    celui-ci le tient quand meme, a 4,94. */
-:where(.btn-principal, .pastille-flottante, .chip, .module-a, .btn-b,
+:where(.pastille-flottante, .chip, .module-a, .btn-b,
        .puce-filtre, .tuile, .compteur-gros button, .pave-num button):disabled,
 :where(.tuile, .btn-b)[disabled] {
   background: var(--eteint-fond) !important;

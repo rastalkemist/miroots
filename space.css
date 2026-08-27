@@ -436,14 +436,85 @@
   display: grid; gap: var(--air-i3); align-content: start;
 }
 :where(body.p-space) .hall-tete{
-  display: flex; justify-content: space-between; align-items: baseline;
-  gap: var(--esp-3); flex-wrap: wrap;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: var(--esp-3);
 }
-:where(body.p-space) .lien-ouvre{
-  font-size: var(--t-14); font-weight: var(--w-bold);
-  color: var(--accent-plan); text-decoration: none; white-space: nowrap;
-  min-height: var(--cible-min); display: inline-flex; align-items: center;
+/* Dans une tete de module, l'air vient de la carte, jamais de la marge du
+   titre : sans cela le toit s'ecarte d'un cran de plus que les trois autres
+   cotes, et le module qui porte un titre de rang 1 le fait differemment des
+   autres. */
+:where(body.p-space) .hall-tete :is(h1, h2){ margin: 0 }
+/* Ouvrir un module : le lien vit sur SON TITRE, et son extension couvre la
+   carte entiere — la carte s'ouvre donc partout ou l'on tape, sans que le
+   module devienne un seul nom verbeux pour qui l'ecoute. Ce qui est deja une
+   commande a l'interieur repasse au-dessus par son propre plan. */
+:where(body.p-space) .lien-module{
+  color: inherit; text-decoration: none;
 }
+:where(body.p-space) .lien-module::after{
+  content: ''; position: absolute; inset: 0;
+}
+/* Le signe a droite du nom : un chevron, qui dit que la carte mene quelque
+   part. Il ne porte aucun geste — le titre le porte — sauf sur le module en
+   vedette, ou cette place revient au geste d'ajout rapide. */
+:where(body.p-space) .ouvre-module{
+  flex: none; margin-left: auto;
+  min-width: var(--cible-min); height: var(--cible-min);
+  color: var(--accent-plan); text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+:where(body.p-space) .ouvre-module svg{ width: 22px; height: 22px }
+:where(body.p-space) .ouvre-module.est-geste{
+  position: relative;
+  border-radius: 50%; border: 1.5px solid currentColor;
+}
+:where(body.p-space) .hall-bloc{ position: relative }
+/* Ce qui est deja une commande dans la carte repasse au-dessus de
+   l'extension. Le lien du module en est exclu : c'est LUI qui porte
+   l'extension, et se poser lui-meme l'ancrerait sur son seul titre. */
+:where(body.p-space) .hall-bloc :is(button, input, textarea, a:not(.ouvre-module, .lien-module)){
+  position: relative;
+}
+/* La carte du module est un aplat, pas un aplat qui saute : le survol dit
+   qu'elle mene quelque part, sans mouvement. */
+@media (hover: hover){
+  :where(body.p-space) .hall-bloc:has(.lien-module:hover) .ouvre-module{
+    transform: translateX(2px);
+  }
+}
+
+/* LE FIL A SOI, dans le hall. Une note par ligne, coupee net ; le jour se
+   dit une fois, en tete de ses lignes ; l'heure se tient a droite, en
+   chiffres de meme chasse pour que la colonne reste droite. C'est ce qui
+   distingue un fil d'une liste : on y relit sa propre journee. */
+:where(body.p-space) .hall-lignes{
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 0;
+}
+:where(body.p-space) .hall-ligne{
+  display: flex; align-items: baseline; gap: var(--esp-3);
+  padding-block: var(--esp-1);
+  font-size: var(--t-sm); line-height: var(--lh-14); color: var(--encre);
+}
+:where(body.p-space) .hall-ligne + .hall-ligne{
+  border-top: 1px solid var(--gris-service);
+}
+:where(body.p-space) .fil-dit{
+  flex: 1; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+:where(body.p-space) .fil-heure{
+  flex: none; color: var(--encre-discrete);
+  font-size: var(--t-note); font-variant-numeric: tabular-nums;
+}
+:where(body.p-space) .fil-jour{
+  font-size: var(--t-note); font-weight: var(--w-bold);
+  letter-spacing: var(--lettrage-capitales-petites); text-transform: uppercase;
+  color: var(--encre-discrete);
+  padding-top: var(--air-i2); padding-bottom: var(--air-i1);
+}
+:where(body.p-space) .hall-ligne + .fil-jour{ border-top: 1px solid var(--gris-service) }
+
 /* Un module sans contenu porte sa carte et son nom, rien de plus : sa
    hauteur suit ce qu'il affiche, comme celle de tout autre module. */
 :where(body.p-space) .hall-bloc.dort{
@@ -512,7 +583,6 @@
 }
 :where(body.p-space) .hall-bloc .note-rang{ margin-top: var(--air-i1) }
 :where(body.p-space) .hall-bloc .bouton-vers{
-  min-height: calc(var(--cible-min) - var(--esp-3));
   padding-inline: var(--esp-3); font-size: var(--t-12);
 }
 :where(body.p-space) .note-carte.tenue{ border: 2px solid var(--terre-e5) }
@@ -525,7 +595,9 @@
 :where(body.p-space) .bouton-vers{
   border: 2px solid var(--accent-plan); color: var(--accent-plan);
   background: none; border-radius: var(--rayon-pilule);
-  min-height: calc(var(--cible-min) - var(--esp-2));
+  /* Ce qui se touche tient le plancher : une pilule raccourcie d'un cran
+     d'air rend une cible sous le plancher, sur tous les ecrans. */
+  min-height: var(--cible-min);
   padding-inline: var(--esp-4);
   font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-14);
   cursor: pointer;
@@ -623,25 +695,62 @@
 }
 :where(body.p-space) .ecrire{
   width: 100%; max-width: 640px;
-  display: flex; gap: var(--esp-3); align-items: flex-end;
-  background: var(--blanc); border: 2px solid var(--limite-controle);
-  border-radius: calc(var(--cible-min) / 2 + var(--esp-1));
-  padding: var(--esp-2) var(--esp-2) var(--esp-2) var(--esp-6);
+  display: flex; gap: var(--esp-2); align-items: flex-end;
+  background: var(--blanc);
+  /* Le trait de controle du dialecte rond ; le trait double appartient au
+     dialecte franc et ne se porte pas ici. La limite est le seul moyen
+     d'identifier un champ vide : elle tient 3:1 contre son fond. */
+  border: var(--limite-ep) solid var(--limite-controle);
+  border-radius: var(--rayon-carte);
+  padding: 0 var(--esp-1) 0 var(--esp-6);
 }
 :where(body.p-space) .ecrire:focus-within{ border-color: var(--accent-plan) }
 :where(body.p-space) .ecrire textarea{
   flex: 1; border: 0; background: none; resize: none;
   font: inherit; font-size: var(--t-16); line-height: 1.5;
-  color: var(--encre); padding-block: calc((var(--cible-min) - var(--esp-2) * 2 - 1.5em) / 2);
+  /* L'air vertical vit ICI et non sur le contenant : ce qui se touche est le
+     champ, et sa boite doit atteindre le plancher a elle seule. */
+  color: var(--encre); padding-block: calc((var(--cible-min) - 1.5em) / 2);
   outline: none; max-height: 144px;
 }
 :where(body.p-space) .envoi{
-  width: var(--cible-min); height: var(--cible-min); flex: none;
-  border: 2px solid var(--accent-plan); color: var(--accent-plan);
+  /* Le dessin recule d'un cran d'air pour ne pas venir tangenter la limite du
+     champ ; la zone atteinte reste au plancher par l'extension ci-dessous. */
+  width: calc(var(--cible-min) - var(--esp-2));
+  height: calc(var(--cible-min) - var(--esp-2)); flex: none;
+  border: var(--limite-ep) solid var(--accent-plan); color: var(--accent-plan);
   background: none; border-radius: var(--rayon-pilule);
   display: grid; place-items: center; cursor: pointer;
+  position: relative; margin-bottom: var(--esp-1);
 }
-:where(body.p-space) .envoi svg{ width: 20px; height: 20px }
+:where(body.p-space) .envoi::after{
+  content: ''; position: absolute; inset: calc(var(--esp-2) / -2);
+}
+:where(body.p-space) .envoi svg{ width: 18px; height: 18px }
+
+/* Le champ court du hall : une note rapide s'y ecrit et s'y garde. Sa forme
+   dit sa portee — deux lignes ici, la page pour ce qui s'etend. C'est le meme
+   composant que celui des notes, borne en hauteur. Il se declare APRES lui :
+   a specificite egale, c'est l'ordre qui tranche. */
+:where(body.p-space) .ecrire-court{ margin-top: var(--air-i3) }
+:where(body.p-space) .ecrire-court textarea{
+  max-height: calc(var(--cible-min) * 2);
+}
+
+/* Dans une carte, le composeur perd son cadre : un contenant dans un contenant
+   double la limite sans rien ajouter. Il devient la derniere ligne de la
+   liste — celle qu'on ecrit — aligne sur la colonne de texte, et sa limite
+   passe sous le seul champ, ou elle reste le moyen de l'identifier. */
+:where(body.p-space) .hall-bloc .ecrire{
+  border: 0; background: none; border-radius: 0;
+  padding: 0; gap: var(--esp-3);
+}
+:where(body.p-space) .hall-bloc .ecrire textarea{
+  border-bottom: var(--limite-ep) solid var(--limite-controle);
+}
+:where(body.p-space) .hall-bloc .ecrire:focus-within textarea{
+  border-bottom-color: var(--accent-plan);
+}
 :where(body.p-space) .filtres{
   display: flex; gap: var(--esp-2); flex-wrap: wrap; margin-bottom: var(--air-i3);
 }
@@ -681,15 +790,24 @@
 /* La vedette du hall : la bande sombre de l'univers porte le premier
    module, et ses cartes restent claires — elles s'y detachent d'elles-memes. */
 :where(body.p-space) .hall-bloc.vedette{ background: var(--univers) }
+/* Le titre du module en vedette ne redeclare de l'arbre que ce que la bande
+   sombre impose : son encre. Corps, graisse et interligne restent ceux du
+   rang 1 — sans quoi le premier titre de la page rendrait plus petit que
+   ceux des modules qui le suivent. */
 :where(body.p-space) .hall-bloc.vedette .hall-tete h1{
   margin: 0; color: var(--blanc);
-  font-family: var(--font-eclat); font-weight: var(--w-bold);
-  font-size: var(--t-h4); line-height: 1.1;
 }
-:where(body.p-space) .hall-bloc.vedette .lien-ouvre{ color: var(--terre-e4) }
+:where(body.p-space) .hall-bloc.vedette .ouvre-module{ color: var(--terre-e4) }
+:where(body.p-space) .hall-bloc.vedette .lien-module{ color: var(--blanc) }
 :where(body.p-space) .hall-bloc.vedette .vide,
 :where(body.p-space) .hall-bloc.vedette .etat-semaine{
   color: rgba(var(--blanc-rgb), .75);
+}
+/* Sur la bande sombre, l'aplat clair du vide garde son encre claire : la
+   paire s'inverse ensemble, jamais a moitie. */
+:where(body.p-space) .hall-bloc.vedette .vide{
+  background: rgba(var(--blanc-rgb), .10);
+  color: var(--blanc-casse);
 }
 :where(body.p-space) .hall-bloc.vedette .bouton-contour{
   border-color: var(--blanc); color: var(--blanc);
@@ -818,6 +936,9 @@
 :where(body.p-space) .intel-titre{
   font-weight: var(--w-bold); color: var(--encre);
   text-decoration: none; line-height: 1.35; overflow-wrap: anywhere;
+  /* Le titre mene au contenu : c'est une commande, et elle tient le plancher
+     tactile sur une ligne comme sur deux. */
+  display: flex; align-items: center; min-height: var(--cible-min);
 }
 :where(body.p-space) .intel-meta{
   margin: 0; display: flex; align-items: center; gap: var(--esp-2);
@@ -832,6 +953,8 @@
   color: var(--terre-e3); font-family: var(--font-corps);
   font-weight: var(--w-bold); font-size: var(--t-sm);
   padding: 0 var(--esp-1); position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: var(--cible-min);
 }
 :where(body.p-space) .intel-lien-action::after{
   content: ''; position: absolute; left: 0; right: 0;
