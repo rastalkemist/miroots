@@ -608,7 +608,8 @@
 .pastille-flottante {
   background: var(--creme); color: var(--encre);
   border: none; border-radius: var(--rayon-pilule); padding: 15px 26px;
-  font-weight: 700; font-size: var(--t-body); cursor: pointer;
+  font-family: var(--font-corps); font-weight: 700; font-size: var(--t-body);
+  cursor: pointer;
   min-height: var(--cible-min); box-shadow: var(--ombre-flottante);
 }
 
@@ -616,12 +617,14 @@
            padding: var(--esp-5); box-shadow: var(--ombre-carte); }
 
 .module-a { background: var(--creme); border: 2px solid transparent;
-            border-radius: var(--rayon-module); cursor: pointer; }
+            border-radius: var(--rayon-module); cursor: pointer;
+            font-family: var(--font-corps); color: var(--encre); }
 .module-a.actif { border-color: var(--vert-e2); background: var(--module-actif); }
 
 .chip { background: var(--creme); border: 2px solid transparent;
         border-radius: var(--rayon-pilule); padding: 9px 15px;
-        font-size: var(--t-sm);
+        font-family: var(--font-corps); font-size: var(--t-sm);
+        color: var(--encre);
         cursor: pointer; min-height: var(--cible-min); }
 .chip.actif { border-color: var(--terre-e3); background: var(--puce-active); }
 
