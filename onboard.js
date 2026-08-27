@@ -80,21 +80,27 @@
    rappele est celui que le tronc produit, tel qu'il le produit.
 
    Ce qu'il capte, et seulement tant que le chrome est absent : l'activation du
-   nom de la surface, le glissement vers le bas, les glissements lateraux, les
-   touches d'echappement et d'espace. Le nom de la surface est un lien : son
-   parcours est suspendu tant que le chrome est absent, et lui revient des
-   qu'il est present. Chaque autre geste reprend alors son sens ordinaire.
+   nom de la surface, le glissement vers le bas, les touches d'echappement et
+   d'espace. Le nom de la surface est un lien : son parcours est suspendu tant
+   que le chrome est absent, et lui revient des qu'il est present.
 
    Ce qu'il ne capte pas : le glissement du bas vers le haut, qui appartient au
-   systeme.
+   systeme, et le glissement lateral, qui EST le pas d'historique et se traite
+   comme tel, plus bas.
 
-   Le geste de retour n'est pas interceptable directement : une entree
-   d'historique est empilee, et le retour est rattrape puis annule TANT QUE LE
-   CHROME EST ABSENT — chaque rattrapage rempile, de sorte que le geste rappelle
-   le chrome autant de fois qu'il est fait.
-   Le chrome present, le geste reprend son sens ; mais le pas qu'il vient de
-   faire a consomme l'entree empilee, non celle de la page. Ce pas est donc
-   rendu, sinon il en faudrait deux pour partir.
+   LE PAS D'HISTORIQUE. Une entree est empilee au chargement. Le retour la
+   consomme et se decide sur un seul etat, lu au moment ou il arrive :
+     · chrome absent  — l'entree est rempilee et le chrome appele ;
+     · chrome present — le pas prend son sens ordinaire et l'ecran est quitte.
+   Le pas consomme est l'entree empilee, jamais celle de la page : quitter
+   demande donc de rendre ce pas.
+
+   AUCUN AUTRE SIGNAL N'ENTRE DANS CETTE DECISION. Un geste de bord fait naitre
+   un pas d'historique et, selon la plateforme, des evenements tactiles dont
+   l'ordre et la presence ne sont pas garantis. Les faire concourir a la meme
+   decision laisse un ecart ou le meme geste conclut deux fois, et en sens
+   contraire. La decision tient donc a l'etat du chrome, qui est observable et
+   ne depend d'aucune course.
 
    Exige que la page porte la classe qui masque le chrome et que le chrome
    commun soit present dans le document. */
@@ -108,13 +114,6 @@
     chrome: function () {
       var corps = document.body;
       var minuterie = null;
-      /* Un geste de bord fait naitre DEUX signaux : le glissement, puis le pas
-         d'historique. Ce temoin les rend solidaires sans mesurer aucun delai :
-         il est pose quand le glissement a rappele le chrome, consomme par le
-         pas d'historique qui suit, et efface des que le geste suivant commence
-         ou que le chrome se retire. Sans lui, un seul geste rappellerait le
-         chrome puis conclurait a l'inverse et quitterait la page. */
-      var parGlissement = false;
 
       function present() { return corps.classList.contains('nav-appele'); }
 
@@ -127,7 +126,6 @@
       function retirer() {
         clearTimeout(minuterie);
         corps.classList.remove('nav-appele');
-        parGlissement = false;
       }
 
       /* Le nom de la surface. L'activation au clavier d'un lien emet le meme
@@ -143,19 +141,18 @@
         });
       }
 
+      /* Le glissement vers le bas seul. Il ne produit aucun pas d'historique,
+         donc il ne rencontre pas la decision du retour. */
       var y0 = 0, x0 = 0;
       document.addEventListener('touchstart', function (e) {
         y0 = e.touches[0].clientY; x0 = e.touches[0].clientX;
-        parGlissement = false;
       }, { passive: true });
 
       document.addEventListener('touchend', function (e) {
         if (present()) return;
         var t = e.changedTouches[0];
         var dy = t.clientY - y0, dx = t.clientX - x0;
-        var bas = dy > SEUIL && dy > Math.abs(dx);
-        var cote = Math.abs(dx) > SEUIL && Math.abs(dx) > Math.abs(dy);
-        if (bas || cote) { appeler(); parGlissement = true; }
+        if (dy > SEUIL && dy > Math.abs(dx)) appeler();
       }, { passive: true });
 
       /* La touche d'echappement et la barre d'espace rappellent le chrome. La
@@ -171,13 +168,6 @@
 
       try { history.pushState({ ouv: 1 }, ''); } catch (err) {}
       window.addEventListener('popstate', function () {
-        if (parGlissement) {
-          /* Meme geste que le glissement qui vient de rappeler le chrome : le
-             second signal ne conclut pas a l'inverse du premier. */
-          parGlissement = false;
-          try { history.pushState({ ouv: 1 }, ''); } catch (err) {}
-          return;
-        }
         if (present()) {
           /* Rendre le pas pris : le geste doit partir, pas revenir sur place.
              Differe d'un tour, un pas d'historique demande depuis la reponse a
