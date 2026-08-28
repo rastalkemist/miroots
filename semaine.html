@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-6ohjlTKahE6dFZxgf18wWB1jnDifXS6xVEP4FhLmwJc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZAnynSx692V3VYPnQ4Z5JhSAF1wU/xu7m88lv8CUK6o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ma semaine</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
@@ -54,21 +54,7 @@
 
 <div id="contenu" class="corps">
 
-  <header class="entete-plan">
-    <h1 data-t="titre">Ma semaine</h1>
-    <p class="sous-titre" id="sousTitre"></p>
-  </header>
-
-  <section class="bloc-plan" aria-labelledby="etPoser">
-    <span class="etiquette" id="etPoser" data-t="etPoser">Poser un engagement</span>
-    <div class="champ">
-      <label for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
-      <input type="text" id="engagement" maxlength="120" autocomplete="off" data-p="phEngagement" placeholder="Finir la maquette du flyer…">
-    </div>
-    <span class="etiquette" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
-    <div class="jours" id="jours" role="group" aria-labelledby="etQuand"></div>
-    <button class="bouton-confirmer" id="btnAjouter" data-t="ajouter">Ajouter</button>
-  </section>
+  <p class="cadre-semaine" id="sousTitre"></p>
 
   <section class="bloc-plan" aria-labelledby="etSemaine">
     <span class="etiquette" id="etSemaine" data-t="etSemaine">Ma semaine</span>
@@ -87,17 +73,16 @@
     <span class="compte-dit" id="compteDit"></span>
   </section>
 
-  <section class="bloc-plan bloc-finance" aria-labelledby="etRevenus">
-    <span class="etiquette" id="etRevenus" data-t="etRevenus">Mes revenus</span>
-    <p class="montant" id="montant"></p>
-    <div class="champ champ-finance">
-      <label for="revenu" data-t="labRevenu">Noter un montant</label>
-      <input type="text" id="revenu" inputmode="numeric" autocomplete="off" maxlength="12" data-p="phRevenu" placeholder="0">
-    </div>
-    <button class="bouton-finance" id="btnRevenu" data-t="noter">Noter</button>
-    <span class="dit" id="ditRevenus" data-t="ditRevenus">Ce chiffre ne quitte pas ton téléphone.</span>
-  </section>
+</div>
 
+<div class="ecrire-bas" id="ecrireBas">
+  <div class="jours" id="jours" role="group" aria-labelledby="etQuand"></div>
+  <span class="visuellement-cache" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
+  <div class="ecrire">
+    <label class="visuellement-cache" for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
+    <textarea id="engagement" rows="1" maxlength="120" enterkeyhint="send" data-p="phEngagement" placeholder="Finir la maquette du flyer…"></textarea>
+    <button type="button" class="envoi" id="btnAjouter" aria-label="Ajouter" data-al="ajouter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
 </div>
 
 <footer class="pied">
@@ -145,27 +130,8 @@
     });
   }
 
-  /* Ce qui ne quitte pas l'appareil. La somme se lit et s'ecrit dans la memoire
-     du navigateur ; aucune requete ne la porte, et aucune porte du socle ne
-     l'accepte. La promesse affichee a l'ecran tient par la, et par rien
-     d'autre : la porter dans un envoi la romprait.
-     Le stockage peut refuser — navigation privee, quota — auquel cas la valeur
-     ne survit pas au tour et l'ecran continue sans elle. */
-  var CLE_REVENU = 'roots.plan.revenu';
-  var LOCAL = { revenus: 0, devise: 'F CFA' };
-  try {
-    var lu = localStorage.getItem(CLE_REVENU);
-    if (lu !== null && /^[0-9]{1,12}$/.test(lu)) LOCAL.revenus = parseInt(lu, 10);
-  } catch (e) {}
-
   var PlanDonnees = {
-    taches: function () { return SEMAINE.taches; },
-    revenus: function () { return LOCAL; },
-    noterRevenu: function (montant) {
-      LOCAL.revenus = montant;
-      try { localStorage.setItem(CLE_REVENU, String(montant)); } catch (e) {}
-      return LOCAL;
-    }
+    taches: function () { return SEMAINE.taches; }
   };
 
   var T = {
@@ -179,14 +145,9 @@
       ajouter: 'Ajouter',
       etSemaine: 'Ma semaine',
       etOu: 'Où j’en suis',
-      etRevenus: 'Mes revenus',
-      labRevenu: 'Noter un montant',
-      phRevenu: '0',
-      noter: 'Noter',
-      ditRevenus: 'Ce chiffre ne quitte pas ton téléphone.',
-      sansRevenu: 'Rien de noté cette semaine.',
       vide: 'Rien de posé pour l’instant. Écris un engagement là-haut — un seul suffit pour commencer.',
       semaineMuette: 'La semaine n’a pas répondu.',
+      faites: function (n) { return 'Faites (' + n + ')'; },
       reessayer: 'Réessayer',
       piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
@@ -212,14 +173,9 @@
       ajouter: 'Add',
       etSemaine: 'My week',
       etOu: 'Where I stand',
-      etRevenus: 'My earnings',
-      labRevenu: 'Record an amount',
-      phRevenu: '0',
-      noter: 'Record',
-      ditRevenus: 'This figure never leaves your phone.',
-      sansRevenu: 'Nothing recorded this week.',
       vide: 'Nothing set yet. Write one commitment above — one is enough to start.',
       semaineMuette: 'The week didn’t answer.',
+      faites: function (n) { return 'Done (' + n + ')'; },
       reessayer: 'Try again',
       piedPolitique: 'Privacy policy',
       toastNu: 'NU, the community side of Roots, is coming soon.',
@@ -261,9 +217,18 @@
 
   function bref(d) { return d.getDate() + ' ' + t().mois[d.getMonth()]; }
 
+  /* Le choix par defaut ouvre la rangee : il reste visible sans defiler,
+     les jours suivent dans l'ordre de la semaine. */
   function dessinerJours() {
     var z = $('jours');
     z.textContent = '';
+    var s = document.createElement('button');
+    s.type = 'button';
+    s.className = 'jour';
+    s.dataset.jour = '';
+    s.setAttribute('aria-pressed', jourChoisi === null ? 'true' : 'false');
+    s.textContent = t().sansJour;
+    z.appendChild(s);
     for (var i = 0; i < 7; i++) {
       var b = document.createElement('button');
       b.type = 'button';
@@ -273,13 +238,6 @@
       b.textContent = t().jours[i];
       z.appendChild(b);
     }
-    var s = document.createElement('button');
-    s.type = 'button';
-    s.className = 'jour';
-    s.dataset.jour = '';
-    s.setAttribute('aria-pressed', jourChoisi === null ? 'true' : 'false');
-    s.textContent = t().sansJour;
-    z.appendChild(s);
   }
 
   /* La coche vient d'un gabarit du balisage : construite en script, elle
@@ -308,6 +266,19 @@
     return b;
   }
 
+  var DEPLIES = [];
+
+  function listeDe(items) {
+    var ul = document.createElement('ul');
+    ul.className = 'taches';
+    items.forEach(function (x) {
+      var li = document.createElement('li');
+      li.appendChild(ligne(x));
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+
   /* Un groupe vide ne se rend pas : une case vide n'informe de rien, et le
      non-fait ne se met pas en scene. */
   function dessinerSemaine() {
@@ -332,16 +303,27 @@
       var et = document.createElement('span');
       et.className = 'etiquette';
       et.textContent = g.titre;
-      var ul = document.createElement('ul');
-      ul.className = 'taches';
       g.items.sort(function (a, b) { return a.ordre - b.ordre; });
-      g.items.forEach(function (x) {
-        var li = document.createElement('li');
-        li.appendChild(ligne(x));
-        ul.appendChild(li);
-      });
+      var restantes = g.items.filter(function (x) { return !x.fait_le; });
+      var faites = g.items.filter(function (x) { return !!x.fait_le; });
       bloc.appendChild(et);
-      bloc.appendChild(ul);
+      /* Les faites coulent sous les restantes et se tiennent repliees avec
+         leur compte : la liste ne montre que ce qui reste a faire. Une liste
+         vide ne se rend pas — une surface sans ligne n'informe de rien. */
+      if (restantes.length) bloc.appendChild(listeDe(restantes));
+      if (faites.length) {
+        var ouvert = DEPLIES.indexOf(g.cle === null ? 'x' : String(g.cle)) !== -1;
+        var r = document.createElement('button');
+        r.type = 'button';
+        r.className = 'repli-faites';
+        r.dataset.groupe = g.cle === null ? 'x' : String(g.cle);
+        r.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+        r.textContent = t().faites(faites.length);
+        bloc.appendChild(r);
+        var lf = listeDe(faites);
+        lf.hidden = !ouvert;
+        bloc.appendChild(lf);
+      }
       z.appendChild(bloc);
     });
   }
@@ -363,20 +345,6 @@
     $('compteDit').textContent = dit;
   }
 
-  /* Un zero n'est pas un revenu : tant que rien n'est note, la place dit
-     qu'elle est libre plutot que d'annoncer un montant nul. */
-  function dessinerRevenus() {
-    var r = PlanDonnees.revenus();
-    if (!r.revenus) {
-      $('montant').classList.add('sans');
-      $('montant').textContent = t().sansRevenu;
-      return;
-    }
-    $('montant').classList.remove('sans');
-    var s = String(r.revenus).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
-    $('montant').textContent = s + '\u00A0' + r.devise;
-  }
-
   function appliquerLangue() {
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
@@ -391,7 +359,6 @@
     dessinerJours();
     dessinerSemaine();
     dessinerProgression();
-    dessinerRevenus();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
   }
 
@@ -421,6 +388,14 @@
   /* La coche part a la porte, l'ecran suit la reponse : un refus laisse la
      ligne dans son etat vrai au lieu d'afficher un fait que la base n'a pas. */
   $('listeSemaine').addEventListener('click', function (e) {
+    var r = e.target.closest('.repli-faites');
+    if (r) {
+      var cle = r.dataset.groupe;
+      var i = DEPLIES.indexOf(cle);
+      if (i === -1) DEPLIES.push(cle); else DEPLIES.splice(i, 1);
+      dessinerSemaine();
+      return;
+    }
     var b = e.target.closest('.tache');
     if (!b || b.disabled) return;
     var fait = b.getAttribute('aria-pressed') !== 'true';
@@ -442,9 +417,25 @@
     });
   }
 
+  /* Un engagement est une ligne : l'entree l'envoie, le texte se replie sur
+     une seule suite de mots. La pastille ne s'allume que sur du contenu —
+     les espaces seuls ne comptent pas. */
+  function marquerChampSemaine() {
+    var champ = $('engagement');
+    champ.closest('.ecrire').classList.toggle('a-du-texte', champ.value.trim().length > 0);
+  }
+
+  $('engagement').addEventListener('input', marquerChampSemaine);
+  $('engagement').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      $('btnAjouter').click();
+    }
+  });
+
   $('btnAjouter').addEventListener('click', function () {
     var champ = $('engagement');
-    var texte = champ.value.trim();
+    var texte = champ.value.replace(/\s+/g, ' ').trim();
     if (!texte) { champ.focus(); return; }
     var b = $('btnAjouter');
     b.disabled = true;
@@ -453,27 +444,13 @@
       .then(function () {
         b.disabled = false;
         champ.value = '';
+        marquerChampSemaine();
         dessinerSemaine();
         dessinerProgression();
+        champ.focus();
       }, function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 
-  $('btnRevenu').addEventListener('click', function () {
-    var champ = $('revenu');
-    var brut = champ.value.replace(/[\s\u00A0]/g, '');
-    if (!/^[0-9]{1,12}$/.test(brut)) { champ.focus(); return; }
-    PlanDonnees.noterRevenu(parseInt(brut, 10));
-    champ.value = '';
-    dessinerRevenus();
-  });
-
-  $('revenu').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); $('btnRevenu').click(); }
-  });
-
-  $('engagement').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') { e.preventDefault(); $('btnAjouter').click(); }
-  });
 
   /* Le premier chargement : un acces jamais ouvert renvoie a la couverture,
      qui sait l'ouvrir ; les autres refus se disent sur place, avec le geste
