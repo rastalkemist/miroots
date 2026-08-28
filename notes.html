@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-bG4xvPG2I/bNPfbNVOHvYsxUFI06r1+R2GGe2in9Mvg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-IHCImQkWfcaoC8twOqWPrWr4ciKcEDnCWJJ9bLF/hqg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -87,7 +87,7 @@
 </footer>
 
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe actif" aria-current="true" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
   <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
@@ -131,7 +131,7 @@
      ecrit ; le mur, filtrable, ou l'on range — l'epingle et le retrait
      n'existent que la. Les notes ne quittent jamais l'appareil ; seule la
      ligne promue part, par la porte du service. */
-  var LIMITE_ENGAGEMENT = 120;
+  var LIMITE_ENGAGEMENT = 80;
   var NOTES = [];
   var filtre = 'tout';
   var quete = '';
@@ -423,7 +423,7 @@
   /* Le retrait s'applique tout de suite et se repare a la place meme de la
      note, le temps d'un delai. Une note reposee garde son identifiant et sa
      date : c'est la meme, pas une copie. */
-  var DELAI_RATTRAPAGE = 8000;
+  var DELAI_RATTRAPAGE = 4000;
   function rattrapage(note) {
     var l = document.createElement('div');
     l.className = 'rattrapage';
@@ -439,7 +439,20 @@
     });
     l.appendChild(d);
     l.appendChild(a);
-    setTimeout(function () { if (l.isConnected) l.remove(); }, DELAI_RATTRAPAGE);
+    /* Le rattrapage vit tant qu'on est dessus : le delai ne court que dans
+       l'inactivite, et repart entier quand on le quitte. Rien ne disparait
+       sous le doigt ou sous le foyer. */
+    var minuterie = null;
+    function armer() {
+      if (minuterie) clearTimeout(minuterie);
+      minuterie = setTimeout(function () { if (l.isConnected) l.remove(); }, DELAI_RATTRAPAGE);
+    }
+    function retenir() { if (minuterie) { clearTimeout(minuterie); minuterie = null; } }
+    l.addEventListener('pointerenter', retenir);
+    l.addEventListener('focusin', retenir);
+    l.addEventListener('pointerleave', armer);
+    l.addEventListener('focusout', armer);
+    armer();
     return l;
   }
 

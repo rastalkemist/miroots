@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-ZAnynSx692V3VYPnQ4Z5JhSAF1wU/xu7m88lv8CUK6o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-J1F2L/FHB5j7/+H+uaZRm4srO5M10ZgWzG2BJGoImiA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ma semaine</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
@@ -76,11 +76,17 @@
 </div>
 
 <div class="ecrire-bas" id="ecrireBas">
+  <div class="feuille-echeance" id="feuilleEcheance" role="group" aria-labelledby="etPourQuand" hidden>
+    <span class="etiquette" id="etPourQuand" data-t="etPourQuand">Pour quand ?</span>
+    <div class="options" id="optionsEcheance"></div>
+  </div>
   <div class="jours" id="jours" role="group" aria-labelledby="etQuand"></div>
   <span class="visuellement-cache" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
+  <div class="heures" id="heures" role="group" aria-labelledby="etHeure"></div>
+  <span class="visuellement-cache" id="etHeure" data-t="etHeure">À quelle heure ? (facultatif)</span>
   <div class="ecrire">
     <label class="visuellement-cache" for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
-    <textarea id="engagement" rows="1" maxlength="120" enterkeyhint="send" data-p="phEngagement" placeholder="Finir la maquette du flyer…"></textarea>
+    <textarea id="engagement" rows="1" maxlength="80" enterkeyhint="send" data-p="phEngagement" placeholder="Finir la maquette du flyer…"></textarea>
     <button type="button" class="envoi" id="btnAjouter" aria-label="Ajouter" data-al="ajouter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
 </div>
@@ -90,7 +96,7 @@
 </footer>
 
 <nav class="chrome-bas" id="superNav">
-  <button class="verbe actif" aria-current="true" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
+  <button class="verbe actif" data-verbe="space" aria-label="Plan"><span class="ico-rond"><svg class="i"><use href="#i-plan"/></svg></span></button>
   <button class="verbe" data-verbe="roots" aria-label="Roots"><span class="ico-rond"><svg class="i"><use href="#i-roots"/></svg></span></button>
   <button class="verbe" data-verbe="roam" aria-label="Roam"><span class="ico-rond"><svg class="i"><use href="#i-roam"/></svg></span></button>
 </nav>
@@ -100,6 +106,7 @@
   <div id="sections"></div>
 </div>
 <template id="tplCoche"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
+<template id="tplCloche"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4a6 6 0 0 0-6 6v4l-1.6 2.5a.8.8 0 0 0 .7 1.2h13.8a.8.8 0 0 0 .7-1.2L18 14v-4a6 6 0 0 0-6-6Zm-2 15a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -121,7 +128,8 @@
      copie de la semaine servie et la redessine apres chaque ecriture. Chaque
      porte refuse sans session ; la garde en tete d'ecran s'en charge avant.
      Ce que l'ecran exige de la reponse : taches[] portant id, engagement,
-     jour, fait_le, ordre — les noms que le socle rend. */
+     jour, fait_le, ordre — les noms que le socle rend. Il lit aussi echeance,
+     alarme et plus_tard quand la reponse les porte. */
   var SEMAINE = { taches: [] };
 
   function chargerSemaine() {
@@ -142,6 +150,14 @@
       labEngagement: 'Qu’est-ce que tu veux faire ?',
       phEngagement: 'Finir la maquette du flyer…',
       etQuand: 'Quand ? (facultatif)',
+      etHeure: 'À quelle heure ? (facultatif)',
+      etPourQuand: 'Pour quand ?',
+      plusTard: 'Plus tard',
+      alarme: 'Alarme',
+      autreHeure: 'Autre…',
+      horizons: { sp: 'Semaine prochaine', s2: 'Dans 2 semaines', mois: 'Le mois prochain', date: 'Un jour précis…' },
+      passer: 'Passer — sans échéance',
+      etages: { j: 'Ma journée', s: 'Cette semaine', p: 'Plus tard' },
       ajouter: 'Ajouter',
       etSemaine: 'Ma semaine',
       etOu: 'Où j’en suis',
@@ -155,12 +171,19 @@
       joursLongs: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
       sansJour: 'Cette semaine',
       mois: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
-      cadre: function (a, b) { return 'Du ' + a + ' au ' + b + '. Ce que tu poses ici ne regarde que toi.'; },
+      cadre: function (a, b) { return 'Du ' + a + ' au ' + b + '. Ta semaine, en un regard.'; },
       compte: function (f, n) { return f + ' sur ' + n; },
-      dit0: 'Rien de tenu pour l’instant, et la semaine n’est pas finie.',
-      dit1: 'Un engagement tenu.',
-      ditN: function (f) { return f + ' engagements tenus.'; },
-      ditTout: 'Tout est tenu.',
+      dit0: 'Rien de tenu pour l’instant mais la semaine n’est pas finie. Force et courage !',
+      tenus: function (f) { return f === 1 ? '1 engagement tenu' : f + ' engagements tenus'; },
+      palier: function (p) {
+        if (p <= 20) return ', excellent départ.';
+        if (p <= 40) return ', tu gagnes en traction. Courage, ne lâche rien !';
+        if (p <= 60) return ', tu es en train de gagner ta semaine. En avant.';
+        if (p <= 80) return ', tu y es presque, quel focus !';
+        if (p <= 90) return ', l’excellence en marche !';
+        if (p < 100) return ', tu frôles la perfection !';
+        return ', eza na boss des boss. On s’incline devant la perfection ;)';
+      },
       aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
     },
     en: {
@@ -170,6 +193,14 @@
       labEngagement: 'What do you want to do?',
       phEngagement: 'Finish the flyer layout…',
       etQuand: 'When? (optional)',
+      etHeure: 'What time? (optional)',
+      etPourQuand: 'When for?',
+      plusTard: 'Later',
+      alarme: 'Alarm',
+      autreHeure: 'Other…',
+      horizons: { sp: 'Next week', s2: 'In 2 weeks', mois: 'Next month', date: 'A specific day…' },
+      passer: 'Skip — no due date',
+      etages: { j: 'My day', s: 'This week', p: 'Later' },
       ajouter: 'Add',
       etSemaine: 'My week',
       etOu: 'Where I stand',
@@ -183,12 +214,19 @@
       joursLongs: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       sansJour: 'This week',
       mois: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      cadre: function (a, b) { return a + ' to ' + b + '. What you set here is yours alone.'; },
+      cadre: function (a, b) { return a + ' to ' + b + '. Your week, at a glance.'; },
       compte: function (f, n) { return f + ' of ' + n; },
-      dit0: 'Nothing kept yet, and the week is not over.',
-      dit1: 'One commitment kept.',
-      ditN: function (f) { return f + ' commitments kept.'; },
-      ditTout: 'All kept.',
+      dit0: 'Nothing kept yet, but the week isn’t over. Keep going!',
+      tenus: function (f) { return f === 1 ? '1 commitment kept' : f + ' commitments kept'; },
+      palier: function (p) {
+        if (p <= 20) return ', a great start.';
+        if (p <= 40) return ', you’re gaining traction. Keep pushing!';
+        if (p <= 60) return ', you’re winning your week. Onward.';
+        if (p <= 80) return ', almost there — what focus!';
+        if (p <= 90) return ', excellence in motion!';
+        if (p < 100) return ', brushing against perfection!';
+        return ', eza na boss des boss. We bow before perfection ;)';
+      },
       aria: function (e, f) { return (f ? 'Kept: ' : 'Not kept yet: ') + e; }
     }
   };
@@ -197,7 +235,14 @@
   var langue = Roots.langueRetenue(Roots.langueParDefaut());
   function t() { return T[langue] || T.fr; }
 
+  /* Le choix d'echeance du composeur : un jour de la semaine, une heure sur
+     ce jour, une alarme tenue sur cette heure — ou un horizon au-dela de la
+     semaine. Le jour et l'horizon s'excluent : choisir l'un rend l'autre. */
   var jourChoisi = null;
+  var heureChoisie = null;
+  var alarmeTenue = false;
+  var horizon = null;
+  var dateChoisie = null;
 
   /* Le lundi de la semaine en cours. getDay() rend 0 pour dimanche : le
      decalage ramene la semaine sur un debut lundi. */
@@ -215,20 +260,44 @@
     return d;
   }
 
+  function idxAujourdhui() { return (new Date().getDay() + 6) % 7; }
+
   function bref(d) { return d.getDate() + ' ' + t().mois[d.getMonth()]; }
 
-  /* Le choix par defaut ouvre la rangee : il reste visible sans defiler,
-     les jours suivent dans l'ordre de la semaine. */
+  function isoCourt(d) {
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+  }
+
+  /* L'echeance que le composeur enverra, calculee du choix courant. Un
+     horizon sans date (« Passer ») ne rend rien ici : il part en drapeau. */
+  function echeanceChoisie() {
+    if (jourChoisi !== null && heureChoisie) {
+      var d = jourDe(jourChoisi);
+      var hm = heureChoisie.split(':');
+      d.setHours(parseInt(hm[0], 10), parseInt(hm[1], 10), 0, 0);
+      return d;
+    }
+    if (horizon === 'sp' || horizon === 's2') {
+      var s = lundi();
+      s.setDate(s.getDate() + (horizon === 'sp' ? 7 : 14));
+      return s;
+    }
+    if (horizon === 'mois') {
+      var m = new Date();
+      m.setMonth(m.getMonth() + 1, 1);
+      m.setHours(0, 0, 0, 0);
+      return m;
+    }
+    if (horizon === 'date' && dateChoisie) return new Date(dateChoisie + 'T00:00:00');
+    return null;
+  }
+
+  /* La rangee porte les jours, puis « Plus tard » en fin : aucune pastille
+     pour la semaine entiere — l'absence de choix EST la semaine, et retoucher
+     le jour choisi le rend. */
   function dessinerJours() {
     var z = $('jours');
     z.textContent = '';
-    var s = document.createElement('button');
-    s.type = 'button';
-    s.className = 'jour';
-    s.dataset.jour = '';
-    s.setAttribute('aria-pressed', jourChoisi === null ? 'true' : 'false');
-    s.textContent = t().sansJour;
-    z.appendChild(s);
     for (var i = 0; i < 7; i++) {
       var b = document.createElement('button');
       b.type = 'button';
@@ -238,6 +307,135 @@
       b.textContent = t().jours[i];
       z.appendChild(b);
     }
+    var p = document.createElement('button');
+    p.type = 'button';
+    p.className = 'jour ptard';
+    p.dataset.ptard = '1';
+    p.setAttribute('aria-pressed', horizon !== null ? 'true' : 'false');
+    p.setAttribute('aria-expanded', $('feuilleEcheance').hidden ? 'false' : 'true');
+    p.textContent = t().plusTard;
+    z.appendChild(p);
+  }
+
+  /* La rangee des heures appartient aux jours : elle parait quand un jour est
+     choisi, se retire quand il se rend, et ne bloque rien — l'heure reste
+     facultative. L'alarme se tient en fin de rangee et exige une heure : une
+     alarme sans heure n'aurait pas d'instant ou sonner. */
+  function dessinerHeures() {
+    var z = $('heures');
+    z.textContent = '';
+    ['09:00', '12:00', '15:00', '18:00'].forEach(function (h) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'jour heure';
+      b.dataset.heure = h;
+      b.setAttribute('aria-pressed', heureChoisie === h ? 'true' : 'false');
+      b.textContent = parseInt(h, 10) + ':' + h.slice(3);
+      z.appendChild(b);
+    });
+    if (heureChoisie && ['09:00', '12:00', '15:00', '18:00'].indexOf(heureChoisie) === -1) {
+      var l = document.createElement('button');
+      l.type = 'button';
+      l.className = 'jour heure';
+      l.dataset.heure = heureChoisie;
+      l.setAttribute('aria-pressed', 'true');
+      l.textContent = parseInt(heureChoisie, 10) + ':' + heureChoisie.slice(3);
+      z.appendChild(l);
+    }
+    var a = document.createElement('input');
+    a.type = 'time';
+    a.className = 'jour autre-heure';
+    a.id = 'autreHeure';
+    a.setAttribute('aria-label', t().autreHeure);
+    z.appendChild(a);
+    var al = document.createElement('button');
+    al.type = 'button';
+    al.className = 'jour alarme';
+    al.id = 'btnAlarme';
+    al.disabled = !heureChoisie;
+    al.setAttribute('aria-pressed', alarmeTenue ? 'true' : 'false');
+    al.appendChild($('tplCloche').content.firstElementChild.cloneNode(true));
+    al.appendChild(document.createTextNode(t().alarme));
+    z.appendChild(al);
+    z.classList.toggle('ouverte', jourChoisi !== null);
+  }
+
+  /* La feuille d'echeance de « Plus tard » : les semaines seules, et un
+     « Passer » qui enregistre sans echeance — une incitation, jamais un
+     barrage. Inactive, elle s'eteint en fondu au bout d'un delai ; tant qu'on
+     est dessus, au doigt ou au foyer, le delai ne court pas et repart entier
+     au depart. Rien ne disparait sous la main. */
+  var DELAI_REPOS = 4000;
+  var feuilleMinuterie = null;
+
+  function feuilleRetenir() {
+    if (feuilleMinuterie) { clearTimeout(feuilleMinuterie); feuilleMinuterie = null; }
+  }
+
+  function feuilleArmer() {
+    feuilleRetenir();
+    feuilleMinuterie = setTimeout(fermerFeuille, DELAI_REPOS);
+  }
+
+  /* Ouvrir « Plus tard », c'est deja s'engager : « Semaine prochaine » se
+     tient choisie d'entree, et seul le geste explicite sur « Passer — sans
+     echeance » enregistre l'intention sans date. */
+  function ouvrirFeuille() {
+    var f = $('feuilleEcheance');
+    if (horizon === null) {
+      horizon = 'sp';
+      jourChoisi = null; heureChoisie = null; alarmeTenue = false;
+      dessinerFeuille();
+      dessinerHeures();
+    }
+    f.hidden = false;
+    f.classList.add('avant-entree');
+    void f.offsetHeight;
+    f.classList.remove('avant-entree');
+    feuilleArmer();
+    dessinerJours();
+  }
+
+  function fermerFeuille() {
+    var f = $('feuilleEcheance');
+    if (f.hidden) return;
+    feuilleRetenir();
+    f.classList.add('se-retire');
+    f.addEventListener('transitionend', function fin() {
+      f.removeEventListener('transitionend', fin);
+      f.classList.remove('se-retire');
+      f.hidden = true;
+      dessinerJours();
+    });
+  }
+
+  function dessinerFeuille() {
+    var z = $('optionsEcheance');
+    z.textContent = '';
+    ['sp', 's2', 'mois', 'date'].forEach(function (h) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'jour choix';
+      b.dataset.horizon = h;
+      b.setAttribute('aria-pressed', horizon === h ? 'true' : 'false');
+      b.textContent = t().horizons[h];
+      z.appendChild(b);
+    });
+    var d = document.createElement('input');
+    d.type = 'date';
+    d.className = 'jour champ-date';
+    d.id = 'champDate';
+    d.min = isoCourt(jourDe(7));
+    if (dateChoisie) d.value = dateChoisie;
+    d.hidden = horizon !== 'date';
+    d.setAttribute('aria-label', t().horizons.date);
+    z.appendChild(d);
+    var p = document.createElement('button');
+    p.type = 'button';
+    p.className = 'bouton-doux passer';
+    p.dataset.passer = '1';
+    p.textContent = t().passer;
+    z.appendChild(p);
   }
 
   /* La coche vient d'un gabarit du balisage : construite en script, elle
@@ -247,7 +445,25 @@
     return $('tplCoche').content.firstElementChild.cloneNode(true);
   }
 
-  function ligne(tache) {
+  /* L'echeance vit a droite de la ligne, chiffres de tableau, encre
+     discrete — la grammaire fil-heure du hall : l'heure si c'est aujourd'hui,
+     le jour abrege si c'est cette semaine, la date au-dela ; la cloche si
+     l'alarme est tenue. */
+  function mentionDe(tache, etage) {
+    var txt = '';
+    var e = tache.echeance ? new Date(tache.echeance) : null;
+    if (etage === 'j' && e) txt = e.getHours() + ':' + ('0' + e.getMinutes()).slice(-2);
+    else if (etage === 's' && tache.jour !== null && tache.jour !== undefined) txt = t().jours[tache.jour];
+    else if (etage === 'p' && e) txt = bref(e);
+    if (!txt && !tache.alarme) return null;
+    var m = document.createElement('span');
+    m.className = 'mention';
+    if (tache.alarme) m.appendChild($('tplCloche').content.firstElementChild.cloneNode(true));
+    if (txt) m.appendChild(document.createTextNode(txt));
+    return m;
+  }
+
+  function ligne(tache, etage) {
     var b = document.createElement('button');
     b.type = 'button';
     b.className = 'tache';
@@ -263,64 +479,99 @@
     e.textContent = tache.engagement;
     b.appendChild(c);
     b.appendChild(e);
+    var m = mentionDe(tache, etage);
+    if (m) b.appendChild(m);
     return b;
   }
 
   var DEPLIES = [];
 
-  function listeDe(items) {
+  function listeDe(items, etage) {
     var ul = document.createElement('ul');
     ul.className = 'taches';
     items.forEach(function (x) {
       var li = document.createElement('li');
-      li.appendChild(ligne(x));
+      li.appendChild(ligne(x, etage));
       ul.appendChild(li);
     });
     return ul;
   }
 
-  /* Un groupe vide ne se rend pas : une case vide n'informe de rien, et le
-     non-fait ne se met pas en scene. */
+  /* L'etage d'une tache : Ma journee porte le jour d'aujourd'hui et
+     l'echeance d'aujourd'hui ; Plus tard porte l'echeance au-dela de la
+     semaine et le sans-echeance declare ; Cette semaine porte le reste — les
+     autres jours et le sans-jour, l'absence de choix etant la semaine. */
+  function etageDe(x) {
+    var idx = idxAujourdhui();
+    if (x.plus_tard) return 'p';
+    if (x.echeance) {
+      var e = new Date(x.echeance);
+      var j0 = jourDe(idx);
+      var j1 = jourDe(idx + 1);
+      if (e >= j0 && e < j1) return 'j';
+      if (e >= jourDe(7)) return 'p';
+      return 's';
+    }
+    if (x.jour === idx) return 'j';
+    return 's';
+  }
+
+  var TRIS = {
+    j: function (a, b) {
+      var ea = a.echeance ? Date.parse(a.echeance) : Infinity;
+      var eb = b.echeance ? Date.parse(b.echeance) : Infinity;
+      return ea - eb || a.ordre - b.ordre;
+    },
+    s: function (a, b) {
+      var ja = a.jour === null || a.jour === undefined ? 7 : a.jour;
+      var jb = b.jour === null || b.jour === undefined ? 7 : b.jour;
+      return ja - jb || a.ordre - b.ordre;
+    },
+    p: function (a, b) {
+      var ea = a.echeance ? Date.parse(a.echeance) : Infinity;
+      var eb = b.echeance ? Date.parse(b.echeance) : Infinity;
+      return ea - eb || a.ordre - b.ordre;
+    }
+  };
+
+  /* Trois etages : Ma journee ouvre la page, Cette semaine suit, Plus tard
+     clot la liste. Un etage vide ne se rend pas : une case vide n'informe de
+     rien, et le non-fait ne se met pas en scene. */
   function dessinerSemaine() {
     var taches = PlanDonnees.taches();
     var z = $('listeSemaine');
     z.textContent = '';
     $('videSemaine').hidden = taches.length > 0;
 
-    var groupes = [];
-    for (var i = 0; i < 7; i++) groupes.push({ cle: i, titre: t().joursLongs[i] + ' ' + bref(jourDe(i)), items: [] });
-    groupes.push({ cle: null, titre: t().sansJour, items: [] });
+    var etages = { j: [], s: [], p: [] };
+    taches.forEach(function (x) { etages[etageDe(x)].push(x); });
 
-    taches.forEach(function (x) {
-      var g = groupes[x.jour === null || x.jour === undefined ? 7 : x.jour];
-      if (g) g.items.push(x);
-    });
-
-    groupes.forEach(function (g) {
-      if (!g.items.length) return;
+    ['j', 's', 'p'].forEach(function (cle) {
+      var items = etages[cle];
+      if (!items.length) return;
       var bloc = document.createElement('div');
       bloc.className = 'groupe-jour';
       var et = document.createElement('span');
       et.className = 'etiquette';
-      et.textContent = g.titre;
-      g.items.sort(function (a, b) { return a.ordre - b.ordre; });
-      var restantes = g.items.filter(function (x) { return !x.fait_le; });
-      var faites = g.items.filter(function (x) { return !!x.fait_le; });
+      et.textContent = t().etages[cle];
+      items.sort(TRIS[cle]);
+      var restantes = items.filter(function (x) { return !x.fait_le; });
+      var faites = items.filter(function (x) { return !!x.fait_le; });
       bloc.appendChild(et);
       /* Les faites coulent sous les restantes et se tiennent repliees avec
          leur compte : la liste ne montre que ce qui reste a faire. Une liste
          vide ne se rend pas — une surface sans ligne n'informe de rien. */
-      if (restantes.length) bloc.appendChild(listeDe(restantes));
+      if (restantes.length) bloc.appendChild(listeDe(restantes, cle));
       if (faites.length) {
-        var ouvert = DEPLIES.indexOf(g.cle === null ? 'x' : String(g.cle)) !== -1;
+        var ouvert = DEPLIES.indexOf(cle) !== -1;
         var r = document.createElement('button');
         r.type = 'button';
         r.className = 'repli-faites';
-        r.dataset.groupe = g.cle === null ? 'x' : String(g.cle);
+        r.dataset.groupe = cle;
         r.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
         r.textContent = t().faites(faites.length);
         bloc.appendChild(r);
-        var lf = listeDe(faites);
+        var lf = listeDe(faites, cle);
         lf.hidden = !ouvert;
         bloc.appendChild(lf);
       }
@@ -341,7 +592,9 @@
     j.setAttribute('aria-valuemax', String(n));
     j.setAttribute('aria-valuenow', String(f));
     $('jaugePart').style.width = (n ? Math.round(f * 100 / n) : 0) + '%';
-    var dit = f === 0 ? t().dit0 : (f === n ? t().ditTout : (f === 1 ? t().dit1 : t().ditN(f)));
+    /* L'encouragement suit le taux d'accomplissement, par paliers ecrits :
+       le compte des tenus d'abord, puis le mot du palier. */
+    var dit = f === 0 ? t().dit0 : t().tenus(f) + t().palier(f * 100 / n);
     $('compteDit').textContent = dit;
   }
 
@@ -357,6 +610,8 @@
     });
     $('sousTitre').textContent = t().cadre(bref(jourDe(0)), bref(jourDe(6)));
     dessinerJours();
+    dessinerHeures();
+    dessinerFeuille();
     dessinerSemaine();
     dessinerProgression();
     if (chrome && chrome.dessinerSections) chrome.dessinerSections();
@@ -377,12 +632,96 @@
     appliquerLangue();
   }
 
+  /* L'appui simple fait tout d'un geste : il choisit le jour ET revele la
+     rangee des heures, sans bloquer — l'heure s'ignore. Retoucher le jour le
+     rend et retire la rangee avec ses choix. « Plus tard » ouvre sa feuille ;
+     le jour et l'horizon s'excluent. */
   $('jours').addEventListener('click', function (e) {
     var b = e.target.closest('.jour');
     if (!b) return;
-    var v = b.dataset.jour;
-    jourChoisi = v === '' ? null : parseInt(v, 10);
+    if (b.dataset.ptard) {
+      if (horizon !== null) {
+        horizon = null;
+        dateChoisie = null;
+        fermerFeuille();
+        dessinerJours();
+        dessinerFeuille();
+        return;
+      }
+      if ($('feuilleEcheance').hidden) ouvrirFeuille(); else fermerFeuille();
+      return;
+    }
+    var v = parseInt(b.dataset.jour, 10);
+    jourChoisi = (jourChoisi === v) ? null : v;
+    if (jourChoisi === null) { heureChoisie = null; alarmeTenue = false; }
+    else { horizon = null; dateChoisie = null; fermerFeuille(); dessinerFeuille(); }
     dessinerJours();
+    dessinerHeures();
+  });
+
+  $('heures').addEventListener('click', function (e) {
+    var al = e.target.closest('.alarme');
+    if (al) {
+      if (al.disabled) return;
+      alarmeTenue = !alarmeTenue;
+      dessinerHeures();
+      return;
+    }
+    var b = e.target.closest('button.heure');
+    if (!b) return;
+    heureChoisie = (heureChoisie === b.dataset.heure) ? null : b.dataset.heure;
+    if (!heureChoisie) alarmeTenue = false;
+    dessinerHeures();
+  });
+
+  $('heures').addEventListener('change', function (e) {
+    var a = e.target.closest('.autre-heure');
+    if (!a || !a.value) return;
+    heureChoisie = a.value;
+    dessinerHeures();
+  });
+
+  /* Le choix d'un horizon ferme la feuille ; « Un jour precis » revele son
+     champ de date et attend la date ; « Passer » enregistre l'intention Plus
+     tard sans echeance. */
+  $('feuilleEcheance').addEventListener('click', function (e) {
+    var p = e.target.closest('.passer');
+    if (p) {
+      horizon = 'sans';
+      dateChoisie = null;
+      jourChoisi = null; heureChoisie = null; alarmeTenue = false;
+      fermerFeuille();
+      dessinerJours();
+      dessinerHeures();
+      dessinerFeuille();
+      return;
+    }
+    var b = e.target.closest('.choix');
+    if (!b) return;
+    horizon = b.dataset.horizon;
+    jourChoisi = null; heureChoisie = null; alarmeTenue = false;
+    dessinerFeuille();
+    dessinerJours();
+    dessinerHeures();
+    if (horizon === 'date') { feuilleRetenir(); $('champDate').focus(); return; }
+    dateChoisie = null;
+    fermerFeuille();
+  });
+
+  $('feuilleEcheance').addEventListener('change', function (e) {
+    var d = e.target.closest('.champ-date');
+    if (!d || !d.value) return;
+    dateChoisie = d.value;
+    fermerFeuille();
+  });
+
+  $('feuilleEcheance').addEventListener('pointerenter', feuilleRetenir);
+  $('feuilleEcheance').addEventListener('focusin', feuilleRetenir);
+  $('feuilleEcheance').addEventListener('pointerleave', function () {
+    if (!$('feuilleEcheance').hidden) feuilleArmer();
+  });
+  $('feuilleEcheance').addEventListener('focusout', function () {
+    if (!$('feuilleEcheance').hidden) feuilleArmer();
   });
 
   /* La coche part a la porte, l'ecran suit la reponse : un refus laisse la
@@ -433,13 +772,21 @@
     }
   });
 
+  /* La pose part avec tout le choix courant : le jour, l'echeance calculee,
+     l'alarme tenue, le drapeau Plus tard. Un choix que la porte refuse se dit
+     dans le toast — rien ne se perd en silence. */
   $('btnAjouter').addEventListener('click', function () {
     var champ = $('engagement');
     var texte = champ.value.replace(/\s+/g, ' ').trim();
     if (!texte) { champ.focus(); return; }
+    var params = { p_engagement: texte, p_jour: horizon !== null ? null : jourChoisi };
+    var ech = echeanceChoisie();
+    if (ech) params.p_echeance = ech.toISOString();
+    if (alarmeTenue && heureChoisie !== null && jourChoisi !== null) params.p_alarme = true;
+    if (horizon === 'sans') params.p_plus_tard = true;
     var b = $('btnAjouter');
     b.disabled = true;
-    Roots.db.appeler('plan_poser_tache', { p_engagement: texte, p_jour: jourChoisi })
+    Roots.db.appeler('plan_poser_tache', params)
       .then(chargerSemaine)
       .then(function () {
         b.disabled = false;
