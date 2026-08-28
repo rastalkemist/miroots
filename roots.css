@@ -183,7 +183,7 @@ h2{font-size:var(--t-h2);line-height:var(--lh-28);font-family:var(--font-lecture
    Les deux derniers rangs empruntent a l'editorial ses deux marques : les
    capitales espacees, puis l'italique. L'equilibre des lignes vaut pour tous :
    un titre ne laisse pas un mot seul sur sa derniere ligne. */
-h3{font-size:var(--t-h3);line-height:var(--lh-21);font-family:var(--font-eclat);font-weight:var(--w-medium);color:var(--encre);text-wrap:balance}
+h3{font-size:var(--t-h3);line-height:var(--lh-21);font-family:var(--font-eclat);font-weight:var(--w-bold);color:var(--encre);text-wrap:balance}
 h4{font-size:var(--t-h4);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-bold);color:var(--univers);text-wrap:balance}
 h5{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-corps);font-weight:var(--w-light);color:var(--encre);text-transform:uppercase;letter-spacing:var(--lettrage-capitales);text-wrap:balance}
 h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture);font-weight:var(--w-light);color:var(--univers);font-style:italic;text-wrap:balance}
@@ -623,14 +623,8 @@ body.nav-quete .chrome-droite{min-width:0;justify-self:stretch;justify-content:f
 .lien-section .ico svg{width:19px;height:19px}
 .lien-section .txt{flex:1}
 .lien-section .fleche{width:16px;height:16px;color:var(--encre-discrete);flex-shrink:0}
-.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--univers-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-sortie);text-align:center}
-/* L'annonce entre sur la courbe d'entree et sort sur celle de sortie : la
-   regle de base porte l'etat quitte, donc la sortie. Elle rend le pointeur
-   la ou il existe, pour que le survol suspende son decompte ; sur une surface
-   sans survol elle ne le prend pas, sans quoi elle intercepterait l'appui de
-   ce qu'elle recouvre. */
-.toast.visible{opacity:1;transform:translateX(-50%) translateY(0);transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree)}
-@media(hover:hover){.toast.visible{pointer-events:auto}}
+.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--univers-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree);text-align:center}
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}
 *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
@@ -1252,7 +1246,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 .cat.actif{background:var(--univers-selection);border-color:var(--univers)}
 /* Le saut vers une section la depose sous la pile collante, pas dessous. */
 :where(body.p-carte) .section-menu{scroll-margin-top:calc(var(--entete-h) + var(--cat-h) + var(--esp-3))}
-:where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--air-i6) 0 var(--air-i3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}
+:where(body.p-carte) .section-menu h3{font-size:var(--t-h3);line-height:1.3;margin:var(--air-i6) 0 var(--air-i3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}
 :where(body.p-carte) .section-menu:first-of-type h3{margin-top:var(--air-i2)}
 :where(body.p-carte) .article{background:var(--blanc);border-radius:var(--rayon-module);padding:var(--esp-3) var(--esp-4);margin-bottom:var(--air-i2);display:flex;justify-content:space-between;gap:var(--esp-3);align-items:center;box-shadow:var(--ombre-2)}
 :where(body.p-carte) .article .infos{flex:1}
@@ -2022,7 +2016,7 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
 :where(body.p-roam) .corps{padding-top:var(--air-i3)}
 :where(body.p-roam) .titre-section{margin:0 0 var(--air-i2)}
 :where(body.p-roam) .note-section{margin:0 0 var(--air-i3);font-size:var(--t-note);line-height:var(--lh-14);color:var(--encre-discrete)}
-:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:0;margin:0;min-width:0;font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold)}
+:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:0;margin:0;min-width:0;font-size:var(--t-h3);line-height:var(--lh-21)}
 :where(body.p-roam) .vedette-ou{font-size:var(--t-note);line-height:var(--lh-12);font-weight:var(--w-regular);color:var(--encre-discrete)}
 
 /* ---- Le geste de la vedette s'aligne sur le HAUT du bloc qu'il accompagne. */

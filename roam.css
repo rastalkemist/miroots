@@ -108,7 +108,7 @@
    elle reçoit l'aplat d'univers et l'encre blanche. Requis tant que la liste
    reste ouverte. */
 :where(body.p-roam) .note-section{margin:0 0 var(--air-i3);line-height:var(--lh-14);background:none;color:var(--encre-discrete)}
-:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:0;margin:0;font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold)}
+:where(body.p-roam) .vedette-nom{display:flex;flex-direction:column;gap:0;margin:0;font-size:var(--t-h3);line-height:var(--lh-21)}
 :where(body.p-roam) .vedette-ou{font-size:var(--t-note);line-height:var(--lh-12);font-weight:var(--w-regular);color:var(--encre-discrete)}
 
 /* ---- Le cartouche de la vedette. Sur la largeur d'un téléphone, le geste
