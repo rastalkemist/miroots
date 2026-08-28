@@ -22,7 +22,7 @@
 'use strict';
 
 <<<<<<< Updated upstream
-var VERSION   = '96f99c679b7a01c3';
+var VERSION   = '4a9b90a544593ac9';
 =======
 var VERSION   = '72c0f46881c6c4c6';
 >>>>>>> Stashed changes
