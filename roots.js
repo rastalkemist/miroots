@@ -893,6 +893,8 @@
     var onVerbe = opts.onVerbe || null;
 
     var toastTimer = null;
+    var toastArme = false;
+    var TOAST_TENUE = 2600;
     function toast(msg) {
       var el = document.getElementById('toast');
       if (!el) return;
@@ -903,8 +905,24 @@
       if (!msg) return;
       el.textContent = msg;
       el.classList.add('visible');
+      /* Le decompte se suspend tant que le pointeur tient l'annonce et repart
+         ENTIER au depart : ce qu'on est en train de lire ne se retire pas sous
+         les yeux. Le pointeur seul — l'annonce ne prend pas le foyer et
+         n'entre pas dans le parcours au clavier ; sur une surface sans survol
+         la feuille ne lui rend pas le pointeur, et le decompte court.
+         Les ecouteurs se posent une fois : l'element est unique et permanent,
+         en reposer a chaque annonce en empilerait autant que d'annonces. */
+      if (!toastArme) {
+        toastArme = true;
+        el.addEventListener('pointerenter', function () { clearTimeout(toastTimer); });
+        el.addEventListener('pointerleave', function () { armerToast(el); });
+      }
+      armerToast(el);
+    }
+
+    function armerToast(el) {
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(function () { el.classList.remove('visible'); }, 2600);
+      toastTimer = setTimeout(function () { el.classList.remove('visible'); }, TOAST_TENUE);
     }
 
     /* Pastille Mi/NU : elle s'étire à l'ouverture et, quand elle VIT DANS LA

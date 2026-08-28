@@ -623,8 +623,14 @@ body.nav-quete .chrome-droite{min-width:0;justify-self:stretch;justify-content:f
 .lien-section .ico svg{width:19px;height:19px}
 .lien-section .txt{flex:1}
 .lien-section .fleche{width:16px;height:16px;color:var(--encre-discrete);flex-shrink:0}
-.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--univers-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree);text-align:center}
-.toast.visible{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast{position:fixed;left:50%;bottom:calc(88px + var(--safe-bas));transform:translateX(-50%) translateY(10px);z-index:30;background:rgba(var(--univers-e1-rgb),.95);color:var(--creme);font-size:var(--t-sm);font-weight:700;padding:var(--esp-3) var(--esp-4);border-radius:var(--rayon-pilule);box-shadow:0 8px 24px rgba(var(--ombre-teinte),.4);opacity:0;pointer-events:none;transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-sortie);text-align:center}
+/* L'annonce entre sur la courbe d'entree et sort sur celle de sortie : la
+   regle de base porte l'etat quitte, donc la sortie. Elle rend le pointeur
+   la ou il existe, pour que le survol suspende son decompte ; sur une surface
+   sans survol elle ne le prend pas, sans quoi elle intercepterait l'appui de
+   ce qu'elle recouvre. */
+.toast.visible{opacity:1;transform:translateX(-50%) translateY(0);transition:opacity var(--mvt-apparition) var(--courbe-etat),transform var(--mvt-apparition) var(--courbe-entree)}
+@media(hover:hover){.toast.visible{pointer-events:auto}}
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}
 *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
