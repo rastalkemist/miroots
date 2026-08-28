@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-TnvAnogwAGkcu13hi86jRei+8m2Ibknw5oyN8wr45Ko='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-BfN49Lsws9D0BO0Mub0MhcHz3XTamF7V17/N2vCHRT0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -55,15 +55,17 @@
 
 <div id="contenu" class="corps corps-notes">
 
-  <div class="vues" role="group" aria-label="Vue">
-    <button type="button" class="vue" id="vueBoutonFil" aria-pressed="false" data-t="vueFil">Fil à soi</button>
-    <button type="button" class="vue" id="vueBoutonMur" aria-pressed="true" data-t="vueMur">Mur</button>
+  <div class="chercher">
+    <label class="visuellement-cache" for="quoi" data-t="labChercher">Chercher dans mes notes</label>
+    <input type="search" id="quoi" data-p="phChercher" placeholder="Chercher…" autocomplete="off" enterkeyhint="search">
   </div>
 
-  <section id="vueFil" aria-label="Fil à soi" hidden>
-    <div class="fil-notes" id="filNotes"></div>
-    <p class="vide" id="videFil" data-t="videFil" hidden>Rien pour l’instant. Écris-toi — une idée, une liste, un lien.</p>
-  </section>
+  <div class="filtres" id="filtres" role="group" aria-label="Affiner">
+    <button type="button" class="filtre" data-filtre="epingle" aria-pressed="false" data-t="fEpingle">Épinglées</button>
+    <button type="button" class="filtre" data-filtre="liste" aria-pressed="false" data-t="fListe">Listes</button>
+    <button type="button" class="filtre" data-filtre="breve" aria-pressed="false" data-t="fBreve">Pense-bêtes</button>
+    <button type="button" class="filtre" data-filtre="ecrit" aria-pressed="false" data-t="fEcrit">Écrits</button>
+  </div>
 
   <section id="vueMur" aria-label="Mur">
     <div class="mur-notes" id="murNotes"></div>
@@ -72,7 +74,7 @@
 
 </div>
 
-<div class="ecrire-bas" id="ecrireBas" hidden>
+<div class="ecrire-bas" id="ecrireBas">
   <div class="ecrire">
     <label class="visuellement-cache" for="champNote" data-t="labNote">Écris-toi</label>
     <textarea id="champNote" rows="1" maxlength="4000" data-p="phNote" placeholder="Écris-toi."></textarea>
@@ -94,6 +96,8 @@
   <div class="tete"><button class="fermer" id="fermerMenu" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button></div>
   <div id="sections"></div>
 </div>
+<template id="tplPin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6l-.7 5.2 2.7 3.3H7l2.7-3.3zM12 12.5V20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
+<template id="tplCroix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></template>
 <template id="tplCoche"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -129,18 +133,17 @@
   var LIMITE_ENGAGEMENT = 120;
   var NOTES = [];
   var filtre = 'tout';
+  var quete = '';
 
   var T = {
     fr: {
       saut: 'Aller au contenu',
-      vueFil: 'Fil à soi',
-      vueMur: 'Mur',
-      fTout: 'Toutes',
       fEpingle: 'Épinglées',
       fListe: 'Listes',
-      fLien: 'Liens',
-      videFil: 'Rien pour l’instant. Écris-toi — une idée, une liste, un lien.',
-      videMur: 'Rien de ce côté.',
+      fBreve: 'Pense-bêtes',
+      fEcrit: 'Écrits',
+      videMur: 'Rien pour l’instant. Écris-toi — une idée, une liste.',
+      versSavoir: 'Un lien se range dans ton Savoir, un peu plus bas.',
       labNote: 'Écris-toi',
       phNote: 'Écris-toi.',
       vers: '→ Ma Semaine',
@@ -149,6 +152,12 @@
       desepingler: 'Épinglée',
       retirer: 'Retirer',
       retirerSur: 'Retirer ?',
+      garder: 'Garder',
+      retiree: 'Note retirée',
+      annuler: 'Annuler',
+      labChercher: 'Chercher dans mes notes',
+      phChercher: 'Chercher…',
+      videQuete: 'Rien ne répond à cette recherche.',
       notesMuettes: 'Les notes n’ont pas répondu.',
       aujourdhui: 'Aujourd’hui',
       hier: 'Hier',
@@ -158,14 +167,12 @@
     },
     en: {
       saut: 'Skip to content',
-      vueFil: 'Feed',
-      vueMur: 'Wall',
-      fTout: 'All',
       fEpingle: 'Pinned',
       fListe: 'Lists',
-      fLien: 'Links',
-      videFil: 'Nothing yet. Write to yourself — an idea, a list, a link.',
-      videMur: 'Nothing on this side.',
+      fBreve: 'Quick notes',
+      fEcrit: 'Writings',
+      videMur: 'Nothing yet. Write to yourself — an idea, a list.',
+      versSavoir: 'Links live in your Knowledge bank, just below.',
       labNote: 'Write to yourself',
       phNote: 'Write to yourself.',
       vers: '→ My week',
@@ -174,6 +181,12 @@
       desepingler: 'Pinned',
       retirer: 'Remove',
       retirerSur: 'Remove?',
+      garder: 'Keep',
+      retiree: 'Note removed',
+      annuler: 'Undo',
+      labChercher: 'Search your notes',
+      phChercher: 'Search…',
+      videQuete: 'Nothing matches this search.',
       notesMuettes: 'The notes didn’t answer.',
       aujourdhui: 'Today',
       hier: 'Yesterday',
@@ -246,14 +259,19 @@
     }
     if (note.texte) {
       var p = document.createElement('p');
-      p.textContent = note.texte;
+      p.appendChild(avecMarques(note.texte));
       if (note.type === 'liste') p.className = 'note-titre';
       z.appendChild(p);
     }
     if (note.type === 'liste') {
       var ul = document.createElement('div');
       ul.className = 'coches';
-      note.items.forEach(function (item, i) {
+      /* Une ligne cochee descend au bas de la liste et la decocher la fait
+         remonter ; l'indice porte est celui de la donnee, pas de l'ecran. */
+      var rangees = note.items.map(function (item, i) { return { item: item, i: i }; });
+      rangees.sort(function (a, b) { return (a.item.fait ? 1 : 0) - (b.item.fait ? 1 : 0); });
+      rangees.forEach(function (r) {
+        var item = r.item, i = r.i;
         var b = document.createElement('button');
         b.type = 'button';
         b.className = 'note-item' + (item.fait ? ' fait' : '');
@@ -264,13 +282,31 @@
         c.className = 'note-case';
         c.appendChild(coche());
         var m = document.createElement('span');
-        m.textContent = item.t;
+        m.appendChild(avecMarques(item.t));
         b.appendChild(c);
         b.appendChild(m);
         ul.appendChild(b);
       });
       z.appendChild(ul);
     }
+    return z;
+  }
+
+  /* Le mot cherche s'eclaire dans la note rendue. La coincidence se prend sans
+     casse ; un ecart d'accent laisse la note visible sans l'eclairer. */
+  function avecMarques(texte) {
+    var z = document.createDocumentFragment();
+    if (!quete) { z.appendChild(document.createTextNode(texte)); return z; }
+    var bas = String(texte).toLowerCase(), i = 0, j;
+    while ((j = bas.indexOf(quete, i)) !== -1) {
+      if (j > i) z.appendChild(document.createTextNode(texte.slice(i, j)));
+      var m = document.createElement('mark');
+      m.className = 'trouve';
+      m.textContent = texte.slice(j, j + quete.length);
+      z.appendChild(m);
+      i = j + quete.length;
+    }
+    z.appendChild(document.createTextNode(texte.slice(i)));
     return z;
   }
 
@@ -281,23 +317,6 @@
     q.className = 'note-quand';
     q.textContent = gestion ? nomDuJour(note.cree) + ', ' + heure(note.cree) : heure(note.cree);
     rang.appendChild(q);
-    if (gestion) {
-      var ep = document.createElement('button');
-      ep.type = 'button';
-      ep.className = 'bouton-doux' + (note.epingle ? ' tenu' : '');
-      ep.dataset.geste = 'epingler';
-      ep.dataset.id = note.id;
-      ep.setAttribute('aria-pressed', note.epingle ? 'true' : 'false');
-      ep.textContent = note.epingle ? t().desepingler : t().epingler;
-      rang.appendChild(ep);
-      var re = document.createElement('button');
-      re.type = 'button';
-      re.className = 'bouton-doux';
-      re.dataset.geste = 'retirer';
-      re.dataset.id = note.id;
-      re.textContent = t().retirer;
-      rang.appendChild(re);
-    }
     if (note.promue) {
       var pos = document.createElement('span');
       pos.className = 'note-posee';
@@ -315,9 +334,37 @@
     return rang;
   }
 
+  /* Les deux pastilles tiennent la ligne du titre, a droite — la grammaire du
+     hall, ou le nom est a gauche et le geste a droite. Le texte partage leur
+     premiere ligne et reprend toute la largeur ensuite. */
+  function gestesDe(note) {
+    var z = document.createElement('div');
+    z.className = 'note-gestes';
+    var ep = document.createElement('button');
+    ep.type = 'button';
+    ep.className = 'geste-note';
+    ep.dataset.geste = 'epingler';
+    ep.dataset.id = note.id;
+    ep.setAttribute('aria-pressed', note.epingle ? 'true' : 'false');
+    ep.setAttribute('aria-label', note.epingle ? t().desepingler : t().epingler);
+    ep.appendChild($('tplPin').content.firstElementChild.cloneNode(true));
+    z.appendChild(ep);
+    var re = document.createElement('button');
+    re.type = 'button';
+    re.className = 'geste-note';
+    re.dataset.geste = 'retirer';
+    re.dataset.id = note.id;
+    re.setAttribute('aria-label', t().retirer);
+    re.appendChild($('tplCroix').content.firstElementChild.cloneNode(true));
+    z.appendChild(re);
+    return z;
+  }
+
   function carte(note, gestion) {
     var a = document.createElement('article');
+    a.id = 'n-' + note.id;
     a.className = 'note-carte' + (note.epingle && gestion ? ' tenue' : '');
+    if (gestion) a.appendChild(gestesDe(note));
     a.appendChild(corpsDe(note));
     a.appendChild(rangDe(note, gestion));
     return a;
@@ -325,31 +372,33 @@
 
   /* Le fil se lit comme on l'ecrit : les jours en descendant, le plus
      recent au bas, pres de la saisie. */
-  function dessinerFil() {
-    var z = $('filNotes');
-    z.textContent = '';
-    $('videFil').hidden = NOTES.length > 0;
-    var croissant = NOTES.slice().sort(function (a, b) { return a.cree - b.cree; });
-    var jourCourant = null;
-    croissant.forEach(function (n) {
-      var j = jourDe(n.cree);
-      if (j !== jourCourant) {
-        jourCourant = j;
-        var sep = document.createElement('div');
-        sep.className = 'fil-jour';
-        var mot = document.createElement('span');
-        mot.textContent = nomDuJour(n.cree);
-        sep.appendChild(mot);
-        z.appendChild(sep);
-      }
-      z.appendChild(carte(n, false));
-    });
+  /* Le mot cherche se compare a tout ce qui se lit dans la note : son texte,
+     ses items, son adresse. Sans accent ni casse — on cherche ce qu'on a en
+     tete, pas ce qu'on a tape. */
+  function aplati(v) {
+    return String(v || '').toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   }
-
+  function contient(note, mot) {
+    if (!mot) return true;
+    var tout = [note.texte || '', note.url || ''];
+    (note.items || []).forEach(function (i) { tout.push(i.t); });
+    return aplati(tout.join(' ')).indexOf(mot) !== -1;
+  }
+  /* Un lien n'est pas une note : il se range au Savoir, et c'est la qu'il se
+     retrouve. Le pense-bete est la note qui se lit d'un coup d'oeil — deux
+     lignes de donnees au plus, quatre-vingt-dix signes ; l'ecrit est le reste. */
+  function estBreve(note) {
+    return note.type === 'texte' &&
+      (note.texte.match(/\n/g) || []).length <= 1 &&
+      note.texte.length <= 90;
+  }
   function garde(note) {
+    if (note.type === 'lien') return false;
+    if (!contient(note, quete)) return false;
     if (filtre === 'epingle') return note.epingle;
     if (filtre === 'liste') return note.type === 'liste';
-    if (filtre === 'lien') return note.type === 'lien';
+    if (filtre === 'breve') return estBreve(note);
+    if (filtre === 'ecrit') return note.type === 'texte' && !estBreve(note);
     return true;
   }
 
@@ -361,22 +410,128 @@
     var liste = NOTES.filter(garde).sort(function (a, b) {
       return (b.epingle - a.epingle) || (b.cree - a.cree);
     });
-    $('videMur').hidden = liste.length > 0;
+    var v = $('videMur');
+    v.hidden = liste.length > 0;
+    v.textContent = quete ? t().videQuete : t().videMur;
     liste.forEach(function (n) { z.appendChild(carte(n, true)); });
   }
 
-  function dessiner() {
-    if ($('vueFil').hidden) dessinerMur();
-    else dessinerFil();
+  /* Le retrait s'applique tout de suite et se repare a la place meme de la
+     note, le temps d'un delai. Une note reposee garde son identifiant et sa
+     date : c'est la meme, pas une copie. */
+  var DELAI_RATTRAPAGE = 8000;
+  function rattrapage(note) {
+    var l = document.createElement('div');
+    l.className = 'rattrapage';
+    var d = document.createElement('span');
+    d.textContent = t().retiree;
+    var a = document.createElement('button');
+    a.type = 'button';
+    a.className = 'bouton-doux';
+    a.textContent = t().annuler;
+    a.addEventListener('click', function () {
+      SpaceNotes.reposer(note).then(charger).then(dessiner,
+        function () { chrome.toast(t().notesMuettes); });
+    });
+    l.appendChild(d);
+    l.appendChild(a);
+    setTimeout(function () { if (l.isConnected) l.remove(); }, DELAI_RATTRAPAGE);
+    return l;
   }
+
+  /* Toucher une note l'ouvre en ecriture LA OU ELLE EST : son corps devient le
+     composeur, deja rempli. Fermer — par la pastille, l'entree au clavier ou un
+     appui hors de la carte — garde ce qui a change ; la touche d'echappement
+     abandonne. Un texte vide n'efface jamais la note : le retrait est un geste
+     propre, il ne se produit pas par accident. */
+  var enEdition = null;
+  function texteBrut(note) {
+    if (note.type === 'lien') return note.url;
+    var lignes = [];
+    if (note.texte) lignes.push(note.texte);
+    (note.items || []).forEach(function (i) { lignes.push('- ' + i.t); });
+    return lignes.join('\n');
+  }
+  function editerSurPlace(note, hote) {
+    if (enEdition) fermerEdition(true);
+    var avant = texteBrut(note);
+    var z = document.createElement('div');
+    z.className = 'ecrire ecrire-carte a-du-texte';
+    var ta = document.createElement('textarea');
+    ta.rows = 1;
+    ta.maxLength = 4000;
+    ta.value = avant;
+    var env = document.createElement('button');
+    env.type = 'button';
+    env.className = 'envoi';
+    env.setAttribute('aria-label', t().garder);
+    env.appendChild($('btnPoser').firstElementChild.cloneNode(true));
+    z.appendChild(ta);
+    z.appendChild(env);
+    hote.classList.add('en-edition');
+    hote.textContent = '';
+    hote.appendChild(z);
+    enEdition = { id: note.id, avant: avant, hote: hote, champ: ta };
+    function tailler() {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 144) + 'px';
+    }
+    tailler();
+    ta.addEventListener('input', tailler);
+    ta.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); fermerEdition(false); return; }
+      if (continuerListe(e, ta)) { tailler(); return; }
+      if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer: fine)').matches) {
+        e.preventDefault();
+        fermerEdition(true);
+      }
+    });
+    env.addEventListener('click', function () { fermerEdition(true); });
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
+  function fermerEdition(garder) {
+    if (!enEdition) return;
+    var e = enEdition;
+    enEdition = null;
+    var brut = e.champ.value;
+    if (garder && brut.trim() && brut !== e.avant) {
+      SpaceNotes.modifier(e.id, brut)
+        .then(charger).then(dessiner, function () { chrome.toast(t().notesMuettes); });
+    } else {
+      dessiner();
+    }
+  }
+  document.addEventListener('pointerdown', function (e) {
+    if (enEdition && !enEdition.hote.contains(e.target)) fermerEdition(true);
+  });
+
+  /* Une ligne ouverte par un tiret se poursuit d'elle-meme a l'entree ; une
+     ligne restee vide referme la liste au meme geste. */
+  function continuerListe(e, ta) {
+    if (e.key !== 'Enter' || e.shiftKey) return false;
+    var pos = ta.selectionStart;
+    var debut = ta.value.lastIndexOf('\n', pos - 1) + 1;
+    var ligne = ta.value.slice(debut, pos);
+    if (/^\s*-\s+\S/.test(ligne)) {
+      e.preventDefault();
+      ta.setRangeText('\n- ', pos, ta.selectionEnd, 'end');
+      return true;
+    }
+    if (/^\s*-\s*$/.test(ligne)) {
+      e.preventDefault();
+      ta.setRangeText('', debut, pos, 'end');
+      return true;
+    }
+    return false;
+  }
+
+  function dessiner() { dessinerMur(); }
 
   function charger() {
     return SpaceNotes.toutes().then(function (liste) { NOTES = liste; });
   }
 
-  function auBas() {
-    window.scrollTo(0, document.documentElement.scrollHeight);
-  }
 
   function appliquerLangue() {
     document.documentElement.lang = langue;
@@ -407,17 +562,36 @@
     appliquerLangue();
   }
 
-  function montrerVue(mur) {
-    $('vueFil').hidden = mur;
-    $('vueMur').hidden = !mur;
-    $('ecrireBas').hidden = mur;
-    $('vueBoutonFil').setAttribute('aria-pressed', mur ? 'false' : 'true');
-    $('vueBoutonMur').setAttribute('aria-pressed', mur ? 'true' : 'false');
-    dessiner();
-    if (!mur) auBas();
+  /* Le champ d'ecriture ne depend pas de la vue : on ecrit d'ou l'on est. */
+  $('quoi').addEventListener('input', function () {
+    quete = aplati(this.value.trim());
+    dessinerMur();
+  });
+
+  /* On arrive parfois sur une note precise, depuis le hall. On ouvre alors le
+     fil — c'est la que la note se lit dans son temps — et on la designe un
+     instant. */
+  function menerALaNote() {
+    var m = /^#n-(.+)$/.exec(location.hash || '');
+    if (!m) return false;
+    var cible = $('n-' + m[1]);
+    if (!cible) return false;
+    cible.classList.add('designee');
+    cible.scrollIntoView({ block: 'center' });
+    setTimeout(function () { cible.classList.remove('designee'); }, 2400);
+    return true;
   }
-  $('vueBoutonFil').addEventListener('click', function () { montrerVue(false); });
-  $('vueBoutonMur').addEventListener('click', function () { montrerVue(true); });
+
+  /* Une pilule s'allume seule ; la re-toucher rend la vue entiere. */
+  $('filtres').addEventListener('click', function (e) {
+    var b = e.target.closest('.filtre');
+    if (!b) return;
+    filtre = (filtre === b.dataset.filtre) ? 'tout' : b.dataset.filtre;
+    $('filtres').querySelectorAll('.filtre').forEach(function (f) {
+      f.setAttribute('aria-pressed', f.dataset.filtre === filtre ? 'true' : 'false');
+    });
+    dessinerMur();
+  });
 
   var champ = $('champNote');
 
@@ -437,19 +611,35 @@
     cadre.classList.toggle('a-du-texte', champ.value.trim() !== '');
     cadre.classList.toggle('est-longue', pleine > hauteurUneLigne);
   }
-  champ.addEventListener('input', ajusterChamp);
+  /* Le meme brouillon vit dans le hall et ici : commencer d'un cote, finir de
+     l'autre. L'envoi l'efface ; le stockage peut etre refuse, la saisie n'en
+     depend pas. */
+  var BROUILLON = 'roots.space.brouillon';
+  function retenirBrouillon(v) {
+    try { if (v) localStorage.setItem(BROUILLON, v); else localStorage.removeItem(BROUILLON); }
+    catch (e) {}
+  }
+  champ.addEventListener('input', function () {
+    ajusterChamp();
+    retenirBrouillon(champ.value);
+  });
+  try {
+    var repris = localStorage.getItem(BROUILLON);
+    if (repris && !champ.value) champ.value = repris;
+  } catch (e) {}
   ajusterChamp();
 
   function poser() {
     var brut = champ.value;
     if (!brut.trim()) { champ.focus(); return; }
-    SpaceNotes.poser(brut).then(function () {
+    SpaceNotes.poser(brut).then(function (note) {
       champ.value = '';
+      retenirBrouillon('');
       ajusterChamp();
+      if (note.type === 'lien') chrome.toast(t().versSavoir);
       return charger();
     }).then(function () {
       dessiner();
-      auBas();
       champ.focus();
     }, function () { chrome.toast(t().notesMuettes); });
   }
@@ -458,6 +648,7 @@
   /* Sur clavier physique, l'entree envoie et la ligne se demande avec la
      majuscule ; sur l'ecran tactile, seule la commande envoie. */
   champ.addEventListener('keydown', function (e) {
+    if (continuerListe(e, champ)) { ajusterChamp(); retenirBrouillon(champ.value); return; }
     if (e.key === 'Enter' && !e.shiftKey && window.matchMedia('(pointer: fine)').matches) {
       e.preventDefault();
       poser();
@@ -474,6 +665,16 @@
      un refus rend le geste et le dit. Le retrait demande deux appuis : le
      premier arme, le second seul efface. */
   document.getElementById('contenu').addEventListener('click', function (e) {
+    /* Toucher une note l'ouvre en ecriture sur place — partout sauf sur une
+       commande ou un lien, qui gardent leur geste. Meme regle que les modules
+       du hall. */
+    if (!e.target.closest('button, a, textarea')) {
+      var hote = e.target.closest('.note-carte');
+      if (hote && hote.id.indexOf('n-') === 0 && !hote.classList.contains('en-edition')) {
+        var vise = trouver(hote.id.slice(2));
+        if (vise) { editerSurPlace(vise, hote); return; }
+      }
+    }
     var b = e.target.closest('[data-geste], .note-item');
     if (!b || b.disabled) return;
 
@@ -503,16 +704,13 @@
     }
 
     if (b.dataset.geste === 'retirer') {
-      if (!b.classList.contains('arme')) {
-        b.classList.add('arme');
-        b.textContent = t().retirerSur;
-        setTimeout(function () {
-          if (b.isConnected) { b.classList.remove('arme'); b.textContent = t().retirer; }
-        }, 3000);
-        return;
-      }
-      SpaceNotes.retirer(note.id)
-        .then(charger).then(dessiner, function () { chrome.toast(t().notesMuettes); });
+      var place = b.closest('.note-carte');
+      SpaceNotes.retirer(note.id).then(function (gardee) {
+        if (!gardee) return charger().then(dessiner);
+        if (enEdition && enEdition.id === note.id) { enEdition = null; }
+        if (place && place.isConnected) place.replaceWith(rattrapage(gardee));
+        return charger();
+      }, function () { chrome.toast(t().notesMuettes); });
     }
   });
 
@@ -542,10 +740,8 @@
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();
   consommerPartage().then(charger).then(function () {
-    /* La vue courante est celle que porte le document : l'ouverture dessine
-       celle-la, et ne descend au bas que pour le fil, qui se lit vers le bas. */
-    dessiner();
-    if (!$('vueFil').hidden) auBas();
+    dessinerMur();
+    menerALaNote();
   }, function () { chrome.toast(t().notesMuettes); });
 })();
 </script>

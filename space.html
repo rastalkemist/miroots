@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-W4ZhL3L0B4/xB7JNHGp6j6SfCSSHsXUoL03gQvO3g00='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-HChK3DiXVA74WG0REJgmxU0uOIglPVzHulGb9j70bkc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
@@ -61,7 +61,7 @@
 
     <section class="hall-bloc vedette" aria-labelledby="hSemaine">
       <div class="hall-tete">
-        <h1 id="hSemaine"><a class="lien-module" href="semaine.html" data-t="blocSemaine">Ma Semaine</a></h1>
+        <h2 id="hSemaine"><a class="lien-module" href="semaine.html" data-t="blocSemaine">Ma Semaine</a></h2>
         <a class="ouvre-module est-geste" href="semaine.html#engagement" data-tl="ajoutRapide" aria-label="Ajouter un engagement"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></a>
       </div>
       <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
@@ -184,6 +184,7 @@
       posee: 'Dans ta semaine',
       semaineMuette: 'La semaine n’a pas répondu.',
       notesMuettes: 'Les notes n’ont pas répondu.',
+      versSavoir: 'Un lien se range dans ton Savoir, un peu plus bas.',
       reessayer: 'Réessayer',
       coche: function (n, f) { return f + ' / ' + n + ' coché'; },
       aujourdhui: 'Aujourd’hui',
@@ -210,6 +211,7 @@
       posee: 'In your week',
       semaineMuette: 'The week didn’t answer.',
       notesMuettes: 'The notes didn’t answer.',
+      versSavoir: 'Links live in your Knowledge bank, just below.',
       reessayer: 'Try again',
       coche: function (n, f) { return f + ' / ' + n + ' checked'; },
       aujourdhui: 'Today',
@@ -312,12 +314,25 @@
   function ligneNote(note) {
     var li = document.createElement('li');
     li.className = 'hall-ligne';
-    var txt = document.createElement('span');
+    var txt = document.createElement('a');
     txt.className = 'fil-dit';
-    if (note.type === 'lien') {
-      var ou = '';
-      try { ou = new URL(note.url).hostname; } catch (e) { ou = note.url; }
-      txt.textContent = '↗ ' + ou;
+    txt.href = 'notes.html#n-' + note.id;
+    if (note.type === 'liste') {
+      /* Une liste se dit par ce qui RESTE a faire, et son compte suit. */
+      var items = note.items || [];
+      var faits = items.filter(function (i) { return i.fait; }).length;
+      var courant = items.filter(function (i) { return !i.fait; })[0];
+      txt.textContent = note.texte || (courant ? courant.t : (items[0] ? items[0].t : ''));
+      var cpt = document.createElement('span');
+      cpt.className = 'fil-compte';
+      cpt.textContent = faits + '/' + items.length;
+      li.appendChild(txt);
+      li.appendChild(cpt);
+      var hl = document.createElement('span');
+      hl.className = 'fil-heure';
+      hl.textContent = heureDe(note.cree);
+      li.appendChild(hl);
+      return li;
     } else {
       txt.textContent = note.texte || (note.items && note.items[0] ? note.items[0].t : '');
     }
@@ -334,13 +349,16 @@
   function dessinerNotes() {
     var z = $('apercuNotes');
     z.textContent = '';
-    $('videNotes').hidden = NOTES.length > 0;
     /* Les plus recentes se lisent EN BAS, contre le champ qui les ecrit : le
        fil se parcourt comme un journal, du plus ancien au plus recent. La base
        rend l'ordre inverse — on prend donc les plus recentes, puis on les
        remet dans l'ordre du temps. */
     var jour = null;
-    NOTES.slice(0, APERCU_NOTES).reverse().forEach(function (n) {
+    /* Les liens vivent au Savoir, pas dans le fil : le module d'en dessous les
+       compte et les sert. */
+    var sansLiens = NOTES.filter(function (n) { return n.type !== 'lien'; });
+    $('videNotes').hidden = sansLiens.length > 0;
+    sansLiens.slice(0, APERCU_NOTES).reverse().forEach(function (n) {
       var j = jourDe(n.cree);
       if (j !== jour) {
         var s = document.createElement('li');
@@ -361,9 +379,11 @@
     if (!brut.trim()) { champ.focus(); return; }
     var b = $('btnPoserHall');
     b.disabled = true;
-    SpaceNotes.poser(brut).then(function () {
+    SpaceNotes.poser(brut).then(function (note) {
       champ.value = '';
+      retenirBrouillon('');
       marquerChampHall();
+      if (note.type === 'lien') chrome.toast(t().versSavoir);
       return chargerNotes();
     }).then(function () {
       b.disabled = false;
@@ -458,16 +478,52 @@
 
   /* Le contenant porte la marque du champ non vide : elle commande l'aplat de
      la pastille, qui annonce qu'il y a de quoi envoyer. Les espaces seuls ne
-     comptent pas — l'envoi les refuse. */
+     comptent pas — l'envoi les refuse.
+     Ce qui est tape et pas encore envoye se retient SUR L'APPAREIL, et se
+     retrouve au retour ; l'envoi l'efface. Le stockage peut etre refuse — on
+     continue sans, la saisie n'en depend pas. */
+  var BROUILLON = 'roots.space.brouillon';
+  function retenirBrouillon(v) {
+    try { if (v) localStorage.setItem(BROUILLON, v); else localStorage.removeItem(BROUILLON); }
+    catch (e) {}
+  }
   function marquerChampHall() {
     var champ = $('champHall');
     champ.closest('.ecrire').classList.toggle('a-du-texte', champ.value.trim() !== '');
   }
-  $('champHall').addEventListener('input', marquerChampHall);
+  $('champHall').addEventListener('input', function () {
+    marquerChampHall();
+    retenirBrouillon(this.value);
+  });
+  try {
+    var repris = localStorage.getItem(BROUILLON);
+    if (repris) $('champHall').value = repris;
+  } catch (e) {}
   marquerChampHall();
 
+  /* Une ligne ouverte par un tiret se poursuit d'elle-meme a l'entree ; une
+     ligne restee vide referme la liste au meme geste. */
+  function continuerListe(e, ta) {
+    if (e.key !== 'Enter' || e.shiftKey) return false;
+    var pos = ta.selectionStart;
+    var debut = ta.value.lastIndexOf('\n', pos - 1) + 1;
+    var ligne = ta.value.slice(debut, pos);
+    if (/^\s*-\s+\S/.test(ligne)) {
+      e.preventDefault();
+      ta.setRangeText('\n- ', pos, ta.selectionEnd, 'end');
+      return true;
+    }
+    if (/^\s*-\s*$/.test(ligne)) {
+      e.preventDefault();
+      ta.setRangeText('', debut, pos, 'end');
+      return true;
+    }
+    return false;
+  }
   $('btnPoserHall').addEventListener('click', poserDuHall);
   $('champHall').addEventListener('keydown', function (e) {
+    var ch = $('champHall');
+    if (continuerListe(e, ch)) { marquerChampHall(); retenirBrouillon(ch.value); return; }
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); poserDuHall(); }
   });
 

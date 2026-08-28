@@ -48,6 +48,9 @@
   /* La forme d'une note se lit dans le texte posé, sans réglage : des
      lignes en tirets font une liste à cocher, une adresse seule fait un
      lien, le reste est une note. */
+  /* Ce que l'on ecrit est ce que l'on relit : les retours a la ligne sont
+     conserves. Une ligne ouverte par un tiret devient un item cochable ; le
+     reste garde sa mise en lignes. */
   function analyser(brut) {
     var texte = String(brut || '').replace(/\r/g, '').trim();
     var items = [];
@@ -55,11 +58,13 @@
     texte.split('\n').forEach(function (l) {
       var m = l.match(/^\s*[-*]\s+(.+)$/);
       if (m) items.push({ t: m[1].trim(), fait: false });
-      else if (l.trim()) reste.push(l.trim());
+      else reste.push(l.replace(/\s+$/, ''));
     });
-    if (items.length) return { type: 'liste', texte: reste.join(' '), items: items, url: '' };
+    while (reste.length && !reste[reste.length - 1].trim()) reste.pop();
+    while (reste.length && !reste[0].trim()) reste.shift();
+    if (items.length) return { type: 'liste', texte: reste.join('\n'), items: items, url: '' };
     if (/^https?:\/\/\S+$/i.test(texte)) return { type: 'lien', texte: '', items: [], url: texte };
-    return { type: 'texte', texte: texte, items: [], url: '' };
+    return { type: 'texte', texte: reste.join('\n'), items: [], url: '' };
   }
 
   /* L'ancrage demande au navigateur de tenir la base hors des purges
@@ -133,8 +138,49 @@
       });
     },
 
+    /* Reprendre une note deja posee. Le contenu est relu par la meme analyse
+       que la pose — une note peut donc changer de nature en changeant de texte.
+       La date de creation, l'epingle et la promotion ne bougent pas : c'est la
+       meme note, pas une autre. Rend la note telle qu'elle est ecrite. */
+    modifier: function (id, brut) {
+      var forme = analyser(brut);
+      if (!forme.texte && !forme.items.length && !forme.url) {
+        return Promise.reject(new Error('note vide'));
+      }
+      var sortie = null;
+      return transaction('readwrite', function (m) {
+        m.get(id).onsuccess = function (e) {
+          var n = e.target.result;
+          if (!n) return;
+          n.type = forme.type;
+          n.texte = forme.texte;
+          n.items = forme.items;
+          n.url = forme.url;
+          n.repris = Date.now();
+          sortie = n;
+          m.put(n);
+        };
+      }).then(function () { return sortie; });
+    },
+
+    /* Reposer une note retiree telle qu'elle etait, identifiant compris : c'est
+       ce qui rend le retrait reparable. */
+    reposer: function (note) {
+      if (!note || !note.id) return Promise.reject(new Error('note absente'));
+      return transaction('readwrite', function (m) { m.put(note); })
+        .then(function () { return note; });
+    },
+
+    lire: function (id) {
+      return transaction('readonly', function (m) { return m.get(id); });
+    },
+
     retirer: function (id) {
-      return transaction('readwrite', function (m) { m.delete(id); });
+      var garde = null;
+      return transaction('readwrite', function (m) {
+        m.get(id).onsuccess = function (e) { garde = e.target.result || null; };
+        m.delete(id);
+      }).then(function () { return garde; });
     }
   };
 })();
