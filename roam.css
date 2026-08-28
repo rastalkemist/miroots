@@ -1,5 +1,5 @@
 /* ============================================================================
-   MI ROAM — la feuille de l'écran, sur le modèle de `plan.css`.
+   MI ROAM — la feuille de l'écran.
 
    Elle se charge APRÈS `roots.css` : à cascade égale, la dernière déclaration
    l'emporte. Rien ici n'est une valeur : tout passe par un jeton.
@@ -21,14 +21,6 @@
 :where(body.p-roam) .etape.ouverte .etape-valeur{display:none}
 :where(body.p-roam) .etape.ouverte .etape-tete{padding-bottom:var(--esp-2)}
 :where(body.p-roam) .etape-corps{padding:0 var(--esp-4) var(--esp-4)}
-
-/* Le pas « Qui » ouvert tient sur UNE ligne : la question à gauche, le
-   sélecteur à droite, là où se lisait la valeur. La rangée devient une grille
-   à deux colonnes — le libellé est dans un bouton, le sélecteur ne peut donc
-   pas y entrer, mais rien n'empêche les deux de partager la ligne. */
-:where(body.p-roam) .etape.ouverte[data-pas="qui"],
-:where(body.p-roam) .etape.ouverte[data-pas="qui"] .etape-tete,
-:where(body.p-roam) .etape.ouverte[data-pas="qui"] .etape-corps,
 
 /* ---- LE LIEN TERTIAIRE. Une seule peau, deux libellés : « Visiter » sur une
    carte de la page, « Plus d'infos » dans le tiroir. Échelon 2 de l'univers et
@@ -169,7 +161,7 @@
 /* ---- Le pied : le lien passe AVANT le filet. En bas de page on lit donc le
    lien, puis le filet, puis le geste flottant — le filet ferme la page au lieu
    d'ouvrir le pied. */
-:where(body.p-roam) .pied{border-top:none;border-bottom:none;margin-top:var(--air-i4);padding:var(--esp-1) 0 0}
+:where(body.p-roam) .pied{border-top:none;border-bottom:none;margin-top:var(--air-i4);padding:var(--air-barre) 0 0}
 
 
 /* ---- LE CARROUSEL DE CHOIX. Il reprend la grammaire de carte de la page :
@@ -190,21 +182,30 @@
    La pastille est un voile clair cerclé d'univers — l'aplat n'est là que pour
    asseoir le chevron, le cerne porte la lisibilité. Aucun aplat d'univers :
    une commande n'est pas un engagement.
-   Le même mécanisme sert la scène de vedette et toutes les rangées : deux
-   carrousels qui se manœuvrent différemment sont deux apprentissages. */
-:where(body.p-roam) .rail{display:block;position:relative}
-:where(body.p-roam) .rail-cmd,
+   Sous la bascule seulement pour une rangée : au-delà, sa commande quitte
+   l'image et monte dans la tête, où le tronc la dessine. La scène, elle, n'a
+   pas de tête où monter — elle garde la pastille à toutes les tailles.
+   ⚠ La borne ne se retire pas sans retirer aussi la pose du tronc : une
+   redéclaration de boîte ne défait pas un pseudo-élément qu'elle ne nomme
+   pas, et les deux se peindraient l'un sur l'autre. */
+:where(body.p-roam:not(.nav-haut)) .rail{display:block;position:relative}
+:where(body.p-roam:not(.nav-haut)) .rail-cmd,
 :where(body.p-roam) .scene-cmd{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:var(--cible-min);height:var(--cible-min);min-width:0;min-height:0;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:var(--limite-ep) solid var(--univers);background:rgba(var(--blanc-rgb),.2);color:var(--univers);box-shadow:none}
-:where(body.p-roam) .rail-cmd.prec,
+:where(body.p-roam:not(.nav-haut)) .rail-cmd.prec,
 :where(body.p-roam) .scene-cmd.prec{left:var(--souffle-filet);right:auto}
-:where(body.p-roam) .rail-cmd.suiv,
+:where(body.p-roam:not(.nav-haut)) .rail-cmd.suiv,
 :where(body.p-roam) .scene-cmd.suiv{right:var(--souffle-filet);left:auto}
-:where(body.p-roam) .rail-cmd svg.i,
+:where(body.p-roam:not(.nav-haut)) .rail-cmd svg.i,
 :where(body.p-roam) .scene-cmd svg.i{width:var(--esp-5);height:var(--esp-5)}
-:where(body.p-roam) .rail-cmd.prec svg.i,
+:where(body.p-roam:not(.nav-haut)) .rail-cmd.prec svg.i,
 :where(body.p-roam) .scene-cmd.prec svg.i{transform:rotate(180deg)}
-:where(body.p-roam) .rail-cmd[aria-disabled="true"],
+:where(body.p-roam:not(.nav-haut)) .rail-cmd[aria-disabled="true"],
 :where(body.p-roam) .scene-cmd[aria-disabled="true"]{opacity:.4;cursor:default}
+/* Sous la bascule, la pastille est seule à peindre : l'anneau que le tronc
+   pose par pseudo-élément se dessinerait par-dessus, et deux cercles
+   concentriques se liraient comme un défaut. Au-delà, cette ligne ne s'applique
+   plus et l'anneau reprend sa place. */
+:where(body.p-roam:not(.nav-haut)) .rail-cmd::before{content:none}
 
 /* ---- LE SOUFFLE SOUS LA RANGÉE. Deux blocs empilés prennent un cran d'air
    vertical ; la rangée n'en portait aucun et le titre suivant lui était collé. */
@@ -238,20 +239,12 @@
 :where(body.p-roam) .choix-carte .vignette{background:var(--gris-ilot)}
 :where(body.p-roam) .carte-bien .vignette.reserve{color:var(--encre-discrete)}
 
-/* ---- LE PIED PREND SA PLACE SOUS LE GESTE FLOTTANT. La page réservait une
-   hauteur écrite en dur. Elle réserve désormais la distance qui sépare le bas
-   de la fenêtre du haut du geste — mesurée, donc juste dans les deux mises en
-   page, la barre du bas comme la barre du haut — plus le souffle que le geste
-   se donne au-dessous. Le sélecteur porte sa classe sans `:where` : la
-   déclaration qu'il remplace vise `body` seul, et une règle de poids nul ne la
-   reprend pas. */
-/* Cet écran ne porte pas de geste flottant : la réserve du bas ne garde que la
-   barre et son souffle. La règle vise `body.p-lieu` SANS `:where` — celle
-   qu'elle reprend vise `body.p-roam` seul, et une règle de poids nul ne la
-   reprendrait pas. */
-body.p-lieu{--geste-bas:var(--barre-h);padding-bottom:calc(var(--barre-h) + var(--souffle-filet) * 2 + var(--safe-bas))}
-
-body.p-roam{--propos-h:0px;--propos-decalage:0px;--geste-bas:calc(var(--barre-h) + var(--souffle-filet) + var(--cible-min));padding-bottom:calc(var(--geste-bas) + var(--souffle-filet))}
+/* ---- LA RÉSERVE DU BAS APPARTIENT AU TRONC. Elle vaut la hauteur RENDUE de la
+   barre basse, nulle quand la barre monte en tête, plus le cran d'air. Cet
+   univers n'a plus de geste posé au bas de la fenêtre : une réserve propre y
+   garderait la place de ce qui n'y est plus.
+   Les deux mesures ci-dessous servent la vedette et se publient au rendu. */
+body.p-roam{--propos-h:0px;--propos-decalage:0px}
 
 /* ---- LES CASES DE LA GRILLE NE DÉPLACENT RIEN. Elles portent le rôle exigé
    par la forme du combobox à grille et s'effacent de la mise en page : leurs

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-tUqPQV+3dU7JaZ8J56MTLzp2V1vrwopclCxiD4OKPck='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-fZn0i2yk/hp87JfEfqjA7Qsm0Y31b3eWbxK/ply++lY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Séjourner</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
@@ -1838,46 +1838,6 @@
      de langue, comme le reste.
      Une vue qui sort du champ arrete son film : un media qui joue hors du
      regard tient le verrou de veille pour rien. */
-  /* LE BAS DE PAGE RESPIRE AUTANT DE PART ET D'AUTRE DU GESTE FLOTTANT. Le
-     souffle SOUS lui est celui que sa position declare. La page se donne le
-     meme AU-DESSUS, ce qui demande la hauteur reellement rendue du geste :
-     elle change avec le libelle, la langue et le corps de texte, donc elle se
-     mesure au lieu de s'ecrire. La valeur se pose sur le corps et non sur la
-     racine : la feuille y declare un repli, et une declaration en ligne sur le
-     meme element l'emporte sans peser sur la specificite. */
-  function publierHauteurDuGeste() {
-    var f = $('fabRecherche');
-    if (!f) return;
-    function poser() {
-      /* Ce qui est publie n'est pas la hauteur du geste mais la distance qui
-         separe le BAS DE LA FENETRE du HAUT de ce qui occupe le bas. Geste
-         dans la page : lui-meme — sa hauteur, son decalage, l'aire sure.
-         Geste monte dans la barre du chrome : le bas appartient alors a la
-         barre de verbes quand elle s'y tient, et c'est SON haut qui se
-         mesure — sans elle, rien, et la distance mesuree depuis le geste
-         gonflerait le pied de la page d'une fenetre entiere. */
-      var auChrome = !!f.closest('.chrome-inner');
-      var bas = 0;
-      if (!auChrome) {
-        bas = window.innerHeight - f.getBoundingClientRect().top;
-      } else if (!document.body.classList.contains('nav-haut')) {
-        var barreVerbes = document.querySelector('.chrome-bas');
-        if (barreVerbes && getComputedStyle(barreVerbes).display !== 'none') {
-          bas = window.innerHeight - barreVerbes.getBoundingClientRect().top;
-        }
-      }
-      document.body.style.setProperty('--geste-bas',
-        Math.max(0, Math.round(bas)) + 'px');
-    }
-    poser();
-    if (window.ResizeObserver) new ResizeObserver(poser).observe(f);
-    window.addEventListener('resize', poser);
-    window.addEventListener('scroll', poser, { passive: true });
-    /* La barre annonce chaque nouvel etat — montee ou descendue, le bas de
-       la page suit dans le meme tour. */
-    document.addEventListener('chrome:barre', poser);
-  }
-
   /* LA HAUTEUR RENDUE DU GROUPE DE PROPOS. Il se pose a une fraction de la
      hauteur de la scene ; quand la scene est plus courte que le groupe, cette
      fraction le ferait deborder sous elle. La feuille borne donc l'ancrage par
@@ -2139,7 +2099,6 @@
   ['railSejour', 'railBientot', 'railIncont', 'suggDec'].forEach(function (id) {
     if ($(id) && Roots.glisser) Roots.glisser($(id));
   });
-  publierHauteurDuGeste();
   publierHauteurDuPropos();
 
   Roots.poserLibelles && Roots.poserLibelles();
