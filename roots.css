@@ -340,28 +340,37 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 /* ---- LA GRAMMAIRE D'ETATS, appliquee aux deux boutons publics. L'aplat monte
    d'un cran au survol, descend d'un cran sous le doigt ; le creux s'annonce en
    se remplissant. Aucune valeur n'est ecrite : tout est un echelon.
-   L'eteint sort de la famille et prend la paire nommee du socle. ---- */
+   L'eteint sort de la famille et prend la paire nommee du socle.
+   Exige : un univers dont l'aplat n'a pas d'echelon SOUS lui ne peut pas
+   descendre. Celui-la dit l'appui par un lisere interieur, et redefinit pour
+   cela la paire `--plein-appui-fond` / `--plein-appui-encre` ; la regle, elle,
+   ne se redeclare pas. L'encre transparente est l'etat par defaut : le lisere
+   existe partout et ne se voit que la ou l'univers lui donne une encre. ---- */
 @media (hover:hover){
   .bouton-plein:hover{background:var(--univers-e3)}
   .bouton-contour:hover{background:var(--univers);color:var(--encre-bouton);border-color:var(--univers)}
 }
-.bouton-plein:active{background:var(--univers-e1)}
+.bouton-plein:active{background:var(--plein-appui-fond);
+                     box-shadow:inset 0 0 0 var(--foyer-lisere) var(--plein-appui-encre)}
 .bouton-contour:active{background:var(--univers-e1);color:var(--encre-bouton);border-color:var(--univers-e1)}
 .bouton-plein:disabled,.bouton-plein[disabled],
 .bouton-contour:disabled,.bouton-contour[disabled]{
   background:var(--eteint-fond);color:var(--eteint-encre);border-color:var(--eteint-fond);
   cursor:not-allowed}
-/* ---- LE LIEN NU. Il n'avait aucune couleur : il rendait au bleu du
-   navigateur. Tout se joue sur LE TRAIT DES CARACTERES, jamais sur un fond :
-   echelon 3 au repos, echelon 2 sous le doigt. Au foyer le texte ne bouge pas
-   — une bordure de l'echelon 1 l'entoure, posee en ombre portee pour ne rien
-   deplacer dans la ligne.
-   ⚠ Une encre plus CLAIRE que l'echelon 3 tombe sous le plancher de 4,5 sur
-   les trois fonds clairs — l'echelon 4 rend 2,68. Un lien reste du texte dans
-   tous ses etats : son encre ne monte pas. Le soulignement du socle epaissit
-   au survol. ---- */
+/* ---- LE LIEN NU. Tout se joue sur LE TRAIT DES CARACTERES, jamais sur un
+   fond : echelon 3 au repos, echelon 4 au survol, echelon 1 sous le doigt. Au
+   foyer le texte ne bouge pas — une bordure de l'echelon 1 l'entoure, posee en
+   ombre portee pour ne rien deplacer dans la ligne.
+   Exige : le survol est un etat de SURBRILLANCE, il ne se lit pas. Son encre
+   rend 2,77 sur le blanc, sous le plancher de texte de 4,5 ; l'etat qui se lit
+   est le repos, a 4,72. L'echelon du survol ne se transpose a aucun etat
+   durable, et il ne sert que sous un pointeur qui survole.
+   Casse si retire : le lien rend au bleu du navigateur. ---- */
 :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]){color:var(--univers-e3)}
-:where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):active{color:var(--univers)}
+@media (hover:hover){
+  :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):hover{color:var(--univers-e4)}
+}
+:where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):active{color:var(--univers-e1)}
 html.au-clavier :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):focus-visible{
   background-color:transparent!important;color:var(--univers-e3)!important;
   box-shadow:0 0 0 var(--foyer-lisere) var(--univers-e1)!important;
@@ -831,7 +840,7 @@ body.page-figee{overflow:hidden}
    portent le meme poids : l'univers change, aucune mesure ne change.
    Traversent seuls, hors alias : la semantique de statut et l'anneau de
    focus, qui sont les memes dans tous les univers. */
-:where(body){--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb);--univers-e3:var(--vert-e3);--univers-e3-rgb:var(--vert-e3-rgb);--univers-e4:var(--vert-e4);--univers-e5:var(--vert-e5)}
+:where(body){--plein-appui-fond:var(--univers-e1);--plein-appui-encre:transparent;--univers:var(--roots-vert);--univers-rgb:var(--vert-e2-rgb);--univers-selection:rgba(var(--univers-rgb),.08);--univers-e1:var(--vert-e1);--univers-e1-rgb:var(--vert-e1-rgb);--univers-e3:var(--vert-e3);--univers-e3-rgb:var(--vert-e3-rgb);--univers-e4:var(--vert-e4);--univers-e5:var(--vert-e5)}
 
 /* ------------------------------------------------------------------------ Univers Mi Roam ------------------------------------------------------------------------ */
 /* L'univers de Roam est noir, blanc et rouge : rouge e2 est sa couleur, et
@@ -852,6 +861,7 @@ body.page-figee{overflow:hidden}
    la teinte d'un autre univers mentirait sur l'ecran qu'elle sert. Toute
    couleur d'une piece qui voyage entre univers se declare en jeton d'univers,
    jamais en valeur figee. */
+:where(body.p-space){--plein-appui-fond:var(--univers);--plein-appui-encre:var(--encre-bouton)}
 :where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5);--ombre-teinte:var(--rouge-e1-rgb);--encre-ll-h1:var(--encre);--encre-ll-h3:var(--encre);--encre-ll-h5:var(--encre);--encre-ll-h2:var(--univers-e3);--encre-ll-h4:var(--univers-e3);--encre-ll-h6:var(--univers-e3);--encre-ll-chapo:var(--univers-e3)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
