@@ -61,17 +61,37 @@
  */
 /* La page de module n'a pas de carte noire d'en-tete : le cadre de la
    semaine se dit sur une ligne discrete, et le titre appartient au chrome. */
+/* La plage de dates est le titre de la page ; la note qui la suit tient sa
+   ligne juste dessous, sans l'air d'un bloc separe — les deux se lisent d'un
+   trait. */
+:where(body.p-space) .titre-semaine{ margin: 0 0 var(--esp-1) }
 :where(body.p-space) .cadre-semaine{
   margin: 0 0 var(--air-i3);
   color: var(--encre-discrete);
   font-size: var(--t-sm);
   line-height: var(--lh-14);
 }
+/* Une commande qui ne peut rien garder se montre eteinte et le dit : la
+   mention vit sous la rangee qu'elle explique, a l'encre discrete. L'aplat
+   eteint est celui du socle, repris a ses jetons — jamais redessine. */
+:where(body.p-space) .mention-inerte{
+  width: 100%; max-width: var(--col);
+  margin: 0 0 var(--esp-2);
+  font-size: var(--t-12);
+  line-height: var(--lh-12);
+  color: var(--encre-discrete);
+}
+:where(body.p-space) .jour:disabled{
+  background: var(--eteint-fond);
+  border-color: var(--eteint-fond);
+  color: var(--eteint-encre);
+  cursor: not-allowed;
+}
 :where(body.p-space) .entete-plan{
   background: var(--univers);
   border-radius: var(--rayon-carte);
   padding: var(--esp-6);
-  margin: 0 0 var(--air-i6);
+  margin: 0 0 var(--air-i4);
   text-align: left;
 }
 :where(body.p-space) .entete-plan h1{
@@ -88,7 +108,7 @@
 }
 
 /* ---- Blocs --------------------------------------------------------------- */
-:where(body.p-space) .bloc-plan{ margin: 0 0 var(--air-i8) }
+:where(body.p-space) .bloc-plan{ margin: 0 0 var(--air-i6) }
 :where(body.p-space) .bloc-plan > .etiquette{ display: block }
 
 /* ---- Poseur d'engagement -------------------------------------------------
@@ -106,7 +126,11 @@
   min-height: var(--cible-min);
   padding: 0 var(--esp-3);
   background: var(--gris-aplat);
-  border: var(--limite-ep) solid transparent;
+  /* L'aplat clair de la pastille ne se detache pas du papier : il rend 1,31
+     contre lui, sous le plancher de 3 exige d'une frontiere de commande. Le
+     lisere de controle porte donc la frontiere, et l'etat retenu ne fait que
+     lui changer d'encre — la boite ne bouge d'aucun pixel entre les deux. */
+  border: var(--limite-ep) solid var(--limite-controle);
   border-radius: var(--rayon-champ);
   font-family: var(--font-corps);
   font-size: var(--t-sm);
@@ -125,7 +149,7 @@
  * Un groupe par jour, plus un groupe pour ce qui n'a pas de jour. Un groupe
  * vide ne se rend pas : une case vide n'informe de rien.
  */
-:where(body.p-space) .groupe-jour{ margin: 0 0 var(--air-i6) }
+:where(body.p-space) .groupe-jour{ margin: 0 0 var(--air-i4) }
 :where(body.p-space) .groupe-jour > .etiquette{ margin-bottom: var(--air-i2) }
 /* Une liste de taches est UNE surface : les lignes s'y empilent, separees
    d'un filet, au lieu de porter chacune sa propre carte — une carte par
@@ -190,6 +214,11 @@
 }
 :where(body.p-space) .engagement{
   flex: 1 1 auto;
+  /* Un element flexible refuse par defaut de descendre sous la largeur de son
+     mot le plus long : sans cette remise a zero, la ligne pousse la liste, la
+     liste pousse son bloc, et la page defile en travers. La coupe et le
+     rognage ci-dessous n'entrent en jeu qu'une fois cette remise faite. */
+  min-width: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -316,10 +345,10 @@
    ========================================================================== */
 
 :where(body.p-space) .coche-scene{
-  min-height: calc(100svh - var(--entete-h-rendue, 64px) - var(--barre-h, 80px));
+  min-height: calc(100svh - var(--entete-h-rendue, 64px) - var(--chrome-bas-h, 80px));
   display: grid; align-content: center; justify-items: center;
-  gap: var(--air-i6); text-align: center;
-  padding-block: var(--air-i8);
+  gap: var(--air-i4); text-align: center;
+  padding-block: var(--air-i6);
 }
 :where(body.p-space) .coche-scene h1{
   font-family: var(--font-eclat); font-weight: var(--w-a-display);
@@ -462,7 +491,7 @@
    L'accueil de l'univers : chaque module dans son propre bloc, la pile sur
    petit ecran, deux colonnes des que la place le permet. Les modules non
    ouverts se montrent muets, sans lien. */
-:where(body.p-space) .hall{ display: grid; gap: var(--air-i6) }
+:where(body.p-space) .hall{ display: grid; gap: var(--air-i4) }
 :where(body.p-space) .hall-bloc{
   background: var(--blanc); border-radius: var(--rayon-carte);
   padding: var(--esp-6);
@@ -477,7 +506,7 @@
    titre : sans cela le toit s'ecarte d'un cran de plus que les trois autres
    cotes, et le module qui porte un titre de rang 1 le fait differemment des
    autres. */
-:where(body.p-space) .hall-tete :is(h1, h2){ margin: 0 }
+:where(body.p-space) .hall-tete :is(h1, h2, h3){ margin: 0 }
 /* Ouvrir un module : le lien vit sur SON TITRE, et son extension couvre la
    carte entiere — la carte s'ouvre donc partout ou l'on tape, sans que le
    module devienne un seul nom verbeux pour qui l'ecoute. Ce qui est deja une
@@ -597,7 +626,7 @@
      ce que celui du haut laisse : les quatre bords exterieurs se ferment,
      et la masse du bas est l'inverse de celle du haut. */
   :where(body.p-space) .hall-col{
-    display: grid; grid-template-rows: auto 1fr; gap: var(--air-i6);
+    display: grid; grid-template-rows: auto 1fr; gap: var(--air-i4);
   }
   :where(body.p-space) .hall-bloc.large{ grid-column: 1 / -1 }
 }
@@ -633,8 +662,13 @@
   min-height: calc(var(--cible-min) - var(--esp-1));
   padding-block: calc((var(--cible-min) - var(--esp-1) - 1em * var(--lh-16)) / 2);
 }
-:where(body.p-space) .hall-bloc .tache .engagement{
-  display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+/* Dans un module d'accueil, une tache tient UNE ligne et se coupe au point de
+   suspension : le module montre quatre lignes, et une tache qui en prend deux
+   en retire une autre. L'etage-sujet d'une page de module est exclu : la page
+   est la vue detaillee, ou la tache dispose de ses deux lignes. */
+:where(body.p-space) .hall-bloc:not(.bande-journee) .tache .engagement{
+  display: block; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 :where(body.p-space) .note-carte.tenue{ border: var(--limite-ep) solid var(--terre-e5) }
 :where(body.p-space) .note-rang{
@@ -773,11 +807,12 @@
 }
 
 /* La recherche ouvre la page : pleine largeur de piste sur telephone, bornee
-   a la mesure du composeur et centree au-dela — la page s'ouvre sur ce qu'on
-   cherche et se ferme sur ce qu'on ecrit, aux memes cotes. Chercher depuis le
-   fil bascule sur le mur, qui est la vue des resultats. */
+   a la COLONNE DE LECTURE et centree au-dela — la page s'ouvre sur ce qu'on
+   cherche et se ferme sur ce qu'on ecrit, aux memes cotes ; les deux mesures
+   se declarent au meme jeton et ne se separent pas. Chercher depuis le fil
+   bascule sur le mur, qui est la vue des resultats. */
 :where(body.p-space) .chercher{
-  width: 100%; max-width: 640px; margin-inline: auto;
+  width: 100%; max-width: var(--col); margin-inline: auto;
 }
 :where(body.p-space) .chercher input{ width: 100% }
 
@@ -796,7 +831,7 @@
 /* Dans la bande ancree, la rangee des jours tient UNE ligne et defile au
    doigt ; elle partage la mesure de la pilule qu'elle surplombe. */
 :where(body.p-space) .ecrire-bas .jours{
-  width: 100%; max-width: 640px;
+  width: 100%; max-width: var(--col);
   flex-wrap: nowrap;
   overflow-x: auto;
   scrollbar-width: none;
@@ -811,7 +846,7 @@
    parait ni ne disparait d'un coup. La hauteur vise un plafond connu : la
    cible tactile plus son air, jamais une mesure qui court. */
 :where(body.p-space) .ecrire-bas .heures{
-  width: 100%; max-width: 640px;
+  width: 100%; max-width: var(--col);
   display: flex; gap: var(--esp-2);
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -901,21 +936,24 @@
   grid-column: 1 / -1; justify-self: start; margin-top: var(--esp-1);
 }
 :where(body.p-space) .ecrire-bas{
-  /* La bande s'arrete au-dessus de la barre des verbes : elle colle a la
-     hauteur ecrite de la barre, jamais au bord de la fenetre. */
+  /* La bande s'arrete au-dessus de la barre des verbes. La hauteur employee
+     est celle que le chrome PUBLIE au rendu, non la hauteur ecrite : les deux
+     different, et le jeton publie tombe a zero quand la barre passe en haut,
+     ce qu'une valeur ecrite ne saurait pas faire. */
   position: sticky;
-  bottom: calc(var(--barre-h, 80px) + var(--safe-bas, 0px));
+  bottom: calc(var(--chrome-bas-h, 80px) + var(--safe-bas, 0px));
   z-index: 5;
   /* La bande porte le papier de la page — le meme, jamais une teinte
      voisine — opaque sur toute sa matiere, fondue sur son seul cran d'air
-     haut pour voiler ce qui defile dessous ; sa matiere tient la piste, la
-     meme mesure que la recherche, a toute largeur. */
+     haut pour voiler ce qui defile dessous ; sa matiere tient la COLONNE DE
+     LECTURE, la meme mesure que la recherche, a toute largeur. Une mesure
+     ecrite plus large que la colonne sortirait du texte qu'elle sert. */
   padding: var(--air-i3) var(--marge) var(--air-i3);
   background: linear-gradient(to top, var(--blanc) calc(100% - var(--air-i3)), transparent);
   display: grid; justify-items: center;
 }
 :where(body.p-space) .ecrire{
-  width: 100%; max-width: 640px;
+  width: 100%; max-width: var(--col);
   display: flex; gap: var(--esp-2); align-items: flex-end;
   background: var(--blanc);
   /* Le trait de controle du dialecte rond ; le trait double appartient au
@@ -945,7 +983,14 @@
   position: relative; margin-bottom: var(--esp-1);
 }
 :where(body.p-space) .envoi::after{
-  content: ''; position: absolute; inset: calc(var(--esp-2) / -2);
+  /* La zone atteinte se DECLARE au jeton du plancher et se centre sur le
+     dessin. Un retrait calcule en cran d'air ne suffit pas : le bloc contenant
+     d'une position absolue est la boite de REMPLISSAGE, dont la limite est
+     deja retranchee — la zone y perdait la valeur de deux limites et tombait
+     sous le plancher sans que rien ne le dise. */
+  content: ''; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: var(--cible-min); height: var(--cible-min);
 }
 /* A une ligne, la commande occupe le bout rond du cadre et sa proportion tient.
    Des la deuxieme ligne ce bout rond n'existe plus et elle se retrouve dans un
@@ -1023,6 +1068,16 @@
   background: none; border-radius: var(--rayon-pilule);
   min-height: calc(var(--cible-min) - var(--esp-2));
   padding-inline: var(--esp-4); font-size: var(--t-14); cursor: pointer;
+  position: relative;
+}
+/* Le dessin de la pilule recule d'un cran d'air sous le plancher pour que la
+   rangee tienne sa ligne ; la zone atteinte, elle, reste AU plancher par une
+   extension centree. Retirer cette regle ramene la cible a la hauteur du
+   dessin, qui est sous la valeur declaree. */
+:where(body.p-space) .filtre::after{
+  content: ''; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 100%; height: var(--cible-min);
 }
 :where(body.p-space) .filtre[aria-pressed="true"]{
   border-color: var(--accent-plan); color: var(--accent-plan);
@@ -1049,21 +1104,49 @@
 /* Pas de troisieme colonne : les gestes restent toujours visibles, et une
    carte plus etroite ne loge pas leur colonne a cote d'un titre. */
 
-/* La vedette du hall : la bande sombre de l'univers porte le premier
-   module, et ses cartes restent claires — elles s'y detachent d'elles-memes. */
+/* La vedette : la bande sombre de l'univers porte le module mis en avant, et
+   ses cartes restent claires — elles s'y detachent d'elles-memes. Elle sert au
+   hall pour son premier module, et sur une page de module pour l'etage qui en
+   est le sujet ; hors du hall elle garde l'air des blocs de la page. */
 :where(body.p-space) .hall-bloc.vedette{ background: var(--univers) }
+/* L'air vertical seul : ecrire la marge en abrege effacerait la traversee de
+   piste, qui vit sur la marge horizontale. */
+:where(body.p-space) .corps > .hall-bloc{ margin-block: 0 var(--air-i4) }
+/* La bande de l'etage-sujet traverse la page par le mecanisme commun des
+   pleines largeurs, et REPREND en dedans exactement ce que la traversee a
+   donne au dehors — la demi-difference entre la fenetre et la piste, la meme
+   expression au signe pres. Ses lignes tombent alors sur le rail des etages
+   qui la suivent, quelle que soit la largeur, sans qu'aucun cran soit ecrit.
+   Bord a bord, un rayon n'a plus de coin ou vivre et l'ombre n'a plus de
+   sol : les deux tombent. */
+:where(body.p-space) .bande-journee{
+  padding-inline: calc(50vw - 50%);
+  border-radius: 0;
+  box-shadow: none;
+}
 /* Les cinq modules sont freres : ils portent le meme rang de titre. Celui de
    la vedette ne redeclare de l'arbre que ce que la bande sombre impose — son
    encre. */
-:where(body.p-space) .hall-bloc.vedette .hall-tete h2{
+:where(body.p-space) .hall-bloc.vedette .hall-tete :is(h2, h3){
   margin: 0; color: var(--blanc);
 }
 :where(body.p-space) .hall-bloc.vedette .ouvre-module{ color: var(--terre-e4) }
 :where(body.p-space) .hall-bloc.vedette .lien-module{ color: var(--blanc) }
+/* Tout ce qui parle a l'encre discrete sur la bande sombre reprend le blanc
+   voile : l'encre discrete est reglee pour le papier, et elle passe sous le
+   plancher des qu'on la pose sur le noir. */
 :where(body.p-space) .hall-bloc.vedette .vide,
 :where(body.p-space) .hall-bloc.vedette .fil-compte,
+:where(body.p-space) .hall-bloc.vedette .mot-boss,
+:where(body.p-space) .hall-bloc.vedette .repli-faites,
 :where(body.p-space) .hall-bloc.vedette .etat-semaine{
   color: rgba(var(--blanc-rgb), .75);
+}
+/* Le mot de la semaine accomplie : une note, pas un titre — il suit la liste
+   sans la concurrencer. */
+:where(body.p-space) .mot-boss{
+  margin: 0; font-size: var(--t-sm); line-height: var(--lh-14);
+  color: var(--encre-discrete);
 }
 /* Sur la bande sombre, l'aplat clair du vide garde son encre claire : la
    paire s'inverse ensemble, jamais a moitie. */
@@ -1083,7 +1166,7 @@
    section, pas la suite de la liste. Elle prend le cran d'air que le tronc
    pose entre deux gabarits — sans lui, son titre se colle a la derniere
    fiche. */
-:where(body.p-space) .intel-tube{ margin-top: var(--air-i8) }
+:where(body.p-space) .intel-tube{ margin-top: var(--air-i6) }
 :where(body.p-space) .intel-tube-tete{
   display: flex; align-items: baseline; gap: var(--esp-2);
   margin: 0 0 var(--air-i2);
@@ -1152,7 +1235,9 @@
 :where(body.p-space) .intel-fleches{ display: none; gap: var(--esp-2); margin-left: auto }
 :where(body.p-space) .intel-fleche{
   width: var(--cible-min); height: var(--cible-min);
-  border-radius: 50%; border: 1.5px solid var(--gris-service);
+  /* Le gris de service ne rend que 1,31 contre le papier : c'est une teinte de
+     separation, pas une frontiere de commande. */
+  border-radius: 50%; border: var(--limite-ep) solid var(--limite-controle);
   background: var(--blanc); color: var(--encre);
   font-size: var(--t-h4); line-height: 1; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -1163,6 +1248,17 @@
   flex: 1; white-space: nowrap;
   display: inline-flex; align-items: center; justify-content: center;
   padding-inline: var(--esp-3);
+  position: relative;
+}
+/* La commande ne dessine que son mot : sa boite prend la hauteur d'une ligne,
+   soit vingt et un pixels, tres loin du plancher tactile. La zone atteinte se
+   pose donc AU plancher, centree sur le mot, sans que le dessin bouge. La
+   rangee garde son cran d'air entre elle et ce qui suit : deux zones de
+   rangees voisines ne se rencontrent pas. */
+:where(body.p-space) .intel-filtres .vue::after{
+  content: ''; position: absolute;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 100%; height: var(--cible-min);
 }
 
 /* Au cran ou la piste tient ses marges definitives, la bande perd son aplat :

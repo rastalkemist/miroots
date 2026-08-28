@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-J1F2L/FHB5j7/+H+uaZRm4srO5M10ZgWzG2BJGoImiA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gcgBxF/UaxxZbqUoBdiqkYJjavR9W0gU2Bj33NsgdbQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ma semaine</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
@@ -25,7 +25,7 @@
 <script src="roots-db.js"></script>
 <script src="garde.js"></script>
 </head>
-<body class="p-space" data-surface="claire">
+<body class="p-space" data-surface="claire" data-module="Au jour le jour">
 
 <script>Roots.sprite()</script>
 
@@ -54,14 +54,29 @@
 
 <div id="contenu" class="corps">
 
-  <p class="cadre-semaine" id="sousTitre"></p>
+  <h1 class="visuellement-cache" data-t="nomModule">Mi Au jour le jour</h1>
+  <h2 class="titre-semaine" id="titreSemaine"></h2>
+  <p class="cadre-semaine" id="sousTitre" data-t="cadreNote">Ta semaine, en un regard.</p>
 
-  <section class="bloc-plan" aria-labelledby="etSemaine">
-    <span class="etiquette" id="etSemaine" data-t="etSemaine">Ma semaine</span>
-    <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
-<button type="button" class="bouton-contour" id="btnRecharger" hidden>Réessayer</button>
-<div id="listeSemaine"></div>
-    <p class="vide" id="videSemaine" data-t="vide" hidden>Rien de posé pour l'instant. Écris un engagement là-haut — un seul suffit pour commencer.</p>
+  <p class="etat-semaine" id="etatSemaine" role="status" hidden></p>
+  <button type="button" class="bouton-contour" id="btnRecharger" hidden>Réessayer</button>
+
+  <section class="hall-bloc vedette bande-journee hors-piste" id="blocJournee" aria-labelledby="etJournee">
+    <div class="hall-tete">
+      <h3 id="etJournee" data-t="etJournee">Ma journée</h3>
+    </div>
+    <div id="listeJournee"></div>
+    <p class="vide" id="videJournee" data-t="videJournee">Rien pour aujourd'hui. Écris ce que tu veux faire, en bas.</p>
+  </section>
+
+  <section class="bloc-plan" id="blocCetteSemaine" aria-labelledby="etCetteSemaine" hidden>
+    <span class="etiquette" id="etCetteSemaine" data-t="etCetteSemaine">Cette semaine</span>
+    <div id="listeCetteSemaine"></div>
+  </section>
+
+  <section class="bloc-plan" id="blocPlusTard" aria-labelledby="etPlusTard" hidden>
+    <span class="etiquette" id="etPlusTard" data-t="etPlusTard">Plus tard</span>
+    <div id="listePlusTard"></div>
   </section>
 
   <section class="bloc-plan" id="blocOu" aria-labelledby="etOu">
@@ -77,15 +92,16 @@
 
 <div class="ecrire-bas" id="ecrireBas">
   <div class="feuille-echeance" id="feuilleEcheance" role="group" aria-labelledby="etPourQuand" hidden>
-    <span class="etiquette" id="etPourQuand" data-t="etPourQuand">Pour quand ?</span>
+    <span class="etiquette" id="etPourQuand" data-t="etPourQuand">Pour quand ?</span>
     <div class="options" id="optionsEcheance"></div>
   </div>
   <div class="jours" id="jours" role="group" aria-labelledby="etQuand"></div>
-  <span class="visuellement-cache" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
+  <span class="visuellement-cache" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
   <div class="heures" id="heures" role="group" aria-labelledby="etHeure"></div>
-  <span class="visuellement-cache" id="etHeure" data-t="etHeure">À quelle heure ? (facultatif)</span>
+  <span class="visuellement-cache" id="etHeure" data-t="etHeure">À quelle heure ? (facultatif)</span>
+  <p class="mention-inerte" id="inerteEcheance" data-t="inerte" hidden>L'heure et l'échéance ne se gardent pas encore : le jour, lui, est retenu.</p>
   <div class="ecrire">
-    <label class="visuellement-cache" for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
+    <label class="visuellement-cache" for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
     <textarea id="engagement" rows="1" maxlength="80" enterkeyhint="send" data-p="phEngagement" placeholder="Finir la maquette du flyer…"></textarea>
     <button type="button" class="envoi" id="btnAjouter" aria-label="Ajouter" data-al="ajouter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
@@ -132,9 +148,20 @@
      alarme et plus_tard quand la reponse les porte. */
   var SEMAINE = { taches: [] };
 
+  /* Ce que la porte accepte decide de ce que l'ecran propose. Tant qu'une
+     tache servie ne porte pas le champ d'echeance, l'heure, l'alarme et
+     l'horizon restent INERTES et l'ecran le dit : les envoyer ferait refuser
+     l'appel entier, engagement compris. Le jour, lui, part toujours. La
+     bascule se lit sur la reponse — le jour ou le socle sert le champ, les
+     commandes s'activent d'elles-memes. */
+  var echeanceServie = false;
+
   function chargerSemaine() {
     return Roots.db.appeler('plan_ma_semaine').then(function (r) {
       SEMAINE.taches = (r && r.taches) || [];
+      echeanceServie = SEMAINE.taches.some(function (x) {
+        return Object.prototype.hasOwnProperty.call(x, 'echeance');
+      });
     });
   }
 
@@ -147,11 +174,19 @@
       saut: 'Aller au contenu',
       titre: 'Ma semaine',
       etPoser: 'Poser un engagement',
-      labEngagement: 'Qu’est-ce que tu veux faire ?',
+      labEngagement: 'Qu’est-ce que tu veux faire ?',
       phEngagement: 'Finir la maquette du flyer…',
-      etQuand: 'Quand ? (facultatif)',
-      etHeure: 'À quelle heure ? (facultatif)',
-      etPourQuand: 'Pour quand ?',
+      etQuand: 'Quand ? (facultatif)',
+      etHeure: 'À quelle heure ? (facultatif)',
+      etPourQuand: 'Pour quand ?',
+      nomModule: 'Mi Au jour le jour',
+      nomSurface: 'Au jour le jour',
+      etJournee: 'Ma journée',
+      etCetteSemaine: 'Cette semaine',
+      etPlusTard: 'Plus tard',
+      videJournee: 'Rien pour aujourd’hui. Écris ce que tu veux faire, en bas.',
+      cadreNote: 'Ta semaine, en un regard.',
+      inerte: 'L’heure et l’échéance ne se gardent pas encore : le jour, lui, est retenu.',
       plusTard: 'Plus tard',
       alarme: 'Alarme',
       autreHeure: 'Autre…',
@@ -163,7 +198,7 @@
       etOu: 'Où j’en suis',
       vide: 'Rien de posé pour l’instant. Écris un engagement là-haut — un seul suffit pour commencer.',
       semaineMuette: 'La semaine n’a pas répondu.',
-      faites: function (n) { return 'Faites (' + n + ')'; },
+      faites: function (n) { return 'Accomplies (' + n + ')'; },
       reessayer: 'Réessayer',
       piedPolitique: 'Politique de confidentialité',
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
@@ -171,18 +206,18 @@
       joursLongs: ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'],
       sansJour: 'Cette semaine',
       mois: ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'],
-      cadre: function (a, b) { return 'Du ' + a + ' au ' + b + '. Ta semaine, en un regard.'; },
+      cadre: function (a, b) { return 'Du ' + a + ' au ' + b; },
       compte: function (f, n) { return f + ' sur ' + n; },
-      dit0: 'Rien de tenu pour l’instant mais la semaine n’est pas finie. Force et courage !',
+      dit0: 'Rien de tenu pour l’instant mais la semaine n’est pas finie. Force et courage !',
       tenus: function (f) { return f === 1 ? '1 engagement tenu' : f + ' engagements tenus'; },
       palier: function (p) {
         if (p <= 20) return ', excellent départ.';
-        if (p <= 40) return ', tu gagnes en traction. Courage, ne lâche rien !';
+        if (p <= 40) return ', tu gagnes en traction. Courage, ne lâche rien !';
         if (p <= 60) return ', tu es en train de gagner ta semaine. En avant.';
-        if (p <= 80) return ', tu y es presque, quel focus !';
-        if (p <= 90) return ', l’excellence en marche !';
-        if (p < 100) return ', tu frôles la perfection !';
-        return ', eza na boss des boss. On s’incline devant la perfection ;)';
+        if (p <= 80) return ', tu y es presque, quel focus !';
+        if (p <= 90) return ', l’excellence en marche !';
+        if (p < 100) return ', tu frôles la perfection !';
+        return ', eza na boss des boss. On s’incline devant la perfection ;)';
       },
       aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
     },
@@ -195,6 +230,14 @@
       etQuand: 'When? (optional)',
       etHeure: 'What time? (optional)',
       etPourQuand: 'When for?',
+      nomModule: 'Mi Week',
+      nomSurface: 'Week',
+      etJournee: 'My day',
+      etCetteSemaine: 'This week',
+      etPlusTard: 'Later',
+      videJournee: 'Nothing for today. Write what you want to do, below.',
+      cadreNote: 'Your week, at a glance.',
+      inerte: 'Times and due dates aren’t stored yet — the day is.',
       plusTard: 'Later',
       alarme: 'Alarm',
       autreHeure: 'Other…',
@@ -214,7 +257,7 @@
       joursLongs: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       sansJour: 'This week',
       mois: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-      cadre: function (a, b) { return a + ' to ' + b + '. Your week, at a glance.'; },
+      cadre: function (a, b) { return a + ' to ' + b; },
       compte: function (f, n) { return f + ' of ' + n; },
       dit0: 'Nothing kept yet, but the week isn’t over. Keep going!',
       tenus: function (f) { return f === 1 ? '1 commitment kept' : f + ' commitments kept'; },
@@ -311,6 +354,7 @@
     p.type = 'button';
     p.className = 'jour ptard';
     p.dataset.ptard = '1';
+    p.disabled = !echeanceServie;
     p.setAttribute('aria-pressed', horizon !== null ? 'true' : 'false');
     p.setAttribute('aria-expanded', $('feuilleEcheance').hidden ? 'false' : 'true');
     p.textContent = t().plusTard;
@@ -329,6 +373,7 @@
       b.type = 'button';
       b.className = 'jour heure';
       b.dataset.heure = h;
+      b.disabled = !echeanceServie;
       b.setAttribute('aria-pressed', heureChoisie === h ? 'true' : 'false');
       b.textContent = parseInt(h, 10) + ':' + h.slice(3);
       z.appendChild(b);
@@ -346,18 +391,20 @@
     a.type = 'time';
     a.className = 'jour autre-heure';
     a.id = 'autreHeure';
+    a.disabled = !echeanceServie;
     a.setAttribute('aria-label', t().autreHeure);
     z.appendChild(a);
     var al = document.createElement('button');
     al.type = 'button';
     al.className = 'jour alarme';
     al.id = 'btnAlarme';
-    al.disabled = !heureChoisie;
+    al.disabled = !echeanceServie || !heureChoisie;
     al.setAttribute('aria-pressed', alarmeTenue ? 'true' : 'false');
     al.appendChild($('tplCloche').content.firstElementChild.cloneNode(true));
     al.appendChild(document.createTextNode(t().alarme));
     z.appendChild(al);
     z.classList.toggle('ouverte', jourChoisi !== null);
+    $('inerteEcheance').hidden = echeanceServie || jourChoisi === null;
   }
 
   /* La feuille d'echeance de « Plus tard » : les semaines seules, et un
@@ -537,45 +584,49 @@
   /* Trois etages : Ma journee ouvre la page, Cette semaine suit, Plus tard
      clot la liste. Un etage vide ne se rend pas : une case vide n'informe de
      rien, et le non-fait ne se met pas en scene. */
+  /* Chaque etage a sa place fixe sur la page : la journee ouvre en vedette et
+     tient l'ecran meme vide — une journee sans rien est une information, et
+     c'est le sujet de la page. Les deux autres ne se rendent qu'habites. */
+  var ETAGES = [
+    { cle: 'j', liste: 'listeJournee', bloc: null, vide: 'videJournee' },
+    { cle: 's', liste: 'listeCetteSemaine', bloc: 'blocCetteSemaine', vide: null },
+    { cle: 'p', liste: 'listePlusTard', bloc: 'blocPlusTard', vide: null }
+  ];
+
+  function remplirEtage(cle, cible, items) {
+    cible.textContent = '';
+    items.sort(TRIS[cle]);
+    var restantes = items.filter(function (x) { return !x.fait_le; });
+    var faites = items.filter(function (x) { return !!x.fait_le; });
+    /* Les accomplies coulent sous les restantes et se tiennent repliees avec
+       leur compte : la liste ne montre que ce qui reste a faire. Une liste
+       vide ne se rend pas — une surface sans ligne n'informe de rien. */
+    if (restantes.length) cible.appendChild(listeDe(restantes, cle));
+    if (faites.length) {
+      var ouvert = DEPLIES.indexOf(cle) !== -1;
+      var r = document.createElement('button');
+      r.type = 'button';
+      r.className = 'repli-faites';
+      r.dataset.groupe = cle;
+      r.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+      r.textContent = t().faites(faites.length);
+      cible.appendChild(r);
+      var lf = listeDe(faites, cle);
+      lf.hidden = !ouvert;
+      cible.appendChild(lf);
+    }
+  }
+
   function dessinerSemaine() {
     var taches = PlanDonnees.taches();
-    var z = $('listeSemaine');
-    z.textContent = '';
-    $('videSemaine').hidden = taches.length > 0;
-
     var etages = { j: [], s: [], p: [] };
     taches.forEach(function (x) { etages[etageDe(x)].push(x); });
 
-    ['j', 's', 'p'].forEach(function (cle) {
-      var items = etages[cle];
-      if (!items.length) return;
-      var bloc = document.createElement('div');
-      bloc.className = 'groupe-jour';
-      var et = document.createElement('span');
-      et.className = 'etiquette';
-      et.textContent = t().etages[cle];
-      items.sort(TRIS[cle]);
-      var restantes = items.filter(function (x) { return !x.fait_le; });
-      var faites = items.filter(function (x) { return !!x.fait_le; });
-      bloc.appendChild(et);
-      /* Les faites coulent sous les restantes et se tiennent repliees avec
-         leur compte : la liste ne montre que ce qui reste a faire. Une liste
-         vide ne se rend pas — une surface sans ligne n'informe de rien. */
-      if (restantes.length) bloc.appendChild(listeDe(restantes, cle));
-      if (faites.length) {
-        var ouvert = DEPLIES.indexOf(cle) !== -1;
-        var r = document.createElement('button');
-        r.type = 'button';
-        r.className = 'repli-faites';
-        r.dataset.groupe = cle;
-        r.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
-        r.textContent = t().faites(faites.length);
-        bloc.appendChild(r);
-        var lf = listeDe(faites, cle);
-        lf.hidden = !ouvert;
-        bloc.appendChild(lf);
-      }
-      z.appendChild(bloc);
+    ETAGES.forEach(function (e) {
+      var items = etages[e.cle];
+      remplirEtage(e.cle, $(e.liste), items);
+      if (e.bloc) $(e.bloc).hidden = items.length === 0;
+      if (e.vide) $(e.vide).hidden = items.length > 0;
     });
   }
 
@@ -608,7 +659,14 @@
       var v = t()[el.getAttribute('data-p')];
       if (typeof v === 'string') el.placeholder = v;
     });
-    $('sousTitre').textContent = t().cadre(bref(jourDe(0)), bref(jourDe(6)));
+    /* Le nom du module vit sur le corps : c'est de la que le chrome le lit, a
+       chaque trace comme a chaque repose. La bascule de langue le change donc
+       LA, et rafraichit le nom deja rendu — ecrire le seul rendu le perdrait
+       a la repose suivante. */
+    document.body.dataset.module = t().nomSurface;
+    var surface = document.querySelector('.chrome-titre');
+    if (surface) surface.textContent = t().nomSurface;
+    $('titreSemaine').textContent = t().cadre(bref(jourDe(0)), bref(jourDe(6)));
     dessinerJours();
     dessinerHeures();
     dessinerFeuille();
@@ -726,7 +784,7 @@
 
   /* La coche part a la porte, l'ecran suit la reponse : un refus laisse la
      ligne dans son etat vrai au lieu d'afficher un fait que la base n'a pas. */
-  $('listeSemaine').addEventListener('click', function (e) {
+  $('contenu').addEventListener('click', function (e) {
     var r = e.target.closest('.repli-faites');
     if (r) {
       var cle = r.dataset.groupe;
@@ -772,18 +830,20 @@
     }
   });
 
-  /* La pose part avec tout le choix courant : le jour, l'echeance calculee,
-     l'alarme tenue, le drapeau Plus tard. Un choix que la porte refuse se dit
-     dans le toast — rien ne se perd en silence. */
+  /* La pose n'envoie QUE ce que la porte connait : un parametre qu'elle
+     ignore lui fait refuser l'appel entier, et l'engagement se perdrait avec
+     lui. L'echeance, l'alarme et l'horizon n'y entrent donc que servis. */
   $('btnAjouter').addEventListener('click', function () {
     var champ = $('engagement');
     var texte = champ.value.replace(/\s+/g, ' ').trim();
     if (!texte) { champ.focus(); return; }
     var params = { p_engagement: texte, p_jour: horizon !== null ? null : jourChoisi };
-    var ech = echeanceChoisie();
-    if (ech) params.p_echeance = ech.toISOString();
-    if (alarmeTenue && heureChoisie !== null && jourChoisi !== null) params.p_alarme = true;
-    if (horizon === 'sans') params.p_plus_tard = true;
+    if (echeanceServie) {
+      var ech = echeanceChoisie();
+      if (ech) params.p_echeance = ech.toISOString();
+      if (alarmeTenue && heureChoisie !== null && jourChoisi !== null) params.p_alarme = true;
+      if (horizon === 'sans') params.p_plus_tard = true;
+    }
     var b = $('btnAjouter');
     b.disabled = true;
     Roots.db.appeler('plan_poser_tache', params)
@@ -792,9 +852,18 @@
         b.disabled = false;
         champ.value = '';
         marquerChampSemaine();
+        /* La tache posee, le clavier se retire et la liste reprend l'ecran :
+           ce qui vient d'etre ecrit doit se voir. Le choix d'echeance se rend
+           avec lui — chaque tache porte le sien, aucun ne se herite. */
+        champ.blur();
+        jourChoisi = null; heureChoisie = null; alarmeTenue = false;
+        horizon = null; dateChoisie = null;
+        fermerFeuille();
+        dessinerJours();
+        dessinerHeures();
+        dessinerFeuille();
         dessinerSemaine();
         dessinerProgression();
-        champ.focus();
       }, function (er) { b.disabled = false; chrome.toast(er.message); });
   });
 

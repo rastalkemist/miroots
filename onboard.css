@@ -249,11 +249,13 @@
        va leur laisser : deux encres qui se croisent au meme endroit se lisent
        comme un melange, pas comme une arrivee. La regle commune veut que ce qui
        sort finisse avant que ce qui entre commence.
-       La courbe d'entree du tronc donne l'essentiel de la course tot : a la
-       moitie du temps, l'appel a deja passe la cote du titre et degage la
-       place. Le reste parait donc a partir de la — la tenue, plus la moitie du
-       mouvement — et rien ne se superpose. */
-    --ouv-emergence: calc(var(--ouv-tenue) + var(--ouv-mouvement) / 2);
+       L'appel est deja a l'ecran quand il monte : son mouvement suit la courbe
+       standard — il accelere en douceur et ralentit de meme — la courbe
+       d'entree, qui part a pleine vitesse, restant a ce qui ENTRE. Sur cette
+       courbe, la meme part de la course (quatre cinquiemes, celle qui degage
+       la cote du titre) est atteinte a 0,55 du temps au lieu de 0,5 : le
+       reste parait a partir de la, et rien ne se superpose. */
+    --ouv-emergence: calc(var(--ouv-tenue) + var(--ouv-mouvement) * 0.55);
     /* La tenue de l'appel seul, avant que le reste emerge, et la duree du
        mouvement qui suit. Les deux se derivent du PARCOURS du tronc — le plus
        long des trois noms de duree, et le seul pas que le systeme nomme
@@ -402,7 +404,7 @@
   @keyframes ouv-monte{ from{ transform: translateY(var(--ouv-depart)) } to{ transform:none } }
 @keyframes ouv-emerge{ from{ opacity:0 } to{ opacity:1 } }
 :where(html.ouv-lever) .ouv-tete{
-    animation: ouv-monte var(--ouv-mouvement) var(--courbe-entree) var(--ouv-tenue) both }
+    animation: ouv-monte var(--ouv-mouvement) var(--courbe-etat) var(--ouv-tenue) both }
 :where(html.ouv-lever) .ouv-groupe,
   :where(html.ouv-lever) .ouv-langue{
     animation: ouv-emerge var(--ouv-mouvement) var(--courbe-entree) var(--ouv-emergence) both }

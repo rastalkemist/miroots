@@ -119,14 +119,42 @@
 
       function appeler() {
         corps.classList.add('nav-appele');
+        armer();
+      }
+
+      /* Un element qui parait temporairement ne se retire que sur une periode
+         SANS interaction : tant que le pointeur ou le foyer se tient sur le
+         chrome rappele ou sur l'un de ses enfants, la minuterie est retenue,
+         et elle repart ENTIERE au depart. Sans cette retenue, l'element
+         s'efface sous le doigt de qui s'en sert. */
+      function armer() {
         clearTimeout(minuterie);
         minuterie = setTimeout(retirer, TENUE);
       }
+
+      function retenir() { clearTimeout(minuterie); }
+
+      function relacher() { if (present()) armer(); }
 
       function retirer() {
         clearTimeout(minuterie);
         corps.classList.remove('nav-appele');
       }
+
+      /* Un seul ecouteur par barre couvre la barre ET tout ce qu'elle porte,
+         par deux mecanismes differents : « enter » et « leave » ne remontent
+         pas mais se declenchent sur la barre pour l'ensemble de sa descendance,
+         « focusin » et « focusout » remontent. Les remplacer par « over » et
+         « out » ferait relacher la minuterie a chaque passage d'un bouton a
+         son voisin, a l'interieur meme de la barre. */
+      Array.prototype.forEach.call(
+        document.querySelectorAll('.chrome-haut, .chrome-bas'),
+        function (barre) {
+          barre.addEventListener('pointerenter', retenir);
+          barre.addEventListener('focusin', retenir);
+          barre.addEventListener('pointerleave', relacher);
+          barre.addEventListener('focusout', relacher);
+        });
 
       /* Le nom de la surface. L'activation au clavier d'un lien emet le meme
          evenement que l'activation au pointeur : un seul ecouteur couvre les
