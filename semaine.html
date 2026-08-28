@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-gcgBxF/UaxxZbqUoBdiqkYJjavR9W0gU2Bj33NsgdbQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-KvTImGatC0wSrsZne8MdjTdXcK3SR81qB+PiDbk0q1I='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Ma semaine</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les engagements, ce qui avance.">
 <meta property="og:type" content="website">
@@ -70,17 +70,17 @@
   </section>
 
   <section class="bloc-plan" id="blocCetteSemaine" aria-labelledby="etCetteSemaine" hidden>
-    <span class="etiquette" id="etCetteSemaine" data-t="etCetteSemaine">Cette semaine</span>
+    <h4 id="etCetteSemaine" data-t="etCetteSemaine">Cette semaine</h4>
     <div id="listeCetteSemaine"></div>
   </section>
 
   <section class="bloc-plan" id="blocPlusTard" aria-labelledby="etPlusTard" hidden>
-    <span class="etiquette" id="etPlusTard" data-t="etPlusTard">Plus tard</span>
+    <h4 id="etPlusTard" data-t="etPlusTard">Plus tard</h4>
     <div id="listePlusTard"></div>
   </section>
 
   <section class="bloc-plan" id="blocOu" aria-labelledby="etOu">
-    <span class="etiquette" id="etOu" data-t="etOu">Où j'en suis</span>
+    <h4 id="etOu" data-t="etOu">Où j'en suis</h4>
     <p class="compte" id="compte"></p>
     <div class="jauge" id="jauge" role="progressbar" aria-labelledby="etOu" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
       <div class="part" id="jaugePart" style="width:0%"></div>
@@ -99,7 +99,7 @@
   <span class="visuellement-cache" id="etQuand" data-t="etQuand">Quand ? (facultatif)</span>
   <div class="heures" id="heures" role="group" aria-labelledby="etHeure"></div>
   <span class="visuellement-cache" id="etHeure" data-t="etHeure">À quelle heure ? (facultatif)</span>
-  <p class="mention-inerte" id="inerteEcheance" data-t="inerte" hidden>L'heure et l'échéance ne se gardent pas encore : le jour, lui, est retenu.</p>
+  <p class="mention-inerte" id="inerteEcheance" data-t="inerte" hidden>L’heure et les échéances datées ne se gardent pas encore. Le jour est retenu, et « Passer » range bien dans Plus tard.</p>
   <div class="ecrire">
     <label class="visuellement-cache" for="engagement" data-t="labEngagement">Qu'est-ce que tu veux faire ?</label>
     <textarea id="engagement" rows="1" maxlength="80" enterkeyhint="send" data-p="phEngagement" placeholder="Finir la maquette du flyer…"></textarea>
@@ -144,16 +144,17 @@
      copie de la semaine servie et la redessine apres chaque ecriture. Chaque
      porte refuse sans session ; la garde en tete d'ecran s'en charge avant.
      Ce que l'ecran exige de la reponse : taches[] portant id, engagement,
-     jour, fait_le, ordre — les noms que le socle rend. Il lit aussi echeance,
-     alarme et plus_tard quand la reponse les porte. */
+     jour, fait_le, ordre — les noms que le socle rend. Il lit aussi echeance
+     et alarme quand la reponse les porte. */
   var SEMAINE = { taches: [] };
 
   /* Ce que la porte accepte decide de ce que l'ecran propose. Tant qu'une
-     tache servie ne porte pas le champ d'echeance, l'heure, l'alarme et
-     l'horizon restent INERTES et l'ecran le dit : les envoyer ferait refuser
-     l'appel entier, engagement compris. Le jour, lui, part toujours. La
-     bascule se lit sur la reponse — le jour ou le socle sert le champ, les
-     commandes s'activent d'elles-memes. */
+     tache servie ne porte pas le champ d'echeance, l'heure, l'alarme et les
+     quatre horizons DATES restent INERTES et l'ecran le dit : les envoyer
+     ferait refuser l'appel entier, engagement compris. Le jour part toujours,
+     et « Passer » aussi — il ne demande aucune date a la porte. La bascule se
+     lit sur la reponse : le jour ou le socle sert le champ, les commandes
+     s'activent d'elles-memes. */
   var echeanceServie = false;
 
   function chargerSemaine() {
@@ -186,7 +187,7 @@
       etPlusTard: 'Plus tard',
       videJournee: 'Rien pour aujourd’hui. Écris ce que tu veux faire, en bas.',
       cadreNote: 'Ta semaine, en un regard.',
-      inerte: 'L’heure et l’échéance ne se gardent pas encore : le jour, lui, est retenu.',
+      inerte: 'L’heure et les échéances datées ne se gardent pas encore. Le jour est retenu, et « Passer » range bien dans Plus tard.',
       plusTard: 'Plus tard',
       alarme: 'Alarme',
       autreHeure: 'Autre…',
@@ -217,7 +218,7 @@
         if (p <= 80) return ', tu y es presque, quel focus !';
         if (p <= 90) return ', l’excellence en marche !';
         if (p < 100) return ', tu frôles la perfection !';
-        return ', eza na boss des boss. On s’incline devant la perfection ;)';
+        return ', oza na boss des boss. On s’incline devant la perfection ;)';
       },
       aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
     },
@@ -237,7 +238,7 @@
       etPlusTard: 'Later',
       videJournee: 'Nothing for today. Write what you want to do, below.',
       cadreNote: 'Your week, at a glance.',
-      inerte: 'Times and due dates aren’t stored yet — the day is.',
+      inerte: 'Times and dated deadlines aren’t stored yet. The day is kept, and “Skip” files it under Later.',
       plusTard: 'Later',
       alarme: 'Alarm',
       autreHeure: 'Other…',
@@ -268,7 +269,7 @@
         if (p <= 80) return ', almost there — what focus!';
         if (p <= 90) return ', excellence in motion!';
         if (p < 100) return ', brushing against perfection!';
-        return ', eza na boss des boss. We bow before perfection ;)';
+        return ', oza na boss des boss. We bow before perfection ;)';
       },
       aria: function (e, f) { return (f ? 'Kept: ' : 'Not kept yet: ') + e; }
     }
@@ -354,11 +355,11 @@
     p.type = 'button';
     p.className = 'jour ptard';
     p.dataset.ptard = '1';
-    p.disabled = !echeanceServie;
     p.setAttribute('aria-pressed', horizon !== null ? 'true' : 'false');
     p.setAttribute('aria-expanded', $('feuilleEcheance').hidden ? 'false' : 'true');
     p.textContent = t().plusTard;
     z.appendChild(p);
+    refletComposeur();
   }
 
   /* La rangee des heures appartient aux jours : elle parait quand un jour est
@@ -404,7 +405,16 @@
     al.appendChild(document.createTextNode(t().alarme));
     z.appendChild(al);
     z.classList.toggle('ouverte', jourChoisi !== null);
-    $('inerteEcheance').hidden = echeanceServie || jourChoisi === null;
+    direInerte();
+  }
+
+  /* La mention se dit partout ou un choix DATE serait perdu : sur la rangee
+     des heures, et dans la feuille des horizons. Elle se relit apres chaque
+     changement d'etat de la feuille — la calculer pendant qu'on l'ouvre la
+     lirait encore fermee. */
+  function direInerte() {
+    $('inerteEcheance').hidden = echeanceServie
+      || (jourChoisi === null && $('feuilleEcheance').hidden);
   }
 
   /* La feuille d'echeance de « Plus tard » : les semaines seules, et un
@@ -426,11 +436,14 @@
 
   /* Ouvrir « Plus tard », c'est deja s'engager : « Semaine prochaine » se
      tient choisie d'entree, et seul le geste explicite sur « Passer — sans
-     echeance » enregistre l'intention sans date. */
+     echeance » enregistre l'intention sans date. Quand la porte ne garde pas
+     encore d'echeance, les quatre horizons dates ne sont pas tenables : la
+     pre-selection tombe alors sur « Passer », qui ne demande rien a la porte —
+     poser sans date suffit a descendre dans « Plus tard ». */
   function ouvrirFeuille() {
     var f = $('feuilleEcheance');
     if (horizon === null) {
-      horizon = 'sp';
+      horizon = echeanceServie ? 'sp' : 'sans';
       jourChoisi = null; heureChoisie = null; alarmeTenue = false;
       dessinerFeuille();
       dessinerHeures();
@@ -441,6 +454,7 @@
     f.classList.remove('avant-entree');
     feuilleArmer();
     dessinerJours();
+    direInerte();
   }
 
   function fermerFeuille() {
@@ -453,6 +467,7 @@
       f.classList.remove('se-retire');
       f.hidden = true;
       dessinerJours();
+      direInerte();
     });
   }
 
@@ -464,6 +479,9 @@
       b.type = 'button';
       b.className = 'jour choix';
       b.dataset.horizon = h;
+      /* Une echeance datee exige que la porte la garde. « Passer », lui, ne
+         pose aucune date : il tient a toute heure. */
+      b.disabled = !echeanceServie;
       b.setAttribute('aria-pressed', horizon === h ? 'true' : 'false');
       b.textContent = t().horizons[h];
       z.appendChild(b);
@@ -548,9 +566,13 @@
      l'echeance d'aujourd'hui ; Plus tard porte l'echeance au-dela de la
      semaine et le sans-echeance declare ; Cette semaine porte le reste — les
      autres jours et le sans-jour, l'absence de choix etant la semaine. */
+  /* LA REGLE D'ETAGE. Ce qui ne porte aucune date — ni jour de la semaine, ni
+     echeance — descend dans « Plus tard ». L'absence de date EST le signal :
+     rien ne distingue un engagement repousse d'un engagement pose sans choix,
+     et les deux vont au meme endroit. Ecrire l'inverse remonterait dans la
+     semaine tout ce que personne n'a date. */
   function etageDe(x) {
     var idx = idxAujourdhui();
-    if (x.plus_tard) return 'p';
     if (x.echeance) {
       var e = new Date(x.echeance);
       var j0 = jourDe(idx);
@@ -559,6 +581,7 @@
       if (e >= jourDe(7)) return 'p';
       return 's';
     }
+    if (x.jour === null || x.jour === undefined) return 'p';
     if (x.jour === idx) return 'j';
     return 's';
   }
@@ -820,6 +843,19 @@
   function marquerChampSemaine() {
     var champ = $('engagement');
     champ.closest('.ecrire').classList.toggle('a-du-texte', champ.value.trim().length > 0);
+    refletComposeur();
+  }
+
+  /* Le mecanisme d'echeance ne s'ouvre qu'au moment ou l'on est pret a ecrire.
+     Le foyer suffit a le deplier — la feuille de style le fait seule, sur le
+     foyer de la BANDE et non du champ. Ce marqueur ne sert qu'a le TENIR
+     ouvert quand le foyer est parti : un choix pose ou un texte commence sont
+     un engagement en cours, et replier dessus effacerait de vue ce que
+     l'utilisateur vient de decider. */
+  function refletComposeur() {
+    var tenu = jourChoisi !== null || horizon !== null
+      || $('engagement').value.trim().length > 0;
+    $('ecrireBas').classList.toggle('retient', tenu);
   }
 
   $('engagement').addEventListener('input', marquerChampSemaine);
@@ -842,7 +878,6 @@
       var ech = echeanceChoisie();
       if (ech) params.p_echeance = ech.toISOString();
       if (alarmeTenue && heureChoisie !== null && jourChoisi !== null) params.p_alarme = true;
-      if (horizon === 'sans') params.p_plus_tard = true;
     }
     var b = $('btnAjouter');
     b.disabled = true;

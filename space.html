@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-PNGVF2mUKzenT5e/uSmtBXEM1st8mxhswPt4G+FKXIY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kGpGe/3jdaj7gdmAT5Hy2/VdEWrzSuHBDfkIpXBbsCs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
@@ -176,8 +176,7 @@
       blocNotes: 'Notes',
       ajoutRapide: 'Ajouter un engagement',
       videSemaine: 'Rien de posé pour l’instant. Ta semaine s’écrit à côté.',
-      tenus: function (f) { return f === 1 ? '1 engagement tenu' : f + ' engagements tenus'; },
-      boss: ', eza na boss des boss.',
+      boss: function (f) { return f + ' engagements tenus sur ' + f + ', félicitations ! Oza na boss des boss ;)'; },
       videNotes: 'Rien pour l’instant. Pose ta première note.',
       labNote: 'Écris-toi', phHall: 'Une note rapide…', garder: 'Garder',
       videSavoir: 'Rien de rangé pour l’instant. Colle une adresse dans tes notes.',
@@ -205,8 +204,7 @@
       blocNotes: 'Notes',
       ajoutRapide: 'Add a commitment',
       videSemaine: 'Nothing set yet. Your week is written next door.',
-      tenus: function (f) { return f === 1 ? '1 commitment kept' : f + ' commitments kept'; },
-      boss: ', eza na boss des boss.',
+      boss: function (f) { return f + ' commitments kept out of ' + f + ', congratulations! Oza na boss des boss ;)'; },
       videNotes: 'Nothing yet. Set your first note down.',
       labNote: 'Write to yourself', phHall: 'A quick note…', garder: 'Keep',
       videSavoir: 'Nothing filed yet. Paste a link into your notes.',
@@ -286,7 +284,7 @@
     var mot = $('boss');
     var pleine = total > 0 && faits === total;
     mot.hidden = !pleine;
-    if (pleine) mot.textContent = t().tenus(faits) + t().boss;
+    if (pleine) mot.textContent = t().boss(faits);
   }
 
   function quand(ts) {

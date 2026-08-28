@@ -835,7 +835,38 @@
   flex-wrap: nowrap;
   overflow-x: auto;
   scrollbar-width: none;
+  /* PLIEE AU REPOS. Le mecanisme d'echeance ne parait qu'au moment ou l'on est
+     pret a ecrire : la rangee se deplie quand le composeur prend le foyer, et
+     se replie quand il le rend sans que rien ait ete choisi ni ecrit. La bande
+     etant ancree au bas de la fenetre, elle grandit vers le HAUT — le champ ne
+     bouge pas d'un pixel sous le doigt, et c'est cela qui rend le mouvement
+     lisible plutot que sautant.
+     Le pli se lit sur le foyer de LA BANDE et non du champ : taper une
+     pastille deplace le foyer du champ vers un bouton, et un pli suspendu au
+     champ se refermerait sous le geste meme qui le sert.
+     Repliee, la rangee est invisible : ses commandes sortent du parcours au
+     clavier, ce qu'une simple opacite ne ferait pas. */
+  max-height: 0; opacity: 0; visibility: hidden;
+  overflow-y: hidden;
+  margin: 0;
+  transition: max-height var(--mvt-apparition) var(--courbe-etat),
+              opacity var(--mvt-apparition) var(--courbe-etat),
+              margin var(--mvt-apparition) var(--courbe-etat),
+              visibility 0s linear var(--mvt-apparition);
+}
+/* DEPLIEE. Deux causes, jamais une seule : le foyer dans la bande, et le
+   marqueur que l'ecran pose quand un choix est fait ou un texte commence —
+   sans lui, rendre le foyer effacerait de vue ce qui vient d'etre decide.
+   L'ouverture emprunte la courbe d'ENTREE, la fermeture la courbe standard. */
+:where(body.p-space) .ecrire-bas:focus-within .jours,
+:where(body.p-space) .ecrire-bas.retient .jours{
+  max-height: calc(var(--cible-min) + var(--esp-2));
+  opacity: 1; visibility: visible;
   margin: 0 0 var(--esp-2);
+  transition: max-height var(--mvt-apparition) var(--courbe-entree),
+              opacity var(--mvt-apparition) var(--courbe-entree),
+              margin var(--mvt-apparition) var(--courbe-entree),
+              visibility 0s;
 }
 :where(body.p-space) .ecrire-bas .jours::-webkit-scrollbar{ display: none }
 :where(body.p-space) .ecrire-bas .jour{ flex: none }
