@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-BfN49Lsws9D0BO0Mub0MhcHz3XTamF7V17/N2vCHRT0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-bG4xvPG2I/bNPfbNVOHvYsxUFI06r1+R2GGe2in9Mvg='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots — Mes Notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
@@ -98,6 +98,7 @@
 </div>
 <template id="tplPin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4h6l-.7 5.2 2.7 3.3H7l2.7-3.3zM12 12.5V20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
 <template id="tplCroix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></template>
+<template id="tplChevron"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
 <template id="tplCoche"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5 6.5 12 13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></template>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -146,7 +147,7 @@
       versSavoir: 'Un lien se range dans ton Savoir, un peu plus bas.',
       labNote: 'Écris-toi',
       phNote: 'Écris-toi.',
-      vers: '→ Ma Semaine',
+      vers: 'Vers Ma Semaine',
       posee: 'Dans ta semaine',
       epingler: 'Épingler',
       desepingler: 'Épinglée',
@@ -175,7 +176,7 @@
       versSavoir: 'Links live in your Knowledge bank, just below.',
       labNote: 'Write to yourself',
       phNote: 'Write to yourself.',
-      vers: '→ My week',
+      vers: 'To My week',
       posee: 'In your week',
       epingler: 'Pin',
       desepingler: 'Pinned',
@@ -317,26 +318,14 @@
     q.className = 'note-quand';
     q.textContent = gestion ? nomDuJour(note.cree) + ', ' + heure(note.cree) : heure(note.cree);
     rang.appendChild(q);
-    if (note.promue) {
-      var pos = document.createElement('span');
-      pos.className = 'note-posee';
-      pos.textContent = t().posee;
-      rang.appendChild(pos);
-    } else {
-      var v = document.createElement('button');
-      v.type = 'button';
-      v.className = 'bouton-vers';
-      v.dataset.geste = 'vers';
-      v.dataset.id = note.id;
-      v.textContent = t().vers;
-      rang.appendChild(v);
-    }
     return rang;
   }
 
-  /* Les deux pastilles tiennent la ligne du titre, a droite — la grammaire du
+  /* Les pastilles tiennent la ligne du titre, a droite — la grammaire du
      hall, ou le nom est a gauche et le geste a droite. Le texte partage leur
-     premiere ligne et reprend toute la largeur ensuite. */
+     premiere ligne et reprend toute la largeur ensuite. Le chevron ferme le
+     trio : il pose la ligne dans la semaine, et une note deja posee garde sa
+     pastille remplie, sans autre geste possible. */
   function gestesDe(note) {
     var z = document.createElement('div');
     z.className = 'note-gestes';
@@ -357,6 +346,21 @@
     re.setAttribute('aria-label', t().retirer);
     re.appendChild($('tplCroix').content.firstElementChild.cloneNode(true));
     z.appendChild(re);
+    var v = document.createElement('button');
+    v.type = 'button';
+    v.className = 'geste-note';
+    v.dataset.geste = 'vers';
+    v.dataset.id = note.id;
+    if (note.promue) {
+      v.disabled = true;
+      v.setAttribute('aria-pressed', 'true');
+      v.setAttribute('aria-label', t().posee);
+    } else {
+      v.setAttribute('aria-pressed', 'false');
+      v.setAttribute('aria-label', t().vers);
+    }
+    v.appendChild($('tplChevron').content.firstElementChild.cloneNode(true));
+    z.appendChild(v);
     return z;
   }
 

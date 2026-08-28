@@ -120,26 +120,39 @@
  */
 :where(body.p-space) .groupe-jour{ margin: 0 0 var(--air-i6) }
 :where(body.p-space) .groupe-jour > .etiquette{ margin-bottom: var(--air-i2) }
-:where(body.p-space) .taches{ display: grid; gap: var(--esp-2); margin: 0; padding: 0; list-style: none }
-
-:where(body.p-space) .tache{
-  display: flex;
-  align-items: flex-start;
-  gap: var(--esp-3);
-  width: 100%;
-  min-height: var(--cible-min);
-  padding: var(--esp-3) var(--esp-4);
-  text-align: left;
+/* Une liste de taches est UNE surface : les lignes s'y empilent, separees
+   d'un filet, au lieu de porter chacune sa propre carte — une carte par
+   ligne epaissit chaque ligne et pousse le module hors de l'ecran. La ligne
+   tient le plancher tactile, rien de plus. */
+:where(body.p-space) .taches{
+  display: block; margin: 0; padding: 0; list-style: none;
   background: var(--blanc);
   border: var(--limite-ep) solid var(--gris-filet);
   border-radius: var(--rayon-module);
+  overflow: hidden;
+}
+:where(body.p-space) .taches > li + li{
+  border-top: var(--limite-ep) solid var(--gris-filet);
+}
+:where(body.p-space) .tache{
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  width: 100%;
+  min-height: var(--cible-min);
+  padding: 0 var(--esp-4);
+  text-align: left;
+  background: none;
+  border: 0;
   font-family: var(--font-corps);
   font-size: var(--t-body);
   line-height: var(--lh-16);
   color: var(--encre);
   cursor: pointer;
 }
-:where(body.p-space) .tache:focus-visible{ border-color: var(--univers) }
+:where(body.p-space) .tache:focus-visible{
+  box-shadow: inset 0 0 0 var(--limite-ep) var(--univers);
+}
 
 /* La case est un aplat, pas une icone du sprite commun : son bord porte
  * l'information, donc il se detache du blanc de la carte.
@@ -148,8 +161,7 @@
   flex: 0 0 auto;
   width: var(--esp-6);
   height: var(--esp-6);
-  margin-top: var(--esp-1);
-  border: var(--limite-ep-b) solid var(--univers);
+  border: var(--limite-ep) solid var(--univers);
   border-radius: var(--rayon-champ);
   background: var(--blanc);
   display: flex;
@@ -159,7 +171,9 @@
 :where(body.p-space) .tache .case svg{ width: var(--esp-4); height: var(--esp-4); display: none }
 :where(body.p-space) .tache[aria-pressed="true"] .case{ background: var(--univers) }
 :where(body.p-space) .tache[aria-pressed="true"] .case svg{ display: block; color: var(--blanc) }
-:where(body.p-space) .tache[aria-pressed="true"] .engagement{ color: var(--encre-discrete) }
+:where(body.p-space) .tache[aria-pressed="true"] .engagement{
+  color: var(--encre-discrete); text-decoration: line-through;
+}
 :where(body.p-space) .engagement{ flex: 1 1 auto }
 
 /* ---- Progression ---------------------------------------------------------
@@ -594,8 +608,10 @@
   overflow: hidden;
 }
 :where(body.p-space) .hall-bloc .note-rang{ margin-top: var(--air-i1) }
-:where(body.p-space) .hall-bloc .bouton-vers{
-  padding-inline: var(--esp-3); font-size: var(--t-12);
+/* Dans le hall, une tache tient sur sa ligne : le module se lit d'un
+   regard, la liste entiere vit sur son ecran. */
+:where(body.p-space) .hall-bloc .tache .engagement{
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 :where(body.p-space) .note-carte.tenue{ border: var(--limite-ep) solid var(--terre-e5) }
 :where(body.p-space) .note-rang{
@@ -604,22 +620,6 @@
 }
 :where(body.p-space) .note-rang .note-quand{ margin-right: auto }
 :where(body.p-space) .note-quand{ font-size: var(--t-12); color: var(--encre-discrete) }
-:where(body.p-space) .bouton-vers{
-  border: var(--limite-ep) solid var(--accent-plan); color: var(--accent-plan);
-  background: none; border-radius: var(--rayon-pilule);
-  /* Ce qui se touche tient le plancher : une pilule raccourcie d'un cran
-     d'air rend une cible sous le plancher, sur tous les ecrans. */
-  min-height: var(--cible-min);
-  padding-inline: var(--esp-4);
-  font-family: var(--font-eclat); font-weight: var(--w-bold); font-size: var(--t-14);
-  cursor: pointer;
-}
-:where(body.p-space) .bouton-vers[disabled]{ opacity: .45; cursor: default }
-:where(body.p-space) .note-posee{
-  font-size: var(--t-14); font-weight: var(--w-bold);
-  color: var(--terre-e2); background: var(--terre-e5);
-  border-radius: var(--rayon-pilule); padding: var(--esp-1) var(--esp-4);
-}
 :where(body.p-space) .bouton-doux{
   border: var(--limite-ep) solid var(--limite-controle); color: var(--encre);
   background: none; border-radius: var(--rayon-pilule);
@@ -692,9 +692,11 @@
    champ, avec de quoi en sortir. Le rattrapage prend la place exacte de la note
    retiree, le temps d'un delai. La note designee est celle qu'on vient
    d'ouvrir depuis le hall : elle s'eclaire un instant, sans rien deplacer. */
-/* Les deux gestes d'une carte sont des pastilles a glyphe : le dessin recule
+/* Les gestes d'une carte sont des pastilles a glyphe : le dessin recule
    d'un cran d'air sous le plancher tactile, la zone atteinte le tient par
-   extension. L'epingle tenue se remplit d'accent. */
+   extension. Ce qui est tenu ou pose se remplit d'accent ; la pastille
+   remplie et inerte reste pleinement lisible, elle dit un etat, pas une
+   commande eteinte. */
 :where(body.p-space) .geste-note{
   width: calc(var(--cible-min) - var(--esp-2));
   height: calc(var(--cible-min) - var(--esp-2)); flex: none;
@@ -734,6 +736,7 @@
   background: var(--accent-plan); border-color: var(--accent-plan);
   color: var(--blanc);
 }
+:where(body.p-space) .geste-note[disabled]{ cursor: default }
 
 /* Le composeur ouvert DANS une carte : la meme piece que partout, bornee a la
    carte qui la porte. */
