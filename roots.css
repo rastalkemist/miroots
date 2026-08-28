@@ -864,7 +864,7 @@ body.page-figee{overflow:hidden}
 :where(body.p-space){--plein-appui-fond:var(--univers);--plein-appui-encre:var(--encre-bouton)}
 :where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5);--ombre-teinte:var(--rouge-e1-rgb);--encre-ll-h1:var(--encre);--encre-ll-h3:var(--encre);--encre-ll-h5:var(--encre);--encre-ll-h2:var(--univers-e3);--encre-ll-h4:var(--univers-e3);--encre-ll-h6:var(--univers-e3);--encre-ll-chapo:var(--univers-e3)}
 :where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i4);text-align:left}
-:where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
+:where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
 :where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i4)}
 :where(body.p-roam) .bloc-sejour > .etiquette{display:block;margin-bottom:var(--air-i2);font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
@@ -1186,8 +1186,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .badge-emporter svg{width:14px;height:14px}
 /* Sans regle, un h1 tombe sur 2em, soit 32 px, qui n'est aucun barreau.
    Ces ecrans prennent la meme que la carte et retrouver. */
-:where(body.p-accueil, body.p-paiement, body.p-payer, body.p-facture) h1{font-size:var(--t-h2);line-height:var(--lh-28)}
-:where(body.p-carte) h1{font-size:var(--t-h2);margin:0 0 var(--air-i1);line-height:1.15}
+:where(body.p-carte) h1{margin:0 0 var(--air-i1)}
 :where(body.p-carte) .sous-titre{font-size:var(--t-sm);color:var(--encre-discrete);margin:0 0 var(--air-i3);line-height:1.5}
 /* LE RAIL ET SES DEUX COMMANDES — grammaire, employee par trois familles
    d'ecrans : les categories de la carte, les rails d'offres, la bande des
@@ -1277,7 +1276,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 @media(min-width:500px){:where(body.p-carte) .panneau{bottom:22px;border-radius:var(--rayon-carte)}
 
 }:where(body.p-carte) .entete-panneau{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--air-i3)}
-:where(body.p-carte) .entete-panneau h2{font-size:var(--t-h3);margin:0 0 3px}
+:where(body.p-carte) .entete-panneau h2{margin:0 0 3px}
 :where(body.p-carte) .entete-panneau p{font-size:var(--t-sm);color:var(--encre-discrete);margin:0}
 :where(body.p-carte) .ligne-panier{display:flex;justify-content:space-between;align-items:center;gap:var(--esp-2);padding:var(--esp-2) 0;border-bottom:1px solid var(--gris-ilot);font-size:var(--t-sm)}
 :where(body.p-carte) .ligne-panier .qte{color:var(--encre-discrete);font-size:var(--t-sm)}
@@ -1296,7 +1295,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-carte) .ecran-confirmation .soleil-ok{height:46px;margin:0 auto var(--air-i2);display:flex;justify-content:center}
 :where(body.p-carte) .ecran-confirmation .soleil-ok svg{height:100%;width:auto}
 /* ======================================================================== ECRAN — retrouver ======================================================================== */ :where(body.p-retrouver) .iti--container{z-index:10000}
-:where(body.p-retrouver) h1{font-size:var(--t-h2);font-weight:300;margin:var(--air-i2) 0 var(--air-i1);line-height:1.2}
+:where(body.p-retrouver) h1{font-weight:var(--w-light);margin:var(--air-i2) 0 var(--air-i1)}
 :where(body.p-retrouver) .sous{color:var(--encre-discrete);margin:0 0 var(--air-i3);font-size:var(--t-sm);line-height:1.5}
 :where(body.p-retrouver) .bloc{background:var(--blanc);border-radius:var(--rayon-carte);padding:var(--esp-5);box-shadow:var(--ombre-2);margin-bottom:var(--air-i3)}
 :where(body.p-retrouver) .champ input{padding:var(--esp-3) var(--esp-3)}
@@ -1578,8 +1577,8 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-caisse) .bandeau-etat{background:var(--blanc-casse);border-bottom:var(--limite-ep-b) solid var(--gris-filet)}
 :where(body.p-caisse) .bandeau-etat > .bande-console{display:flex;align-items:center;gap:var(--esp-3);padding:var(--esp-3) 0}
 :where(body.p-caisse) .barre-poste .poste{font-size:var(--t-16);font-weight:var(--w-bold);letter-spacing:.06em;text-transform:uppercase}
-:where(body.p-caisse) h1{font-size:var(--t-h2);line-height:var(--lh-28);font-weight:var(--w-bold);margin:var(--air-i4) 0 var(--air-i3)}
-:where(body.p-caisse) h2{font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold);margin:var(--air-i4) 0 var(--air-i3)}
+:where(body.p-caisse) h1{font-weight:var(--w-bold);margin:var(--air-i4) 0 var(--air-i3)}
+:where(body.p-caisse) h2{font-weight:var(--w-bold);margin:var(--air-i4) 0 var(--air-i3)}
 :where(body.p-caisse) .aide{font-size:var(--t-14);line-height:var(--lh-14);color:var(--gris-500);margin:0 0 var(--air-i3)}
 /* Le comptage : douze lignes, une par coupure. Aucun champ de total — il se lit,
    calcule par la meme fonction que celle qui l'enregistrera. */
