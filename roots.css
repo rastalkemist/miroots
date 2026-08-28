@@ -101,6 +101,10 @@
     hauteur ecrite derive du rendu des que la barre porte autre chose. La
     valeur ci-dessous n'est qu'un repli, pour un rendu sans script. */
  --entete-h-rendue:var(--entete-h);
+ /* La hauteur RENDUE de la barre basse. Declaree ici pour que la feuille tienne
+    seule ; le chrome la republie a chaque changement de forme, et la pose a zero
+    quand la barre monte dans l'en-tete. */
+ --chrome-bas-h:var(--barre-h);
  /* Gouttiere de la feuille du bas : elle borne le contenu a gauche et a
     droite, et elle donne l'air au-dessus comme au-dessous de la croix. */
  --feuille-marge:18px;
@@ -129,7 +133,17 @@
  
 }
 /* ======================================================================== §2 a §4 — SOCLE. Base, champ telephone, chrome partage. ======================================================================== */ *{box-sizing:border-box}
-body{margin:0;min-height:100vh;background:var(--blanc);color:var(--encre);font-family:var(--font-corps);font-weight:var(--w-medium);padding-bottom:calc(124px + var(--safe-bas));position:relative}
+/* L'AIR D'UNE BARRE FIXE. Un meme cran gouverne trois distances autour de la
+   barre basse : ce qui separe son filet du bord haut de ses icones, ce qui
+   separe d'elle le dernier element de la page, et — double — ce qui separe ce
+   dernier element du filet qui ferme les sections au-dessus de lui. Le filet
+   d'une section porte plus loin que celui d'une barre, d'ou le double.
+   Il se derive de la rampe d'interface : poser un nombre ici couperait le lien
+   avec la ligne, et les trois distances cesseraient de se repondre.
+   La hauteur de la barre n'est PAS ecrivable — elle varie avec le retrait du
+   systeme et avec la forme que prend la barre ; le chrome la publie. */
+:root{--air-barre:var(--air-i1)}
+body{margin:0;min-height:100vh;background:var(--blanc);color:var(--encre);font-family:var(--font-corps);font-weight:var(--w-medium);padding-bottom:calc(var(--chrome-bas-h, 124px) + var(--air-barre) + var(--safe-bas));position:relative}
 svg.i{width:1em;height:1em;vertical-align:-0.12em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 /* ─── L'ARBRE EDITORIAL — un titre porte son ROLE, sur tout ecran ─────────
    Sans regle, un titre tombe sur la valeur par defaut du navigateur : 32 px
@@ -442,7 +456,7 @@ html.au-clavier :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):focu
 .pied-politique a.courant{font-weight:var(--w-bold);color:var(--univers)}
 .pied-politique{margin-top:var(--air-i3);padding:var(--esp-3) var(--esp-1) var(--esp-1);border-top:1px solid var(--gris-service);display:flex;align-items:center;justify-content:center;gap:var(--esp-3)}
 .pied-politique a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
-.pied{width:var(--piste);max-width:var(--col);margin:var(--air-i6) auto 0;padding:var(--esp-4) 0 var(--esp-1);border-top:1px solid var(--gris-service);display:flex;justify-content:center}
+.pied{width:var(--piste);max-width:var(--col);margin:var(--air-i6) auto 0;padding:calc(var(--air-barre) * 2) 0 0;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .pied a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
 /* La barre basse porte des verbes LEGENDES : une barre a etiquettes vaut
    80 px — le barreau au-dessus de l'icone seule — et le contenu rendu
@@ -516,7 +530,7 @@ body.nav-haut .chrome-gauche{gap:16px}
    pas sans l'autre. L'air vit DANS les verbes, pas sur la barre. */
 @media(max-width:639px){
   body:not(.nav-haut) .chrome-bas{min-height:0;padding:0}
-  body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:2px;padding-bottom:calc(9.5px + var(--safe-bas))}
+  body:not(.nav-haut) .verbe{justify-content:flex-start;gap:0;padding-top:var(--air-barre);padding-bottom:calc(9.5px + var(--safe-bas))}
   body:not(.nav-haut) .verbe .verbe-dit{margin-top:-4px}
 }
 /* LES ENCRES DE LA BARRE BASSE VALENT POUR TOUTES SES FORMES — pleine

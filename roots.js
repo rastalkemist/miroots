@@ -1002,7 +1002,12 @@
       var u = (document.body.className.match(/\bp-(roam|space)\b/) || [null, 'roots'])[1];
       var titre = document.querySelector('.chrome-titre');
       if (titre && DESTINATION[u]) {
-        titre.textContent = verbes[u];
+        /* Un ecran qui EST un module de son univers nomme ce module sur le
+           corps ; le nom de surface le porte alors, et le lien continue de
+           mener a l'ecran d'accueil de l'univers. Sans cette lecture, tout
+           ecran voulant son propre nom devrait le reecrire APRES le chrome —
+           et le perdrait a chaque repose du nav. */
+        titre.textContent = document.body.dataset.module || verbes[u];
         titre.setAttribute('href', destinationDe(u));
       }
       if (superNav) Array.prototype.forEach.call(superNav.querySelectorAll('.verbe'), function (b) {
@@ -1622,6 +1627,27 @@
      sous le bandeau lit --chrome-haut-h ; sans elle, l'element passe
      DERRIERE le bandeau, qui est collant et d'un rang superieur.
      ------------------------------------------------------------------ */
+  /* La barre BASSE publie sa hauteur rendue, comme la haute. Ce qui se cale
+     au-dessus d'elle en depend, et cette hauteur n'est pas ecrivable : elle
+     varie avec le retrait du systeme et avec la forme que prend la barre.
+     Elle vaut zero quand la barre monte dans l'en-tete. */
+  function publierHauteurBasse() {
+    var b = document.querySelector('.chrome-bas');
+    if (!b) return;
+    function poser() {
+      var monte = document.body.classList.contains('nav-haut');
+      document.documentElement.style.setProperty('--chrome-bas-h',
+        (monte ? 0 : Math.ceil(b.getBoundingClientRect().height)) + 'px');
+    }
+    poser();
+    if (window.ResizeObserver) new ResizeObserver(poser).observe(b);
+    window.addEventListener('resize', poser);
+    if (window.MutationObserver) {
+      new MutationObserver(poser).observe(document.body,
+        { attributes: true, attributeFilter: ['class'] });
+    }
+  }
+
   function publierHauteurChrome() {
     var h = document.querySelector('.chrome-haut');
     if (!h) return;
@@ -1755,6 +1781,7 @@
 
   window.addEventListener('load', function () {
     publierHauteurChrome();
+  publierHauteurBasse();
     feuilleGlissante();
     accrocherGestesDuCode();
   });

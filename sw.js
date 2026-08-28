@@ -21,7 +21,11 @@
  */
 'use strict';
 
+<<<<<<< Updated upstream
 var VERSION   = 'b92a89723f3510bb';
+=======
+var VERSION   = '72c0f46881c6c4c6';
+>>>>>>> Stashed changes
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
@@ -33,7 +37,7 @@ var REPLI = 'hors-ligne.html';
 var COQUE_FICHIERS = [
   'index.html', 'carte.html', 'retrouver.html', 'roam.html', 'lieu.html', 'space.html',
   'facture.html', 'paiement.html', 'confidentialite.html',
-  'onboard.html', 'confirm.html', REPLI,
+  'onboard.html', 'confirm.html', 'intel.html', 'notes.html', 'semaine.html', REPLI,
   'roots-fonts.css', 'roots-tokens.css', 'roots.css', 'space.css', 'roam.css',
   'onboard.css',
   'roots-db.js', 'roots.js', 'garde.js', 'roots-lecture.js', 'space-notes.js', 'onboard.js',
