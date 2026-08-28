@@ -64,6 +64,16 @@ def main():
     racine = pathlib.Path(args[0] if args else ".")
     p = racine / "sw.js"
     s = p.read_text(encoding="utf-8")
+    # La coque doit porter UNE declaration, et une seule. Un marqueur de fusion
+    # laisse deux versions l'une sous l'autre : le fichier cesse d'etre
+    # analysable, la SECONDE declaration est celle qui s'execute, et reecrire la
+    # premiere revient a poser une valeur que la machine n'emploie pas.
+    if re.search(r"^<{7} |^>{7} ", s, re.M):
+        raise SystemExit("ARRET — sw.js porte un marqueur de fusion non resolu. "
+                         "Le resoudre avant de reposer la VERSION.")
+    if len(re.findall(r"^var\s+VERSION\s*=", s, re.M)) != 1:
+        raise SystemExit("ARRET — sw.js ne porte pas exactement une declaration "
+                         "de VERSION. La derniere est celle qui s'execute.")
     attendue = empreinte(racine, fichiers(s))
     actuelle = re.search(r"VERSION\s*=\s*'([^']*)'", s).group(1)
     if attendue == actuelle:

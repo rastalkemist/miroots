@@ -187,6 +187,7 @@ DEFAUTS.append(("E", {FEUILLE: "a { color: var(--encre); }",
                       JETONS: ":root { --encre: #1A1A1A; --t-corps: 21px; }",
                       EMPREINTE: SCEAU}))
 DEFAUTS.append(("F", {PAGE: _page_f("A" + _CONDENSAT_F[1:])}))
+DEFAUTS.append(("H", {"coque.js": "<<<<<<< Updated upstream\nvar V=1;\n=======\nvar V=2;\n>>>>>>> Stashed changes\n"}))
 
 
 SAIN = {FEUILLE: "/* La pilule ne descend pas sous 44 px : cible tactile. */\n"
@@ -322,7 +323,7 @@ def epreuve():
                 (d / nom).write_text(txt, encoding="utf-8")
             pris = []
             for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f,
-                      controle_g):
+                      controle_g, controle_h):
                 c(d, lambda _: None, pris.append)
             ok = any(p.startswith(lettre + " ") for p in pris)
             vus += ok
@@ -334,7 +335,7 @@ def epreuve():
             (d / nom).write_text(txt, encoding="utf-8")
         pris = []
         for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f,
-                      controle_g):
+                      controle_g, controle_h):
             c(d, lambda _: None, pris.append)
         ok = not pris
         vus += ok
@@ -385,6 +386,46 @@ def controle_g(d, dire, mal):
         mal(f"G · et {len(croises) - 6} autre(s)")
 
 
+MARQUEUR_HAUT = re.compile(r"^<{7} ", re.M)
+MARQUEUR_BAS = re.compile(r"^>{7} ", re.M)
+EXT_TEXTE = (".js", ".css", ".html", ".json", ".webmanifest", ".yml", ".yaml",
+             ".md", ".py", ".txt", ".svg")
+
+
+def controle_h(d, dire, mal):
+    """Aucun marqueur de fusion non resolu ne part dans le depot.
+
+    Un marqueur laisse deux versions d'un meme passage l'une sous l'autre. Le
+    fichier cesse d'etre analysable ; et quand les deux versions declarent la
+    meme chose, c'est la SECONDE que la machine emploie, tandis qu'un
+    instrument qui lit la premiere occurrence rend vert sur une valeur qui ne
+    sert pas.
+
+    Il ne cherche que les bornes ouvrante et fermante, jamais la ligne de
+    signes egal seule : cette derniere est aussi un soulignement de titre.
+
+    Ce que ce controle ne voit pas : un conflit resolu du mauvais cote.
+    """
+    lus = [f for f in sorted(d.rglob("*"))
+           if f.is_file() and f.suffix.lower() in EXT_TEXTE
+           and ".git" not in f.parts and "node_modules" not in f.parts]
+    if not lus:
+        return mal("H · aucun fichier de texte lisible dans le dossier.")
+    atteints = []
+    for f in lus:
+        try:
+            txt = f.read_text(encoding="utf-8")
+        except (UnicodeDecodeError, OSError):
+            continue
+        if MARQUEUR_HAUT.search(txt) or MARQUEUR_BAS.search(txt):
+            atteints.append(f.relative_to(d).as_posix())
+    dire(f"H · marqueurs de fusion, {len(lus)} fichier(s) lu(s) : {len(atteints)}")
+    for a in atteints[:6]:
+        mal(f"H · « {a} » porte un marqueur de fusion non resolu")
+    if len(atteints) > 6:
+        mal(f"H · et {len(atteints) - 6} autre(s)")
+
+
 def main(argv):
     if len(argv) > 1 and argv[1] == "--epreuve":
         return epreuve()
@@ -398,7 +439,7 @@ def main(argv):
 
     print(f"=== CONTRÔLES DU DÉPÔT — {d.name} ===\n")
     for c in (controle_a, controle_b, controle_c, controle_d, controle_e, controle_f,
-                      controle_g):
+                      controle_g, controle_h):
         c(d, dire, mal)
     for l in lignes:
         print(("  " + l) if not l.startswith("  ") else l)
@@ -406,7 +447,7 @@ def main(argv):
     if refus:
         print(f"REFUS — {len(refus)} écart(s). Rien ne part tant qu'ils tiennent.")
         return 1
-    print("VERT — les sept contrôles passent.")
+    print("VERT — les huit contrôles passent.")
     print("ⓘ Ces contrôles vérifient des propriétés, pas du sens. La relecture reste due.")
     return 0
 

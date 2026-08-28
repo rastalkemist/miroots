@@ -21,11 +21,7 @@
  */
 'use strict';
 
-<<<<<<< Updated upstream
 var VERSION   = 'fe9c99f3bb6d4a92';
-=======
-var VERSION   = '72c0f46881c6c4c6';
->>>>>>> Stashed changes
 var COQUE     = 'roots-coque-'    + VERSION;
 var IMMUABLE  = 'roots-immuable-' + VERSION;
 var A_GARDER  = [COQUE, IMMUABLE];
