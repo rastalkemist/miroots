@@ -485,8 +485,8 @@
   --air-i1: calc(var(--t-body) * 1.5 * 0.25); /* 1/4 de ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
   --air-i2: calc(var(--t-body) * 1.5 * 0.5);  /* 1/2 ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
   --air-i3: calc(var(--t-body) * 1.5 * 0.75); /* 3/4 de ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
-  --air-i6: calc(var(--t-body) * 1.5 * 1);    /* 1 ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
-  --air-i8: calc(var(--t-body) * 1.5 * 1.5);  /* 1 ligne 1/2 — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
+  --air-i4: calc(var(--t-body) * 1.5 * 1);    /* 1 ligne — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
+  --air-i6: calc(var(--t-body) * 1.5 * 1.5);  /* 1 ligne 1/2 — la ligne d'interface vaut 24 px — corps 16 x 1.50 */
 }
 
 /* ---------- 2 quater. L'INTERLETTRAGE — fonction de la CASSE ----------

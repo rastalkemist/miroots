@@ -272,7 +272,7 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
 /* ⑥ Le bandeau d'appel : pleine largeur, aplat d'univers, une seule colonne
    centree et courte. C'est une cloture, donc un seul geste, et il est plein. */
 .g-appel{margin-inline:calc(50% - 50vw);width:auto;background:var(--univers);
-  color:var(--blanc);padding-block:var(--air-i8);text-align:center}
+  color:var(--blanc);padding-block:var(--air-i6);text-align:center}
 .g-appel > *{max-width:var(--col);margin-inline:auto}
 .g-appel :is(h1,h2,h3,h4,h5,h6){color:var(--blanc)}
 
@@ -288,7 +288,7 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
    CE QUI CASSE SI ON LE MODIFIE : la seconde regle enumere les gabarits qui
    portent un `padding-block`. Donner un remplissage vertical a un gabarit sans
    l'inscrire ici produit une couture double. */
-:is(.g-duo,.g-colonne,.g-scene,.g-cartes,.g-appel,.g-liste,.rail) + :is(.g-duo,.g-colonne,.g-scene,.g-cartes,.g-appel,.g-liste,.rail){margin-block-start:var(--air-i8)}
+:is(.g-duo,.g-colonne,.g-scene,.g-cartes,.g-appel,.g-liste,.rail) + :is(.g-duo,.g-colonne,.g-scene,.g-cartes,.g-appel,.g-liste,.rail){margin-block-start:var(--air-i6)}
 .g-appel + :is(.g-duo,.g-colonne,.g-scene,.g-cartes,.g-appel,.g-liste,.rail),:is(.g-duo,.g-colonne,.g-scene,.g-cartes,.g-appel,.g-liste,.rail) + .g-appel{margin-block-start:0}
 
 /* Fenetre basse : le remplissage de la bande d'appel descend d'une ligne et
@@ -465,7 +465,7 @@ html.au-clavier :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):focu
 .pied-politique a.courant{font-weight:var(--w-bold);color:var(--univers)}
 .pied-politique{margin-top:var(--air-i3);padding:var(--esp-3) var(--esp-1) var(--esp-1);border-top:1px solid var(--gris-service);display:flex;align-items:center;justify-content:center;gap:var(--esp-3)}
 .pied-politique a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
-.pied{width:var(--piste);max-width:var(--col);margin:var(--air-i6) auto 0;padding:calc(var(--air-barre) * 2) 0 0;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
+.pied{width:var(--piste);max-width:var(--col);margin:var(--air-i4) auto 0;padding:calc(var(--air-barre) * 2) 0 0;border-top:1px solid var(--gris-service);display:flex;justify-content:center}
 .pied a{font-size:var(--t-sm);color:var(--encre-discrete);text-decoration:underline;text-underline-offset:3px;display:flex;align-items:center;min-height:44px;padding:0 var(--esp-2)}
 /* La barre basse porte des verbes LEGENDES : une barre a etiquettes vaut
    80 px — le barreau au-dessus de l'icone seule — et le contenu rendu
@@ -688,7 +688,7 @@ body[data-surface="ambiante"] .toast{bottom:calc(156px + var(--safe-bas));z-inde
    libelle dit donc a qui il s'adresse, et la fleche suit l'etat que le bouton
    declare. Aligne a gauche : ce qu'il contient se lit en phrases et en champs,
    pas en libelles centres. */
-.depliant{margin:var(--air-i6) 0 0;text-align:left}
+.depliant{margin:var(--air-i4) 0 0;text-align:left}
 .depliant-bouton{display:flex;align-items:center;justify-content:center;gap:var(--esp-2);width:100%;min-height:var(--cible-min);background:none;border:none;padding:var(--esp-2) 0;font-family:var(--font-corps);font-size:var(--t-sm);line-height:var(--lh-14);font-weight:var(--w-bold);color:var(--univers);cursor:pointer}
 .depliant-bouton::before{content:'';flex:none;width:0;height:0;border-left:7px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent;transition:transform .18s var(--courbe-a)}
 .depliant-bouton[aria-expanded="true"]::before{transform:rotate(90deg)}
@@ -863,10 +863,10 @@ body.page-figee{overflow:hidden}
    jamais en valeur figee. */
 :where(body.p-space){--plein-appui-fond:var(--univers);--plein-appui-encre:var(--encre-bouton)}
 :where(body.p-roam){--univers:var(--rouge-e2);--univers-rgb:var(--rouge-e2-rgb);--encre:var(--roots-noir);--univers-e1:var(--rouge-e1);--univers-e1-rgb:var(--rouge-e1-rgb);--univers-e3:var(--rouge-e3);--univers-e3-rgb:var(--rouge-e3-rgb);--univers-e4:var(--rouge-e4);--univers-e5:var(--rouge-e5);--ombre-teinte:var(--rouge-e1-rgb);--encre-ll-h1:var(--encre);--encre-ll-h3:var(--encre);--encre-ll-h5:var(--encre);--encre-ll-h2:var(--univers-e3);--encre-ll-h4:var(--univers-e3);--encre-ll-h6:var(--univers-e3);--encre-ll-chapo:var(--univers-e3)}
-:where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i6);text-align:left}
+:where(body.p-roam) .entete-sejour{background:var(--univers);border-radius:var(--rayon-carte);padding:var(--esp-6);margin:0 0 var(--air-i4);text-align:left}
 :where(body.p-roam) .entete-sejour h1{margin:0 0 var(--air-i2);color:var(--blanc);font-size:var(--t-h2);line-height:var(--lh-28)}
 :where(body.p-roam) .entete-sejour .sous-titre{margin:0;color:var(--blanc);font-size:var(--t-sm);line-height:var(--lh-14)}
-:where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i6)}
+:where(body.p-roam) .bloc-sejour{margin:0 0 var(--air-i4)}
 :where(body.p-roam) .bloc-sejour > .etiquette{display:block;margin-bottom:var(--air-i2);font-weight:700;color:var(--encre-discrete);font-size:var(--t-sm)}
 /* Les lieux de la flotte. Un lieu ouvert est un lien qui mene au geste ; un
    lieu a venir est une carte muette, sans etat interactif — un statut n'est
@@ -903,7 +903,7 @@ body.page-figee{overflow:hidden}
 :where(body.p-roam) .recap-sejour .ligne .montant{font-family:var(--font-chiffres);color:var(--encre)}
 :where(body.p-roam) .recap-sejour .ligne.forte{font-size:var(--t-body);line-height:var(--lh-16);font-weight:700;color:var(--encre)}
 :where(body.p-roam) .recap-sejour .ligne.forte .montant{font-size:var(--t-h3);line-height:var(--lh-chiffre);font-weight:700}
-:where(body.p-roam) .confirmation{background:var(--blanc);border-radius:var(--rayon-carte);box-shadow:var(--ombre-posee);padding:var(--esp-6);margin-top:var(--air-i6)}
+:where(body.p-roam) .confirmation{background:var(--blanc);border-radius:var(--rayon-carte);box-shadow:var(--ombre-posee);padding:var(--esp-6);margin-top:var(--air-i4)}
 
 /* ══════════════ ECRAN — Mi Roam : hero, cartes de bien, numeros ══════════════
    Aucune valeur n'est ecrite ici : tout passe par un jeton. La reserve d'image
@@ -922,7 +922,7 @@ body.page-figee{overflow:hidden}
    et ferait deborder la page a l'horizontale sur un ecran large. Le titre, la
    phrase et le geste, eux, restent dans la colonne. */
 
-:where(body.p-roam) .etiquette.sous{margin-top:var(--air-i6)}
+:where(body.p-roam) .etiquette.sous{margin-top:var(--air-i4)}
 :where(body.p-roam) .cat.actif{border-color:var(--univers);background:var(--univers-selection);color:var(--univers)}
 
 /* La carte deborde du bord : c'est le seul signifiant qui survit a
@@ -960,8 +960,8 @@ body.page-figee{overflow:hidden}
 
 /* ---- Titres de section et notes. Registre INTERFACE : h2 38, h3 28 sur le jeu
    grand. La note de section emprunte le barreau 12, comme toute description. */
-:where(body.p-roam) .bloc-sejour + .bloc-sejour .titre-section{margin-top:var(--air-i8)}
-:where(body.p-roam) .titre-sous{margin:var(--air-i6) 0 var(--air-i2)}
+:where(body.p-roam) .bloc-sejour + .bloc-sejour .titre-section{margin-top:var(--air-i6)}
+:where(body.p-roam) .titre-sous{margin:var(--air-i4) 0 var(--air-i2)}
 :where(body.p-roam) .vide-rubrique{margin:0;padding:var(--esp-4);background:var(--gris-ilot);border-radius:var(--rayon-carte);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre-discrete)}
 
 /* ---- Le bien en vedette. La scene sort de la colonne et prend toute la
@@ -969,7 +969,7 @@ body.page-figee{overflow:hidden}
    negatives valent la demi-difference entre la fenetre et la colonne : elles
    atteignent le bord sans employer 100vw, qui compte la barre de defilement et
    ferait deborder la page a l'horizontale. */
-:where(body.p-roam) .vedette{margin:0 0 var(--air-i6)}
+:where(body.p-roam) .vedette{margin:0 0 var(--air-i4)}
 /* La scene ne depasse pas la moitie haute de l'ecran, chrome compris : la
    contrainte posee pour le film d'ouverture vaut pour l'element qui le porte.
    La hauteur se prend sur la hauteur RENDUE du chrome, jamais sur la valeur
@@ -1246,7 +1246,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 .cat.actif{background:var(--univers-selection);border-color:var(--univers)}
 /* Le saut vers une section la depose sous la pile collante, pas dessous. */
 :where(body.p-carte) .section-menu{scroll-margin-top:calc(var(--entete-h) + var(--cat-h) + var(--esp-3))}
-:where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--air-i8) 0 var(--air-i3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}
+:where(body.p-carte) .section-menu h3{font-size:var(--t-h3);font-weight:700;line-height:1.3;margin:var(--air-i6) 0 var(--air-i3);padding-left:var(--esp-3);border-left:3px solid var(--vert-e3);display:table}
 :where(body.p-carte) .section-menu:first-of-type h3{margin-top:var(--air-i2)}
 :where(body.p-carte) .article{background:var(--blanc);border-radius:var(--rayon-module);padding:var(--esp-3) var(--esp-4);margin-bottom:var(--air-i2);display:flex;justify-content:space-between;gap:var(--esp-3);align-items:center;box-shadow:var(--ombre-2)}
 :where(body.p-carte) .article .infos{flex:1}
@@ -1413,27 +1413,27 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-paiement) .panneau[data-issue="sans-reponse"]::before{background:var(--statut-en-attente)}
 :where(body.p-paiement) .panneau[data-issue="regularisation"]::before{background:var(--terre-e2)}
 :where(body.p-paiement, body.p-payer) .panneau .titre-issue{font-size:var(--t-h2);line-height:var(--lh-28);font-weight:var(--w-a-h2);color:var(--encre);margin:0 0 var(--air-i3)}
-:where(body.p-paiement, body.p-payer) .panneau .dit{font-size:var(--t-body);line-height:var(--lh-16);font-weight:var(--w-a-corps);color:var(--encre);margin:0 auto var(--air-i6);max-width:34ch}
+:where(body.p-paiement, body.p-payer) .panneau .dit{font-size:var(--t-body);line-height:var(--lh-16);font-weight:var(--w-a-corps);color:var(--encre);margin:0 auto var(--air-i4);max-width:34ch}
 :where(body.p-paiement, body.p-payer) .panneau .dit strong{font-weight:var(--w-a-h2)}
 /* Le code s'affiche PENDANT l'attente : c'est lui qui rend la fermeture de
    l'onglet sans consequence. */
-:where(body.p-paiement) .bloc-code{background:var(--gris-aplat);border-radius:var(--rayon-module);padding:var(--esp-4) var(--esp-3);margin:0 0 var(--air-i6)}
+:where(body.p-paiement) .bloc-code{background:var(--gris-aplat);border-radius:var(--rayon-module);padding:var(--esp-4) var(--esp-3);margin:0 0 var(--air-i4)}
 :where(body.p-paiement) .bloc-code .etiquette{display:block;margin-bottom:var(--air-i1)}
 :where(body.p-paiement) .bloc-code .code{display:block;font-family:var(--font-chiffres);font-size:var(--t-code);line-height:var(--lh-38);font-weight:var(--w-bold);letter-spacing:.13em;color:var(--encre)}
 /* Jauge indeterminee. Elle ne compte pas : un chiffre qui monte fabrique
    l'angoisse qu'on cherche a eviter. Coupee sous prefers-reduced-motion — et le
    texte suffit alors, c'est l'alternative statique exigee (DS 5.3). */
-:where(body.p-paiement) .jauge{height:var(--esp-1);border-radius:var(--rayon-pilule);background:var(--gris-aplat);overflow:hidden;margin:0 0 var(--air-i6)}
+:where(body.p-paiement) .jauge{height:var(--esp-1);border-radius:var(--rayon-pilule);background:var(--gris-aplat);overflow:hidden;margin:0 0 var(--air-i4)}
 :where(body.p-paiement) .jauge i{display:block;height:100%;width:38%;border-radius:var(--rayon-pilule);background:var(--vert-e2);animation:jauge 1.4s var(--courbe-a) infinite}
 @keyframes jauge{0%{transform:translateX(-100%)}100%{transform:translateX(300%)}}
 @media (prefers-reduced-motion: reduce){:where(body.p-paiement) .jauge i{animation:none;width:100%;opacity:.45}}
-:where(body.p-paiement) .avert{background:var(--creme);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--air-i6);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre);text-align:center}
+:where(body.p-paiement) .avert{background:var(--creme);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--air-i4);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre);text-align:center}
 /* Le choix du canal de remise. Deux voix y tiennent : l'ecran propose, la
    notice engage. La notice s'aligne a gauche parce qu'elle se lit en phrases et
    non en libelle, et se demarque ainsi de la parole du produit. Le bouton porte
    le geste qui consent : il est cercle et non plein, la place du bouton plein
    revenant a l'action principale de l'ecran (DS 3.1). */
-:where(body.p-paiement) .canal{background:var(--gris-aplat);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--air-i6);text-align:center}
+:where(body.p-paiement) .canal{background:var(--gris-aplat);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--air-i4);text-align:center}
 :where(body.p-paiement) .canal .canal-dit{margin:0;font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
 :where(body.p-paiement) .canal .adresse{display:block;margin-top:var(--air-i1);font-weight:var(--w-bold);overflow-wrap:anywhere}
 :where(body.p-paiement) .canal .consent{text-align:left;margin:var(--air-i3) 0 0;color:var(--encre)}
@@ -1460,7 +1460,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-payer) .panneau{text-align:center}
 :where(body.p-payer) .panneau::before{background:var(--vert-e2)}
 :where(body.p-payer) .montant{display:block;font-family:var(--font-chiffres);font-size:var(--t-h1);line-height:var(--lh-38);font-weight:var(--w-bold);color:var(--encre);font-variant-numeric:tabular-nums}
-:where(body.p-payer) #ligneMontant{margin:0 auto var(--air-i6)}
+:where(body.p-payer) #ligneMontant{margin:0 auto var(--air-i4)}
 :where(body.p-payer) .lien-second{display:inline-flex;align-items:center;min-height:var(--cible-min);color:var(--encre)}
 
 /* La cible de 44 px vaut sur tous les ecrans. Ces deux lignes la portent
@@ -1477,8 +1477,8 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-facture) .scene{width:var(--ecran-bande);max-width:var(--ecran-colonne);margin:0 auto;padding:var(--esp-8) 0}
 :where(body.p-facture) .panneau{position:relative;overflow:hidden;background:var(--blanc);border-radius:var(--rayon-carte);padding:var(--esp-8) var(--esp-6) var(--esp-6);box-shadow:var(--ombre-posee);text-align:center}
 :where(body.p-facture) .panneau .titre-issue{font-size:var(--t-h2);line-height:var(--lh-28);font-weight:var(--w-a-h2);color:var(--encre);margin:0 0 var(--air-i3)}
-:where(body.p-facture) .panneau .dit{font-size:var(--t-body);line-height:var(--lh-16);font-weight:var(--w-a-corps);color:var(--encre);margin:0 auto var(--air-i6);max-width:34ch}
-:where(body.p-facture) .essai{background:var(--creme);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--air-i6);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
+:where(body.p-facture) .panneau .dit{font-size:var(--t-body);line-height:var(--lh-16);font-weight:var(--w-a-corps);color:var(--encre);margin:0 auto var(--air-i4);max-width:34ch}
+:where(body.p-facture) .essai{background:var(--creme);border-radius:var(--rayon-module);padding:var(--esp-4);margin:0 0 var(--air-i4);font-size:var(--t-sm);line-height:var(--lh-14);color:var(--encre)}
 /* La piece elle-meme suit le modele des factures normalisees du SFE en
    ligne : typographie neutre du document, boites filetees, en-tetes de tableau
    sur aplat bleu pale, nombres a point de milliers. C'est le genre « piece
@@ -1488,13 +1488,13 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    c'est une derivation de la rampe, pas un echelon. L'encre et le filet,
    eux, sont des jetons. L'univers qui emet la piece redefinit ces trois
    valeurs et rien de plus. */
-:where(body.p-facture) .piece{--accent-aplat:var(--vert-lavure);--accent-encre:var(--encre);--accent-filet:var(--vert-e3);text-align:left;margin:0 0 var(--air-i6);font-family:Arial,Helvetica,sans-serif;font-size:var(--t-piece);line-height:1.35;color:var(--noir);background:var(--blanc);padding:var(--esp-4) var(--esp-2)}
+:where(body.p-facture) .piece{--accent-aplat:var(--vert-lavure);--accent-encre:var(--encre);--accent-filet:var(--vert-e3);text-align:left;margin:0 0 var(--air-i4);font-family:Arial,Helvetica,sans-serif;font-size:var(--t-piece);line-height:1.35;color:var(--noir);background:var(--blanc);padding:var(--esp-4) var(--esp-2)}
 :where(body.p-facture) .piece p{margin:0}
-:where(body.p-facture) .entete-doc{display:flex;justify-content:space-between;gap:var(--esp-4);margin:0 0 var(--air-i6)}
+:where(body.p-facture) .entete-doc{display:flex;justify-content:space-between;gap:var(--esp-4);margin:0 0 var(--air-i4)}
 :where(body.p-facture) .v-nom{font-weight:700;letter-spacing:.04em}
 :where(body.p-facture) .f-id{text-align:right}
 :where(body.p-facture) .f-type{font-weight:700}
-:where(body.p-facture) .boites-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);justify-content:space-between;margin:0 0 var(--air-i6)}
+:where(body.p-facture) .boites-doc{display:flex;flex-wrap:wrap;gap:var(--esp-4);justify-content:space-between;margin:0 0 var(--air-i4)}
 :where(body.p-facture) .boite-doc{border-collapse:collapse;min-width:min(260px,100%)}
 :where(body.p-facture) .boite-doc td{border:1px solid var(--noir);padding:3px var(--esp-2);vertical-align:top}
 :where(body.p-facture) .boite-doc td.lib{font-style:italic;color:var(--encre-discrete);width:5.5em}
@@ -1578,8 +1578,8 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-caisse) .bandeau-etat{background:var(--blanc-casse);border-bottom:var(--limite-ep-b) solid var(--gris-filet)}
 :where(body.p-caisse) .bandeau-etat > .bande-console{display:flex;align-items:center;gap:var(--esp-3);padding:var(--esp-3) 0}
 :where(body.p-caisse) .barre-poste .poste{font-size:var(--t-16);font-weight:var(--w-bold);letter-spacing:.06em;text-transform:uppercase}
-:where(body.p-caisse) h1{font-size:var(--t-h2);line-height:var(--lh-28);font-weight:var(--w-bold);margin:var(--air-i6) 0 var(--air-i3)}
-:where(body.p-caisse) h2{font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold);margin:var(--air-i6) 0 var(--air-i3)}
+:where(body.p-caisse) h1{font-size:var(--t-h2);line-height:var(--lh-28);font-weight:var(--w-bold);margin:var(--air-i4) 0 var(--air-i3)}
+:where(body.p-caisse) h2{font-size:var(--t-h3);line-height:var(--lh-21);font-weight:var(--w-bold);margin:var(--air-i4) 0 var(--air-i3)}
 :where(body.p-caisse) .aide{font-size:var(--t-14);line-height:var(--lh-14);color:var(--gris-500);margin:0 0 var(--air-i3)}
 /* Le comptage : douze lignes, une par coupure. Aucun champ de total — il se lit,
    calcule par la meme fonction que celle qui l'enregistrera. */
@@ -1593,7 +1593,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
    chiffres tabulaires plus la separation — et non d'un minimum a l'estime. */
 :where(body.p-caisse) .ligne-coupure{display:grid;grid-template-columns:7ch 1fr;align-items:center;gap:var(--esp-3)}
 :where(body.p-caisse) .ligne-coupure .valeur{font-family:var(--font-chiffres);font-size:var(--t-h3);font-variant-numeric:tabular-nums;text-align:right}
-:where(body.p-caisse) .total-lecture{display:flex;align-items:baseline;justify-content:space-between;gap:var(--esp-3);margin-top:var(--air-i6);padding:var(--esp-4);background:var(--gris-aplat)}
+:where(body.p-caisse) .total-lecture{display:flex;align-items:baseline;justify-content:space-between;gap:var(--esp-3);margin-top:var(--air-i4);padding:var(--esp-4);background:var(--gris-aplat)}
 :where(body.p-caisse) .total-lecture .somme{font-family:var(--font-chiffres);font-size:var(--t-h1);line-height:var(--lh-38);font-variant-numeric:tabular-nums;font-weight:var(--w-bold)}
 :where(body.p-caisse) .du{padding:var(--esp-6) var(--esp-4);background:var(--noir);color:var(--blanc);text-align:center}
 :where(body.p-caisse) .du .somme{display:block;font-family:var(--font-chiffres);font-size:var(--t-display);line-height:var(--lh-68);font-variant-numeric:tabular-nums;font-weight:var(--w-bold)}
@@ -1604,7 +1604,7 @@ html:where(:has(body.p-accueil)){background:var(--vert-nuit)}
 :where(body.p-caisse) .monnaie ul{list-style:none;margin:var(--air-i3) 0 0;padding:0;display:flex;flex-wrap:wrap;gap:var(--esp-2)}
 :where(body.p-caisse) .monnaie li{background:var(--terre-e1);color:var(--encre-e1);padding:var(--esp-1) var(--esp-3);font-family:var(--font-chiffres);font-size:var(--t-h3);font-weight:var(--w-bold)}
 :where(body.p-caisse) .moyens{display:grid;grid-template-columns:repeat(auto-fill,minmax(var(--tuile-pas),1fr));gap:var(--tuile-gouttiere);margin-bottom:var(--air-i3)}
-:where(body.p-caisse) .action-large{width:100%;margin-top:var(--air-i6)}
+:where(body.p-caisse) .action-large{width:100%;margin-top:var(--air-i4)}
 :where(body.p-caisse) .cache{display:none}
 /* Roots Radio. L'antenne se tient seule dans le chrome, sans disque. Elle
    refuse la selection et le menu contextuel, sans quoi l'appui maintenu ouvre
@@ -2041,7 +2041,7 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
      CE QUI CASSE SI ON LE MODIFIE : la tete cesse d'etre une boite pour que
      ses deux enfants deviennent des cases de la meme grille. Lui redonner une
      boite remet le geste contre le nom. */
-  :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto;column-gap:var(--gouttiere-grille);align-items:start;margin:0 0 var(--air-i8);width:auto}
+  :where(body.p-roam) .vedette{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto auto;column-gap:var(--gouttiere-grille);align-items:start;margin:0 0 var(--air-i6);width:auto}
   :where(body.p-roam) .vedette-scene{grid-column:1;grid-row:1 / span 3;margin:0;width:auto;height:auto;aspect-ratio:4/3}
   :where(body.p-roam) .vedette-tete{display:contents}
   :where(body.p-roam) .vedette-nom{grid-column:2;grid-row:1;margin:0 0 var(--air-i2);text-align:left}
@@ -2055,7 +2055,7 @@ body[data-surface="ambiante"].nav-haut .verbe{color:var(--blanc-casse)}
 /* ---- Le pied : le lien passe AVANT le filet. En bas de page on lit donc le
    lien, puis le filet, puis le geste flottant — le filet ferme la page au lieu
    d'ouvrir le pied. */
-:where(body.p-roam) .pied{border-top:none;border-bottom:1px solid var(--gris-service);margin-top:var(--air-i6);padding:var(--esp-1) 0 var(--esp-4)}
+:where(body.p-roam) .pied{border-top:none;border-bottom:1px solid var(--gris-service);margin-top:var(--air-i4);padding:var(--esp-1) 0 var(--esp-4)}
 
 /* ══════════════ LA BARRE DE QUETE ══════════════
    Sur l'ecran de sejour au chrome monte, le geste focal quitte le bas de page

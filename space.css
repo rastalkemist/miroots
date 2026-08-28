@@ -38,6 +38,7 @@
   --univers-rgb: var(--noir-rgb);
   --encre: var(--roots-noir);
   --accent-plan: var(--terre-e3);
+  --finance-fond: var(--roots-jaune);
   /* L'ombre et les voiles suivent l'encre profonde de l'univers : une piece
      partagee ne garde jamais la teinte d'un autre univers. Les encres de la
      lecture longue suivent l'echelon 3 de l'univers pour la meme raison. */
@@ -59,19 +60,11 @@
 /* ---- En-tete de l'ecran --------------------------------------------------
  * Aplat noir, encre blanche. Mesure sur les jetons : 17,40 — AAA.
  */
-/* La page de module n'a pas de carte noire d'en-tete : le cadre de la
-   semaine se dit sur une ligne discrete, et le titre appartient au chrome. */
-:where(body.p-space) .cadre-semaine{
-  margin: 0 0 var(--air-i3);
-  color: var(--encre-discrete);
-  font-size: var(--t-sm);
-  line-height: var(--lh-14);
-}
 :where(body.p-space) .entete-plan{
   background: var(--univers);
   border-radius: var(--rayon-carte);
   padding: var(--esp-6);
-  margin: 0 0 var(--air-i6);
+  margin: 0 0 var(--air-i4);
   text-align: left;
 }
 :where(body.p-space) .entete-plan h1{
@@ -88,7 +81,7 @@
 }
 
 /* ---- Blocs --------------------------------------------------------------- */
-:where(body.p-space) .bloc-plan{ margin: 0 0 var(--air-i8) }
+:where(body.p-space) .bloc-plan{ margin: 0 0 var(--air-i6) }
 :where(body.p-space) .bloc-plan > .etiquette{ display: block }
 
 /* ---- Poseur d'engagement -------------------------------------------------
@@ -125,13 +118,12 @@
  * Un groupe par jour, plus un groupe pour ce qui n'a pas de jour. Un groupe
  * vide ne se rend pas : une case vide n'informe de rien.
  */
-:where(body.p-space) .groupe-jour{ margin: 0 0 var(--air-i6) }
+:where(body.p-space) .groupe-jour{ margin: 0 0 var(--air-i4) }
 :where(body.p-space) .groupe-jour > .etiquette{ margin-bottom: var(--air-i2) }
 /* Une liste de taches est UNE surface : les lignes s'y empilent, separees
    d'un filet, au lieu de porter chacune sa propre carte — une carte par
-   ligne epaissit chaque ligne et pousse le module hors de l'ecran. Sur la
-   page, la ligne tient le plancher tactile ; dans l'apercu du hall elle
-   descend d'un cran d'air sous lui, et reste pleine largeur. */
+   ligne epaissit chaque ligne et pousse le module hors de l'ecran. La ligne
+   tient le plancher tactile, rien de plus. */
 :where(body.p-space) .taches{
   display: block; margin: 0; padding: 0; list-style: none;
   background: var(--blanc);
@@ -184,37 +176,6 @@
 }
 :where(body.p-space) .engagement{ flex: 1 1 auto }
 
-/* Le repli des faites : une commande discrete entre les deux listes d'un
-   jour — le compte dans le mot, l'etat dans le chevron qui suit, pointe en
-   bas replie, en haut deplie. Le mot tient le rail des etiquettes ; la cible
-   tient le plancher tactile. Le chevron se recale d'un demi-cran : sa pointe
-   vit sous son centre de boite quand il pointe en bas, au-dessus quand il
-   pointe en haut. */
-:where(body.p-space) .repli-faites{
-  display: inline-flex; align-items: center; gap: var(--esp-2);
-  min-height: var(--cible-min);
-  margin-top: var(--esp-1);
-  border: 0; background: none; padding: 0;
-  font-family: var(--font-corps); font-size: var(--t-14);
-  color: var(--encre-discrete);
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-}
-:where(body.p-space) .repli-faites::after{
-  content: '';
-  width: var(--esp-2); height: var(--esp-2);
-  margin-top: calc(var(--esp-1) / -2);
-  border-right: var(--limite-ep) solid currentColor;
-  border-bottom: var(--limite-ep) solid currentColor;
-  transform: rotate(45deg);
-  transition: transform var(--mvt-etat) var(--courbe-etat);
-}
-:where(body.p-space) .repli-faites[aria-expanded="true"]::after{
-  margin-top: calc(var(--esp-1) / 2);
-  transform: rotate(225deg);
-}
-:where(body.p-space) .repli-faites + .taches{ margin-top: var(--esp-1) }
-
 /* ---- Progression ---------------------------------------------------------
  * La jauge informe par sa longueur, donc son aplat se detache du fond de sa
  * gouttiere. Le nombre est ecrit a cote : la couleur ne dit jamais seule.
@@ -246,6 +207,34 @@
   color: var(--encre-discrete);
 }
 
+/* ---- Section financiere --------------------------------------------------
+ * Aplat or, encre noire : 11,26 — AAA. L'aplat lui-meme ne se detache pas du
+ * fond clair (1,49) ; le filet noir le borne, et c'est lui qui informe.
+ */
+:where(body.p-space) .bloc-finance{
+  background: var(--finance-fond);
+  border: var(--limite-ep-b) solid var(--univers);
+  border-radius: var(--rayon-carte);
+  padding: var(--esp-6);
+  color: var(--encre);
+}
+:where(body.p-space) .bloc-finance > .etiquette{ color: var(--encre) }
+:where(body.p-space) .bloc-finance .montant{
+  font-family: var(--font-chiffres);
+  font-size: var(--t-h3);
+  line-height: var(--lh-28);
+  font-weight: var(--w-bold);
+  color: var(--encre);
+  margin: var(--air-i2) 0 0;
+}
+:where(body.p-space) .bloc-finance .dit{
+  display: block;
+  margin-top: var(--air-i2);
+  font-size: var(--t-sm);
+  line-height: var(--lh-14);
+  color: var(--encre);
+}
+
 /* ---- Accent -------------------------------------------------------------
  * Le terracotta atteint 4,56 en encre sur fond clair : il porte un mot, une
  * mention, un geste. Il ne porte pas un paragraphe de lecture longue, qui
@@ -263,6 +252,29 @@
   color: var(--encre-discrete);
 }
 
+/* ---- Saisie dans la section financiere ----------------------------------
+ * Le montant se note sur l'aplat or : l'encre reste noire, et la limite du
+ * champ prend l'encre de son papier — ici le noir, qui rend 16,83 contre l'or.
+ */
+:where(body.p-space) .champ-finance{ margin: var(--air-i3) 0 var(--air-i2) }
+:where(body.p-space) .champ-finance label{ color: var(--encre) }
+:where(body.p-space) .champ-finance input{
+  background: var(--blanc);
+  border: var(--limite-ep) solid var(--univers);
+}
+:where(body.p-space) .bouton-finance{
+  width: 100%;
+  min-height: var(--cible-min);
+  background: var(--univers);
+  border: none;
+  border-radius: var(--rayon-pilule);
+  padding: 0 var(--esp-4);
+  font-family: var(--font-eclat);
+  font-size: var(--t-body);
+  font-weight: var(--w-medium);
+  color: var(--blanc);
+  cursor: pointer;
+}
 
 /* ---- La place vide d'un montant -----------------------------------------
  * Une absence n'emprunte pas la voix d'un chiffre : elle se dit au corps et
@@ -288,8 +300,8 @@
 :where(body.p-space) .coche-scene{
   min-height: calc(100svh - var(--entete-h-rendue, 64px) - var(--barre-h, 80px));
   display: grid; align-content: center; justify-items: center;
-  gap: var(--air-i6); text-align: center;
-  padding-block: var(--air-i8);
+  gap: var(--air-i4); text-align: center;
+  padding-block: var(--air-i6);
 }
 :where(body.p-space) .coche-scene h1{
   font-family: var(--font-eclat); font-weight: var(--w-a-display);
@@ -432,7 +444,7 @@
    L'accueil de l'univers : chaque module dans son propre bloc, la pile sur
    petit ecran, deux colonnes des que la place le permet. Les modules non
    ouverts se montrent muets, sans lien. */
-:where(body.p-space) .hall{ display: grid; gap: var(--air-i6) }
+:where(body.p-space) .hall{ display: grid; gap: var(--air-i4) }
 :where(body.p-space) .hall-bloc{
   background: var(--blanc); border-radius: var(--rayon-carte);
   padding: var(--esp-6);
@@ -567,7 +579,7 @@
      ce que celui du haut laisse : les quatre bords exterieurs se ferment,
      et la masse du bas est l'inverse de celle du haut. */
   :where(body.p-space) .hall-col{
-    display: grid; grid-template-rows: auto 1fr; gap: var(--air-i6);
+    display: grid; grid-template-rows: auto 1fr; gap: var(--air-i4);
   }
   :where(body.p-space) .hall-bloc.large{ grid-column: 1 / -1 }
 }
@@ -596,12 +608,8 @@
   overflow: hidden;
 }
 :where(body.p-space) .hall-bloc .note-rang{ margin-top: var(--air-i1) }
-/* Dans le hall, une tache tient sur sa ligne et la ligne s'abaisse d'un
-   demi-cran d'air : le module se lit d'un regard, la liste entiere vit sur
-   son ecran. */
-:where(body.p-space) .hall-bloc .tache{
-  min-height: calc(var(--cible-min) - var(--esp-1));
-}
+/* Dans le hall, une tache tient sur sa ligne : le module se lit d'un
+   regard, la liste entiere vit sur son ecran. */
 :where(body.p-space) .hall-bloc .tache .engagement{
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -762,28 +770,10 @@
   box-shadow: 0 0 0 var(--limite-ep) var(--accent-plan),
               0 18px 44px rgba(var(--ombre-teinte), .14);
 }
-/* Dans la bande ancree, la rangee des jours tient UNE ligne et defile au
-   doigt ; elle partage la mesure de la pilule qu'elle surplombe. */
-:where(body.p-space) .ecrire-bas .jours{
-  width: 100%; max-width: 640px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin: 0 0 var(--esp-2);
-}
-:where(body.p-space) .ecrire-bas .jours::-webkit-scrollbar{ display: none }
-:where(body.p-space) .ecrire-bas .jour{ flex: none }
 :where(body.p-space) .ecrire-bas{
-  /* La bande s'arrete au-dessus de la barre des verbes : elle colle a la
-     hauteur ecrite de la barre, jamais au bord de la fenetre. */
-  position: sticky;
-  bottom: calc(var(--barre-h, 80px) + var(--safe-bas, 0px));
-  z-index: 5;
-  /* La bande couvre la fenetre pour voiler ce qui defile dessous — opaque
-     sur toute sa matiere, fondue sur son seul cran d'air haut ; sa matiere
-     tient la piste, la meme mesure que la recherche, a toute largeur. */
-  padding: var(--air-i3) var(--marge) var(--air-i3);
-  background: linear-gradient(to top, var(--blanc-casse) calc(100% - var(--air-i3)), transparent);
+  position: sticky; bottom: 0; z-index: 5;
+  padding: var(--air-i3) var(--bord) var(--air-i3);
+  background: linear-gradient(to top, var(--blanc-casse) 75%, transparent);
   display: grid; justify-items: center;
 }
 :where(body.p-space) .ecrire{
@@ -933,7 +923,6 @@
 :where(body.p-space) .hall-bloc.vedette .ouvre-module{ color: var(--terre-e4) }
 :where(body.p-space) .hall-bloc.vedette .lien-module{ color: var(--blanc) }
 :where(body.p-space) .hall-bloc.vedette .vide,
-:where(body.p-space) .hall-bloc.vedette .fil-compte,
 :where(body.p-space) .hall-bloc.vedette .etat-semaine{
   color: rgba(var(--blanc-rgb), .75);
 }
@@ -955,7 +944,7 @@
    section, pas la suite de la liste. Elle prend le cran d'air que le tronc
    pose entre deux gabarits — sans lui, son titre se colle a la derniere
    fiche. */
-:where(body.p-space) .intel-tube{ margin-top: var(--air-i8) }
+:where(body.p-space) .intel-tube{ margin-top: var(--air-i6) }
 :where(body.p-space) .intel-tube-tete{
   display: flex; align-items: baseline; gap: var(--esp-2);
   margin: 0 0 var(--air-i2);

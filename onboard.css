@@ -209,7 +209,7 @@
        garde. Une valeur hors base huit existe au tronc mais porte une mention
        de retrait ; celle-ci est la ligne d'interface, deja l'air bas de l'ecran
        du nom. */
-    --ouv-plancher: var(--air-i6);
+    --ouv-plancher: var(--air-i4);
     /* LA PISTE DE CET ECRAN. La scene et ce qui se pose sur elle prennent la
        MEME largeur, et elle se declare une seule fois : sans quoi la bascule
        s'alignerait sur la piste du chrome, qui est plus large, et se
@@ -279,7 +279,7 @@
     /* En fenetre courte la page reprend son flux et defile : une barre hors
        du flux y recouvrirait le haut de la scene. */
     :where(body.ouv-page) .chrome-haut{ position:sticky }
-    .ouv-piece{ flex:none; padding: var(--air-i6) 0 var(--air-i8) }
+    .ouv-piece{ flex:none; padding: var(--air-i4) 0 var(--air-i6) }
     .ouv-tete{ flex:none; display:block; padding:0 }
     .ouv-reste{ display:none }
     .ouv-appel,.ouv-groupe{ margin-top:var(--air-i3) }
@@ -304,7 +304,7 @@
      il s'arrete a la colonne de note. */
   /* Un texte ne touche pas le bord de l'ecran : une ligne d'interface l'en
      separe, en plus de la marge materielle de l'appareil. */
-  .ouv-confirm .ouv-notice{ flex:none; margin:0 auto var(--air-i6); max-width: var(--col);
+  .ouv-confirm .ouv-notice{ flex:none; margin:0 auto var(--air-i4); max-width: var(--col);
     text-align:center;
     font-size: var(--ouv-t-second); line-height: var(--lh-aere);
     color: var(--encre-discrete) }
@@ -350,7 +350,7 @@
     margin-right: calc(var(--cible-min) + var(--esp-2));
     line-height: var(--lh-aere) }
 @media (max-height: 679px){
-    .ouv-confirm .ouv-air{ flex-grow:0; min-height: var(--air-i6) }
+    .ouv-confirm .ouv-air{ flex-grow:0; min-height: var(--air-i4) }
 .ouv-confirm .ouv-air.ouv-question, .ouv-confirm .ouv-air.ouv-note{ min-height:0 }
   }
 /* Des l'ordinateur, la scene tient la moitie de l'ecran. Le seuil est celui
