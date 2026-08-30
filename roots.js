@@ -2139,11 +2139,37 @@
       e.stopPropagation();
       e.preventDefault();
     }, true);
+    /* La molette verticale pousse la bande a l'horizontale tant qu'il lui
+       reste du chemin. Au bout, elle ne retient le geste que le temps d'une
+       CALE : passe ce delai, la page reprend la main et le defilement
+       continue dans le sens du geste — vers le bas si la bande est a sa fin,
+       vers le haut si elle est a son debut. Sans cette remise, un rail au
+       bout retiendrait la page indefiniment.
+       La cale se rearme quand la bande quitte son bout, quand le geste change
+       de sens, et quand la main s'arrete assez longtemps pour qu'un nouveau
+       geste commence. */
+    var CALE = 320;
+    var REARMEMENT = 900;
+    var boutDepuis = 0, boutSens = 0;
     bande.addEventListener('wheel', function (e) {
       if (bande.scrollWidth <= bande.clientWidth) return;
       if (Math.abs(e.deltaX) >= Math.abs(e.deltaY) || !e.deltaY) return;
-      bande.scrollLeft += e.deltaY;
-      e.preventDefault();
+      var sens = e.deltaY > 0 ? 1 : -1;
+      var auBout = sens > 0
+        ? bande.scrollLeft + bande.clientWidth >= bande.scrollWidth - 1
+        : bande.scrollLeft <= 1;
+      if (!auBout) {
+        boutDepuis = 0;
+        bande.scrollLeft += e.deltaY;
+        e.preventDefault();
+        return;
+      }
+      var t = Date.now();
+      if (boutSens !== sens || !boutDepuis || t - boutDepuis > REARMEMENT) {
+        boutSens = sens;
+        boutDepuis = t;
+      }
+      if (t - boutDepuis < CALE) e.preventDefault();
     }, { passive: false });
   }
 
