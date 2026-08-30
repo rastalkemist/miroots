@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-tCSYUOuJmXG3WReowLLz/bedsR/WghglrPvcoMQxz7g='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-dPAATZYE7xIYIX+7RlCiJUT9Nl269YyT6lk9KfrpGWE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots - l’app pour NU</title>
 <meta name="description" content="Réserver une place au jardin ou au bureau, commander à la carte, retrouver sa réservation. Le Roots, où que tu sois.">
 <meta property="og:type" content="website">
@@ -80,7 +80,7 @@
   <div class="tete">
     <button class="fermer" id="fermerDlg" aria-label="Fermer" data-al-chrome="fermer"><svg class="i"><use href="#i-x"/></svg></button>
   </div>
-  <div class="onglets" id="onglets">
+  <div class="onglets">
     <button class="actif" data-ong="reserver" data-t="ongReserver">Coworking</button>
     <button data-ong="commander" data-t="ongCommander">Menu</button>
     <button data-ong="evenement" data-t="ongEvenement">Événement</button>
@@ -96,13 +96,13 @@
       <div class="rangee-choix">
         <div class="groupe col-creneaux" id="groupeCreneaux"><span class="etiquette" data-t="etCreneau">Créneau</span>
           <div class="rangee-chips" id="chipsCreneaux"></div></div>
-        <div class="groupe col-personnes" id="groupePersonnes" style="display:none">
+        <div class="groupe col-personnes groupe-personnes" style="display:none">
           <span class="etiquette" data-t="etPersonnes">Combien serez-vous ?</span>
           <div class="stepper">
-            <button type="button" id="moinsPersonnes" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
-            <span id="valeurPersonnes">1</span>
-            <button type="button" id="plusPersonnes" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
-            <span class="max" id="maxPersonnes"></span>
+            <button type="button" class="personnes-moins" aria-label="Moins" data-al-chrome="moins"><svg class="i"><use href="#i-minus"/></svg></button>
+            <span class="personnes-valeur">1</span>
+            <button type="button" class="personnes-plus" aria-label="Plus" data-al-chrome="plus"><svg class="i"><use href="#i-plus"/></svg></button>
+            <span class="max personnes-max"></span>
           </div>
         </div>
       </div>
@@ -399,14 +399,19 @@
     montrer: function () { dialogue.classList.add('visible'); voileDlg.classList.add('visible'); },
     cacher: function () { dialogue.classList.remove('visible'); voileDlg.classList.remove('visible'); }
   });
+  /* Les pieces de cette feuille se resolvent DANS la feuille, jamais par
+     identifiant de document : deux feuilles de meme facture peuvent tenir
+     la meme page, et un identifiant n'y designerait que la premiere. */
+  function dansFeuille(sel) { return dialogue.querySelector(sel); }
+  function toutesDansFeuille(sel) { return dialogue.querySelectorAll(sel); }
   function ouvrirDlg() { feuille.ouvrir(); }
   function fermerDlg() { feuille.fermer(); }
   $('fab').addEventListener('click', ouvrirDlg);
   $('fermerDlg').addEventListener('click', fermerDlg);
   voileDlg.addEventListener('click', fermerDlg);
-  $('onglets').addEventListener('click', function (e) {
+  dansFeuille('.onglets').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
-    document.querySelectorAll('#onglets button').forEach(function (x) { x.classList.toggle('actif', x === b); });
+    toutesDansFeuille('.onglets button').forEach(function (x) { x.classList.toggle('actif', x === b); });
     $('ct-reserver').classList.toggle('actif', b.dataset.ong === 'reserver');
     $('ct-commander').classList.toggle('actif', b.dataset.ong === 'commander');
     $('ct-evenement').classList.toggle('actif', b.dataset.ong === 'evenement');
@@ -646,12 +651,12 @@
     var plafond = plafondPersonnes();
     if (resa.personnes > plafond) resa.personnes = plafond;
     if (resa.personnes < 1) resa.personnes = 1;
-    $('valeurPersonnes').textContent = resa.personnes;
-    $('maxPersonnes').textContent = (resa.personnes >= plafond && plafond > 1)
+    dansFeuille('.personnes-valeur').textContent = resa.personnes;
+    dansFeuille('.personnes-max').textContent = (resa.personnes >= plafond && plafond > 1)
       ? t().maxAtteint : '';
-    $('moinsPersonnes').disabled = resa.personnes <= 1;
-    $('plusPersonnes').disabled = resa.personnes >= plafond;
-    $('groupePersonnes').style.display = plafond > 1 ? 'block' : 'none';
+    dansFeuille('.personnes-moins').disabled = resa.personnes <= 1;
+    dansFeuille('.personnes-plus').disabled = resa.personnes >= plafond;
+    dansFeuille('.groupe-personnes').style.display = plafond > 1 ? 'block' : 'none';
     majRecap();
   }
 
@@ -1251,8 +1256,8 @@
   /* ---------- Câblage des gestes ---------- */
 
   $('dateResa').addEventListener('change', function () { resa.date = this.value; interroger(); });
-  $('moinsPersonnes').addEventListener('click', function () { resa.personnes--; majPersonnes(); });
-  $('plusPersonnes').addEventListener('click', function () { resa.personnes++; majPersonnes(); });
+  dansFeuille('.personnes-moins').addEventListener('click', function () { resa.personnes--; majPersonnes(); });
+  dansFeuille('.personnes-plus').addEventListener('click', function () { resa.personnes++; majPersonnes(); });
   $('btnResa').addEventListener('click', reserver);
   $('btnCmd').addEventListener('click', commander);
   function basculerLangue() {
@@ -1265,7 +1270,7 @@
   function ouvrirDepuisLien() {
     var quoi = new URLSearchParams(location.search).get('ouvrir');
     if (quoi !== 'reserver' && quoi !== 'commander') return;
-    var onglet = document.querySelector('#onglets button[data-ong="' + quoi + '"]');
+    var onglet = dansFeuille('.onglets button[data-ong="' + quoi + '"]');
     if (onglet) onglet.click();
     ouvrirDlg();
   }
