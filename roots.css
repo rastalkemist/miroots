@@ -242,6 +242,13 @@ h6{font-size:var(--t-h5);line-height:var(--lh-16);font-family:var(--font-lecture
    interieure ne la deplace pas. Toute pleine largeur doit en outre etre
    NOMMEE et motivee au registre des pleines largeurs, sans quoi elle est
    refusee au depot. */
+/* La page ne defile jamais de cote. Les pieces en pleine largeur se mesurent
+   sur la fenetre ENTIERE ; la ou la barre de defilement verticale prend sa
+   place dans la mise en page, elles depassent la page d'une demi-barre de
+   chaque cote — un defilement lateral et une bande de fond apparaissent a
+   droite. La racine rogne ce depassement : le rognage ne cree pas de zone de
+   defilement, les pieces collantes et les rails gardent leur mecanique. */
+html{overflow-x:hidden;overflow-x:clip}
 .hors-piste{margin-inline:calc(50% - 50vw);width:auto}
 
 /* ① Deux blocs qui se partagent l'ecran, gouttiere au milieu. Sous le palier
@@ -415,6 +422,13 @@ html.au-clavier :where(.corps,.bloc,.lecture-longue,p,li,dd) a:not([class]):focu
 .verbe{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
 .centre{display:flex;align-items:center;gap:var(--esp-1)}
 .ankh-home{display:flex;align-items:center;flex-shrink:0;text-decoration:none}
+/* La marque monochrome tire son encre de ce qui l'entoure : une seule encre,
+   sombre sur papier, claire sur fond sombre. Le lien qui la porte n'en
+   declarait aucune — le navigateur lui servait alors son bleu de lien, que la
+   marque en couleurs masquait par ses aplats propres. */
+:where(body.p-space) .ankh-home{color:var(--roots-noir)}
+:where(body.p-space[data-surface="sombre"]) .ankh-home,
+:where(body.p-space[data-surface="ambiante"]) .ankh-home{color:var(--blanc)}
 .ankh-home svg{width:44px;height:44px;display:block}
 /* Le disque de la pastille est une FONCTION de son logotype, pas un nombre
    pose a cote : em se rapporte a la taille de police du .mot, donc le disque

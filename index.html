@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-dPAATZYE7xIYIX+7RlCiJUT9Nl269YyT6lk9KfrpGWE='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots - l’app pour NU</title>
-<meta name="description" content="Réserver une place au jardin ou au bureau, commander à la carte, retrouver sa réservation. Le Roots, où que tu sois.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-rznjjhcXguSOt+H6Wb3lQsxR8Lh4zuXMpetkI53kJ0Y='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Space</title>
+<meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Roots — l’app pour NU">
-<meta property="og:description" content="Réserver une place au jardin ou au bureau, commander à la carte, retrouver sa réservation. Le Roots, où que tu sois.">
+<meta property="og:site_name" content="Mi Space">
+<meta property="og:title" content="Mi Space">
+<meta property="og:description" content="l’app pour NU">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#005B22">
@@ -240,6 +240,7 @@
 
   var T = {
     fr: {
+      titrePage: 'Mi Space', descriptionPage: 'l’app pour NU',
       ongReserver: 'Coworking', ongCommander: 'Menu',
       ongEvenement: 'Événement',
       etNature: 'Quelle occasion ?',
@@ -298,6 +299,7 @@
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.'
     },
     en: {
+      titrePage: 'Mi Space', descriptionPage: 'the NU app',
       ongReserver: 'Coworking', ongCommander: 'Menu',
       ongEvenement: 'Event',
       etNature: 'What’s the occasion?',
@@ -1147,8 +1149,35 @@
 
   /* ---------- Langue ---------- */
 
+  /* IL N'Y A QU'UN TITRE ET QU'UNE DESCRIPTION. Le document les sert dans
+     cinq fentes — l'onglet, le nom au partage, le titre et la description de
+     la carte de partage, la description du moteur. Chaque fente reçoit LA MÊME
+     chaîne, posée ici et nulle part ailleurs : une fente qui porterait sa
+     propre version serait une seconde version. */
+  function poserFente(sel, mot) {
+    if (!mot) return;
+    var el = document.querySelector(sel);
+    if (!el) return;
+    if (el.tagName === 'TITLE') el.textContent = mot;
+    else el.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
     document.documentElement.lang = langue;
+    poserFente('title', t().titrePage);
+    poserFente('meta[property="og:site_name"]', t().titrePage);
+    poserFente('meta[property="og:title"]', t().titrePage);
+    poserFente('meta[name="description"]', t().descriptionPage);
+    poserFente('meta[property="og:description"]', t().descriptionPage);
+    var loc = document.querySelector('meta[property="og:locale"]');
+    var alt = document.querySelector('meta[property="og:locale:alternate"]');
+    if (loc && alt) {
+      var courante = langue === 'en' ? 'en_GB' : 'fr_BJ';
+      if (loc.getAttribute('content') !== courante) {
+        alt.setAttribute('content', loc.getAttribute('content'));
+        loc.setAttribute('content', courante);
+      }
+    }
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
