@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-VTApVy8FmNd3J1DVlCy0dJEqInTDgcmYLU4PUdxjTck='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-LaJxP23W3CQMs4xlJrIhGjEMDdTfPpJD8MpD5rqdY90='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Space | Ma facture</title>
+<meta name="description" content="l’app pour NU">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -97,6 +98,7 @@
      ------------------------------------------------------------------ */
   var T = {
     fr: {
+      descriptionPage: 'l’app pour NU',
       titreEcran: 'Mi Space | Ma facture',
       saut: 'Aller au contenu',
       h1: 'Ma facture',
@@ -138,6 +140,7 @@
       }
     },
     en: {
+      descriptionPage: 'the NU app',
       titreEcran: 'Mi Space | My invoice',
       saut: 'Skip to content',
       h1: 'My invoice',
@@ -488,6 +491,16 @@
   /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
      le titre de la carte de partage — depuis une seule chaine. Une fente qui
      porterait sa propre version serait un second nom. */
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function poserNom(mot) {
     if (!mot) return;
     document.title = mot;
@@ -497,6 +510,7 @@
 
   function appliquerLangue() {
     poserNom(t().titreEcran);
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (elmt) {
       var v = t()[elmt.getAttribute('data-t')];

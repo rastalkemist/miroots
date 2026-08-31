@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-OAkjT54ifyce42H+sSJ9Ixz02ynG/1sYnudkyudCAwQ='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-+Mu1IqYCLtnzjtQMslODpgiWRMh/TZF6BB7+Ye7wE+o='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots | La carte</title>
-<meta name="description" content="Toute la carte du Roots Café, en détail : boissons, plats, desserts, et les prix du jour.">
+<meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
+<meta property="og:site_name" content="Mi Space">
 <meta property="og:title" content="Mi Roots | La carte">
-<meta property="og:description" content="Toute la carte du Roots Café, en détail : boissons, plats, desserts, et les prix du jour.">
+<meta property="og:description" content="l’app pour NU">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#005B22">
@@ -145,6 +145,7 @@
 
   var T = {
     fr: {
+      descriptionPage: 'l’app pour NU',
       titreEcran: 'Mi Roots | La carte',
       titre: 'La carte', voirCommande: 'Voir ma commande', maCommande: 'Ma commande', total: 'Total',
       refuseGarde: "Envoi impossible pour le moment. Réessaie dans un instant.",
@@ -179,6 +180,7 @@
       payerFerme: 'Le paiement en ligne n’est pas disponible. Tu peux régler au comptoir.'
     },
     en: {
+      descriptionPage: 'the NU app',
       titreEcran: 'Mi Roots | Menu',
       titre: 'Menu', voirCommande: 'View my order', maCommande: 'My order', total: 'Total',
       refuseGarde: 'Sorry, there is a technical problem. Try again in a few moments.',
@@ -734,6 +736,16 @@
   /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
      le titre de la carte de partage — depuis une seule chaine. Une fente qui
      porterait sa propre version serait un second nom. */
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function poserNom(mot) {
     if (!mot) return;
     document.title = mot;
@@ -743,6 +755,7 @@
 
   function appliquerLangue() {
     poserNom(t().titreEcran);
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-paDET7YhRW/zM3OAkDXW76EbBzL2/lHCk5ekuaj0LMg='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-v9T9VTjEfNa7fSpnXiZFNSBeQprYaDaZ2binSjO8pP8='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
 <title>Mi Space | Paiement</title>
+<meta name="description" content="l’app pour NU">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#005B22">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -74,6 +75,7 @@
 
   var T = {
     fr: {
+      descriptionPage: 'l’app pour NU',
       titreEcran: 'Mi Space | Paiement',
       saut: 'Aller au contenu', h1: 'Paiement',
       ouverture: 'On ouvre le paiement',
@@ -92,6 +94,7 @@
       archivage: 'Votre facture vous est remise après paiement. Roots en conserve une copie pendant dix ans ; vous pouvez en demander une copie à tout moment en écrivant à gerant@roots.bj.'
     },
     en: {
+      descriptionPage: 'the NU app',
       titreEcran: 'Mi Space | Payment',
       saut: 'Skip to content', h1: 'Payment',
       ouverture: 'Opening payment',
@@ -141,6 +144,16 @@
   /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
      le titre de la carte de partage — depuis une seule chaine. Une fente qui
      porterait sa propre version serait un second nom. */
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function poserNom(mot) {
     if (!mot) return;
     document.title = mot;
@@ -150,6 +163,7 @@
 
   function appliquerLangue() {
     poserNom(t().titreEcran);
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

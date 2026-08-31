@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-90MWdFbZ2GNgltei25u+MvG4wLbvONqaeeBohv/v020='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-eQNzy7o1nqBkVhD5loK99WvItJK5l5FSrPXA06vCdGA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Space | Mes notes</title>
-<meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
+<meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
+<meta property="og:site_name" content="Mi Space">
 <meta property="og:title" content="Mi Space | Mes notes">
-<meta property="og:description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
+<meta property="og:description" content="l’app pour NU">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#1A1A1A">
@@ -138,6 +138,7 @@
 
   var T = {
     fr: {
+      descriptionPage: 'l’app pour NU',
       titreEcran: 'Mi Space | Mes notes',
       saut: 'Aller au contenu',
       fEpingle: 'Épinglées',
@@ -168,6 +169,7 @@
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
     en: {
+      descriptionPage: 'the NU app',
       titreEcran: 'Mi Space | Notes',
       saut: 'Skip to content',
       fEpingle: 'Pinned',
@@ -555,6 +557,16 @@
   /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
      le titre de la carte de partage — depuis une seule chaine. Une fente qui
      porterait sa propre version serait un second nom. */
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function poserNom(mot) {
     if (!mot) return;
     document.title = mot;
@@ -564,6 +576,7 @@
 
   function appliquerLangue() {
     poserNom(t().titreEcran);
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

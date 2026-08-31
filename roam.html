@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-DGcg5MVUML98ylTMGyPahZa7iJweepvICipj8XvXRK0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roam</title>
-<meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-HamI2ytW5qGogEIgOZXeN/UyBVvvZZ7XALRP0M+56BA='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roam - le réseau Roots</title>
+<meta name="description" content="le réseau Roots">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Roam">
-<meta property="og:description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
+<meta property="og:site_name" content="Mi Space">
+<meta property="og:title" content="Mi Roam - le réseau Roots">
+<meta property="og:description" content="le réseau Roots">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#9C1218">
@@ -435,7 +435,8 @@
 
   var T = {
     fr: {
-      titreEcran: 'Mi Roam',
+      descriptionPage: 'le réseau Roots',
+      titreEcran: 'Mi Roam - le réseau Roots',
       saut: 'Aller au contenu',
       titre: 'Séjourner',
       sousTitre: 'Kër Yawa, Interfaces, le Roots Camp — et bientôt les Roots Roamer. Sans compte : ton nom, ton numéro, un code.',
@@ -541,7 +542,8 @@
       voyageurs: 'voyageurs',
     },
     en: {
-      titreEcran: 'Mi Roam',
+      descriptionPage: 'the Roots network',
+      titreEcran: 'Mi Roam - the Roots network',
       saut: 'Skip to content',
       titre: 'Stay',
       sousTitre: 'Kër Yawa, Interfaces, the Roots Camp — and soon the Roots Roamers. No account: your name, your number, one code.',
@@ -1087,6 +1089,16 @@
   /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
      le titre de la carte de partage — depuis une seule chaine. Une fente qui
      porterait sa propre version serait un second nom. */
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function poserNom(mot) {
     if (!mot) return;
     document.title = mot;
@@ -1096,6 +1108,7 @@
 
   function appliquerLangue() {
     poserNom(t().titreEcran);
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

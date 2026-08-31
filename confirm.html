@@ -9,13 +9,13 @@
      leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-sz56eHfBEPtxKiaLah7U97XR39NlP1bdeGOh8w2AgcI='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-VLd7HNS5Wfc9HRApsERmc3mGzMZBZ3tUqKXtsozDoLc='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Space | Ton espace est prêt</title>
-<meta name="description" content="Le nom que tu liras en haut de ton espace, et ce que Roots fait de ce que tu y poses.">
+<meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
+<meta property="og:site_name" content="Mi Space">
 <meta property="og:title" content="Mi Space | Ton espace est prêt">
-<meta property="og:description" content="Le nom que tu liras en haut de ton espace, et ce que Roots fait de ce que tu y poses.">
+<meta property="og:description" content="l’app pour NU">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#1A1A1A">
@@ -110,6 +110,7 @@
 
   var T = {
     fr: {
+      descriptionPage: 'l’app pour NU',
       titreEcran: 'Mi Space | Ton espace est prêt',
       appel: 'Ton espace est prêt',
       titre: 'Comment doit-on t’appeler ?',
@@ -125,6 +126,7 @@
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
     en: {
+      descriptionPage: 'the NU app',
       titreEcran: 'Mi Space | Your space is ready',
       appel: 'Your space is ready',
       titre: 'What should we call you?',
@@ -175,6 +177,16 @@
   /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
      le titre de la carte de partage — depuis une seule chaine. Une fente qui
      porterait sa propre version serait un second nom. */
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function poserNom(mot) {
     if (!mot) return;
     document.title = mot;
@@ -184,6 +196,7 @@
 
   function appliquerLangue() {
     poserNom(t().titreEcran);
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     /* Le chrome commun redessine ses propres libelles — sa bascule de langue
        comprise, qui vit au pied de son tiroir. Il attend que l'ecran le lui

@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-xLlnKeGAfiqHjgmon5d/Y12mUEkxQ+XNrqS6biezZNI=' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-MeyBYd54QGRFaax1UZ7TsiS09TT/O9LjKJrnpf5CSFY='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-xLlnKeGAfiqHjgmon5d/Y12mUEkxQ+XNrqS6biezZNI=' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-GYTPrY5ne9j8yE0DCWubdJhu/6o9vVerXitLqkRAWEc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roots | Politique de confidentialité</title>
-<meta name="description" content="Ce que nous collectons, pourquoi, combien de temps nous le gardons, et comment exercer tes droits.">
+<meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
+<meta property="og:site_name" content="Mi Space">
 <meta property="og:title" content="Mi Roots | Politique de confidentialité">
-<meta property="og:description" content="Ce que nous collectons, pourquoi, combien de temps nous le gardons, et comment exercer tes droits.">
+<meta property="og:description" content="l’app pour NU">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#005B22">
@@ -250,6 +250,7 @@
 
   var T = {
     fr: {
+      descriptionPage: 'l’app pour NU',
       titreEcran: 'Politique de confidentialité',
       titre: 'Politique de protection des données à caractère personnel',
       piedPolitique: 'Politique de confidentialité',
@@ -261,6 +262,7 @@
       toastVerbe: function (v) { return v + ' arrive bientôt.'; }
     },
     en: {
+      descriptionPage: 'the NU app',
       titreEcran: 'Privacy policy',
       titre: 'Personal Data Protection Policy',
       piedPolitique: 'Privacy policy',
@@ -284,7 +286,18 @@
     onLangue: function () { basculerLangue(); }
   });
 
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function appliquerLangue() {
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('.texte').forEach(function (el) {
       el.hidden = el.getAttribute('data-langue') !== langue;

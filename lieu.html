@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-y4Q6rkbsUjAg22Mq13K7BYr5rd3/DTJikr3KLcRtgRk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-JfsqNNyte9ZI1yggv+JmdVttDZ1Hh0hC6wKF292Vzqc='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Roam</title>
-<meta name="description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
+<meta name="description" content="le réseau Roots">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Mi Roots">
+<meta property="og:site_name" content="Mi Space">
 <meta property="og:title" content="Mi Roam">
-<meta property="og:description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
+<meta property="og:description" content="le réseau Roots">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
 <meta name="theme-color" content="#9C1218">
@@ -137,6 +137,7 @@
 
   var T = {
     fr: {
+      descriptionPage: 'le réseau Roots',
       saut: 'Aller au contenu',
       retourRoam: 'Tous les lieux',
       parNuit: 'la nuit',
@@ -153,6 +154,7 @@
       toastNu: 'Le mode NU (communaut\u00e9) arrive bient\u00f4t.'
     },
     en: {
+      descriptionPage: 'the Roots network',
       saut: 'Skip to content',
       retourRoam: 'All places',
       parNuit: 'a night',
@@ -397,7 +399,18 @@
     $('ficheVide').hidden = true;
   }
 
+  /* La description de l'app est unique : les deux fentes qui la portent
+     recoivent la meme chaine, et elle suit la langue lue. */
+  function poserDescription(mot) {
+    if (!mot) return;
+    ['meta[name="description"]', 'meta[property="og:description"]'].forEach(function (sel) {
+      var el = document.querySelector(sel);
+      if (el) el.setAttribute('content', mot);
+    });
+  }
+
   function appliquerLangue() {
+    poserDescription(t().descriptionPage);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
