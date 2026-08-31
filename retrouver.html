@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-rrZVeRmg/4vQ0NbmJgW88tOfQFUSxF8jSDwgXRMwcT8='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Retrouver ma réservation ou ma commande — Roots</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-LXNg3uZDIFTy9xxWt0Ih95NucxtUYCzUhFd1klxf6t4='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Space | Retrouver ma réservation</title>
 <meta name="description" content="Avec ton code et ton numéro, retrouve une réservation ou une commande passée au Roots.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Retrouver sa réservation ou sa commande">
+<meta property="og:title" content="Mi Space | Retrouver ma réservation">
 <meta property="og:description" content="Avec ton code et ton numéro, retrouve une réservation ou une commande passée au Roots.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
@@ -119,6 +119,7 @@
 
   var T = {
     fr: {
+      titreEcran: 'Mi Space | Retrouver ma réservation',
       titre: 'Retrouver ma réservation ou ma commande', sous: 'Ton code et le numéro que tu as utilisé.',
       lCode: 'Ton code', lTel: 'Numéro utilisé', bChercher: 'Retrouver',
       bAutre: 'Chercher autre chose',
@@ -159,6 +160,7 @@
                   livree: 'Servie', annulee: 'Annulée' }
     },
     en: {
+      titreEcran: 'Mi Space | Find your booking',
       titre: 'Find your booking or order', sous: 'Enter your code and the phone number you used.',
       lCode: 'Your code', lTel: 'Phone number used', bChercher: 'Find',
       bAutre: 'Find something else',
@@ -225,13 +227,23 @@
 
   /* ---------- Langue ---------- */
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];
       if (typeof v === 'string') el.textContent = v;
     });
-    document.title = t().titre + ' — Roots';
     chromeUI.dessinerSections();
     if (trouvee) afficher(trouvee);
     if (issueCourante) montrerIssue(issueCourante);

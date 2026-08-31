@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-vi0dplw1B+E8oKiNqIW0qdKuPBlKM3lz5/Ofy1y4pEw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Séjourner</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-DGcg5MVUML98ylTMGyPahZa7iJweepvICipj8XvXRK0='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roam</title>
 <meta name="description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Roam — séjourner au Roots">
+<meta property="og:title" content="Mi Roam">
 <meta property="og:description" content="Kër Yawa, Interfaces, le Roots Camp : les lieux où poser ses valises, et comment y réserver un séjour.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
@@ -435,6 +435,7 @@
 
   var T = {
     fr: {
+      titreEcran: 'Mi Roam',
       saut: 'Aller au contenu',
       titre: 'Séjourner',
       sousTitre: 'Kër Yawa, Interfaces, le Roots Camp — et bientôt les Roots Roamer. Sans compte : ton nom, ton numéro, un code.',
@@ -540,6 +541,7 @@
       voyageurs: 'voyageurs',
     },
     en: {
+      titreEcran: 'Mi Roam',
       saut: 'Skip to content',
       titre: 'Stay',
       sousTitre: 'Kër Yawa, Interfaces, the Roots Camp — and soon the Roots Roamers. No account: your name, your number, one code.',
@@ -1082,7 +1084,18 @@
   $('btnSejour').addEventListener('click', reserver);
   $('btnPayerSejour').addEventListener('click', payerSejour);
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

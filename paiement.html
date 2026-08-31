@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-Bdpk1l/4bnaF/1VKsn8DOkKtAybz8KTclCtes6ci8gM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Paiement — Mi Roots</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-P4oPx9Y/Rj/Pbb98zeyEGnGdPhdvVv9ccZFC+04fdfU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Space | Paiement</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#005B22">
 <link rel="manifest" href="manifest.webmanifest">
@@ -106,6 +106,7 @@
      ------------------------------------------------------------------ */
   var T = {
     fr: {
+      titreEcran: 'Mi Space | Paiement',
       saut: 'Aller au contenu',
       phase: 'Version d\'essai. Des fonctions sont incomplètes ou indisponibles.',
       fCode: 'Six signes, lettres et chiffres — par exemple ABC123.',
@@ -156,6 +157,7 @@
       }
     },
     en: {
+      titreEcran: 'Mi Space | Payment',
       saut: 'Skip to content',
       phase: 'Trial version. Some features are incomplete.',
       fCode: 'Six characters, letters and numbers. For example ABC123.',
@@ -527,7 +529,18 @@
     }, function () { montrer(attente()); });
   }
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

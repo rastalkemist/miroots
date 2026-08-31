@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-cZTOFF1GPwLS2mMyHRQYdUCJAA5OQ5MTVreN2Cgiddw='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Le lieu</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-y4Q6rkbsUjAg22Mq13K7BYr5rd3/DTJikr3KLcRtgRk='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Roam</title>
 <meta name="description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Roam — le lieu">
+<meta property="og:title" content="Mi Roam">
 <meta property="og:description" content="La fiche d’un lieu de Mi Roam : ses vues, ce qu’il coûte, combien il accueille, et par où réserver.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
@@ -391,7 +391,7 @@
     $('ficheTexte').textContent = mots.sansTexte;
     $('ficheEquip').textContent = mots.sansEquip;
     $('gesteReserver').href = 'roam.html?bien=' + encodeURIComponent(slug);
-    document.title = l.nom + ' \u2014 Mi Roots';
+    document.title = 'Mi Roam | ' + l.nom;
     galerie(VUES[slug] || []);
     $('fiche').hidden = false;
     $('ficheVide').hidden = true;

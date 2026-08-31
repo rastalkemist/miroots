@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-kGpGe/3jdaj7gdmAT5Hy2/VdEWrzSuHBDfkIpXBbsCs='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Mi Space</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-iEsJgaslB5/nIQbHGd+nTGR6SLxg0HTogEkN1LbbrAM='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Space</title>
 <meta name="description" content="L’espace de travail des membres du Roots : la semaine, les notes, ce qui avance.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
@@ -168,6 +168,7 @@
 
   var T = {
     fr: {
+      titreEcran: 'Mi Space',
       saut: 'Aller au contenu',
       blocSemaine: 'Ma Semaine',
       blocBord: 'Tableau de bord',
@@ -196,6 +197,7 @@
       aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
     },
     en: {
+      titreEcran: 'Mi Space',
       saut: 'Skip to content',
       blocSemaine: 'My week',
       blocBord: 'Dashboard',
@@ -414,7 +416,18 @@
     return SpaceNotes.toutes().then(function (liste) { NOTES = liste; });
   }
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-tl]').forEach(function (el) {
       var v = t()[el.getAttribute('data-tl')];

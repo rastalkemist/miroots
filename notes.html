@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-H8lFyOcxgyKy+TRDrDhbbBUAa1A7juC1qO9KtZ9fxPo='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Mes Notes</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-90MWdFbZ2GNgltei25u+MvG4wLbvONqaeeBohv/v020='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Space | Mes notes</title>
 <meta name="description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Space">
+<meta property="og:title" content="Mi Space | Mes notes">
 <meta property="og:description" content="La capture de Mi Space : une note en trois secondes, et elle reste sur ton appareil.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
@@ -138,6 +138,7 @@
 
   var T = {
     fr: {
+      titreEcran: 'Mi Space | Mes notes',
       saut: 'Aller au contenu',
       fEpingle: 'Épinglées',
       fListe: 'Listes',
@@ -167,6 +168,7 @@
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
     en: {
+      titreEcran: 'Mi Space | Notes',
       saut: 'Skip to content',
       fEpingle: 'Pinned',
       fListe: 'Lists',
@@ -550,7 +552,18 @@
   }
 
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

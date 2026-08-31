@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-07+PR3a/Nqq3u8swm9/khDWD8fUyF6lHaDnzMqaqM0w='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
-<title>Paiement — Mi Roots</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; script-src 'self' https://kkiapay.me https://cdn.kkiapay.me https://*.kkiapay.me 'sha256-paDET7YhRW/zM3OAkDXW76EbBzL2/lHCk5ekuaj0LMg='; connect-src https://kkiapay.me https://*.kkiapay.me wss://*.kkiapay.me; frame-src https://kkiapay.me https://*.kkiapay.me; img-src 'self' data: https://kkiapay.me https://*.kkiapay.me; style-src 'self' 'unsafe-inline' https://kkiapay.me https://*.kkiapay.me; font-src 'self' data:; manifest-src 'none'">
+<title>Mi Space | Paiement</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#005B22">
 <link rel="icon" href="icones/favicon.ico" sizes="any">
@@ -74,6 +74,7 @@
 
   var T = {
     fr: {
+      titreEcran: 'Mi Space | Paiement',
       saut: 'Aller au contenu', h1: 'Paiement',
       ouverture: 'On ouvre le paiement',
       attends: 'Le paiement s’ouvre dans un instant. Ne ferme pas cette page.',
@@ -91,6 +92,7 @@
       archivage: 'Votre facture vous est remise après paiement. Roots en conserve une copie pendant dix ans ; vous pouvez en demander une copie à tout moment en écrivant à gerant@roots.bj.'
     },
     en: {
+      titreEcran: 'Mi Space | Payment',
       saut: 'Skip to content', h1: 'Payment',
       ouverture: 'Opening payment',
       attends: 'Payment opens in a moment. Keep this page open.',
@@ -136,7 +138,18 @@
     if (etat.bouton) $('ouvrir').textContent = t()[etat.bouton] || '';
   }
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     document.querySelectorAll('[data-t]').forEach(function (el) {
       var v = t()[el.getAttribute('data-t')];

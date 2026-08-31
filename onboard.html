@@ -9,12 +9,12 @@
      leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-pOJP2pE9MSOZ49GzP0kki6LSFpiKg72UifozvFkjWXo='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
-<title>Mi Roots — Ouvrir Mi Space</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-PPp7vo29YN91sT91mXlBmbv9L1B1E1WHTuZLg6VDWCs='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<title>Mi Space | Ouvrir mon espace</title>
 <meta name="description" content="Ouvre ton espace en deux gestes : ton adresse, le code reçu. Personne ne voit ce que tu y poses.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Mi Roots">
-<meta property="og:title" content="Mi Space">
+<meta property="og:title" content="Mi Space | Ouvrir mon espace">
 <meta property="og:description" content="Ouvre ton espace en deux gestes : ton adresse, le code reçu. Personne ne voit ce que tu y poses.">
 <meta property="og:locale" content="fr_BJ">
 <meta property="og:locale:alternate" content="en_GB">
@@ -129,6 +129,7 @@
 
   var T = {
     fr: {
+      titreEcran: 'Mi Space | Ouvrir mon espace',
       appel: 'Ton quotidien, simplifié.',
       mission: 'Accomplis une première mission',
       tache: 'Ouvrir mon espace',
@@ -154,6 +155,7 @@
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
     en: {
+      titreEcran: 'Mi Space | Open my space',
       appel: 'Daily life made simple',
       mission: 'Complete your first task',
       tache: 'Open my space',
@@ -201,7 +203,18 @@
 
   var courriel = null, envois = 0, reste = 0, minuterie = null;
 
+  /* Le nom de l'ecran se pose dans les fentes qui le demandent — l'onglet et
+     le titre de la carte de partage — depuis une seule chaine. Une fente qui
+     porterait sa propre version serait un second nom. */
+  function poserNom(mot) {
+    if (!mot) return;
+    document.title = mot;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', mot);
+  }
+
   function appliquerLangue() {
+    poserNom(t().titreEcran);
     document.documentElement.lang = langue;
     /* Le chrome commun redessine ses propres libelles — sa bascule de langue
        comprise, qui vit au pied de son tiroir. Il attend que l'ecran le lui
