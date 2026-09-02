@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-eD2LJXW9a5SLV3S5YjIkVnsvICQ9M61bBQeeWikLXWQ='; style-src 'self'; img-src 'self' data:; font-src 'self'; manifest-src 'self'">
+<meta name="theme-color" content="#005B22">
+<title>Mi Roots | Installer</title>
+<meta name="description" content="l’app pour NU">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Mi Roots">
+<meta property="og:title" content="Mi Roots | Installer">
+<meta property="og:description" content="l’app pour NU">
+<meta property="og:locale" content="fr_BJ">
+<meta property="og:locale:alternate" content="en_GB">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icones/favicon.ico" sizes="any">
+<link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
+<link rel="preload" href="fonts/MuseoModerno-var.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="roots-fonts.css">
+<link rel="stylesheet" href="roots-tokens.css">
+<link rel="stylesheet" href="roots.css">
+<link rel="stylesheet" href="installer.css">
+<script src="garde.js"></script>
+</head>
+<body class="p-paiement" data-surface="claire">
+
+<a class="saut-contenu" href="#contenu" data-t="saut">Aller au contenu</a>
+
+<!-- Cet ecran a un seul travail : poser l'application sur l'ecran d'accueil.
+     Il ne charge ni le chrome partage ni la passerelle de donnees, et n'a
+     aucune navigation : le chrome commun moins le menu, comme l'ecran de
+     paiement. Le logo est pose en balisage, faute de planche d'icones.
+     Sur un appareil qui offre l'installation, la page capte l'offre du
+     systeme et ne la presente que sur un geste. Sur un appareil qui ne l'offre
+     pas, elle montre la marche a suivre du navigateur detecte. Ouverte depuis
+     l'ecran d'accueil, elle ne s'affiche pas : l'application est deja la. -->
+
+<header class="chrome-haut">
+  <div class="chrome-inner">
+    <span class="ankh-home" aria-hidden="true"><svg viewBox="0 0 110 111" role="img"><path fill-rule="nonzero" fill="rgb(10.196078%, 10.196078%, 10.196078%)" d="M 55.144531 3.101562 C 83.609375 3.101562 106.679688 26.175781 106.679688 54.636719 C 106.679688 83.101562 83.609375 106.171875 55.144531 106.171875 C 26.683594 106.171875 3.609375 83.101562 3.609375 54.636719 C 3.609375 26.175781 26.683594 3.101562 55.144531 3.101562 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 47.660156 45.566406 L 12.074219 42.925781 C 14.8125 33.019531 20.882812 24.355469 29.257812 18.398438 C 30.832031 21.53125 32.574219 24.574219 34.480469 27.515625 Z M 47.660156 45.566406 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 10.546875 57.304688 L 50.652344 54.070312 L 49.699219 99.140625 C 28.414062 96.554688 11.738281 78.992188 10.546875 57.304688 "/><path fill-rule="nonzero" fill="rgb(89.019608%, 10.588235%, 13.72549%)" d="M 67.039062 25.71875 C 65.503906 27.898438 57.183594 38.679688 54.992188 38.496094 C 47.457031 32.53125 40.75 23.539062 36.359375 14.269531 C 48.25 8.769531 61.953125 8.753906 73.855469 14.226562 C 71.894531 18.230469 69.613281 22.078125 67.039062 25.71875 "/><path fill-rule="nonzero" fill="rgb(100%, 69.019608%, 0%)" d="M 62.132812 45.5625 C 68.492188 37.964844 75.789062 28.535156 80.960938 18.355469 C 89.371094 24.316406 95.464844 32.996094 98.207031 42.933594 Z M 62.132812 45.5625 "/><path fill-rule="nonzero" fill="rgb(0%, 35.686275%, 13.333333%)" d="M 99.742188 57.304688 C 98.554688 78.992188 81.878906 96.550781 60.59375 99.140625 L 59.640625 54.070312 Z M 99.742188 57.304688 "/>  </svg></span>
+    <div class="centre"><span class="chrome-titre">Roots</span></div>
+    <div class="chrome-droite">
+      <button class="lang-btn" id="btnLangue" aria-label="Langue" data-al="alLangue">EN</button>
+    </div>
+  </div>
+</header>
+
+<div id="contenu" class="scene">
+  <section class="panneau installer" aria-live="polite">
+    <img class="installer-icone" src="icones/icone-512.png" alt="" width="96" height="96" decoding="async">
+    <h1 class="titre-issue" data-t="titre">Mi Roots sur ton téléphone</h1>
+    <p class="dit" data-t="dit">L’app pour NU et les habitués du Roots : commander, réserver, retrouver ta place — depuis ton écran d’accueil, sans compte.</p>
+
+    <!-- L'offre du systeme. Le bouton attend l'evenement du navigateur : tant
+         qu'il n'est pas venu, il ne promet rien. -->
+    <div class="apres" id="offre" hidden>
+      <button type="button" class="bouton-plein" id="btnInstaller" data-t="installer" disabled>Installer Mi Roots</button>
+    </div>
+
+    <!-- La marche a suivre, quand aucune offre n'existe : trois gestes, dont
+         le premier depend du navigateur et de sa version. -->
+    <div id="marches" hidden>
+      <p class="dit installer-titre-marches" data-t="marchesTitre">Sur iPhone, trois gestes :</p>
+      <ol class="installer-marches">
+        <li data-marche="menu" hidden><span class="installer-num" aria-hidden="true">1</span><span><span data-t="mMenu">Touche les trois points à droite de la barre d’adresse, puis </span><b data-t="mPartagerMot">Partager</b></span></li>
+        <li data-marche="partager"><span class="installer-num" aria-hidden="true">1</span><span><span data-t="mPartager">Touche</span> <svg class="i" aria-hidden="true"><use href="#i-partager"/></svg> <b data-t="mPartagerMot">Partager</b><span data-t="mPartagerOu">, en bas de l’écran</span></span></li>
+        <li data-marche="ajouter"><span class="installer-num" aria-hidden="true">2</span><span><span data-t="mAjouter">Choisis</span> <svg class="i" aria-hidden="true"><use href="#i-ajouter"/></svg> <b data-t="mAjouterMot">Sur l’écran d’accueil</b></span></li>
+        <li data-marche="valider"><span class="installer-num" aria-hidden="true">3</span><span><span data-t="mValider">Touche</span> <b data-t="mValiderMot">Ajouter</b></span></li>
+      </ol>
+    </div>
+
+    <!-- Sans offre et sans marche connue : le menu du navigateur. -->
+    <p class="dit" id="sansPorte" data-t="sansPorte" hidden>Ton navigateur n’offre pas l’installation ici. Dans son menu, cherche « Installer l’application » ou « Ajouter à l’écran d’accueil ».</p>
+
+    <!-- Deja posee : on ouvre. -->
+    <div id="installee" hidden>
+      <p class="dit" data-t="installee">C’est installé.</p>
+      <div class="apres"><a class="bouton-plein" href="index.html" data-t="ouvrir">Ouvrir Mi Roots</a></div>
+    </div>
+
+    <p class="apres"><a class="lien-second" href="index.html" data-t="continuer">Continuer sans installer</a></p>
+  </section>
+</div>
+
+<!-- Deux pictogrammes de marche a suivre, dessines ici : la planche d'icones
+     vit dans le programme partage, que cet ecran ne charge pas. Le trait suit
+     l'encre courante, comme toute icone fonctionnelle. -->
+<svg class="installer-planche" width="0" height="0" aria-hidden="true" focusable="false">
+  <symbol id="i-partager" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></symbol>
+  <symbol id="i-ajouter" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/></symbol>
+</svg>
+
+<script>
+(function () {
+  'use strict';
+
+  var T = {
+    fr: {
+      saut: 'Aller au contenu', alLangue: 'Switch to English',
+      titre: 'Mi Roots sur ton téléphone',
+      dit: 'L’app pour NU et les habitués du Roots : commander, réserver, retrouver ta place — depuis ton écran d’accueil, sans compte.',
+      installer: 'Installer Mi Roots', installee: 'C’est installé.', ouvrir: 'Ouvrir Mi Roots',
+      continuer: 'Continuer sans installer',
+      marchesTitre: 'Sur iPhone, trois gestes :',
+      mMenu: 'Touche les trois points à droite de la barre d’adresse, puis ',
+      mPartager: 'Touche', mPartagerMot: 'Partager', mPartagerOu: ', en bas de l’écran',
+      mPartagerOuChrome: ', à droite de la barre d’adresse', mPartagerOuMenu: '',
+      mAjouter: 'Choisis', mAjouterMot: 'Sur l’écran d’accueil',
+      mValider: 'Touche', mValiderMot: 'Ajouter',
+      sansPorte: 'Ton navigateur n’offre pas l’installation ici. Dans son menu, cherche « Installer l’application » ou « Ajouter à l’écran d’accueil ».',
+      titrePage: 'Mi Roots | Installer'
+    },
+    en: {
+      saut: 'Skip to content', alLangue: 'Passer en français',
+      titre: 'Mi Roots on your phone',
+      dit: 'The NU app, for Roots regulars: order, book, find your place — from your home screen, no account needed.',
+      installer: 'Install Mi Roots', installee: 'Installed.', ouvrir: 'Open Mi Roots',
+      continuer: 'Continue without installing',
+      marchesTitre: 'On iPhone, three taps:',
+      mMenu: 'Tap the three dots to the right of the address bar, then ',
+      mPartager: 'Tap', mPartagerMot: 'Share', mPartagerOu: ', at the bottom of the screen',
+      mPartagerOuChrome: ', to the right of the address bar', mPartagerOuMenu: '',
+      mAjouter: 'Choose', mAjouterMot: 'Add to Home Screen',
+      mValider: 'Tap', mValiderMot: 'Add',
+      sansPorte: 'Your browser doesn’t offer installation here. In its menu, look for “Install app” or “Add to Home screen”.',
+      titrePage: 'Mi Roots | Install'
+    }
+  };
+
+  /* La langue se lit ou les autres ecrans l'ecrivent ; la bascule l'y ecrit. */
+  var langue = (navigator.language || 'fr').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr';
+  try {
+    var l = localStorage.getItem('roots.langue');
+    if (l === 'en' || l === 'fr') langue = l;
+  } catch (e) {}
+  function t() { return T[langue] || T.fr; }
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* Une page ouverte depuis l'ecran d'accueil est deja installee : elle n'a
+     rien a proposer et rejoint l'univers Roots sans s'afficher. */
+  var dansApp = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  if (dansApp) { location.replace('index.html'); return; }
+
+  var ua = navigator.userAgent || '';
+  var iOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var chromeiOS = /CriOS/.test(ua);
+  var navigateurTiersiOS = /CriOS|FxiOS|EdgiOS|OPiOS|Brave/.test(ua);
+  var versioniOS = (function () { var m = ua.match(/OS (\d+)_/); return m ? parseInt(m[1], 10) : 0; })();
+
+  function appliquerLangue() {
+    document.documentElement.lang = langue;
+    document.title = t().titrePage;
+    var og = document.querySelector('meta[property="og:title"]');
+    if (og) og.setAttribute('content', t().titrePage);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-t]'), function (el) {
+      var v = t()[el.getAttribute('data-t')];
+      if (typeof v === 'string') el.textContent = v;
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-al]'), function (el) {
+      var v = t()[el.getAttribute('data-al')];
+      if (typeof v === 'string') el.setAttribute('aria-label', v);
+    });
+    /* Le lieu du bouton Partager depend du navigateur : la phrase le dit. */
+    var ou = document.querySelector('[data-t="mPartagerOu"]');
+    if (ou) ou.textContent = chromeiOS ? t().mPartagerOuChrome : (versioniOS >= 26 && !navigateurTiersiOS ? t().mPartagerOuMenu : t().mPartagerOu);
+    $('btnLangue').textContent = langue === 'fr' ? 'EN' : 'FR';
+  }
+  $('btnLangue').addEventListener('click', function () {
+    langue = langue === 'fr' ? 'en' : 'fr';
+    try { localStorage.setItem('roots.langue', langue); } catch (e) {}
+    appliquerLangue();
+  });
+
+  function montrer(id) {
+    ['offre', 'marches', 'sansPorte', 'installee'].forEach(function (k) { $(k).hidden = (k !== id); });
+  }
+
+  /* Sur iPhone et iPad, aucune offre n'existe : la marche a suivre, et rien
+     d'autre. Sur Safari 26 le partage est derriere trois points ; sur Chrome
+     il est a droite de la barre d'adresse ; ailleurs, en bas de l'ecran. */
+  if (iOS) {
+    var menu = document.querySelector('[data-marche="menu"]');
+    var partager = document.querySelector('[data-marche="partager"]');
+    if (versioniOS >= 26 && !navigateurTiersiOS) {
+      menu.hidden = false;
+      partager.hidden = true;
+      document.querySelector('[data-marche="ajouter"] .installer-num').textContent = '2';
+    }
+    montrer('marches');
+    appliquerLangue();
+    return;
+  }
+
+  /* Ailleurs, l'offre du systeme si elle vient, le menu du navigateur sinon.
+     L'offre se garde et ne se presente que sur un geste ; elle ne vaut qu'une
+     fois. */
+  var offre = null;
+  var delai = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    offre = e;
+    if (delai) { clearTimeout(delai); delai = null; }
+    $('btnInstaller').disabled = false;
+    montrer('offre');
+  });
+  window.addEventListener('appinstalled', function () {
+    offre = null;
+    montrer('installee');
+  });
+  $('btnInstaller').addEventListener('click', function () {
+    if (!offre) return;
+    var o = offre;
+    offre = null;
+    $('btnInstaller').disabled = true;
+    o.prompt();
+    o.userChoice.then(function (choix) {
+      if (!choix || choix.outcome !== 'accepted') montrer('sansPorte');
+    })['catch'](function () { montrer('sansPorte'); });
+  });
+
+  /* Deja installee sur cet appareil : l'ouvrir plutot que la reproposer. Le
+     navigateur ne repond que pour une application declaree dans le manifeste. */
+  function dejaInstallee() {
+    if (!navigator.getInstalledRelatedApps) return Promise.resolve(false);
+    return navigator.getInstalledRelatedApps().then(function (l) { return !!(l && l.length); })['catch'](function () { return false; });
+  }
+
+  montrer('offre');
+  appliquerLangue();
+  dejaInstallee().then(function (oui) {
+    if (oui) { montrer('installee'); return; }
+    /* Sans offre venue dans les trois secondes, ce navigateur n'en fera pas :
+       la marche par le menu prend la place du bouton. */
+    delai = setTimeout(function () { if (!offre) montrer('sansPorte'); }, 3000);
+  });
+})();
+</script>
+</body>
+</html>

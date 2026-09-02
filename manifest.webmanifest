@@ -2,12 +2,13 @@
   "id": "/",
   "name": "Mi Roots - l’app pour NU",
   "short_name": "Mi Roots",
-  "description": "Commander, réserver et retrouver sa place au Roots.",
+  "description": "L’app pour NU et les habitués du Roots. Commande à la carte, réserve ta place ou ton séjour, retrouve ta réservation par son code — sans compte. Trois univers : Roots au centre, Roam pour découvrir le Bénin, Space pour ton quotidien au Roots.",
+  "lang": "fr",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#FDFBF6",
   "theme_color": "#005B22",
+  "background_color": "#FDFBF6",
   "icons": [
     {
       "src": "icones/icone-192.png",
@@ -34,6 +35,13 @@
       "purpose": "maskable"
     }
   ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://mi.roots.bj/manifest.webmanifest"
+    }
+  ],
+  "prefer_related_applications": false,
   "share_target": {
     "action": "./notes.html",
     "method": "GET",

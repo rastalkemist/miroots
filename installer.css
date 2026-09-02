@@ -1,0 +1,29 @@
+/* ==========================================================================
+   L'ECRAN D'INSTALLATION — la feuille propre a la porte d'installation.
+   Elle range les pieces que cet ecran est seul a porter : l'icone de
+   l'application, la marche a suivre numerotee, ses deux pictogrammes. Le
+   panneau, le titre, le texte et les boutons sont ceux du tronc.
+   Exige : roots-tokens.css et roots.css.
+   ========================================================================== */
+
+/* L'icone est celle qui se posera sur l'ecran d'accueil : la voir avant le
+   geste est le but. Son coin suit le rayon de carte, son ombre est celle
+   d'une piece posee. */
+.installer-icone{display:block;width:calc(var(--cible-min) * 2);height:auto;margin:0 auto var(--air-i4);border-radius:var(--rayon-carte);box-shadow:var(--ombre-posee)}
+
+/* La marche a suivre se lit a gauche, meme dans un panneau centre : une
+   liste numerotee se suit du doigt. Un cran d'air entre deux gestes. */
+.installer-titre-marches{margin-bottom:var(--air-i2)}
+.installer-marches{list-style:none;margin:0 auto;padding:0;max-width:34ch;text-align:left;display:flex;flex-direction:column;gap:var(--air-i2)}
+.installer-marches li{display:flex;align-items:flex-start;gap:var(--esp-3);font-size:var(--t-body);line-height:var(--lh-16)}
+.installer-marches li[hidden]{display:none}
+.installer-num{flex:none;display:inline-flex;align-items:center;justify-content:center;width:var(--air-i4);height:var(--air-i4);border-radius:var(--rayon-pilule);background:var(--univers);color:var(--blanc);font-size:var(--t-sm);font-weight:var(--w-bold)}
+.installer-marches b{font-weight:var(--w-bold)}
+.installer-marches svg.i{width:1.25em;height:1.25em;vertical-align:-0.25em}
+
+/* La planche des deux pictogrammes ne prend aucune place. */
+.installer-planche{position:absolute;width:0;height:0}
+
+/* Le bouton plein de l'ecran est unique ; le lien qui continue sans installer
+   reste un lien, sous lui, avec l'air d'un bloc. */
+.installer .apres{margin-top:var(--air-i4)}
