@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-eD2LJXW9a5SLV3S5YjIkVnsvICQ9M61bBQeeWikLXWQ='; style-src 'self'; img-src 'self' data:; font-src 'self'; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-T1pCOTzUXHVjba9iF+yAgOT1Yb7pr4RB2zd+s8J1xkQ='; style-src 'self'; img-src 'self' data:; font-src 'self'; manifest-src 'self'">
 <meta name="theme-color" content="#005B22">
 <title>Mi Roots | Installer</title>
 <meta name="description" content="l’app pour NU">
@@ -75,13 +75,14 @@
     <!-- Sans offre et sans marche connue : le menu du navigateur. -->
     <p class="dit" id="sansPorte" data-t="sansPorte" hidden>Ton navigateur n’offre pas l’installation ici. Dans son menu, cherche « Installer l’application » ou « Ajouter à l’écran d’accueil ».</p>
 
-    <!-- Deja posee : on ouvre. -->
+    <!-- Deja posee. Une page ne peut pas lancer l'application posee sur
+         l'ecran d'accueil : elle dit ou la trouver, et offre le navigateur
+         en second. -->
     <div id="installee" hidden>
-      <p class="dit" data-t="installee">C’est installé.</p>
-      <div class="apres"><a class="bouton-plein" href="index.html" data-t="ouvrir">Ouvrir Mi Roots</a></div>
+      <p class="dit"><b data-t="installee">C’est installé.</b> <span data-t="installeeDit">Ouvre Mi Roots depuis ton écran d’accueil — l’icône ci-dessus.</span></p>
     </div>
 
-    <p class="apres"><a class="lien-second" href="index.html" data-t="continuer">Continuer sans installer</a></p>
+    <p class="apres"><a class="lien-second" href="index.html" id="lienSuite" data-t="continuer">Continuer sans installer</a></p>
   </section>
 </div>
 
@@ -102,8 +103,9 @@
       saut: 'Aller au contenu', alLangue: 'Switch to English',
       titre: 'Mi Roots sur ton téléphone',
       dit: 'L’app pour NU et les habitués du Roots : commander, réserver, retrouver ta place — depuis ton écran d’accueil, sans compte.',
-      installer: 'Installer Mi Roots', installee: 'C’est installé.', ouvrir: 'Ouvrir Mi Roots',
-      continuer: 'Continuer sans installer',
+      installer: 'Installer Mi Roots', installee: 'C’est installé.',
+      installeeDit: 'Ouvre Mi Roots depuis ton écran d’accueil — l’icône ci-dessus.',
+      continuer: 'Continuer sans installer', continuerNav: 'Continuer dans le navigateur',
       marchesTitre: 'Sur iPhone, trois gestes :',
       mMenu: 'Touche les trois points à droite de la barre d’adresse, puis ',
       mPartager: 'Touche', mPartagerMot: 'Partager', mPartagerOu: ', en bas de l’écran',
@@ -117,8 +119,9 @@
       saut: 'Skip to content', alLangue: 'Passer en français',
       titre: 'Mi Roots on your phone',
       dit: 'The NU app, for Roots regulars: order, book, find your place — from your home screen, no account needed.',
-      installer: 'Install Mi Roots', installee: 'Installed.', ouvrir: 'Open Mi Roots',
-      continuer: 'Continue without installing',
+      installer: 'Install Mi Roots', installee: 'Installed.',
+      installeeDit: 'Open Mi Roots from your home screen — the icon above.',
+      continuer: 'Continue without installing', continuerNav: 'Continue in the browser',
       marchesTitre: 'On iPhone, three taps:',
       mMenu: 'Tap the three dots to the right of the address bar, then ',
       mPartager: 'Tap', mPartagerMot: 'Share', mPartagerOu: ', at the bottom of the screen',
@@ -176,6 +179,10 @@
 
   function montrer(id) {
     ['offre', 'marches', 'sansPorte', 'installee'].forEach(function (k) { $(k).hidden = (k !== id); });
+    /* Quand l'application est deja la, « sans installer » ne veut plus rien
+       dire : le lien du bas offre le navigateur. */
+    $('lienSuite').setAttribute('data-t', id === 'installee' ? 'continuerNav' : 'continuer');
+    $('lienSuite').textContent = t()[$('lienSuite').getAttribute('data-t')];
   }
 
   /* Sur iPhone et iPad, aucune offre n'existe : la marche a suivre, et rien

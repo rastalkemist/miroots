@@ -35,6 +35,29 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "media/vitrine/accueil.jpg",
+      "sizes": "720x1486",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "L’accueil : réserver sa place au Roots."
+    },
+    {
+      "src": "media/vitrine/roam.jpg",
+      "sizes": "720x1486",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Séjourner : les maisons où dormir au Bénin."
+    },
+    {
+      "src": "media/vitrine/space.jpg",
+      "sizes": "720x1486",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Ouvrir son espace : le quotidien au Roots."
+    }
+  ],
   "related_applications": [
     {
       "platform": "webapp",

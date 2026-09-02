@@ -67,7 +67,7 @@
   /* Le titre reel de la page. Il se tient un barreau sous l'appel et le domine
      par la graisse : c'est la graisse appuyee que le systeme prevoit pour un
      titre de premier rang qui n'est pas un geste d'ouverture. */
-  .ouv-titre{ margin:0; text-align:center; font-weight: var(--w-a-h1-appuye);
+  .ouv-titre{ margin:0; text-align:center; font-weight: var(--w-bold);
     font-size: var(--t-h2); line-height: var(--ouv-lh-h2) }
   .ouv-mission, .ouv-demande{ margin-top: var(--ouv-saut-titre) }
 
@@ -87,7 +87,7 @@
   .ouv-case-mere svg{ width:16px; height:16px; opacity:0 }
   .ouv-geste.est-faite .ouv-case-mere{ background:var(--encre); border-color:var(--encre) }
   .ouv-geste.est-faite .ouv-case-mere svg{ opacity:1; stroke:var(--blanc) }
-  .ouv-mot{ font-family:var(--font-eclat); font-weight:var(--w-a-h2);
+  .ouv-mot{ font-family:var(--font-eclat); font-weight:var(--w-bold);
     font-size:var(--t-h3); line-height:var(--lh-21) }
   .ouv-geste.est-faite .ouv-mot{ text-decoration:line-through; color:var(--encre-discrete) }
 
