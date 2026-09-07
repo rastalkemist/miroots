@@ -9,7 +9,7 @@
      leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-L0K68G49EHqPP41SffXTmKf8uD7Z0U3krMD91wyA9t4='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-jJy70N5To58BPuSiHmP5O/FgFQHLi0dHMheze/ZXhCM='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Space | Ouvrir mon espace</title>
 <meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
@@ -146,6 +146,8 @@
       envoi: 'Envoi en cours…',
       envoye: function (c) { return 'Code envoyé à ' + c + '. Regarde aussi tes indésirables.'; },
       attente: function (n) { return 'Nouveau code possible dans ' + n + ' s.'; },
+      okCourriel: 'Adresse reconnue.',
+      okCode: 'Code accepté.',
       relance: 'Rien reçu ? Demande un nouveau code.',
       renvoye: 'Nouveau code envoyé. L’ancien reste valable.',
       issue: function (c, n) { return n + ' codes envoyés à ' + c + '. Essaie une autre adresse, ou reviens dans quelques minutes.'; },
@@ -173,6 +175,8 @@
       envoi: 'Sending…',
       envoye: function (c) { return 'Code sent to ' + c + '. Check your spam folder too.'; },
       attente: function (n) { return 'A new code is possible in ' + n + ' s.'; },
+      okCourriel: 'Address recognised.',
+      okCode: 'Code accepted.',
       relance: 'Nothing yet? Ask for a new code.',
       renvoye: 'New code sent. The previous one still works.',
       issue: function (c, n) { return n + ' codes sent to ' + c + '. Try another address, or come back in a few minutes.'; },
@@ -257,6 +261,29 @@
   }
 
   function ouvrir(li, foyer) { li.classList.remove('est-repliee'); if (foyer) foyer.focus(); }
+
+  /* COCHER UNE ETAPE FRANCHIE, ET N'OUVRIR LA SUIVANTE QU'APRES.
+     L'etat se pose sur l'element, la feuille porte le mouvement ; la suite
+     n'est appelee qu'a la FIN de ce mouvement, de sorte que deux encres ne se
+     croisent jamais au meme endroit. La fin se lit sur l'evenement de fin de
+     transition, non sur une duree recopiee ici : une duree ecrite en double
+     cesse d'etre juste au premier reglage du systeme. Le repli de secours
+     couvre le cas ou aucune transition ne court — mouvement reduit, ou etat
+     deja pose — sinon la suite ne viendrait jamais. */
+  function cocher(li, apres) {
+    var case_ = li.querySelector('.ouv-case, .ouv-case-mere');
+    var suite = false;
+    function fin() {
+      if (suite) return;
+      suite = true;
+      if (case_) case_.removeEventListener('transitionend', fin);
+      if (apres) apres();
+    }
+    if (case_) case_.addEventListener('transitionend', fin);
+    li.classList.add('est-faite');
+    var d = case_ ? parseFloat(getComputedStyle(case_).transitionDuration) : 0;
+    setTimeout(fin, (d > 0 ? d * 1000 : 0) + 120);
+  }
   function occuper(b, oui) { b.setAttribute('aria-busy', oui ? 'true' : 'false'); }
 
   function courante() {
@@ -322,8 +349,16 @@
       occuper($('btnCourriel'), false);
       envois++;
       courriel = c;
-      dire('paroleCourriel', '', false);
-      ouvrir($('st2'), $('code'));
+      dire('paroleCourriel', t().okCourriel, false);
+      if ($('st1').classList.contains('est-faite')) {
+        ouvrir($('st2'), $('code'));
+      } else {
+        cocher($('st1'), function () {
+          $('st1').classList.add('est-repliee');
+          dire('paroleCourriel', '', false);
+          ouvrir($('st2'), $('code'));
+        });
+      }
       dire('paroleCode', envois === 1 ? t().envoye(c) : t().renvoye, false);
       setTimeout(compter, 2400);
     }, function (e) {
@@ -340,7 +375,15 @@
     occuper($('btnCode'), true);
     Roots.db.ouvrirSessionParCode(courriel, v).then(function () {
       clearInterval(minuterie);
-      location.replace(SUITE);
+      occuper($('btnCode'), false);
+      dire('paroleCode', t().okCode, false);
+      /* La derniere etape se coche, la commande mere derriere elle, et l'ecran
+         ne change qu'ensuite : un parcours qui aboutit se voit aboutir. */
+      cocher($('st2'), function () {
+        cocher($('mere'), function () {
+          location.replace(SUITE);
+        });
+      });
     }, function (e) {
       occuper($('btnCode'), false);
       dire('paroleCode', e.message, true);

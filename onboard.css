@@ -138,6 +138,32 @@
   .ouv-case{ width:var(--ouv-case); height:var(--ouv-case); border:2px solid var(--limite-controle);
     border-radius:999px; display:grid; place-items:center }
   .ouv-case svg{ width:12px; height:12px; opacity:0 }
+  /* UN GESTE FRANCHI SE COCHE ; IL NE S'AFFICHE PAS COCHE. L'aplat de la case,
+     puis son signe, viennent sur la courbe d'ENTREE — celle de ce qui arrive —
+     a la duree d'etat du systeme. Sans cette transition l'etat existe et ne se
+     voit jamais arriver : c'est le retour du geste qui manque, et il est du au
+     titre de l'accessibilite autant que du dessin, la parole de statut le
+     doublant a cote.
+     Le signe part reduit et reprend sa taille : il se pose, il n'apparait pas.
+     La transition porte sur la case ET la commande mere, qui se coche en
+     dernier ; retirer l'une des deux rendrait le parcours muet a mi-chemin. */
+  .ouv-case, .ouv-case-mere{
+    transition: background-color var(--mvt-etat) var(--courbe-entree),
+                border-color var(--mvt-etat) var(--courbe-entree) }
+  .ouv-case svg, .ouv-case-mere svg{
+    transform: scale(.55);
+    transition: opacity var(--mvt-etat) var(--courbe-entree),
+                transform var(--mvt-etat) var(--courbe-entree) }
+  .ouv-tache.est-faite .ouv-case svg,
+  .ouv-geste.est-faite .ouv-case-mere svg{ transform: none }
+  /* Le libelle change d'encre au meme instant et sur la meme courbe : le mot
+     barre et la case cochee sont un seul geste, pas deux. */
+  .ouv-etiq, .ouv-mot{ transition: color var(--mvt-etat) var(--courbe-entree) }
+  @media (prefers-reduced-motion: reduce){
+    .ouv-case, .ouv-case-mere, .ouv-case svg, .ouv-case-mere svg,
+    .ouv-etiq, .ouv-mot{ transition: none }
+    .ouv-case svg, .ouv-case-mere svg{ transform: none }
+  }
   .ouv-tache.est-faite .ouv-case{ background:var(--encre); border-color:var(--encre) }
   .ouv-tache.est-faite .ouv-case svg{ opacity:1; stroke:var(--blanc) }
   .ouv-etiq{ display:block; font-size:var(--ouv-t-second); line-height:var(--lh-14);

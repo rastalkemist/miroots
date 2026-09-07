@@ -110,6 +110,37 @@
 /* ---- Blocs --------------------------------------------------------------- */
 :where(body.p-space) .bloc-plan{ margin: 0 0 var(--air-i6) }
 :where(body.p-space) .bloc-plan > .etiquette{ display: block }
+/* AU-DELA DU CRAN MESURE, LES DEUX ETAGES DE SEMAINE SE RANGENT COTE A COTE.
+   L'etage-sujet garde la pleine largeur ; les deux autres partagent la ligne.
+   Chaque liste garde son ordre de haut en bas : une liste d'engagements porte
+   son ordre comme information, et le couper en deux colonnes le perdrait — ce
+   qui n'a pas d'ordre, un mur de notes ou de lectures, se coupe au contraire
+   sans dommage.
+   LE CRAN EST 1280 ET NON LE CRAN DU MUR. Mesure a l'appui : a 1024 la colonne
+   tomberait a 264 px, moins de la moitie des 574 servis a 820 — la page se
+   resserrerait en s'elargissant. A 1280 la colonne vaut 334, la mesure que les
+   modules d'accueil portent deja.
+   L'ecart de colonne seul est declare : le rythme vertical reste celui des
+   marges de bloc, qu'une gouttiere de rangee doublerait. */
+@media (min-width: 1280px){
+  :where(body.p-space) .corps{
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: var(--esp-6);
+    align-items: start;
+  }
+  :where(body.p-space) .corps > *{ grid-column: 1 / -1 }
+  :where(body.p-space) #blocCetteSemaine{ grid-column: 1 }
+  :where(body.p-space) #blocPlusTard{ grid-column: 2 }
+  /* Un etage seul n'est cote a cote de rien : il reprend la largeur entiere.
+     La regle se lit sur l'etat RENDU du voisin — les deux etages ne se rendent
+     qu'habites — et non sur un marqueur que le script poserait : une liste qui
+     se vide ne peut pas oublier de le dire. */
+  :where(body.p-space) .corps:has(#blocPlusTard[hidden]) #blocCetteSemaine,
+  :where(body.p-space) .corps:has(#blocCetteSemaine[hidden]) #blocPlusTard{
+    grid-column: 1 / -1;
+  }
+}
 
 /* ---- Poseur d'engagement -------------------------------------------------
  * Trois gestes : ecrire, choisir un jour, ajouter. Le jour est facultatif —
@@ -1313,6 +1344,21 @@
 
 /* La fiche d'un lien : deux rangs, et l'ombre en deux couches — une de
    contact qui pose, une ambiante qui detache — a la place de tout trait. */
+/* UNE LECTURE N'A PAS D'ORDRE IMPOSE : elle prend le mur, comme une note. Le
+   mecanisme et le cran sont ceux du mur des notes, employes en reference et non
+   recomposes. Une fiche ne se coupe pas entre deux colonnes : elle porte son
+   ombre et ses gestes, et une moitie de fiche n'est plus une fiche. */
+@media (min-width: 768px){
+  :where(body.p-space) .intel-fiches{ columns: 2; column-gap: var(--air-i2) }
+  /* L'ecart entre fiches passe du haut vers le BAS : un ecart pose en tete de
+     fiche par voisinage se retrouverait en haut de la seconde colonne, ou rien
+     ne le precede. Sa valeur ne change pas — celle du fil vertical sert aussi
+     entre les colonnes, et le mur se lit carre. */
+  :where(body.p-space) .intel-fiches .intel-fiche{
+    break-inside: avoid; margin-bottom: var(--air-i2);
+  }
+  :where(body.p-space) .intel-fiches .intel-fiche + .intel-fiche{ margin-top: 0 }
+}
 :where(body.p-space) .intel-fiche{
   background: var(--blanc);
   border-radius: var(--rayon-module);
@@ -1329,10 +1375,16 @@
      tactile sur une ligne comme sur deux. */
   display: flex; align-items: center; min-height: var(--cible-min);
 }
+/* Le rang se separe par l'ecart, jamais par un signe ecrit : un signe pose en
+   tete d'un mot revient en debut de ligne quand le rang se replie, et s'ouvre
+   sur rien. Chaque mention se replie entiere pour la meme raison. */
 :where(body.p-space) .intel-meta{
-  margin: 0; display: flex; align-items: center; gap: var(--esp-2);
+  margin: 0; display: flex; align-items: center;
+  column-gap: var(--esp-3); row-gap: var(--esp-2);
   flex-wrap: wrap; color: var(--encre-discrete); font-size: var(--t-sm);
 }
+:where(body.p-space) .intel-meta > span{ white-space: nowrap }
+:where(body.p-space) .intel-meta > .intel-pousse{ white-space: normal }
 :where(body.p-space) .intel-pousse{
   margin-left: auto; display: inline-flex; gap: var(--esp-2);
 }
