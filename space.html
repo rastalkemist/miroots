@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-d+P9QjqMzg/6D+2ivw6KvcYoke3TbQ+dPZ7HrprSfso='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-zq8VBJJwdYBKfEemUSbHzbOJ8W43mw9ygKAfrEr3tzU=' 'sha256-IDiWNgD5W96CkyRZyoXFS9LLLUd1VhhTirk6JkbmZZU='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Space - l’app pour NU</title>
 <meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
@@ -121,6 +121,7 @@
 
 <footer class="pied">
   <a href="confidentialite.html" data-t="piedPolitique">Politique de confidentialité</a>
+  <button type="button" class="pied-geste" id="btnSortir" data-t="sortir">Se déconnecter</button>
 </footer>
 
 <nav class="chrome-bas" id="superNav">
@@ -194,6 +195,8 @@
       aujourdhui: 'Aujourd’hui',
       hier: 'Hier',
       piedPolitique: 'Politique de confidentialité',
+      sortir: 'Se déconnecter',
+      sortirSur: 'Se déconnecter ?',
       toastNu: 'Le mode NU (communauté) arrive bientôt.',
       aria: function (e, f) { return (f ? 'Tenu : ' : 'Pas encore tenu : ') + e; }
     },
@@ -224,6 +227,8 @@
       aujourdhui: 'Today',
       hier: 'Yesterday',
       piedPolitique: 'Privacy policy',
+      sortir: 'Sign out',
+      sortirSur: 'Sign out?',
       toastNu: 'NU, the community side of Roots, is coming soon.',
       aria: function (e, f) { return (f ? 'Kept: ' : 'Not kept yet: ') + e; }
     }
@@ -569,6 +574,41 @@
     if (continuerListe(e, ch)) { marquerChampHall(); retenirBrouillon(ch.value); return; }
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); poserDuHall(); }
   });
+
+  /* SORTIR SE DEMANDE DEUX FOIS. Le geste est sans retour : la session fermee,
+     un nouveau code doit repartir, et le service n'en envoie que deux par
+     heure. La premiere pression pose la question sur le bouton lui-meme ; la
+     seconde seule agit, et la question se retire d'elle-meme si rien ne suit.
+     Le rattrapage employe ailleurs ne convient pas ici — il repose ce qui a
+     ete retire, et une session fermee ne se repose pas.
+     L'ecran ne navigue pas : fermer la session annonce son etat, et la garde
+     en tete d'ecran conduit. Deux chemins vers le meme depart en donneraient
+     un qui parte sans que l'autre le sache. */
+  var DELAI_SORTIE = 4000;
+  var sortirArme = false, sortirMinuterie = null;
+  function desarmerSortie() {
+    if (sortirMinuterie) { clearTimeout(sortirMinuterie); sortirMinuterie = null; }
+    sortirArme = false;
+    var b = $('btnSortir');
+    b.textContent = t().sortir;
+    b.setAttribute('data-t', 'sortir');
+    b.classList.remove('est-armee');
+  }
+  $('btnSortir').addEventListener('click', function () {
+    var b = $('btnSortir');
+    if (!sortirArme) {
+      sortirArme = true;
+      b.textContent = t().sortirSur;
+      b.setAttribute('data-t', 'sortirSur');
+      b.classList.add('est-armee');
+      sortirMinuterie = setTimeout(desarmerSortie, DELAI_SORTIE);
+      return;
+    }
+    desarmerSortie();
+    b.disabled = true;
+    Roots.db.fermerSession()['catch'](function () {});
+  });
+  $('btnSortir').addEventListener('blur', desarmerSortie);
 
   if (Roots.poserLibelles) Roots.poserLibelles();
   appliquerLangue();

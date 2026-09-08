@@ -111,6 +111,35 @@
     color: var(--encre-discrete);
     opacity:0; transition: opacity var(--mvt-etat) var(--courbe-etat) }
 
+  /* CE QUI VIT SUR L'APPAREIL SE DIT AVANT QU'ON ENTRE, PAS APRES. La ligne se
+     lit au meme retrait que la parole d'un champ — elle informe, elle n'appelle
+     aucun geste — et prend la mesure de la colonne de note, comme elle. */
+  .ouv-ou{ max-width: var(--col); margin: var(--air-i3) auto 0;
+    padding-inline: var(--ouv-dedans);
+    font-size: var(--ouv-t-second); line-height: var(--lh-14);
+    color: var(--encre-discrete); text-wrap: pretty }
+
+  /* LA COMMANDE DE RENVOI SE REND COMME UNE PAROLE, PAS COMME UN BOUTON : elle
+     vit sous le champ, dans la colonne de la parole et a son retrait, et porte
+     l'encre de l'action parce qu'elle en appelle une. Sa zone atteinte tient le
+     plancher tactile sans que son dessin grandisse — le rang ne s'ecarte pas.
+     FERMEE PENDANT L'ATTENTE : le service refuse une demande trop rapprochee,
+     et une commande qui part pour un refus vaut moins qu'une commande qui
+     attend. Elle le dit par son encre ET par la parole au-dessus d'elle. */
+  .ouv-relance{
+    grid-column:2; margin: var(--esp-1) 0 0 var(--ouv-dedans);
+    border:0; background:none; cursor:pointer;
+    font-family:var(--font-corps); font-weight:inherit;
+    font-size:var(--ouv-t-second); line-height:var(--lh-14);
+    color: var(--terre-e3);
+    text-decoration:underline; text-underline-offset:3px;
+    display:inline-flex; align-items:center;
+    min-height: var(--cible-min); padding-inline: var(--esp-1);
+    justify-self:start }
+  .ouv-relance[disabled]{ color: var(--encre-discrete); cursor:default;
+    text-decoration:none }
+  .ouv-tache.est-repliee .ouv-relance{ display:none }
+
   .ouv-tache.est-repliee .ouv-parole{ display:none }
   .ouv-parole.se-voit{ opacity:1 }
   /* Ce qui appelle un geste porte l'encre de l'action ; ce qui informe reste

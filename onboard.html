@@ -9,7 +9,7 @@
      leur presentation change ici. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-jJy70N5To58BPuSiHmP5O/FgFQHLi0dHMheze/ZXhCM='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-src 'none'; script-src 'self' 'sha256-e06CNHX15PeVemSLMm489GOpyUBWPWjxL64Heb2S/UU='; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://xrqorebcgnixcbqqeoll.supabase.co; manifest-src 'self'">
 <title>Mi Space | Ouvrir mon espace</title>
 <meta name="description" content="l’app pour NU">
 <meta property="og:type" content="website">
@@ -97,9 +97,12 @@
             <button type="button" class="ouv-go" id="btnCode" data-al="confirmer"><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
           </div>
           <p class="ouv-parole" id="paroleCode" role="status"></p>
+          <button type="button" class="ouv-relance" id="btnRenvoi" hidden data-t="renvoyer">Renvoyer le code</button>
         </div>
       </div>
     </div>
+
+    <p class="ouv-ou" data-t="ou">Tes notes restent sur cet appareil. Tes engagements te suivent partout.</p>
   </div>
   <div class="ouv-reste"></div>
 </main>
@@ -123,7 +126,7 @@
 
   /* Delai avant qu'un nouveau code puisse partir, en secondes, et nombre
      d'envois au-dela duquel une sortie est proposee. */
-  var ATTENTE = 30;
+  var ATTENTE = 60;
   var AVANT_ISSUE = 3;
   var SUITE = 'confirm.html';
 
@@ -137,7 +140,8 @@
       tCourriel: 'Ton adresse courriel',
       tCode: 'Le code reçu dans ta boîte',
       alEnvoyer: 'Envoyer le code',
-      alRenvoyer: 'Envoyer un nouveau code',
+      alRenvoyer: 'Renvoyer le code',
+      renvoyer: 'Renvoyer le code',
       alConfirmer: 'Confirmer le code',
       orienteCourriel: 'Commence par ton adresse courriel.',
       orienteCode: 'Entre le code reçu dans ta boîte.',
@@ -145,15 +149,16 @@
       courrielForme: 'Ton adresse courriel doit contenir un @, comme toi@exemple.bj.',
       envoi: 'Envoi en cours…',
       envoye: function (c) { return 'Code envoyé à ' + c + '. Regarde aussi tes indésirables.'; },
-      attente: function (n) { return 'Nouveau code possible dans ' + n + ' s.'; },
+      attente: function (n) { return 'Renvoi possible dans ' + n + ' s.'; },
       okCourriel: 'Adresse reconnue.',
       okCode: 'Code accepté.',
-      relance: 'Rien reçu ? Demande un nouveau code.',
-      renvoye: 'Nouveau code envoyé. L’ancien reste valable.',
+      relance: 'Rien reçu ? Regarde tes indésirables, puis renvoie le code.',
+      renvoye: 'Code renvoyé. C’est le même — son délai n’a pas redémarré.',
       issue: function (c, n) { return n + ' codes envoyés à ' + c + '. Essaie une autre adresse, ou reviens dans quelques minutes.'; },
       codeVide: 'Entre le code reçu dans ta boîte.',
       codeCourt: 'Le code compte six chiffres.',
       patiente: 'Un instant…',
+      ou: 'Tes notes restent sur cet appareil. Tes engagements te suivent partout.',
       langue: 'Langue',
       toastNu: 'Le mode NU (communauté) arrive bientôt.'
     },
@@ -166,7 +171,8 @@
       tCourriel: 'Your email address',
       tCode: 'The code in your inbox',
       alEnvoyer: 'Send the code',
-      alRenvoyer: 'Send a new code',
+      alRenvoyer: 'Resend the code',
+      renvoyer: 'Resend the code',
       alConfirmer: 'Confirm the code',
       orienteCourriel: 'Start with your email address.',
       orienteCode: 'Enter the code in your inbox.',
@@ -174,15 +180,16 @@
       courrielForme: 'Your email address must contain an @, like you@example.bj.',
       envoi: 'Sending…',
       envoye: function (c) { return 'Code sent to ' + c + '. Check your spam folder too.'; },
-      attente: function (n) { return 'A new code is possible in ' + n + ' s.'; },
+      attente: function (n) { return 'Resend possible in ' + n + ' s.'; },
       okCourriel: 'Address recognised.',
       okCode: 'Code accepted.',
-      relance: 'Nothing yet? Ask for a new code.',
-      renvoye: 'New code sent. The previous one still works.',
+      relance: 'Nothing yet? Check your spam folder, then resend the code.',
+      renvoye: 'Code resent. It is the same one — its clock did not restart.',
       issue: function (c, n) { return n + ' codes sent to ' + c + '. Try another address, or come back in a few minutes.'; },
       codeVide: 'Enter the code in your inbox.',
       codeCourt: 'The code is six digits.',
       patiente: 'One moment…',
+      ou: 'Your notes stay on this device. Your commitments follow you everywhere.',
       langue: 'Language',
       toastNu: 'NU, the community side of Roots, is coming soon.'
     }
@@ -324,11 +331,13 @@
     clearInterval(minuterie);
     reste = 0;
     $('btnCourriel').setAttribute('aria-label', t().alRenvoyer);
+    $('btnRenvoi').disabled = false;
     dire('paroleCode', envois >= AVANT_ISSUE ? t().issue(courriel, envois) : t().relance, true);
   }
 
   function compter() {
     clearInterval(minuterie);
+    $('btnRenvoi').disabled = true;
     reste = ATTENTE;
     dire('paroleCode', t().attente(reste), false);
     minuterie = setInterval(function () {
@@ -338,17 +347,36 @@
     }, 1000);
   }
 
+  /* LE RENVOI APPARTIENT AU RANG DU CODE, PAS A CELUI DE L'ADRESSE. L'adresse
+     acceptee, son rang se replie et cesse de repondre — une etape franchie n'a
+     plus rien a reprendre. La commande d'envoi vit DANS ce rang : repliee avec
+     lui, elle ne se rend plus, et le rang du code appelait un geste dont la
+     commande n'existait plus a l'ecran. Le renvoi se pose donc sous le champ du
+     code, la ou il s'exerce ; les deux commandes appellent le meme envoi, et
+     l'une des deux seulement est atteignable a chaque instant. */
+  function demander(c, commande, apres) {
+    if (reste > 0) { dire('paroleCode', t().attente(reste), true); $('code').focus(); return; }
+    dire('paroleCourriel', t().envoi, false);
+    occuper(commande, true);
+    Roots.db.demanderCodeCourriel(c).then(function () {
+      occuper(commande, false);
+      envois++;
+      courriel = c;
+      if (apres) apres();
+      dire('paroleCode', envois === 1 ? t().envoye(c) : t().renvoye, false);
+      $('btnRenvoi').hidden = false;
+      setTimeout(compter, 2400);
+    }, function (e) {
+      occuper(commande, false);
+      dire(commande === $('btnRenvoi') ? 'paroleCode' : 'paroleCourriel', e.message, true);
+    });
+  }
+
   $('btnCourriel').addEventListener('click', function () {
     var c = $('courriel').value.trim();
     if (!c) { dire('paroleCourriel', t().courrielVide, true); $('courriel').focus(); return; }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c)) { dire('paroleCourriel', t().courrielForme, true); $('courriel').focus(); return; }
-    if (reste > 0) { dire('paroleCode', t().attente(reste), true); $('code').focus(); return; }
-    dire('paroleCourriel', t().envoi, false);
-    occuper($('btnCourriel'), true);
-    Roots.db.demanderCodeCourriel(c).then(function () {
-      occuper($('btnCourriel'), false);
-      envois++;
-      courriel = c;
+    demander(c, $('btnCourriel'), function () {
       dire('paroleCourriel', t().okCourriel, false);
       if ($('st1').classList.contains('est-faite')) {
         ouvrir($('st2'), $('code'));
@@ -359,12 +387,11 @@
           ouvrir($('st2'), $('code'));
         });
       }
-      dire('paroleCode', envois === 1 ? t().envoye(c) : t().renvoye, false);
-      setTimeout(compter, 2400);
-    }, function (e) {
-      occuper($('btnCourriel'), false);
-      dire('paroleCourriel', e.message, true);
     });
+  });
+
+  $('btnRenvoi').addEventListener('click', function () {
+    if (courriel) demander(courriel, $('btnRenvoi'));
   });
 
   $('btnCode').addEventListener('click', function () {

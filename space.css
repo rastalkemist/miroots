@@ -1152,6 +1152,31 @@
 :where(body.p-space) .mur-notes .note-carte{
   break-inside: avoid; margin-bottom: var(--esp-4);
 }
+/* LE PIED PORTE DEUX MENTIONS, ET ELLES SE RENDENT PAREIL. L'une mene ailleurs,
+   l'autre agit sur place : le rang les separe par l'ecart, et le geste reprend
+   trait pour trait la mesure, l'encre et la cible du lien voisin — une action
+   qui se distinguerait d'un lien par sa seule forme se lirait comme un bouton
+   de page, ce qu'elle n'est pas.
+   ARMEE, ELLE PREND L'ENCRE DE L'ACTION ET RESTE LISIBLE PAR SON MOT : la
+   question posee est ecrite, la couleur ne la porte pas seule. */
+:where(body.p-space) .pied{ gap: var(--esp-3) }
+:where(body.p-space) .pied-geste{
+  border: 0; background: none; cursor: pointer;
+  font-family: var(--font-corps); font-size: var(--t-sm);
+  /* Un bouton n'herite ni de la fonte ni de la graisse de la page : les deux se
+     redonnent, sinon la mention agissante se rend plus maigre que la mention
+     voisine et le rang se lit a deux voix. */
+  font-weight: inherit;
+  color: var(--encre-discrete);
+  text-decoration: underline; text-underline-offset: 3px;
+  display: flex; align-items: center;
+  min-height: var(--cible-min); padding: 0 var(--esp-2);
+}
+:where(body.p-space) .pied-geste.est-armee{
+  color: var(--terre-e3); font-weight: var(--w-bold);
+}
+:where(body.p-space) .pied-geste[disabled]{ opacity: .5; cursor: default }
+
 :where(body.p-space) .visuellement-cache{
   position: absolute; width: 1px; height: 1px;
   margin: -1px; padding: 0; border: 0;
