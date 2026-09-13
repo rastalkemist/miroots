@@ -239,11 +239,12 @@
   /* La description se detache du champ d'un quart de saut de plus que le saut
      interne du bloc. Sa mesure est plafonnee a la colonne de note : sans plafond,
      elle atteint cent cinquante signes par ligne sur un grand ecran, soit prés du
-     double du plafond que la doctrine pose. L'interligne monte d'un cran au-dessus
-     de celui qu'indexe son barreau — motif : c'est de la prose suivie, pas une
-     etiquette, et elle se lit en gris. */
+     double du plafond que la doctrine pose. L'interligne est celui de son barreau,
+     et l'air pose au-dessus par la regle voisine soustrait la ligne sous cette
+     meme forme : les deux se deduisent de la meme valeur, faute de quoi l'air
+     rendu s'ecarte de l'air calcule. */
   .ouv-aparte{ margin: calc(var(--ouv-saut) * 1.25) 0 0; max-width: var(--col);
-    font-size: var(--ouv-t-second); line-height: var(--lh-aere);
+    font-size: var(--ouv-t-second); line-height: var(--lh-14);
     color: var(--encre-discrete) }
 
   /* Le corps secondaire de ces ecrans, pose une fois pour qu'un seul cran le
@@ -363,7 +364,7 @@
      separe, en plus de la marge materielle de l'appareil. */
   .ouv-confirm .ouv-notice{ flex:none; margin:0 auto var(--air-i4); max-width: var(--col);
     text-align:center;
-    font-size: var(--ouv-t-second); line-height: var(--lh-aere);
+    font-size: var(--ouv-t-second); line-height: var(--lh-14);
     color: var(--encre-discrete) }
 .ouv-confirm .ouv-air.ouv-question{ flex:none;
     height: calc(var(--ouv-saut-titre) - var(--ouv-t-second) * var(--lh-14) - var(--esp-1)) }
@@ -405,7 +406,7 @@
      la droite. Les deux retraits se deduisent du champ et de son voisin. */
   .ouv-confirm .ouv-aparte{ margin:0; margin-left: var(--ouv-dedans);
     margin-right: calc(var(--cible-min) + var(--esp-2));
-    line-height: var(--lh-aere) }
+    line-height: var(--lh-14) }
 @media (max-height: 679px){
     .ouv-confirm .ouv-air{ flex-grow:0; min-height: var(--air-i4) }
 .ouv-confirm .ouv-air.ouv-question, .ouv-confirm .ouv-air.ouv-note{ min-height:0 }
